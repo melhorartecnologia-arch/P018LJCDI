@@ -3,7 +3,7 @@
 //   npm start
 // Instala dependências (só na primeira vez), compila a web e inicia a API.
 // Banco: PGlite (PostgreSQL embutido) por padrão, ou o seu PostgreSQL se
-// DATABASE_URL estiver definida.
+// DATABASE_URL / PG* estiverem definidas.
 import { spawnSync, spawn } from 'node:child_process'
 import { existsSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
@@ -12,33 +12,43 @@ import { fileURLToPath } from 'node:url'
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const web = resolve(root, 'web')
 const server = resolve(root, 'server')
-const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm'
 
-function run(cmd, args, cwd) {
-  const r = spawnSync(cmd, args, { cwd, stdio: 'inherit' })
+// Executa um comando de shell. `shell: true` é essencial no Windows, onde o Node
+// não executa `npm.cmd`/`.bat` diretamente sem shell.
+function run(command, cwd, label) {
+  const r = spawnSync(command, { cwd, stdio: 'inherit', shell: true })
+  if (r.error) console.error(r.error.message)
   if (r.status !== 0) {
-    console.error(`\nFalhou: ${cmd} ${args.join(' ')} (em ${cwd})`)
+    console.error(`\n✖ Falhou ao ${label}.`)
+    console.error(`  Comando: ${command}`)
+    console.error(`  Pasta:   ${cwd}`)
+    console.error('  Rode o comando acima manualmente nessa pasta para ver o erro completo.')
     process.exit(r.status || 1)
   }
 }
 
-// 1. Dependências (apenas se ainda não instaladas)
-if (!existsSync(resolve(web, 'node_modules'))) {
+// Instala se a pasta node_modules não existe OU se um pacote essencial falta
+// (instalação anterior incompleta).
+function needsInstall(dir, probe) {
+  return !existsSync(resolve(dir, 'node_modules')) || !existsSync(resolve(dir, 'node_modules', probe))
+}
+
+if (needsInstall(web, 'vite')) {
   console.log('▶ Instalando dependências da web…')
-  run(npm, ['install'], web)
+  run('npm install', web, 'instalar as dependências da web')
 }
-if (!existsSync(resolve(server, 'node_modules'))) {
+if (needsInstall(server, 'express')) {
   console.log('▶ Instalando dependências do servidor…')
-  run(npm, ['install'], server)
+  run('npm install', server, 'instalar as dependências do servidor')
 }
 
-// 2. Build da web (rápido; garante que dist reflete o código atual)
+// Compila a web (rápido; garante que dist reflete o código atual)
 console.log('▶ Compilando a interface…')
-run(npm, ['run', 'build'], web)
+run('npm run build', web, 'compilar a interface')
 
-// 3. API (serve a web e o banco); repassa sinais para encerrar limpo
+// API (serve a web e o banco); repassa sinais para encerrar limpo.
 console.log('▶ Iniciando a plataforma…\n')
-const child = spawn('node', ['src/index.js'], { cwd: server, stdio: 'inherit' })
+const child = spawn(process.execPath, ['src/index.js'], { cwd: server, stdio: 'inherit' })
 const stop = () => child.kill('SIGINT')
 process.on('SIGINT', stop)
 process.on('SIGTERM', stop)
