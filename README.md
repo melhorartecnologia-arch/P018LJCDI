@@ -132,9 +132,12 @@ reinícios.
 **Ajuda em cada rotina:** no topo da tela há o botão **"Como usar"** (com ícone
 de vídeo), presente em todas as rotinas. Ele abre um *tutorial em vídeo* que
 **mostra as imagens reais daquela tela** e as percorre automaticamente ao clicar
-em "Reproduzir" (como uma gravação de tela), com a legenda de cada passo, o passo
-a passo em texto e dicas — tudo específico da rotina em que você está. As imagens
-ficam em `web/public/ajuda/` (uma por rotina).
+em "Reproduzir" (como uma gravação de tela): a cada passo, a "câmera" enquadra e
+**destaca o elemento correspondente** (botão, campo ou filtro) com um realce que
+pulsa e escurece o restante, junto com a legenda do passo. Abaixo ficam o passo a
+passo em texto e as dicas — tudo específico da rotina em que você está. As
+imagens ficam em `web/public/ajuda/` (uma por rotina) e as posições dos destaques
+são medidas automaticamente na captura das telas.
 
 ## Arquitetura
 
