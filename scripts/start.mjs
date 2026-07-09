@@ -5,7 +5,7 @@
 // Banco: PGlite (PostgreSQL embutido) por padrão, ou o seu PostgreSQL se
 // DATABASE_URL / PG* estiverem definidas.
 import { spawnSync, spawn } from 'node:child_process'
-import { existsSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -27,17 +27,26 @@ function run(command, cwd, label) {
   }
 }
 
-// Instala se a pasta node_modules não existe OU se um pacote essencial falta
-// (instalação anterior incompleta).
-function needsInstall(dir, probe) {
-  return !existsSync(resolve(dir, 'node_modules')) || !existsSync(resolve(dir, 'node_modules', probe))
+// Instala se node_modules não existe OU se qualquer dependência declarada no
+// package.json ainda não está presente (instalação anterior incompleta ou
+// desatualizada após novas dependências serem adicionadas).
+function needsInstall(dir) {
+  const nm = resolve(dir, 'node_modules')
+  if (!existsSync(nm)) return true
+  try {
+    const pkg = JSON.parse(readFileSync(resolve(dir, 'package.json'), 'utf8'))
+    const deps = Object.keys({ ...pkg.dependencies, ...pkg.devDependencies })
+    return deps.some((d) => !existsSync(resolve(nm, ...d.split('/'))))
+  } catch {
+    return true
+  }
 }
 
-if (needsInstall(web, 'vite')) {
+if (needsInstall(web)) {
   console.log('▶ Instalando dependências da web…')
   run('npm install', web, 'instalar as dependências da web')
 }
-if (needsInstall(server, 'express')) {
+if (needsInstall(server)) {
   console.log('▶ Instalando dependências do servidor…')
   run('npm install', server, 'instalar as dependências do servidor')
 }
