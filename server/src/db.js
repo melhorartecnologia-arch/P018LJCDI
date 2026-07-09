@@ -1,27 +1,24 @@
-import { dirname, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { config } from './config.js'
 
-// Two ways to run — both without Docker:
+// Two ways to run — both without Docker (chosen via config / env):
 //
-//  • Default: PGlite, a real PostgreSQL engine compiled to WASM that runs
-//    in-process and persists to server/.pgdata. Zero setup, one command.
-//  • If DATABASE_URL is set: connect to your own PostgreSQL server with the
-//    standard `pg` driver.
+//  • PGlite (default): a real PostgreSQL engine compiled to WASM that runs
+//    in-process and persists to config.pgliteDir. Zero setup, one command.
+//  • PostgreSQL: connect to your own server with the standard `pg` driver
+//    (DATABASE_URL or the PG* variables, or DB_DRIVER=postgres).
 //
 // Both expose the same tiny interface (query / exec / withTx / waitReady) so the
 // rest of the server does not care which one is active.
 
-const here = dirname(fileURLToPath(import.meta.url))
-const usePg = !!process.env.DATABASE_URL
-
 let impl
 export let driver
 
-if (usePg) {
+if (config.usePg) {
   driver = 'postgres'
   const { default: pg } = await import('pg')
-  await ensureDatabaseExists(pg, process.env.DATABASE_URL)
-  const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL })
+  const ssl = config.pgSsl ? { rejectUnauthorized: false } : undefined
+  if (config.dbAutoCreate) await ensureDatabaseExists(pg, config.databaseUrl, ssl)
+  const pool = new pg.Pool({ connectionString: config.databaseUrl, ssl })
   impl = {
     query: (sql, params) => pool.query(sql, params),
     exec: (sql) => pool.query(sql),
@@ -54,8 +51,7 @@ if (usePg) {
 } else {
   driver = 'pglite'
   const { PGlite } = await import('@electric-sql/pglite')
-  const dataDir = process.env.PGLITE_DIR || resolve(here, '../.pgdata')
-  const db = new PGlite(dataDir)
+  const db = new PGlite(config.pgliteDir)
   await db.waitReady
   const call = (runner, sql, params) => (params === undefined ? runner(sql) : runner(sql, params))
   impl = {
@@ -75,7 +71,7 @@ export const waitReady = () => impl.waitReady()
 // may not exist yet. Create it automatically (connecting to the maintenance
 // `postgres` database with the same credentials) so `DATABASE_URL` works on the
 // first run without a manual `createdb`.
-async function ensureDatabaseExists(pg, url) {
+async function ensureDatabaseExists(pg, url, ssl) {
   let target
   try {
     target = new URL(url)
@@ -86,7 +82,7 @@ async function ensureDatabaseExists(pg, url) {
   if (!dbName || dbName === 'postgres') return
 
   // Does it already exist? A plain connect tells us.
-  const probe = new pg.Client({ connectionString: url })
+  const probe = new pg.Client({ connectionString: url, ssl })
   try {
     await probe.connect()
     await probe.end()
@@ -101,7 +97,7 @@ async function ensureDatabaseExists(pg, url) {
   // Create it via the maintenance database.
   const admin = new URL(url)
   admin.pathname = '/postgres'
-  const client = new pg.Client({ connectionString: admin.toString() })
+  const client = new pg.Client({ connectionString: admin.toString(), ssl })
   try {
     await client.connect()
     await client.query(`CREATE DATABASE "${dbName.replace(/"/g, '""')}"`)

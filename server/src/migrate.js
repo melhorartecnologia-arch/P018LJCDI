@@ -3,6 +3,7 @@ import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { exec, waitReady, driver } from './db.js'
 import { isEmpty, saveState } from './repo.js'
+import { config } from './config.js'
 
 const here = dirname(fileURLToPath(import.meta.url))
 const dbDir = resolve(here, '../db')
@@ -15,7 +16,9 @@ export async function migrate() {
   await exec(schema)
   console.log('[migrate] schema aplicado')
 
-  if (await isEmpty()) {
+  if (!config.dbSeed) {
+    console.log('[migrate] seed desativado (DB_SEED=false)')
+  } else if (await isEmpty()) {
     const seed = JSON.parse(await readFile(resolve(dbDir, 'seed.json'), 'utf8'))
     await saveState(seed)
     console.log('[migrate] dados iniciais carregados')

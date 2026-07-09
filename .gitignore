@@ -5,3 +5,8 @@ dist/
 .vite/
 server/.pgdata/
 .pgdata/
+
+# Segredos e config local — nunca versionar (.env.example fica no repo)
+.env
+.env.*
+!.env.example

@@ -82,6 +82,38 @@ aplicados sempre de forma idempotente (o seed só entra se o banco estiver vazio
 Também há suporte a Docker para quem quiser, mas **não é necessário**:
 `npm run docker` (equivale a `docker compose up --build`).
 
+## Configuração (variáveis de ambiente)
+
+Toda a configuração vem de **variáveis de ambiente**. Você pode defini-las no
+ambiente do sistema ou em um arquivo **`.env`** na raiz do projeto. Comece a
+partir do modelo:
+
+```bash
+cp .env.example .env      # (no Windows/PowerShell: Copy-Item .env.example .env)
+```
+
+Variáveis definidas diretamente no ambiente têm prioridade sobre o `.env`. Todas
+têm um padrão sensato — sem nenhuma configuração, a aplicação roda com o banco
+embutido na porta 3000.
+
+| Variável | Padrão | Descrição |
+| --- | --- | --- |
+| `PORT` | `3000` | Porta HTTP. |
+| `HOST` | `0.0.0.0` | Interface de rede (`127.0.0.1` = só local). |
+| `JSON_BODY_LIMIT` | `8mb` | Tamanho máximo do corpo JSON. |
+| `PUBLIC_URL` | — | URL pública, apenas para mensagens de log. |
+| `WEB_DIST` | auto | Pasta do build da web servido pela API. |
+| `DB_DRIVER` | `auto` | `auto` \| `pglite` \| `postgres`. |
+| `PGLITE_DIR` | `server/.pgdata` | Pasta de dados do PostgreSQL embutido. |
+| `DATABASE_URL` | — | Conexão com um PostgreSQL externo (tem prioridade). |
+| `PGHOST` `PGPORT` `PGUSER` `PGPASSWORD` `PGDATABASE` | — | Alternativa ao `DATABASE_URL` (montam a conexão). |
+| `PGSSL` | `false` | Ativa TLS/SSL (bancos gerenciados). |
+| `DB_AUTO_CREATE` | `true` | Cria o banco automaticamente se não existir. |
+| `DB_SEED` | `true` | Carrega os dados iniciais quando o banco está vazio. |
+
+O arquivo `.env` **não é versionado** (contém segredos); o `.env.example` fica no
+repositório como referência.
+
 ## O que a plataforma faz
 
 Aplicação de página única com **login por perfil** e três perfis de acesso:
@@ -150,9 +182,8 @@ npm run build:web       # instala e compila a web em web/dist
 npm run start:server    # inicia a API em http://localhost:3000 (PGlite por padrão)
 ```
 
-Variáveis de ambiente aceitas pela API: `DATABASE_URL` (para usar um PostgreSQL
-externo), `PGLITE_DIR` (pasta de dados do banco embutido; padrão `server/.pgdata`),
-`PORT` (padrão 3000) e `WEB_DIST` (diretório do build da web).
+Todas as opções são configuráveis por variáveis de ambiente / `.env` — veja a
+seção **Configuração (variáveis de ambiente)** acima.
 
 ## Estrutura do projeto
 

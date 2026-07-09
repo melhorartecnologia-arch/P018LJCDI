@@ -5,19 +5,19 @@ import { fileURLToPath } from 'node:url'
 import { query, driver } from './db.js'
 import { migrate } from './migrate.js'
 import { loadState, saveState, loadCollection, COLLECTION_KEYS } from './repo.js'
+import { config } from './config.js'
 
 const here = dirname(fileURLToPath(import.meta.url))
-const PORT = Number(process.env.PORT || 3000)
 
 // Where the built web app lives. In the Docker image the web is built to
 // web/dist and copied next to the server; locally we point at ../../web/dist.
 const WEB_DIST =
-  process.env.WEB_DIST ||
+  config.webDist ||
   [resolve(here, '../public'), resolve(here, '../../web/dist')].find((p) => existsSync(p)) ||
   resolve(here, '../../web/dist')
 
 const app = express()
-app.use(express.json({ limit: '8mb' }))
+app.use(express.json({ limit: config.jsonBodyLimit }))
 
 app.get('/api/health', async (_req, res) => {
   try {
@@ -80,8 +80,9 @@ app.use((err, _req, res, _next) => {
 
 migrate()
   .then(() => {
-    app.listen(PORT, () => {
-      console.log(`[server] Plataforma Cidade Imperial ouvindo em http://localhost:${PORT} (banco: ${driver})`)
+    app.listen(config.port, config.host, () => {
+      const shown = config.publicUrl || `http://localhost:${config.port}`
+      console.log(`[server] Plataforma Cidade Imperial ouvindo em ${shown} (banco: ${driver})`)
       console.log(`[server] servindo web de ${WEB_DIST}`)
     })
   })
