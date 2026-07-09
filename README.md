@@ -5,25 +5,40 @@ a Loja (dona da plataforma), seus **Fornecedores** e as **Revendas**, cobrindo o
 fluxo completo de catálogo, pedidos, cotações, faturamento e royalties.
 
 Aplicação **full-stack** em um único repositório: **PostgreSQL** + **API Node.js**
-+ **web**, com persistência real e início por **um único comando**.
++ **web**, com persistência real e início por **um único comando — sem Docker**.
 
-## Início rápido (um comando)
+## Início rápido (um comando, sem Docker)
 
-Pré-requisito: Docker.
+Pré-requisito: apenas **Node.js 18+**.
 
 ```bash
-docker compose up --build
+npm start
 ```
 
-Isso sobe o banco PostgreSQL, aplica o schema, carrega os dados iniciais, inicia
-a API Node.js e serve a interface. Depois abra:
+Isso instala as dependências (só na primeira vez), compila a interface, inicia a
+API Node.js e sobe um **PostgreSQL embutido** (PGlite) que grava os dados em
+`server/.pgdata`. Nenhum banco externo, nenhum container. Depois abra:
 
 ```
 http://localhost:3000
 ```
 
-O login aceita qualquer e-mail/senha (demonstração). Para parar: `docker compose down`.
-Para zerar o banco (apagar o volume de dados): `docker compose down -v`.
+O login aceita qualquer e-mail/senha (demonstração). Para parar: `Ctrl+C`.
+Para zerar os dados: apague a pasta `server/.pgdata`.
+
+### Usar o seu próprio PostgreSQL (opcional)
+
+Se preferir um servidor PostgreSQL de verdade (local ou na nuvem), defina
+`DATABASE_URL` — a aplicação usa o driver `pg` e não sobe o banco embutido:
+
+```bash
+DATABASE_URL="postgres://usuario:senha@localhost:5432/cidadeimperial" npm start
+```
+
+### Docker (opcional)
+
+Também há suporte a Docker para quem quiser, mas **não é necessário**:
+`npm run docker` (equivale a `docker compose up --build`).
 
 ## O que a plataforma faz
 
@@ -52,14 +67,19 @@ server/                   # API Node.js/Express + acesso ao PostgreSQL
 design/                   # exportação original do Claude Design (fonte de verdade da UI)
 ```
 
-### Banco de dados (`server/db/`)
-- `schema.sql` — tabelas relacionais para as 10 coleções do domínio
+### Banco de dados
+- Por padrão, **PGlite** — o motor do PostgreSQL compilado para WASM, rodando
+  no próprio processo Node e gravando em `server/.pgdata`. É PostgreSQL de
+  verdade (JSONB, transações, etc.), sem servidor separado, sem container.
+- Com `DATABASE_URL` definida, conecta a um **servidor PostgreSQL** externo via
+  driver `pg`.
+- `server/db/schema.sql` — tabelas relacionais para as 10 coleções do domínio
   (fornecedores, contratos, produtos, revendas, pedidos, cotações,
   faturamentos, pagamentos, auditoria e sequências). Cada tabela tem colunas
   tipadas (para consultas/relatórios em SQL) **e** uma coluna `data` JSONB que
   guarda a entidade completa sem perdas; `ord` preserva a ordem dos itens.
-- `seed.json` — dados iniciais de demonstração, carregados automaticamente
-  quando o banco está vazio.
+- `server/db/seed.json` — dados iniciais de demonstração, carregados
+  automaticamente quando o banco está vazio.
 
 ### API (`server/src/`)
 - `GET  /api/health` — verificação de saúde.
@@ -78,32 +98,27 @@ design/                   # exportação original do Claude Design (fonte de ver
   alteração, persiste em `PUT /api/state` (com debounce). Sem a API, degrada
   graciosamente para dados locais de demonstração.
 
-## Desenvolvimento sem Docker
+## Desenvolvimento
 
-Requer Node.js 18+ e um PostgreSQL acessível.
+O comando único (`npm start`) já cobre o fluxo completo. Para rodar as partes
+separadamente:
 
 ```bash
-# 1. Banco: crie um banco e exporte a conexão
-export DATABASE_URL="postgres://usuario:senha@localhost:5432/cidadeimperial"
-
-# 2. Web (compila para web/dist, servido pela API)
-npm run build:web
-
-# 3. Servidor (aplica schema + seed e inicia em http://localhost:3000)
-npm --prefix server install
-npm run start:server
+npm run build:web       # instala e compila a web em web/dist
+npm run start:server    # inicia a API em http://localhost:3000 (PGlite por padrão)
 ```
 
-Variáveis de ambiente aceitas pela API: `DATABASE_URL` (ou `PGHOST`, `PGPORT`,
-`PGUSER`, `PGPASSWORD`, `PGDATABASE`), `PORT` (padrão 3000) e `WEB_DIST`
-(diretório do build da web).
+Variáveis de ambiente aceitas pela API: `DATABASE_URL` (para usar um PostgreSQL
+externo), `PGLITE_DIR` (pasta de dados do banco embutido; padrão `server/.pgdata`),
+`PORT` (padrão 3000) e `WEB_DIST` (diretório do build da web).
 
 ## Estrutura do projeto
 
 ```
-docker-compose.yml
-Dockerfile
-package.json                     # scripts orquestradores (start = docker compose up)
+package.json                     # scripts orquestradores (start = sobe tudo, sem Docker)
+scripts/start.mjs                # launcher de um comando (instala, compila, inicia)
+docker-compose.yml               # opcional
+Dockerfile                       # opcional
 server/
   package.json
   db/{schema.sql, seed.json}

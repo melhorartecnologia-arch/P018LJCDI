@@ -1,4 +1,4 @@
-import { pool, withTx } from './db.js'
+import { query, withTx } from './db.js'
 
 // The 10 persistent collections that make up the application state.
 // For each array collection we describe how to derive the typed scalar columns
@@ -55,19 +55,19 @@ function insertSql(table, columns) {
 export async function loadState() {
   const state = {}
 
-  const seq = await pool.query('SELECT ped, cot, forn, prod, rev, ctr, nf FROM app_seq WHERE id = 1')
+  const seq = await query('SELECT ped, cot, forn, prod, rev, ctr, nf FROM app_seq WHERE id = 1')
   state.seq = seq.rows[0] || { ped: 1, cot: 1, forn: 1, prod: 1, rev: 1, ctr: 1, nf: 1 }
 
   for (const key of ARRAY_KEYS) {
-    const res = await pool.query(`SELECT data FROM ${key} ORDER BY ord`)
+    const res = await query(`SELECT data FROM ${key} ORDER BY ord`)
     state[key] = res.rows.map((r) => r.data)
   }
 
-  const pg = await pool.query('SELECT chave, data FROM pagamentos')
+  const pg = await query('SELECT chave, data FROM pagamentos')
   state.pagamentos = {}
   for (const r of pg.rows) state.pagamentos[r.chave] = r.data
 
-  const aud = await pool.query('SELECT data FROM auditoria ORDER BY ord')
+  const aud = await query('SELECT data FROM auditoria ORDER BY ord')
   state.auditoria = aud.rows.map((r) => r.data)
 
   return state
@@ -118,24 +118,24 @@ export async function saveState(state) {
 }
 
 export async function isEmpty() {
-  const res = await pool.query('SELECT COUNT(*)::int AS n FROM fornecedores')
+  const res = await query('SELECT COUNT(*)::int AS n FROM fornecedores')
   return res.rows[0].n === 0
 }
 
 // Single collection reads for the REST resource endpoints.
 export async function loadCollection(key) {
   if (key === 'auditoria') {
-    const res = await pool.query('SELECT data FROM auditoria ORDER BY ord')
+    const res = await query('SELECT data FROM auditoria ORDER BY ord')
     return res.rows.map((r) => r.data)
   }
   if (key === 'pagamentos') {
-    const res = await pool.query('SELECT chave, data FROM pagamentos')
+    const res = await query('SELECT chave, data FROM pagamentos')
     const out = {}
     for (const r of res.rows) out[r.chave] = r.data
     return out
   }
   if (!ARRAY_KEYS.includes(key)) return null
-  const res = await pool.query(`SELECT data FROM ${key} ORDER BY ord`)
+  const res = await query(`SELECT data FROM ${key} ORDER BY ord`)
   return res.rows.map((r) => r.data)
 }
 

@@ -2,14 +2,13 @@
   "name": "plataforma-cidade-imperial",
   "version": "1.0.0",
   "private": true,
-  "description": "Plataforma da Loja Cidade Imperial — full stack (PostgreSQL + API Node.js + web) em um único repositório",
+  "description": "Plataforma da Loja Cidade Imperial — full stack (PostgreSQL + API Node.js + web) em um único repositório, sem Docker",
   "scripts": {
-    "start": "docker compose up --build",
-    "stop": "docker compose down",
-    "reset": "docker compose down -v",
-    "build:web": "npm --prefix web ci && npm --prefix web run build",
-    "install:all": "npm --prefix web install && npm --prefix server install",
+    "start": "node scripts/start.mjs",
+    "build:web": "npm --prefix web install && npm --prefix web run build",
     "start:server": "node server/src/index.js",
-    "migrate": "node server/src/migrate.js"
+    "migrate": "node server/src/migrate.js",
+    "docker": "docker compose up --build",
+    "docker:stop": "docker compose down"
   }
 }

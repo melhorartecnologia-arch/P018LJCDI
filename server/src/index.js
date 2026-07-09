@@ -2,7 +2,7 @@ import express from 'express'
 import { existsSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { pool } from './db.js'
+import { query, driver } from './db.js'
 import { migrate } from './migrate.js'
 import { loadState, saveState, loadCollection, COLLECTION_KEYS } from './repo.js'
 
@@ -21,8 +21,8 @@ app.use(express.json({ limit: '8mb' }))
 
 app.get('/api/health', async (_req, res) => {
   try {
-    await pool.query('SELECT 1')
-    res.json({ ok: true })
+    await query('SELECT 1')
+    res.json({ ok: true, driver })
   } catch (err) {
     res.status(503).json({ ok: false, error: String(err) })
   }
@@ -81,7 +81,7 @@ app.use((err, _req, res, _next) => {
 migrate()
   .then(() => {
     app.listen(PORT, () => {
-      console.log(`[server] Plataforma Cidade Imperial ouvindo em http://localhost:${PORT}`)
+      console.log(`[server] Plataforma Cidade Imperial ouvindo em http://localhost:${PORT} (banco: ${driver})`)
       console.log(`[server] servindo web de ${WEB_DIST}`)
     })
   })
