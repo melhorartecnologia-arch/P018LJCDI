@@ -1864,6 +1864,17 @@ input::placeholder,textarea::placeholder{color:#b0a795}
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;perfilInicial&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;loja&quot;,&quot;fornecedor&quot;,&quot;revenda&quot;],&quot;default&quot;:&quot;loja&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Demonstração&quot;},&quot;exibirBannerPendencias&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Demonstração&quot;}}">
 class Component extends DCLogic {
+  // ── Persistência full-stack (API Node.js + PostgreSQL) ──────────────────
+  // Coleções persistentes; todo o resto do estado é de sessão/UI.
+  _persistKeys=['seq','fornecedores','contratos','produtos','revendas','pedidos','cotacoes','faturamentos','pagamentos','auditoria'];
+  _hydrate(){ this._hydrating=true;
+    fetch('/api/state').then(r=>r.ok?r.json():null).then(d=>{ if(d&&typeof d==='object'){ const patch={}; this._persistKeys.forEach(k=>{ if(d[k]!==undefined) patch[k]=d[k]; }); this.setState(patch); } })
+      .catch(()=>{}).finally(()=>{ this._hydrating=false; }); }
+  setState(update,cb){ super.setState(update,cb); if(!this._hydrating) this._schedulePersist(); }
+  _schedulePersist(){ clearTimeout(this._persistTimer); this._persistTimer=setTimeout(()=>this._persist(),450); }
+  _persist(){ const s=this.state||{}; const body={}; this._persistKeys.forEach(k=>{ body[k]=s[k]; });
+    fetch('/api/state',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).catch(()=>{}); }
+
   state = {
     logado:false, loginRole:'loja', loginEmail:'', loginSenha:'', loginErro:null,
     role:null, scr:null, fornAtivo:1, revAtivo:1,
@@ -2065,7 +2076,8 @@ class Component extends DCLogic {
     if(e.key==='Escape') this.lbClose();
     if(e.key==='ArrowRight') this.lbNav(1)();
     if(e.key==='ArrowLeft') this.lbNav(-1)(); };
-    document.addEventListener('keydown',this._kb); }
+    document.addEventListener('keydown',this._kb);
+    this._hydrate(); }
   componentWillUnmount(){ document.removeEventListener('keydown',this._kb); }
   encerrarCtr(id){ this._ec=this._ec||{}; if(!this._ec[id]) this._ec[id]=()=>{ const c=this.state.contratos.find(x=>x.id===id);
     this.setState(s=>({contratos:s.contratos.map(x=>x.id===id?{...x,vigente:false}:x)}));

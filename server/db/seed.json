@@ -1,0 +1,869 @@
+{
+  "seq": {
+    "ped": 47,
+    "cot": 9,
+    "forn": 5,
+    "prod": 11,
+    "rev": 5,
+    "ctr": 5,
+    "nf": 1210
+  },
+  "fornecedores": [
+    {
+      "id": 1,
+      "nome": "Distribuidora Serra Verde",
+      "cnpj": "12.345.678/0001-90",
+      "cidade": "Petrópolis/RJ",
+      "contato": "comercial@serraverde.com.br",
+      "ativo": true
+    },
+    {
+      "id": 2,
+      "nome": "Imperial Bebidas Ltda",
+      "cnpj": "98.765.432/0001-10",
+      "cidade": "Teresópolis/RJ",
+      "contato": "vendas@imperialbebidas.com.br",
+      "ativo": true
+    },
+    {
+      "id": 3,
+      "nome": "Atacadão Fluminense",
+      "cnpj": "45.678.912/0001-55",
+      "cidade": "Duque de Caxias/RJ",
+      "contato": "atendimento@atacadaoflu.com.br",
+      "ativo": true
+    },
+    {
+      "id": 4,
+      "nome": "Insumos & Barris RJ",
+      "cnpj": "33.222.111/0001-77",
+      "cidade": "Rio de Janeiro/RJ",
+      "contato": "contato@insumosbarris.com.br",
+      "ativo": false
+    }
+  ],
+  "contratos": [
+    {
+      "id": 1,
+      "fornecedorId": 1,
+      "numero": "CT-2026-001",
+      "royalty": 3,
+      "inicio": "01/01/2026",
+      "fim": "31/12/2026",
+      "vigente": true,
+      "historico": [
+        {
+          "data": "01/01/2026",
+          "de": "2%",
+          "para": "3%",
+          "usuario": "Ana Ribeiro (Loja)"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "fornecedorId": 2,
+      "numero": "CT-2026-002",
+      "royalty": 4,
+      "inicio": "01/02/2026",
+      "fim": "31/01/2027",
+      "vigente": true,
+      "historico": []
+    },
+    {
+      "id": 3,
+      "fornecedorId": 3,
+      "numero": "CT-2025-014",
+      "royalty": 2,
+      "inicio": "01/06/2025",
+      "fim": "31/05/2027",
+      "vigente": true,
+      "historico": [
+        {
+          "data": "01/03/2026",
+          "de": "2,5%",
+          "para": "2%",
+          "usuario": "Ana Ribeiro (Loja)"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "fornecedorId": 4,
+      "numero": "CT-2025-009",
+      "royalty": 3,
+      "inicio": "01/03/2025",
+      "fim": "28/02/2026",
+      "vigente": false,
+      "historico": []
+    }
+  ],
+  "produtos": [
+    {
+      "id": 1,
+      "codigo": "PRD-001",
+      "descricao": "Chopp Pilsen Imperial 30L",
+      "unidade": "Barril",
+      "preco": 620,
+      "fornecedorId": 1,
+      "ativo": true
+    },
+    {
+      "id": 2,
+      "codigo": "PRD-002",
+      "descricao": "Chopp Pilsen Imperial 50L",
+      "unidade": "Barril",
+      "preco": 890,
+      "fornecedorId": 1,
+      "ativo": true,
+      "precoHist": [
+        {
+          "data": "01/05/2026",
+          "de": "R$ 850,00",
+          "para": "R$ 890,00",
+          "usuario": "Ana Ribeiro (Loja)"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "codigo": "PRD-003",
+      "descricao": "Chopp IPA Imperial 30L",
+      "unidade": "Barril",
+      "preco": 740,
+      "fornecedorId": 1,
+      "ativo": true
+    },
+    {
+      "id": 4,
+      "codigo": "PRD-004",
+      "descricao": "Cerveja Puro Malte 600ml (cx 12)",
+      "unidade": "Caixa",
+      "preco": 148,
+      "fornecedorId": 2,
+      "ativo": true
+    },
+    {
+      "id": 5,
+      "codigo": "PRD-005",
+      "descricao": "Long Neck Premium 355ml (cx 24)",
+      "unidade": "Caixa",
+      "preco": 132,
+      "fornecedorId": 2,
+      "ativo": true
+    },
+    {
+      "id": 6,
+      "codigo": "PRD-006",
+      "descricao": "Growler Cerâmica 1L",
+      "unidade": "Unidade",
+      "preco": 89,
+      "fornecedorId": 2,
+      "ativo": true
+    },
+    {
+      "id": 7,
+      "codigo": "PRD-007",
+      "descricao": "Cilindro CO₂ 10kg (recarga)",
+      "unidade": "Unidade",
+      "preco": 210,
+      "fornecedorId": 3,
+      "ativo": true
+    },
+    {
+      "id": 8,
+      "codigo": "PRD-008",
+      "descricao": "Copo Caldereta personalizado (cx 12)",
+      "unidade": "Caixa",
+      "preco": 96,
+      "fornecedorId": 3,
+      "ativo": true
+    },
+    {
+      "id": 9,
+      "codigo": "PRD-009",
+      "descricao": "Bolacha de chopp (pct 500)",
+      "unidade": "Pacote",
+      "preco": 75,
+      "fornecedorId": 3,
+      "ativo": false
+    },
+    {
+      "id": 10,
+      "codigo": "PRD-010",
+      "descricao": "Barril Inox 30L (comodato)",
+      "unidade": "Unidade",
+      "preco": 450,
+      "fornecedorId": 4,
+      "ativo": false
+    }
+  ],
+  "revendas": [
+    {
+      "id": 1,
+      "nome": "Bar do Imperador",
+      "cnpj": "11.111.222/0001-33",
+      "cidade": "Petrópolis/RJ",
+      "ativo": true,
+      "visibilidade": [
+        1,
+        2,
+        3
+      ],
+      "prodBloq": [],
+      "email": "compras@bardoimperador.com.br",
+      "ultimoAcesso": "09/07/2026 08:14"
+    },
+    {
+      "id": 2,
+      "nome": "Empório Colonial",
+      "cnpj": "22.333.444/0001-55",
+      "cidade": "Itaipava/RJ",
+      "ativo": true,
+      "visibilidade": [
+        1,
+        2
+      ],
+      "prodBloq": [
+        6
+      ],
+      "email": "pedidos@emporiocolonial.com.br",
+      "ultimoAcesso": "08/07/2026 10:41"
+    },
+    {
+      "id": 3,
+      "nome": "Choperia Alto da Serra",
+      "cnpj": "44.555.666/0001-77",
+      "cidade": "Teresópolis/RJ",
+      "ativo": true,
+      "visibilidade": [
+        1,
+        3
+      ],
+      "prodBloq": [],
+      "email": "adm@choperiaaltodaserra.com.br",
+      "ultimoAcesso": "07/07/2026 09:10"
+    },
+    {
+      "id": 4,
+      "nome": "Adega Quitandinha",
+      "cnpj": "55.666.777/0001-88",
+      "cidade": "Petrópolis/RJ",
+      "ativo": false,
+      "visibilidade": [
+        2
+      ],
+      "prodBloq": [],
+      "email": "contato@adegaquitandinha.com.br",
+      "ultimoAcesso": "12/05/2026 15:22"
+    }
+  ],
+  "pedidos": [
+    {
+      "id": "PED-0044",
+      "revendaId": 1,
+      "fornecedorId": null,
+      "cotacaoId": null,
+      "itens": [
+        {
+          "produtoId": 1,
+          "qtd": 2,
+          "preco": 620,
+          "st": "pendente"
+        },
+        {
+          "produtoId": 8,
+          "qtd": 3,
+          "preco": 96,
+          "st": "pendente"
+        }
+      ],
+      "total": 1528,
+      "status": "pendente",
+      "justificativa": null,
+      "data": "09/07/2026",
+      "trilha": [
+        {
+          "quando": "09/07/2026 08:15",
+          "usuario": "Bar do Imperador (Revenda)",
+          "acao": "Pedido criado pela revenda — aguardando aprovação da Loja"
+        }
+      ]
+    },
+    {
+      "id": "PED-0045",
+      "revendaId": 2,
+      "fornecedorId": null,
+      "cotacaoId": null,
+      "itens": [
+        {
+          "produtoId": 5,
+          "qtd": 8,
+          "preco": 132,
+          "st": "pendente"
+        }
+      ],
+      "total": 1056,
+      "status": "pendente",
+      "justificativa": null,
+      "data": "08/07/2026",
+      "trilha": [
+        {
+          "quando": "08/07/2026 10:44",
+          "usuario": "Empório Colonial (Revenda)",
+          "acao": "Pedido criado pela revenda — aguardando aprovação da Loja"
+        }
+      ]
+    },
+    {
+      "id": "PED-0046",
+      "revendaId": 3,
+      "fornecedorId": null,
+      "cotacaoId": null,
+      "itens": [
+        {
+          "produtoId": 3,
+          "qtd": 6,
+          "preco": 740,
+          "st": "rejeitado",
+          "justif": "Limite de crédito da revenda excedido no período."
+        }
+      ],
+      "total": 4440,
+      "status": "rejeitado",
+      "justificativa": "Limite de crédito da revenda excedido no período.",
+      "data": "07/07/2026",
+      "trilha": [
+        {
+          "quando": "07/07/2026 09:12",
+          "usuario": "Choperia Alto da Serra (Revenda)",
+          "acao": "Pedido criado pela revenda"
+        },
+        {
+          "quando": "07/07/2026 15:40",
+          "usuario": "Ana Ribeiro (Loja)",
+          "acao": "Pedido rejeitado — Limite de crédito da revenda excedido no período."
+        }
+      ]
+    },
+    {
+      "id": "PED-0043",
+      "revendaId": 3,
+      "fornecedorId": null,
+      "cotacaoId": "COT-008",
+      "itens": [
+        {
+          "produtoId": 2,
+          "qtd": 2,
+          "preco": 890,
+          "st": "cotacao",
+          "cotacaoId": "COT-008"
+        },
+        {
+          "produtoId": 1,
+          "qtd": 1,
+          "preco": 620,
+          "st": "cotacao",
+          "cotacaoId": "COT-008"
+        }
+      ],
+      "total": 2400,
+      "status": "em cotação",
+      "justificativa": null,
+      "data": "05/07/2026",
+      "trilha": [
+        {
+          "quando": "05/07/2026 09:30",
+          "usuario": "Choperia Alto da Serra (Revenda)",
+          "acao": "Pedido criado pela revenda"
+        },
+        {
+          "quando": "05/07/2026 14:20",
+          "usuario": "Ana Ribeiro (Loja)",
+          "acao": "Pedido aprovado pela Loja"
+        },
+        {
+          "quando": "05/07/2026 16:05",
+          "usuario": "Ana Ribeiro (Loja)",
+          "acao": "Cotação COT-008 aberta com 3 fornecedores"
+        }
+      ]
+    },
+    {
+      "id": "PED-0042",
+      "revendaId": 2,
+      "fornecedorId": 2,
+      "cotacaoId": null,
+      "itens": [
+        {
+          "produtoId": 4,
+          "qtd": 15,
+          "preco": 148,
+          "st": "direto",
+          "fornecedorId": 2
+        },
+        {
+          "produtoId": 6,
+          "qtd": 5,
+          "preco": 89,
+          "st": "direto",
+          "fornecedorId": 2
+        }
+      ],
+      "total": 2665,
+      "status": "encaminhado",
+      "justificativa": null,
+      "data": "04/07/2026",
+      "trilha": [
+        {
+          "quando": "04/07/2026 08:50",
+          "usuario": "Empório Colonial (Revenda)",
+          "acao": "Pedido criado pela revenda"
+        },
+        {
+          "quando": "04/07/2026 11:10",
+          "usuario": "Ana Ribeiro (Loja)",
+          "acao": "Pedido aprovado pela Loja"
+        },
+        {
+          "quando": "04/07/2026 11:12",
+          "usuario": "Ana Ribeiro (Loja)",
+          "acao": "Encaminhado (envio direto) a Imperial Bebidas Ltda"
+        }
+      ]
+    },
+    {
+      "id": "PED-0041",
+      "revendaId": 1,
+      "fornecedorId": 1,
+      "cotacaoId": null,
+      "itens": [
+        {
+          "produtoId": 1,
+          "qtd": 4,
+          "preco": 620,
+          "st": "faturado",
+          "fornecedorId": 1
+        },
+        {
+          "produtoId": 3,
+          "qtd": 1,
+          "preco": 740,
+          "st": "faturado",
+          "fornecedorId": 1
+        }
+      ],
+      "total": 3220,
+      "status": "faturado",
+      "justificativa": null,
+      "data": "01/07/2026",
+      "trilha": [
+        {
+          "quando": "01/07/2026 09:00",
+          "usuario": "Bar do Imperador (Revenda)",
+          "acao": "Pedido criado pela revenda"
+        },
+        {
+          "quando": "01/07/2026 10:30",
+          "usuario": "Ana Ribeiro (Loja)",
+          "acao": "Pedido aprovado e encaminhado (envio direto) a Distribuidora Serra Verde"
+        },
+        {
+          "quando": "03/07/2026 15:45",
+          "usuario": "Distribuidora Serra Verde (Fornecedor)",
+          "acao": "Faturado (NF-1207) diretamente à revenda — R$ 3.220,00"
+        }
+      ]
+    },
+    {
+      "id": "PED-0040",
+      "revendaId": 1,
+      "fornecedorId": 3,
+      "cotacaoId": "COT-007",
+      "itens": [
+        {
+          "produtoId": 7,
+          "qtd": 8,
+          "preco": 210,
+          "st": "faturado",
+          "fornecedorId": 3,
+          "cotacaoId": "COT-007",
+          "precoNeg": 1600
+        },
+        {
+          "produtoId": 8,
+          "qtd": 6,
+          "preco": 96,
+          "st": "faturado",
+          "fornecedorId": 3,
+          "cotacaoId": "COT-007",
+          "precoNeg": 612
+        }
+      ],
+      "total": 2256,
+      "status": "faturado",
+      "justificativa": null,
+      "data": "28/05/2026",
+      "trilha": [
+        {
+          "quando": "28/05/2026 10:00",
+          "usuario": "Bar do Imperador (Revenda)",
+          "acao": "Pedido criado pela revenda"
+        },
+        {
+          "quando": "29/05/2026 09:15",
+          "usuario": "Ana Ribeiro (Loja)",
+          "acao": "Pedido aprovado · cotação COT-007 aberta com 2 fornecedores"
+        },
+        {
+          "quando": "06/06/2026 11:00",
+          "usuario": "Ana Ribeiro (Loja)",
+          "acao": "Pedido gerado para Atacadão Fluminense (vencedor da COT-007)"
+        },
+        {
+          "quando": "24/06/2026 14:20",
+          "usuario": "Atacadão Fluminense (Fornecedor)",
+          "acao": "Faturado (NF-1204) diretamente à revenda — R$ 2.212,00"
+        }
+      ]
+    },
+    {
+      "id": "PED-0039",
+      "revendaId": 3,
+      "fornecedorId": 1,
+      "cotacaoId": null,
+      "itens": [
+        {
+          "produtoId": 2,
+          "qtd": 3,
+          "preco": 890,
+          "st": "faturado",
+          "fornecedorId": 1
+        }
+      ],
+      "total": 2670,
+      "status": "faturado",
+      "justificativa": null,
+      "data": "15/06/2026",
+      "trilha": [
+        {
+          "quando": "15/06/2026 08:40",
+          "usuario": "Choperia Alto da Serra (Revenda)",
+          "acao": "Pedido criado pela revenda"
+        },
+        {
+          "quando": "15/06/2026 13:00",
+          "usuario": "Ana Ribeiro (Loja)",
+          "acao": "Pedido aprovado e encaminhado (envio direto) a Distribuidora Serra Verde"
+        },
+        {
+          "quando": "18/06/2026 16:30",
+          "usuario": "Distribuidora Serra Verde (Fornecedor)",
+          "acao": "Faturado (NF-1201) diretamente à revenda — R$ 2.670,00"
+        }
+      ]
+    },
+    {
+      "id": "PED-0038",
+      "revendaId": 2,
+      "fornecedorId": 2,
+      "cotacaoId": null,
+      "itens": [
+        {
+          "produtoId": 4,
+          "qtd": 20,
+          "preco": 148,
+          "st": "faturado",
+          "fornecedorId": 2
+        },
+        {
+          "produtoId": 5,
+          "qtd": 10,
+          "preco": 132,
+          "st": "faturado",
+          "fornecedorId": 2
+        }
+      ],
+      "total": 4280,
+      "status": "faturado",
+      "justificativa": null,
+      "data": "10/06/2026",
+      "trilha": [
+        {
+          "quando": "10/06/2026 09:20",
+          "usuario": "Empório Colonial (Revenda)",
+          "acao": "Pedido criado pela revenda"
+        },
+        {
+          "quando": "10/06/2026 14:05",
+          "usuario": "Ana Ribeiro (Loja)",
+          "acao": "Pedido aprovado e encaminhado (envio direto) a Imperial Bebidas Ltda"
+        },
+        {
+          "quando": "12/06/2026 10:00",
+          "usuario": "Imperial Bebidas Ltda (Fornecedor)",
+          "acao": "Faturado (NF-1198) diretamente à revenda — R$ 4.280,00"
+        }
+      ]
+    }
+  ],
+  "cotacoes": [
+    {
+      "id": "COT-008",
+      "pedidoId": "PED-0043",
+      "convidados": [
+        1,
+        2,
+        3
+      ],
+      "prazo": "15/07/2026",
+      "status": "aguardando propostas",
+      "vencedorId": null,
+      "justificativa": null,
+      "motivoCancel": null,
+      "itens": [
+        {
+          "produtoId": 2,
+          "qtd": 2,
+          "preco": 890
+        },
+        {
+          "produtoId": 1,
+          "qtd": 1,
+          "preco": 620
+        }
+      ],
+      "vencItens": {},
+      "propostas": [
+        {
+          "fornecedorId": 1,
+          "preco": 2180,
+          "itens": {
+            "1": 580,
+            "2": 800
+          },
+          "prazoEntrega": "5 dias úteis",
+          "validade": "25/07/2026",
+          "condicoes": "Boleto 28 dias",
+          "quando": "07/07/2026"
+        },
+        {
+          "fornecedorId": 3,
+          "preco": 2240,
+          "itens": {
+            "1": 600,
+            "2": 820
+          },
+          "prazoEntrega": "3 dias úteis",
+          "validade": "31/07/2026",
+          "condicoes": "À vista com 2% de desconto",
+          "quando": "06/07/2026"
+        }
+      ],
+      "historico": [
+        {
+          "quando": "05/07/2026 16:05",
+          "usuario": "Ana Ribeiro (Loja)",
+          "acao": "Cotação aberta · convidados: Distribuidora Serra Verde, Imperial Bebidas Ltda, Atacadão Fluminense"
+        },
+        {
+          "quando": "06/07/2026 11:20",
+          "usuario": "Atacadão Fluminense",
+          "acao": "Proposta registrada por Atacadão Fluminense"
+        },
+        {
+          "quando": "07/07/2026 10:02",
+          "usuario": "Distribuidora Serra Verde",
+          "acao": "Proposta registrada por Distribuidora Serra Verde"
+        }
+      ]
+    },
+    {
+      "id": "COT-007",
+      "pedidoId": "PED-0040",
+      "convidados": [
+        1,
+        3
+      ],
+      "prazo": "05/06/2026",
+      "status": "encerrada",
+      "vencedorId": 3,
+      "justificativa": null,
+      "motivoCancel": null,
+      "itens": [
+        {
+          "produtoId": 7,
+          "qtd": 8,
+          "preco": 210
+        },
+        {
+          "produtoId": 8,
+          "qtd": 6,
+          "preco": 96
+        }
+      ],
+      "vencItens": {
+        "7": 3,
+        "8": 3
+      },
+      "propostas": [
+        {
+          "fornecedorId": 1,
+          "preco": 2350,
+          "itens": {
+            "7": 215,
+            "8": 105
+          },
+          "prazoEntrega": "4 dias úteis",
+          "validade": "20/06/2026",
+          "condicoes": "Boleto 28 dias",
+          "quando": "03/06/2026"
+        },
+        {
+          "fornecedorId": 3,
+          "preco": 2212,
+          "itens": {
+            "7": 200,
+            "8": 102
+          },
+          "prazoEntrega": "6 dias úteis",
+          "validade": "30/06/2026",
+          "condicoes": "Boleto 21 dias",
+          "quando": "04/06/2026"
+        }
+      ],
+      "historico": [
+        {
+          "quando": "29/05/2026 09:15",
+          "usuario": "Ana Ribeiro (Loja)",
+          "acao": "Cotação aberta · convidados: Distribuidora Serra Verde, Atacadão Fluminense"
+        },
+        {
+          "quando": "03/06/2026 15:00",
+          "usuario": "Distribuidora Serra Verde",
+          "acao": "Proposta registrada"
+        },
+        {
+          "quando": "04/06/2026 09:40",
+          "usuario": "Atacadão Fluminense",
+          "acao": "Proposta registrada"
+        },
+        {
+          "quando": "06/06/2026 11:00",
+          "usuario": "Ana Ribeiro (Loja)",
+          "acao": "Proposta vencedora: Atacadão Fluminense (R$ 2.212,00) — menor preço"
+        }
+      ]
+    }
+  ],
+  "faturamentos": [
+    {
+      "id": "NF-1207",
+      "pedidoId": "PED-0041",
+      "fornecedorId": 1,
+      "revendaId": 1,
+      "cotacaoId": null,
+      "valor": 3220,
+      "data": "03/07/2026",
+      "competencia": "07/2026",
+      "royaltyPct": 3,
+      "royaltyValor": 96.6
+    },
+    {
+      "id": "NF-1204",
+      "pedidoId": "PED-0040",
+      "fornecedorId": 3,
+      "revendaId": 1,
+      "cotacaoId": "COT-007",
+      "valor": 2212,
+      "data": "24/06/2026",
+      "competencia": "06/2026",
+      "royaltyPct": 2,
+      "royaltyValor": 44.24
+    },
+    {
+      "id": "NF-1201",
+      "pedidoId": "PED-0039",
+      "fornecedorId": 1,
+      "revendaId": 3,
+      "cotacaoId": null,
+      "valor": 2670,
+      "data": "18/06/2026",
+      "competencia": "06/2026",
+      "royaltyPct": 3,
+      "royaltyValor": 80.1
+    },
+    {
+      "id": "NF-1198",
+      "pedidoId": "PED-0038",
+      "fornecedorId": 2,
+      "revendaId": 2,
+      "cotacaoId": null,
+      "valor": 4280,
+      "data": "12/06/2026",
+      "competencia": "06/2026",
+      "royaltyPct": 4,
+      "royaltyValor": 171.2
+    }
+  ],
+  "pagamentos": {
+    "06/2026-2": {
+      "status": "pago",
+      "data": "08/07/2026",
+      "valor": 171.2,
+      "comprovante": "PIX-88213",
+      "cobranca": true
+    },
+    "06/2026-1": {
+      "status": "em atraso",
+      "cobranca": true
+    },
+    "06/2026-3": {
+      "status": "a pagar"
+    }
+  },
+  "auditoria": [
+    {
+      "quando": "09/07/2026 08:15",
+      "usuario": "Bar do Imperador (Revenda)",
+      "acao": "Novo pedido criado",
+      "detalhe": "PED-0044 · R$ 1.528,00"
+    },
+    {
+      "quando": "08/07/2026 17:02",
+      "usuario": "Ana Ribeiro (Loja)",
+      "acao": "Pagamento de royalty registrado",
+      "detalhe": "06/2026 · Imperial Bebidas Ltda · R$ 171,20"
+    },
+    {
+      "quando": "08/07/2026 10:44",
+      "usuario": "Empório Colonial (Revenda)",
+      "acao": "Novo pedido criado",
+      "detalhe": "PED-0045 · R$ 1.056,00"
+    },
+    {
+      "quando": "07/07/2026 15:40",
+      "usuario": "Ana Ribeiro (Loja)",
+      "acao": "Rejeição de pedido",
+      "detalhe": "PED-0046 · Limite de crédito excedido"
+    },
+    {
+      "quando": "06/07/2026 11:20",
+      "usuario": "Atacadão Fluminense (Fornecedor)",
+      "acao": "Registro de proposta",
+      "detalhe": "COT-008 · R$ 2.240,00"
+    },
+    {
+      "quando": "05/07/2026 16:05",
+      "usuario": "Ana Ribeiro (Loja)",
+      "acao": "Abertura de cotação",
+      "detalhe": "COT-008 · pedido PED-0043"
+    },
+    {
+      "quando": "01/03/2026 09:00",
+      "usuario": "Ana Ribeiro (Loja)",
+      "acao": "Alteração de royalty",
+      "detalhe": "CT-2025-014 · 2,5% → 2%"
+    }
+  ]
+}

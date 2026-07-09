@@ -1,0 +1,16 @@
+{
+  "name": "plataforma-cidade-imperial-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "API Node.js + PostgreSQL da Plataforma Cidade Imperial",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "migrate": "node src/migrate.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "pg": "^8.13.1"
+  }
+}

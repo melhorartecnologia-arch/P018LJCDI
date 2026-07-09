@@ -4,13 +4,30 @@ Portal B2B da **Cervejaria Cidade Imperial** — a "Plataforma da Loja" que cone
 a Loja (dona da plataforma), seus **Fornecedores** e as **Revendas**, cobrindo o
 fluxo completo de catálogo, pedidos, cotações, faturamento e royalties.
 
-Esta é a implementação da tela **Plataforma Cidade Imperial**, exportada do
-Claude Design e empacotada aqui como uma aplicação web autônoma e publicável.
+Aplicação **full-stack** em um único repositório: **PostgreSQL** + **API Node.js**
++ **web**, com persistência real e início por **um único comando**.
+
+## Início rápido (um comando)
+
+Pré-requisito: Docker.
+
+```bash
+docker compose up --build
+```
+
+Isso sobe o banco PostgreSQL, aplica o schema, carrega os dados iniciais, inicia
+a API Node.js e serve a interface. Depois abra:
+
+```
+http://localhost:3000
+```
+
+O login aceita qualquer e-mail/senha (demonstração). Para parar: `docker compose down`.
+Para zerar o banco (apagar o volume de dados): `docker compose down -v`.
 
 ## O que a plataforma faz
 
-Aplicação de página única com **login por perfil** e três perfis de acesso, cada
-um com sua própria navegação e permissões:
+Aplicação de página única com **login por perfil** e três perfis de acesso:
 
 | Perfil | Visão principal |
 | --- | --- |
@@ -18,70 +35,92 @@ um com sua própria navegação e permissões:
 | **Fornecedor** | Pedidos recebidos, cotações convidadas, meus faturamentos e royalties devidos. |
 | **Revenda** | Catálogo de produtos homologados (com carrinho), envio de pedidos para aprovação e acompanhamento dos meus pedidos. |
 
-Destaques do fluxo: aprovação de pedido por item, atendimento combinável
-(estoque da Loja, envio direto ou cotação no mesmo pedido), cotações com
-propostas por fornecedor e escolha de vencedor, cálculo automático de royalty
-por contrato, trilha de auditoria e visibilidade de produto por revenda.
+Todas as alterações (aprovar/rejeitar pedidos, abrir cotações, registrar
+propostas, faturar, pagar royalties, cadastrar fornecedores/produtos/revendas,
+trilha de auditoria, etc.) são **gravadas no PostgreSQL** e sobrevivem a
+reinícios.
 
-> Demonstração: o login aceita qualquer e-mail/senha e todos os dados são
-> fictícios, mantidos em memória (recarregar a página restaura o estado inicial).
+## Arquitetura
 
-## Como funciona (arquitetura)
+Monorepo com três partes:
 
-O aplicativo é um documento **Claude Design** interpretado em tempo de execução
-pelo `dc-runtime`:
-
-- **`index.html`** — contém a marcação `<x-dc>` (as telas) e o bloco
-  `<script data-dc-script>` com a classe `Component extends DCLogic` (todo o
-  estado, dados e regras de negócio).
-- **`public/support.js`** — o `dc-runtime`, que compila as telas + a lógica e
-  renderiza a interface sobre o React.
-- **`public/vendor/react*.js`** — React e ReactDOM 18.3.1 (UMD), carregados como
-  globais antes do `support.js`, sem CDN em tempo de execução.
-- **`public/img/`** — imagens dos produtos.
-- **`design/Plataforma Cidade Imperial.dc.html`** — a exportação original e
-  intacta do Claude Design (fonte de verdade para reeditar no Design). O
-  `index.html` é essa mesma exportação com os `<script>` do React adicionados ao
-  `<head>`.
-
-## Rodando localmente
-
-Pré-requisitos: Node.js 18+.
-
-```bash
-npm install        # instala dependências e copia o React UMD para public/vendor
-npm run dev        # servidor de desenvolvimento em http://localhost:5173
+```
+docker-compose.yml        # sobe db + app com um comando
+Dockerfile                # build multi-stage: compila a web e empacota a API
+web/                      # interface (Claude Design + dc-runtime sobre React 18)
+server/                   # API Node.js/Express + acesso ao PostgreSQL
+design/                   # exportação original do Claude Design (fonte de verdade da UI)
 ```
 
-## Build de produção
+### Banco de dados (`server/db/`)
+- `schema.sql` — tabelas relacionais para as 10 coleções do domínio
+  (fornecedores, contratos, produtos, revendas, pedidos, cotações,
+  faturamentos, pagamentos, auditoria e sequências). Cada tabela tem colunas
+  tipadas (para consultas/relatórios em SQL) **e** uma coluna `data` JSONB que
+  guarda a entidade completa sem perdas; `ord` preserva a ordem dos itens.
+- `seed.json` — dados iniciais de demonstração, carregados automaticamente
+  quando o banco está vazio.
+
+### API (`server/src/`)
+- `GET  /api/health` — verificação de saúde.
+- `GET  /api/state` — estado completo da aplicação (usado para hidratar a web).
+- `PUT  /api/state` — grava o estado completo, de forma transacional.
+- `GET  /api/:recurso` — leitura por recurso: `fornecedores`, `contratos`,
+  `produtos`, `revendas`, `pedidos`, `cotacoes`, `faturamentos`, `pagamentos`,
+  `auditoria`.
+- Serve os arquivos estáticos da web (build de `web/`).
+- Na inicialização, aguarda o banco, aplica o schema e carrega o seed se necessário.
+
+### Web (`web/`)
+- A interface do Claude Design, renderizada em tempo de execução pelo
+  `dc-runtime` (`public/support.js`) sobre **React 18.3.1** (UMD, sem CDN em
+  runtime). Ao carregar, hidrata o estado a partir de `GET /api/state`; após cada
+  alteração, persiste em `PUT /api/state` (com debounce). Sem a API, degrada
+  graciosamente para dados locais de demonstração.
+
+## Desenvolvimento sem Docker
+
+Requer Node.js 18+ e um PostgreSQL acessível.
 
 ```bash
-npm run build      # gera o site estático em dist/
-npm run preview    # serve o build de dist/ para conferência
+# 1. Banco: crie um banco e exporte a conexão
+export DATABASE_URL="postgres://usuario:senha@localhost:5432/cidadeimperial"
+
+# 2. Web (compila para web/dist, servido pela API)
+npm run build:web
+
+# 3. Servidor (aplica schema + seed e inicia em http://localhost:3000)
+npm --prefix server install
+npm run start:server
 ```
 
-`dist/` é um site totalmente estático (HTML + JS + imagens) e pode ser publicado
-em qualquer hospedagem estática (GitHub Pages, Netlify, Vercel, S3, Nginx, etc.).
-O `base` relativo (`vite.config.js`) permite hospedar na raiz do domínio ou em um
-sub-caminho.
+Variáveis de ambiente aceitas pela API: `DATABASE_URL` (ou `PGHOST`, `PGPORT`,
+`PGUSER`, `PGPASSWORD`, `PGDATABASE`), `PORT` (padrão 3000) e `WEB_DIST`
+(diretório do build da web).
 
 ## Estrutura do projeto
 
 ```
-index.html                 # app (marcação <x-dc> + lógica dc-script) + React no <head>
-vite.config.js             # dev server e build estático
-scripts/sync-vendor.mjs    # copia o React UMD de node_modules para public/vendor (postinstall)
-public/
-  support.js               # dc-runtime
-  vendor/react*.js         # React + ReactDOM 18.3.1 (UMD)
-  img/                     # imagens de produtos
+docker-compose.yml
+Dockerfile
+package.json                     # scripts orquestradores (start = docker compose up)
+server/
+  package.json
+  db/{schema.sql, seed.json}
+  src/{index.js, db.js, repo.js, migrate.js}
+web/
+  index.html                     # app (dc) + React + hidratação/persistência via API
+  vite.config.js
+  public/{support.js, vendor/react*, img/}
+  scripts/sync-vendor.mjs
 design/
   Plataforma Cidade Imperial.dc.html   # exportação original do Claude Design
 ```
 
 ## Notas
 
-- As fontes (Cinzel e Instrument Sans) são carregadas do Google Fonts; sem
-  acesso à rede, a interface recorre graciosamente às fontes do sistema.
-- Para reeditar no Claude Design, use o arquivo em `design/` e regenere o
-  `index.html` reinserindo os `<script>` do React/`support.js` no `<head>`.
+- As fontes (Cinzel e Instrument Sans) vêm do Google Fonts; sem rede, a
+  interface recorre às fontes do sistema.
+- Toda a lógica de negócio permanece em um único lugar (a camada de
+  apresentação/`dc-script`), e o PostgreSQL é o sistema de persistência — o que
+  mantém a fidelidade total à tela desenhada e evita duplicação de regras.
