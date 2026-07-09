@@ -88,6 +88,12 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         {{notifCount}} pedidos aguardando aprovação
       </div>
     </sc-if>
+    <div onClick="{{abrirAjuda}}" title="Como usar esta tela — tutorial em vídeo e passo a passo" style="display:flex;align-items:center;gap:8px;background:#272525;border-radius:9px;padding:6px 12px 6px 7px;cursor:pointer;flex:none" style-hover="background:#3a3735">
+      <span style="position:relative;width:27px;height:19px;border-radius:4px;background:linear-gradient(135deg,#cfa055,#B38335 60%,#8a6428);display:flex;align-items:center;justify-content:center;flex:none">
+        <span style="width:0;height:0;border-style:solid;border-width:5px 0 5px 8px;border-color:transparent transparent transparent #fff;margin-left:1px"></span>
+      </span>
+      <span style="font-size:12px;font-weight:700;color:#fff;white-space:nowrap">Como usar</span>
+    </div>
     <div style="display:flex;align-items:center;gap:9px;padding-left:4px">
       <div style="width:33px;height:33px;border-radius:50%;background:#272525;color:#e3bf7e;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex:none">{{userIni}}</div>
       <div style="max-width:170px">
@@ -1836,6 +1842,63 @@ input::placeholder,textarea::placeholder{color:#b0a795}
   </div>
 </sc-if>
 
+<sc-if value="{{mAjuda}}" hint-placeholder-val="{{false}}">
+  <div style="position:fixed;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;padding:24px;box-sizing:border-box">
+    <div onClick="{{ajClose}}" style="position:absolute;inset:0;background:rgba(24,22,20,.55)"></div>
+    <div style="position:relative;width:640px;max-width:96vw;max-height:92vh;overflow-y:auto;background:#fff;border-radius:16px;box-shadow:0 24px 70px rgba(24,22,20,.35);animation:fadeUp .2s ease">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 20px;border-bottom:1px solid #f1ece2;position:sticky;top:0;background:#fff;z-index:2">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="font-size:10px;font-weight:700;letter-spacing:.09em;color:#8a5a12;background:#faf3e4;border:1px solid #e6cf9e;border-radius:6px;padding:3px 8px">GUIA DA ROTINA</span>
+          <div style="font-size:15px;font-weight:700;color:#272525">{{ajRotina}}</div>
+        </div>
+        <div onClick="{{ajClose}}" title="Fechar (Esc)" style="font-size:20px;line-height:1;color:#a89f90;cursor:pointer;padding:2px 9px;border-radius:8px" style-hover="background:#f7f3ea">×</div>
+      </div>
+      <div style="padding:18px 20px 22px">
+        <div onClick="{{ajTogglePlay}}" style="position:relative;border-radius:13px;overflow:hidden;cursor:pointer;background:linear-gradient(135deg,#3a2f1c,#272525 60%,#1c1a18);aspect-ratio:16/9;display:flex;align-items:center;justify-content:center">
+          <div style="position:absolute;top:12px;left:13px;display:flex;align-items:center;gap:6px;font-size:10px;font-weight:700;letter-spacing:.08em;color:#e3bf7e"><span style="width:7px;height:7px;border-radius:50%;background:#B38335;display:inline-block"></span>TUTORIAL EM VÍDEO</div>
+          <div style="position:absolute;top:11px;right:13px;font-size:11px;font-weight:600;color:rgba(255,255,255,.5)">{{ajDur}}</div>
+          <div style="width:64px;height:64px;border-radius:50%;background:rgba(179,131,53,.92);display:flex;align-items:center;justify-content:center;box-shadow:0 10px 30px rgba(0,0,0,.35)">
+            <sc-if value="{{ajNotPlay}}"><span style="width:0;height:0;border-style:solid;border-width:11px 0 11px 18px;border-color:transparent transparent transparent #fff;margin-left:4px"></span></sc-if>
+            <sc-if value="{{ajPlay}}"><span style="display:flex;gap:5px"><span style="width:5px;height:22px;background:#fff;border-radius:2px"></span><span style="width:5px;height:22px;background:#fff;border-radius:2px"></span></span></sc-if>
+          </div>
+          <div style="position:absolute;left:0;right:0;bottom:0;padding:28px 15px 12px;background:linear-gradient(180deg,transparent,rgba(20,18,16,.85))">
+            <div style="font-size:12.5px;color:#fff;font-weight:500;line-height:1.4;min-height:34px">{{ajPassoAtual}}</div>
+            <div style="display:flex;align-items:center;gap:9px;margin-top:8px">
+              <div style="flex:1;height:4px;background:rgba(255,255,255,.22);border-radius:3px;overflow:hidden"><div style="height:100%;background:linear-gradient(90deg,#cfa055,#B38335);width:{{ajProg}}%"></div></div>
+              <div style="font-size:10.5px;font-weight:600;color:rgba(255,255,255,.72);white-space:nowrap">Passo {{ajStepNum}}/{{ajTotal}}</div>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:11px;margin-top:12px">
+          <div onClick="{{ajTogglePlay}}" style="display:flex;align-items:center;gap:8px;background:#B38335;color:#fff;border-radius:9px;padding:9px 15px;font-size:12.5px;font-weight:700;cursor:pointer;flex:none" style-hover="background:#9a6f2b">
+            <sc-if value="{{ajNotPlay}}"><span style="width:0;height:0;border-style:solid;border-width:5px 0 5px 8px;border-color:transparent transparent transparent #fff"></span></sc-if>
+            <sc-if value="{{ajPlay}}"><span style="display:flex;gap:3px"><span style="width:3px;height:11px;background:#fff;border-radius:1px"></span><span style="width:3px;height:11px;background:#fff;border-radius:1px"></span></span></sc-if>
+            {{ajPlayLabel}}
+          </div>
+          <div style="font-size:12px;color:#8a8378;line-height:1.4">{{ajResumo}}</div>
+        </div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;margin:20px 2px 10px">Passo a passo</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <sc-for list="{{ajPassos}}" as="p" hint-placeholder-count="5">
+            <div onClick="{{p.go}}" style="display:flex;align-items:flex-start;gap:11px;border:1px solid {{p.bd}};background:{{p.bg}};border-radius:10px;padding:11px 13px;cursor:pointer" style-hover="border-color:#e6cf9e">
+              <div style="width:22px;height:22px;border-radius:50%;background:{{p.numBg}};color:{{p.numFg}};font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none;margin-top:1px">{{p.n}}</div>
+              <div style="font-size:13px;line-height:1.45;color:{{p.fg}};font-weight:{{p.fw}}">{{p.txt}}</div>
+            </div>
+          </sc-for>
+        </div>
+        <sc-if value="{{ajTemDicas}}" hint-placeholder-val="{{false}}">
+          <div style="margin-top:18px;background:#f7f4ee;border:1px solid #eae3d6;border-radius:11px;padding:13px 15px">
+            <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#8a6428;margin-bottom:8px">💡 Dicas</div>
+            <sc-for list="{{ajDicas}}" as="d" hint-placeholder-count="2">
+              <div style="display:flex;gap:8px;font-size:12.5px;color:#5a5349;line-height:1.45;margin-bottom:5px"><span style="color:#B38335">•</span><span>{{d.txt}}</span></div>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
 <sc-if value="{{temLb}}" hint-placeholder-val="{{false}}">
   <div style="position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center">
     <div onClick="{{lbClose}}" style="position:absolute;inset:0;background:rgba(24,22,20,.88)"></div>
@@ -1873,11 +1936,12 @@ class Component extends DCLogic {
   setState(update,cb){ super.setState(update,cb); if(!this._hydrating) this._schedulePersist(); }
   _schedulePersist(){ clearTimeout(this._persistTimer); this._persistTimer=setTimeout(()=>this._persist(),450); }
   _persist(){ const s=this.state||{}; const body={}; this._persistKeys.forEach(k=>{ body[k]=s[k]; });
+    const sig=JSON.stringify(body); if(sig===this._lastSig) return; this._lastSig=sig; // só grava se os dados mudaram
     fetch('/api/state',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).catch(()=>{}); }
 
   state = {
     logado:false, loginRole:'loja', loginEmail:'', loginSenha:'', loginErro:null,
-    role:null, scr:null, fornAtivo:1, revAtivo:1,
+    role:null, scr:null, fornAtivo:1, revAtivo:1, ajudaStep:0, ajudaPlay:false,
     selPed:null, selCot:null, selForn:null, selProd:null, selRev:null, modal:null, form:{}, pendVenc:null, filtroStatusProd:'todos', buscaRev:'', buscaPed:'', filtroRev:'0',
     busca:'', buscaForn:'', filtroForn:'0', filtroStatus:'todos', buscaCat:'', cart:{}, fotoIdx:{}, lightbox:null, expFech:null, filtroCot:'todas',
     seq:{ped:47,cot:9,forn:5,prod:11,rev:5,ctr:5,nf:1210},
@@ -2031,7 +2095,35 @@ class Component extends DCLogic {
 
   fx(f){ this._fx=this._fx||{}; if(!this._fx[f]) this._fx[f]=e=>{const v=e.target.value; this.setState(s=>({form:{...s.form,[f]:v,erro:null}}));}; return this._fx[f]; }
   open(m,seed){ return (e)=>{ if(e&&e.stopPropagation) e.stopPropagation(); this.setState({modal:m,form:seed?{...seed}:{}}); }; }
-  mClose=()=>this.setState({modal:null,form:{},pendVenc:null});
+  mClose=()=>{ this._ajudaStop(); this.setState({modal:null,form:{},pendVenc:null,ajudaPlay:false}); };
+  // ── Ajuda por rotina (tutorial em vídeo + passo a passo) ────────────────
+  AJUDA_CONTEUDO = {
+    _default:{ rotina:'Esta tela', titulo:'Como usar esta tela', resumo:'Guia rápido de uso desta rotina do sistema.', passos:['Explore as informações apresentadas na tela.','Use os botões e filtros disponíveis para realizar as ações.'], dicas:['Passe o mouse sobre os botões para ver dicas rápidas.'] }
+  };
+  ajudaConteudo(){ return this.AJUDA_CONTEUDO[this.scr] || this.AJUDA_CONTEUDO._default; }
+  abrirAjuda=(e)=>{ if(e&&e.stopPropagation) e.stopPropagation(); this._ajudaStop(); this.setState({modal:'ajuda',ajudaStep:0,ajudaPlay:false}); };
+  fecharAjuda=()=>{ this._ajudaStop(); this.setState({modal:null,ajudaPlay:false}); };
+  _ajudaStop(){ if(this._ajudaTimer){ clearInterval(this._ajudaTimer); this._ajudaTimer=null; } }
+  ajudaGo(i){ this._ajg=this._ajg||{}; if(!this._ajg[i]) this._ajg[i]=()=>{ this._ajudaStop(); this.setState({ajudaStep:i,ajudaPlay:false}); }; return this._ajg[i]; }
+  ajudaTogglePlay=()=>{ if(this.state.ajudaPlay){ this._ajudaStop(); this.setState({ajudaPlay:false}); return; }
+    const n=(this.ajudaConteudo().passos||[]).length; if(!n) return;
+    let start=this.state.ajudaStep; if(start>=n-1) start=0;
+    this.setState({ajudaPlay:true,ajudaStep:start});
+    this._ajudaStop(); this._ajudaTimer=setInterval(()=>{ this.setState(s=>{ const nx=s.ajudaStep+1; if(nx>=n){ this._ajudaStop(); return {ajudaPlay:false}; } return {ajudaStep:nx}; }); },2400); };
+  ajudaVals(){ const S=this.state; const M=S.modal; const c=this.ajudaConteudo();
+    const passos=c.passos||[]; const n=passos.length; const step=Math.max(0,Math.min(S.ajudaStep||0,n-1));
+    const secs=n*22+8; const dur=Math.floor(secs/60)+':'+String(secs%60).padStart(2,'0');
+    return {
+      mAjuda:M==='ajuda', abrirAjuda:this.abrirAjuda, ajClose:this.fecharAjuda,
+      ajTitulo:c.titulo, ajResumo:c.resumo, ajRotina:c.rotina, ajDur:dur, ajTotal:String(n),
+      ajPlay:S.ajudaPlay, ajNotPlay:!S.ajudaPlay, ajTogglePlay:this.ajudaTogglePlay,
+      ajPlayLabel:S.ajudaPlay?'Pausar':(step>=n-1?'Assistir novamente':'Reproduzir guia'),
+      ajStepNum:String(step+1), ajProg:n?Math.round(((step+1)/n)*100):0, ajPassoAtual:passos[step]||'',
+      ajPassos:passos.map((txt,i)=>({ n:String(i+1), txt, ativo:i===step, go:this.ajudaGo(i),
+        numBg:i===step?'#B38335':(i<step?'#e7d9bd':'#f1ece2'), numFg:i===step?'#fff':(i<step?'#8a6428':'#b0a795'),
+        bg:i===step?'#faf3e4':'#fff', bd:i===step?'#e6cf9e':'#f1ece2', fg:i===step?'#4a3a1a':'#4a4640', fw:i===step?'600':'400' })),
+      ajTemDicas:(c.dicas||[]).length>0, ajDicas:(c.dicas||[]).map(txt=>({txt})),
+    }; }
   go(k){ this._go=this._go||{}; if(!this._go[k]) this._go[k]=()=>this.setState({scr:k,selPed:null,selCot:null,selForn:null}); return this._go[k]; }
   openForn(id){ this._of=this._of||{}; if(!this._of[id]) this._of[id]=()=>this.setState({scr:'forndet',selForn:id}); return this._of[id]; }
   openProd(id){ this._opr=this._opr||{}; if(!this._opr[id]) this._opr[id]=()=>this.setState({scr:'proddet',selProd:id}); return this._opr[id]; }
@@ -2072,13 +2164,19 @@ class Component extends DCLogic {
     this.updCot(cid,c=>{ c.lembretes={...(c.lembretes||{}),[fid]:this.hoje()};
       c.historico.push({quando:this.ts(),usuario:this.userName(),acao:'Lembrete de proposta enviado a '+f.nome}); return c; });
     this.audit('Lembrete de cotação enviado',cid+' → '+f.nome); }; return this._lc[k]; }
-  componentDidMount(){ this._kb=e=>{ if(!this.state.lightbox) return;
+  componentDidMount(){ this._kb=e=>{
+    if(this.state.modal==='ajuda'){ const n=(this.ajudaConteudo().passos||[]).length;
+      if(e.key==='Escape') this.fecharAjuda();
+      if(e.key==='ArrowRight') this.ajudaGo(Math.min(this.state.ajudaStep+1,n-1))();
+      if(e.key==='ArrowLeft') this.ajudaGo(Math.max(this.state.ajudaStep-1,0))();
+      return; }
+    if(!this.state.lightbox) return;
     if(e.key==='Escape') this.lbClose();
     if(e.key==='ArrowRight') this.lbNav(1)();
     if(e.key==='ArrowLeft') this.lbNav(-1)(); };
     document.addEventListener('keydown',this._kb);
     this._hydrate(); }
-  componentWillUnmount(){ document.removeEventListener('keydown',this._kb); }
+  componentWillUnmount(){ this._ajudaStop(); document.removeEventListener('keydown',this._kb); }
   encerrarCtr(id){ this._ec=this._ec||{}; if(!this._ec[id]) this._ec[id]=()=>{ const c=this.state.contratos.find(x=>x.id===id);
     this.setState(s=>({contratos:s.contratos.map(x=>x.id===id?{...x,vigente:false}:x)}));
     this.audit('Encerramento de contrato',c.numero+' · '+this.hoje()); }; return this._ec[id]; }
@@ -2825,6 +2923,8 @@ class Component extends DCLogic {
       sFat:isLoja&&scr==='fat',sRoy:isLoja&&scr==='roy',sRel:isLoja&&scr==='rel',sSeg:isLoja&&scr==='seg',
       sFPed:isForn&&scr==='fped',sFCot:isForn&&scr==='fcot',sFFat:isForn&&scr==='ffat',sFRoy:isForn&&scr==='froy',
       sCat:isRev&&scr==='cat',sRPed:isRev&&scr==='rped',
+      // ajuda contextual (tutorial + passo a passo)
+      ...this.ajudaVals(),
       // dashboard
       kpis,recRows,barRows,
       // pedidos
