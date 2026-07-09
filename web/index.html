@@ -1854,18 +1854,24 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <div onClick="{{ajClose}}" title="Fechar (Esc)" style="font-size:20px;line-height:1;color:#a89f90;cursor:pointer;padding:2px 9px;border-radius:8px" style-hover="background:#f7f3ea">×</div>
       </div>
       <div style="padding:18px 20px 22px">
-        <div onClick="{{ajTogglePlay}}" style="position:relative;border-radius:13px;overflow:hidden;cursor:pointer;background:linear-gradient(135deg,#3a2f1c,#272525 60%,#1c1a18);aspect-ratio:16/9;display:flex;align-items:center;justify-content:center">
-          <div style="position:absolute;top:12px;left:13px;display:flex;align-items:center;gap:6px;font-size:10px;font-weight:700;letter-spacing:.08em;color:#e3bf7e"><span style="width:7px;height:7px;border-radius:50%;background:#B38335;display:inline-block"></span>TUTORIAL EM VÍDEO</div>
-          <div style="position:absolute;top:11px;right:13px;font-size:11px;font-weight:600;color:rgba(255,255,255,.5)">{{ajDur}}</div>
-          <div style="width:64px;height:64px;border-radius:50%;background:rgba(179,131,53,.92);display:flex;align-items:center;justify-content:center;box-shadow:0 10px 30px rgba(0,0,0,.35)">
-            <sc-if value="{{ajNotPlay}}"><span style="width:0;height:0;border-style:solid;border-width:11px 0 11px 18px;border-color:transparent transparent transparent #fff;margin-left:4px"></span></sc-if>
-            <sc-if value="{{ajPlay}}"><span style="display:flex;gap:5px"><span style="width:5px;height:22px;background:#fff;border-radius:2px"></span><span style="width:5px;height:22px;background:#fff;border-radius:2px"></span></span></sc-if>
-          </div>
-          <div style="position:absolute;left:0;right:0;bottom:0;padding:28px 15px 12px;background:linear-gradient(180deg,transparent,rgba(20,18,16,.85))">
-            <div style="font-size:12.5px;color:#fff;font-weight:500;line-height:1.4;min-height:34px">{{ajPassoAtual}}</div>
+        <div onClick="{{ajTogglePlay}}" style="position:relative;border-radius:13px;overflow:hidden;cursor:pointer;background:#17150f;aspect-ratio:16/9">
+          <img src="{{ajImg}}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center {{ajImgPosY}}%;transition:object-position 1s ease">
+          <div style="position:absolute;inset:0;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06);pointer-events:none"></div>
+          <div style="position:absolute;top:0;left:0;right:0;height:52px;background:linear-gradient(180deg,rgba(18,16,13,.62),transparent);pointer-events:none"></div>
+          <div style="position:absolute;top:11px;left:13px;display:flex;align-items:center;gap:6px;font-size:10px;font-weight:700;letter-spacing:.08em;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.6)"><span style="width:7px;height:7px;border-radius:50%;background:#e0483a;display:inline-block"></span>TUTORIAL EM VÍDEO</div>
+          <div style="position:absolute;top:10px;right:13px;font-size:11px;font-weight:600;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.6)">{{ajDur}}</div>
+          <sc-if value="{{ajNotPlay}}">
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(18,16,13,.34)">
+              <div style="width:66px;height:66px;border-radius:50%;background:rgba(179,131,53,.96);display:flex;align-items:center;justify-content:center;box-shadow:0 10px 30px rgba(0,0,0,.4)">
+                <span style="width:0;height:0;border-style:solid;border-width:12px 0 12px 19px;border-color:transparent transparent transparent #fff;margin-left:4px"></span>
+              </div>
+            </div>
+          </sc-if>
+          <div style="position:absolute;left:0;right:0;bottom:0;padding:32px 15px 12px;background:linear-gradient(180deg,transparent,rgba(16,14,11,.94))">
+            <div style="font-size:12.5px;color:#fff;font-weight:500;line-height:1.4;min-height:34px;text-shadow:0 1px 3px rgba(0,0,0,.55)">{{ajPassoAtual}}</div>
             <div style="display:flex;align-items:center;gap:9px;margin-top:8px">
-              <div style="flex:1;height:4px;background:rgba(255,255,255,.22);border-radius:3px;overflow:hidden"><div style="height:100%;background:linear-gradient(90deg,#cfa055,#B38335);width:{{ajProg}}%"></div></div>
-              <div style="font-size:10.5px;font-weight:600;color:rgba(255,255,255,.72);white-space:nowrap">Passo {{ajStepNum}}/{{ajTotal}}</div>
+              <div style="flex:1;height:4px;background:rgba(255,255,255,.3);border-radius:3px;overflow:hidden"><div style="height:100%;background:linear-gradient(90deg,#cfa055,#B38335);width:{{ajProg}}%;transition:width .8s ease"></div></div>
+              <div style="font-size:10.5px;font-weight:600;color:#fff;white-space:nowrap;text-shadow:0 1px 2px rgba(0,0,0,.55)">Passo {{ajStepNum}}/{{ajTotal}}</div>
             </div>
           </div>
         </div>
@@ -2541,8 +2547,10 @@ class Component extends DCLogic {
   ajudaVals(){ const S=this.state; const M=S.modal; const c=this.ajudaConteudo();
     const passos=c.passos||[]; const n=passos.length; const step=Math.max(0,Math.min(S.ajudaStep||0,n-1));
     const secs=n*22+8; const dur=Math.floor(secs/60)+':'+String(secs%60).padStart(2,'0');
+    const temImg=!!this.AJUDA_CONTEUDO[this.scr];
     return {
       mAjuda:M==='ajuda', abrirAjuda:this.abrirAjuda, ajClose:this.fecharAjuda,
+      ajImg:temImg?('ajuda/'+this.scr+'.jpg'):'', ajImgPosY:n>1?Math.round((step/(n-1))*100):0,
       ajTitulo:c.titulo, ajResumo:c.resumo, ajRotina:c.rotina, ajDur:dur, ajTotal:String(n),
       ajPlay:S.ajudaPlay, ajNotPlay:!S.ajudaPlay, ajTogglePlay:this.ajudaTogglePlay,
       ajPlayLabel:S.ajudaPlay?'Pausar':(step>=n-1?'Assistir novamente':'Reproduzir guia'),

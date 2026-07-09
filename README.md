@@ -130,9 +130,11 @@ trilha de auditoria, etc.) são **gravadas no PostgreSQL** e sobrevivem a
 reinícios.
 
 **Ajuda em cada rotina:** no topo da tela há o botão **"Como usar"** (com ícone
-de vídeo), presente em todas as rotinas. Ele abre um guia no estilo *tutorial em
-vídeo* — com um passo a passo que avança sozinho ao clicar em "Reproduzir" — e a
-lista de passos em texto e dicas, tudo específico da tela em que você está.
+de vídeo), presente em todas as rotinas. Ele abre um *tutorial em vídeo* que
+**mostra as imagens reais daquela tela** e as percorre automaticamente ao clicar
+em "Reproduzir" (como uma gravação de tela), com a legenda de cada passo, o passo
+a passo em texto e dicas — tudo específico da rotina em que você está. As imagens
+ficam em `web/public/ajuda/` (uma por rotina).
 
 ## Arquitetura
 
