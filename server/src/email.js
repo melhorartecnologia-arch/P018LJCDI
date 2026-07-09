@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer'
+import { renderTemplate } from './email-templates.js'
 
 // Monta um transporte SMTP a partir dos parâmetros configurados no painel.
 // seguranca: 'ssl' (porta 465, TLS direto) | 'starttls' (STARTTLS) | 'none'.
@@ -58,4 +59,28 @@ export async function sendTest(cfg, to) {
       '</div>',
   })
   return { ok: true, messageId: info.messageId, accepted: info.accepted, rejected: info.rejected }
+}
+
+// Envia um e-mail de notificação (template por caso de uso) a um ou mais
+// destinatários. Só envia se a configuração estiver ativa. Cada destinatário
+// recebe uma mensagem individual (sem expor os demais).
+export async function sendNotify(cfg, evento, to, vars) {
+  if (!cfg || !cfg.ativo) return { ok: true, skipped: 'envio de e-mail desativado' }
+  assertConfig(cfg)
+  const destinatarios = (Array.isArray(to) ? to : [to]).map((x) => String(x || '').trim()).filter((x) => /.+@.+\..+/.test(x))
+  if (!destinatarios.length) return { ok: true, skipped: 'sem destinatários válidos' }
+  const { subject, html } = renderTemplate(evento, vars || {})
+  const transport = buildTransport(cfg)
+  const from = fromHeader(cfg)
+  const replyTo = cfg.responderPara || undefined
+  const results = []
+  for (const dest of destinatarios) {
+    try {
+      const info = await transport.sendMail({ from, to: dest, replyTo, subject, html })
+      results.push({ to: dest, ok: true, messageId: info.messageId })
+    } catch (err) {
+      results.push({ to: dest, ok: false, error: err.message || String(err) })
+    }
+  }
+  return { ok: results.every((r) => r.ok), evento, results }
 }

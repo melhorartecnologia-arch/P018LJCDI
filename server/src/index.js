@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url'
 import { query, driver } from './db.js'
 import { migrate } from './migrate.js'
 import { loadState, saveState, loadCollection, COLLECTION_KEYS, loadConfigEmail } from './repo.js'
-import { verifyConfig, sendTest } from './email.js'
+import { verifyConfig, sendTest, sendNotify } from './email.js'
 import { config } from './config.js'
 
 const here = dirname(fileURLToPath(import.meta.url))
@@ -72,6 +72,20 @@ app.post('/api/email/test', async (req, res) => {
   try {
     const info = await sendTest(await resolveEmailConfig(req.body), (req.body && req.body.to) || '')
     res.json({ ok: true, mensagem: 'E-mail de teste enviado.', ...info })
+  } catch (err) {
+    res.status(400).json({ ok: false, error: err.message || String(err) })
+  }
+})
+
+// Notificações automáticas dos fluxos (pedidos, cotações, faturamento,
+// royalties). A configuração vem do banco; só envia se estiver ativa.
+app.post('/api/email/notify', async (req, res) => {
+  try {
+    const cfg = (await loadConfigEmail()) || {}
+    const { evento, to, vars } = req.body || {}
+    if (!evento) return res.status(400).json({ ok: false, error: 'Evento não informado.' })
+    const result = await sendNotify(cfg, evento, to || [], vars || {})
+    res.json(result)
   } catch (err) {
     res.status(400).json({ ok: false, error: err.message || String(err) })
   }

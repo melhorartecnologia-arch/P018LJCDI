@@ -1496,11 +1496,16 @@ input::placeholder,textarea::placeholder{color:#b0a795}
           <div style="font-size:12px;font-weight:600;color:#6b6459;margin:0 0 6px">E-mail do remetente</div>
           <input value="{{ceRemEmail}}" onChange="{{setCeRemEmail}}" placeholder="nao-responder@seudominio.com.br" style="width:100%;box-sizing:border-box;padding:10px 13px;border:1px solid #ddd5c7;border-radius:9px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
         </div>
-        <div style="grid-column:1 / span 2">
+        <div>
           <div style="font-size:12px;font-weight:600;color:#6b6459;margin:0 0 6px">Responder para (opcional)</div>
           <input value="{{ceReplyTo}}" onChange="{{setCeReplyTo}}" placeholder="contato@seudominio.com.br" style="width:100%;box-sizing:border-box;padding:10px 13px;border:1px solid #ddd5c7;border-radius:9px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
         </div>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:#6b6459;margin:0 0 6px">E-mail para avisos internos (Loja)</div>
+          <input value="{{ceEmailLoja}}" onChange="{{setCeEmailLoja}}" placeholder="avisos@cervejariacidadeimperial.com.br" style="width:100%;box-sizing:border-box;padding:10px 13px;border:1px solid #ddd5c7;border-radius:9px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
+        </div>
       </div>
+      <div style="margin-top:16px;background:#f7f4ee;border:1px solid #eae3d6;border-radius:10px;padding:12px 15px;font-size:12px;color:#6b6459;line-height:1.5">Com o envio <b>ativado</b>, a plataforma dispara e-mails automáticos (com modelo próprio para cada caso) nos fluxos de <b>pedidos</b>, <b>cotações</b>, <b>faturamento</b> e <b>royalties/cobrança</b> — para revendas, fornecedores e para o e-mail interno da Loja informado acima.</div>
       <div style="display:flex;align-items:center;gap:10px;margin-top:20px">
         <div onClick="{{salvarCfgEmail}}" style="background:#B38335;color:#fff;border-radius:9px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer" style-hover="background:#9a6f2b">Salvar configurações</div>
         <div onClick="{{verificarCfgEmail}}" style="border:1px solid #ddd5c7;color:#4a453d;border-radius:9px;padding:10px 16px;font-size:13px;font-weight:600;cursor:pointer;background:#fff" style-hover="background:#f7f3ea">Verificar conexão</div>
@@ -2033,7 +2038,7 @@ class Component extends DCLogic {
   state = {
     logado:false, loginRole:'loja', loginEmail:'', loginSenha:'', loginErro:null,
     role:null, scr:null, fornAtivo:1, revAtivo:1, ajudaStep:0, ajudaPlay:false,
-    configEmail:{host:'',porta:'587',seguranca:'starttls',usuario:'',senha:'',remetenteNome:'Cidade Imperial',remetenteEmail:'',responderPara:'',ativo:false},
+    configEmail:{host:'',porta:'587',seguranca:'starttls',usuario:'',senha:'',remetenteNome:'Cidade Imperial',remetenteEmail:'',responderPara:'',emailLoja:'',ativo:false},
     cfgTestTo:'', cfgMsg:null, cfgMsgTipo:null, cfgBusy:false,
     selPed:null, selCot:null, selForn:null, selProd:null, selRev:null, modal:null, form:{}, pendVenc:null, filtroStatusProd:'todos', buscaRev:'', buscaPed:'', filtroRev:'0',
     busca:'', buscaForn:'', filtroForn:'0', filtroStatus:'todos', buscaCat:'', cart:{}, fotoIdx:{}, lightbox:null, expFech:null, filtroCot:'todas',
@@ -2184,6 +2189,16 @@ class Component extends DCLogic {
   }
   audit(acao,detalhe){ this.setState(s=>({auditoria:[{quando:this.ts(),usuario:this.userName(),acao,detalhe},...s.auditoria].slice(0,150)})); }
   tr(acao){ return {quando:this.ts(),usuario:this.userName(),acao}; }
+  // ── Notificações por e-mail (templates por caso de uso) ─────────────────
+  _lojaEmail(){ const c=this.state.configEmail||{}; return c.emailLoja||c.remetenteEmail||''; }
+  _revEmail(id){ const r=this.state.revendas.find(x=>x.id===id); return r?r.email:''; }
+  _revNome(id){ const r=this.state.revendas.find(x=>x.id===id); return r?r.nome:''; }
+  _fornEmail(id){ const f=this.state.fornecedores.find(x=>x.id===id); return f?f.contato:''; }
+  _fornNome(id){ const f=this.state.fornecedores.find(x=>x.id===id); return f?f.nome:''; }
+  notificar(evento,to,vars){ const c=this.state.configEmail;
+    if(!(c&&c.ativo)) return; // só notifica quando o envio de e-mail está ativo
+    const tos=(Array.isArray(to)?to:[to]).map(x=>(x||'').trim()).filter(Boolean); if(!tos.length) return;
+    fetch('/api/email/notify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({evento,to:tos,vars:vars||{}})}).catch(()=>{}); }
   err(msg){ this.setState(s=>({form:{...s.form,erro:msg}})); }
 
   fx(f){ this._fx=this._fx||{}; if(!this._fx[f]) this._fx[f]=e=>{const v=e.target.value; this.setState(s=>({form:{...s.form,[f]:v,erro:null}}));}; return this._fx[f]; }
@@ -2213,11 +2228,11 @@ class Component extends DCLogic {
     return {
       sCfgEmail:isLoja&&this.scr==='cfgemail',
       ceHost:c.host||'',cePorta:c.porta||'',ceSeguranca:c.seguranca||'starttls',ceUsuario:c.usuario||'',ceSenha:c.senha||'',
-      ceRemNome:c.remetenteNome||'',ceRemEmail:c.remetenteEmail||'',ceReplyTo:c.responderPara||'',ceAtivo:!!c.ativo,
+      ceRemNome:c.remetenteNome||'',ceRemEmail:c.remetenteEmail||'',ceReplyTo:c.responderPara||'',ceEmailLoja:c.emailLoja||'',ceAtivo:!!c.ativo,
       ceSegOpts:[{v:'starttls',label:'STARTTLS · porta 587 (recomendado)'},{v:'ssl',label:'SSL/TLS · porta 465'},{v:'none',label:'Nenhuma (sem criptografia)'}],
       setCeHost:this.setCfg('host'),setCePorta:this.setCfg('porta'),setCeSeguranca:this.setCfg('seguranca'),
       setCeUsuario:this.setCfg('usuario'),setCeSenha:this.setCfg('senha'),setCeRemNome:this.setCfg('remetenteNome'),
-      setCeRemEmail:this.setCfg('remetenteEmail'),setCeReplyTo:this.setCfg('responderPara'),toggleCfgAtivo:this.toggleCfgAtivo,
+      setCeRemEmail:this.setCfg('remetenteEmail'),setCeReplyTo:this.setCfg('responderPara'),setCeEmailLoja:this.setCfg('emailLoja'),toggleCfgAtivo:this.toggleCfgAtivo,
       ceAtivoTxt:c.ativo?'Envio de e-mails ativado':'Envio de e-mails desativado',
       ceSwBg:c.ativo?'#2f6b39':'#d9d2c4',ceSwX:c.ativo?'20px':'3px',
       cfgTestTo:S.cfgTestTo||'',setCfgTestTo:this.setCfgTestTo,
@@ -2677,7 +2692,7 @@ class Component extends DCLogic {
       ]
     }
   };
-  AJUDA_GEO = {"dash":{"R":0.6859,"rects":[[0,0,1,0.0355],null,[0.0193,0.2304,0.1484,0.0207],[0.0193,0.4225,0.1379,0.0236],[0.0193,0.1233,0.0752,0.0236],[0.5073,0.4239,0.0801,0.0207],[0.6401,0.4254,0.3407,0.0236]]},"ped":{"R":0.7943,"rects":[[0.0172,0.0982,0.1863,0.0166],[0,0.2105,0.5846,0.0497],[0,0.2105,1,0.0497],null,[0.8278,0.3431,0.0726,0.0306],[0.9065,0.3431,0.0742,0.0306],null]},"peddet":{"R":0.6373,"rects":[[0,0,1,0.0238],[0.001,0.3561,0.625,0.0684],[0.2746,0.2035,0.1083,0.0238],[0.4594,0.5056,0.0703,0.0334],[0.5358,0.5056,0.072,0.0334],null,[0.6604,0.3816,0.3203,0.0254],[0.0193,0.8521,0.5885,0.0254]]},"cot":{"R":0.3749,"rects":[[0.852,0.0243,0.148,0.0946],[0.1167,0.6297,0.1749,0.0878],null,[0,0.4838,1,0.1054],[0.7838,0.7784,0.1499,0.0378],null,null,null]},"cotdet":{"R":1.2979,"rects":[[0,0,1,0.0117],[0.2737,0.1749,0.0917,0.0117],[0.6153,0.292,0.0686,0.0141],[0.0193,0.3669,0.4116,0.0125],[0.7701,0.4586,0.2107,0.0219],[0.0193,0.5886,0.9615,0.0125],null,[0.8251,0.3677,0.1557,0.0234],[0.0193,0.8525,0.9615,0.0125]]},"forn":{"R":0.849,"rects":[null,[0,0.1969,1,0.0442],[0.8284,0.0107,0.1716,0.0418],null,[0.0193,0.6134,0.9615,0.0191],[0.8543,0.7291,0.1143,0.0167],[0.9221,0.7518,0.0586,0.0167]]},"forndet":{"R":0.6657,"rects":[[0,0,1,0.0228],null,[0.5476,0.0411,0.1206,0.0533],[0.6773,0.0411,0.1449,0.0533],[0.0193,0.4003,0.4549,0.0228],[0.0193,0.5556,0.2229,0.0502],[0.2513,0.5556,0.2229,0.0502],[0,0.6575,1,0.0274],[0.9273,0.742,0.0535,0.0213]]},"prod":{"R":0.9493,"rects":[null,[0,0.191,0.5704,0.0416],[0.8505,0.0096,0.1495,0.0374],[0.1617,0.2487,0.2783,0.0347],null,null,[0.9273,0.3132,0.0535,0.0149]]},"proddet":{"R":0.6626,"rects":[null,null,[0.4529,0.1774,0.5278,0.0245],[0.4509,0.3991,0.1768,0.0199],[0.6822,0.0413,0.1346,0.0535],[0.8411,0.0566,0.1437,0.0229],[0,0.7615,1,0.0275],[0,0,1,0.0229]]},"rev":{"R":0.5552,"rects":[[0.0172,0.1405,0.1223,0.0237],[0,0.3266,1,0.0675],[0.8492,0.0164,0.1508,0.0639],null,null,null,null,null,null]},"revdet":{"R":1.2219,"rects":[[0.233,0.0311,0.0357,0.0116],[0.0172,0.0945,0.1474,0.0108],[0.7214,0.0224,0.1206,0.029],[0.8664,0.0307,0.1184,0.0124],[0.0193,0.1683,0.3722,0.0133],[0.4442,0.1683,0.5366,0.0133],[0,0.335,1,0.0149],null,[0,0.8284,1,0.0149]]},"fat":{"R":0.3982,"rects":[null,[0.001,0.1552,0.998,0.1018],[0.001,0.3944,0.1056,0.0827],[0.1066,0.3944,0.0891,0.0827],[0.1957,0.3944,0.1958,0.0827],[0.5693,0.3944,0.1366,0.0827],[0.7059,0.3944,0.1426,0.0827]]},"roy":{"R":0.6424,"rects":[null,[0.0193,0.2823,0.1734,0.0252],[0.0193,0.4653,0.1758,0.0205],[0.0172,0.1183,0.1349,0.0205],[0.6438,0.4322,0.1417,0.041],[0.6714,0.6987,0.1141,0.041],[0.8008,0.4322,0.18,0.041],[0.5391,0.3297,0.0865,0.067]]},"rel":{"R":0.769,"rects":[[0,0,1,0.0316],[0.0193,0.0975,0.9615,0.0211],null,[0.001,0.6877,0.4087,0.0567],[0.4442,0.7049,0.5366,0.0211],null]},"seg":{"R":0.6047,"rects":[null,[0.0193,0.1592,0.2854,0.0302],[0.0193,0.1592,0.2854,0.0302],[0.1663,0.8425,0.2214,0.0251],[0.1663,0.7286,0.1764,0.0251],[0.001,0.4186,0.998,0.072],[0.001,0.4907,0.1551,0.0511]]},"fped":{"R":0.2513,"rects":[[0,0,1,0.0968],null,[0.1327,0.4738,0.7244,0.0565],null,null,null,null,null]},"fcot":{"R":0.2685,"rects":[[0.387,0.3,0.1074,0.0528],null,[0.1327,0.4434,0.6746,0.0528],null,null,null,null,null]},"ffat":{"R":0.1996,"rects":[null,[0,0.1371,1,0.0761],[0.001,0.3096,0.1575,0.165],[0.1585,0.3096,0.1328,0.165],[0.5564,0.3096,0.2126,0.165],[0.769,0.3096,0.23,0.165],null,null]},"froy":{"R":0.1814,"rects":[null,[0,0,1,0.1341],[0.001,0.3408,0.2681,0.1816],[0.2691,0.3408,0.2085,0.1816],[0.4776,0.3408,0.271,0.1816],[0.7486,0.3408,0.2504,0.1816],null]},"cat":{"R":1.11,"rects":[[0,0.0529,1,0.0356],null,null,null,null,null,null,null]},"rped":{"R":0.2756,"rects":[[0.001,0.2243,0.157,0.1195],[0.2411,0.4265,0.0413,0.0515],[0.2411,0.4265,0.0413,0.0515],[0.3527,0.2243,0.3181,0.1195],[0.6708,0.2243,0.158,0.1195],[0.8289,0.2243,0.1701,0.1195],null]},"cfgemail":{"R":0.9549,"rects":[[0.028,0.1264,0.2063,0.0179],[0.028,0.1967,0.6179,0.0179],[0.663,0.1967,0.3089,0.0179],[0.028,0.2861,0.9439,0.0179],[0.028,0.378,0.6179,0.0179],[0.028,0.5096,0.4634,0.0179],[0.028,0.6999,0.2308,0.0447],[0.028,0.8148,0.9439,0.0204]]}};
+  AJUDA_GEO = {"dash":{"R":0.6859,"rects":[[0,0,1,0.0355],null,[0.0193,0.2304,0.1484,0.0207],[0.0193,0.4225,0.1379,0.0236],[0.0193,0.1233,0.0752,0.0236],[0.5073,0.4239,0.0801,0.0207],[0.6401,0.4254,0.3407,0.0236]]},"ped":{"R":0.7943,"rects":[[0.0172,0.0982,0.1863,0.0166],[0,0.2105,0.5846,0.0497],[0,0.2105,1,0.0497],null,[0.8278,0.3431,0.0726,0.0306],[0.9065,0.3431,0.0742,0.0306],null]},"peddet":{"R":0.6373,"rects":[[0,0,1,0.0238],[0.001,0.3561,0.625,0.0684],[0.2746,0.2035,0.1083,0.0238],[0.4594,0.5056,0.0703,0.0334],[0.5358,0.5056,0.072,0.0334],null,[0.6604,0.3816,0.3203,0.0254],[0.0193,0.8521,0.5885,0.0254]]},"cot":{"R":0.3749,"rects":[[0.852,0.0243,0.148,0.0946],[0.1167,0.6297,0.1749,0.0878],null,[0,0.4838,1,0.1054],[0.7838,0.7784,0.1499,0.0378],null,null,null]},"cotdet":{"R":1.2979,"rects":[[0,0,1,0.0117],[0.2737,0.1749,0.0917,0.0117],[0.6153,0.292,0.0686,0.0141],[0.0193,0.3669,0.4116,0.0125],[0.7701,0.4586,0.2107,0.0219],[0.0193,0.5886,0.9615,0.0125],null,[0.8251,0.3677,0.1557,0.0234],[0.0193,0.8525,0.9615,0.0125]]},"forn":{"R":0.849,"rects":[null,[0,0.1969,1,0.0442],[0.8284,0.0107,0.1716,0.0418],null,[0.0193,0.6134,0.9615,0.0191],[0.8543,0.7291,0.1143,0.0167],[0.9221,0.7518,0.0586,0.0167]]},"forndet":{"R":0.6657,"rects":[[0,0,1,0.0228],null,[0.5476,0.0411,0.1206,0.0533],[0.6773,0.0411,0.1449,0.0533],[0.0193,0.4003,0.4549,0.0228],[0.0193,0.5556,0.2229,0.0502],[0.2513,0.5556,0.2229,0.0502],[0,0.6575,1,0.0274],[0.9273,0.742,0.0535,0.0213]]},"prod":{"R":0.9493,"rects":[null,[0,0.191,0.5704,0.0416],[0.8505,0.0096,0.1495,0.0374],[0.1617,0.2487,0.2783,0.0347],null,null,[0.9273,0.3132,0.0535,0.0149]]},"proddet":{"R":0.6626,"rects":[null,null,[0.4529,0.1774,0.5278,0.0245],[0.4509,0.3991,0.1768,0.0199],[0.6822,0.0413,0.1346,0.0535],[0.8411,0.0566,0.1437,0.0229],[0,0.7615,1,0.0275],[0,0,1,0.0229]]},"rev":{"R":0.5552,"rects":[[0.0172,0.1405,0.1223,0.0237],[0,0.3266,1,0.0675],[0.8492,0.0164,0.1508,0.0639],null,null,null,null,null,null]},"revdet":{"R":1.2219,"rects":[[0.233,0.0311,0.0357,0.0116],[0.0172,0.0945,0.1474,0.0108],[0.7214,0.0224,0.1206,0.029],[0.8664,0.0307,0.1184,0.0124],[0.0193,0.1683,0.3722,0.0133],[0.4442,0.1683,0.5366,0.0133],[0,0.335,1,0.0149],null,[0,0.8284,1,0.0149]]},"fat":{"R":0.3982,"rects":[null,[0.001,0.1552,0.998,0.1018],[0.001,0.3944,0.1056,0.0827],[0.1066,0.3944,0.0891,0.0827],[0.1957,0.3944,0.1958,0.0827],[0.5693,0.3944,0.1366,0.0827],[0.7059,0.3944,0.1426,0.0827]]},"roy":{"R":0.6424,"rects":[null,[0.0193,0.2823,0.1734,0.0252],[0.0193,0.4653,0.1758,0.0205],[0.0172,0.1183,0.1349,0.0205],[0.6438,0.4322,0.1417,0.041],[0.6714,0.6987,0.1141,0.041],[0.8008,0.4322,0.18,0.041],[0.5391,0.3297,0.0865,0.067]]},"rel":{"R":0.769,"rects":[[0,0,1,0.0316],[0.0193,0.0975,0.9615,0.0211],null,[0.001,0.6877,0.4087,0.0567],[0.4442,0.7049,0.5366,0.0211],null]},"seg":{"R":0.6047,"rects":[null,[0.0193,0.1592,0.2854,0.0302],[0.0193,0.1592,0.2854,0.0302],[0.1663,0.8425,0.2214,0.0251],[0.1663,0.7286,0.1764,0.0251],[0.001,0.4186,0.998,0.072],[0.001,0.4907,0.1551,0.0511]]},"fped":{"R":0.2513,"rects":[[0,0,1,0.0968],null,[0.1327,0.4738,0.7244,0.0565],null,null,null,null,null]},"fcot":{"R":0.2685,"rects":[[0.387,0.3,0.1074,0.0528],null,[0.1327,0.4434,0.6746,0.0528],null,null,null,null,null]},"ffat":{"R":0.1996,"rects":[null,[0,0.1371,1,0.0761],[0.001,0.3096,0.1575,0.165],[0.1585,0.3096,0.1328,0.165],[0.5564,0.3096,0.2126,0.165],[0.769,0.3096,0.23,0.165],null,null]},"froy":{"R":0.1814,"rects":[null,[0,0,1,0.1341],[0.001,0.3408,0.2681,0.1816],[0.2691,0.3408,0.2085,0.1816],[0.4776,0.3408,0.271,0.1816],[0.7486,0.3408,0.2504,0.1816],null]},"cat":{"R":1.11,"rects":[[0,0.0529,1,0.0356],null,null,null,null,null,null,null]},"rped":{"R":0.2756,"rects":[[0.001,0.2243,0.157,0.1195],[0.2411,0.4265,0.0413,0.0515],[0.2411,0.4265,0.0413,0.0515],[0.3527,0.2243,0.3181,0.1195],[0.6708,0.2243,0.158,0.1195],[0.8289,0.2243,0.1701,0.1195],null]},"cfgemail":{"R":1.072,"rects":[[0.028,0.1126,0.2063,0.0159],[0.028,0.1752,0.6179,0.0159],[0.663,0.1752,0.3089,0.0159],[0.028,0.2548,0.9439,0.0159],[0.028,0.3367,0.6179,0.0159],[0.028,0.4539,0.4634,0.0159],[0.028,0.7327,0.2308,0.0398],[0.028,0.835,0.9439,0.0182]]}};
   ajudaConteudo(){ return this.AJUDA_CONTEUDO[this.scr] || this.AJUDA_CONTEUDO._default; }
   abrirAjuda=(e)=>{ if(e&&e.stopPropagation) e.stopPropagation(); this._ajudaStop(); this.setState({modal:'ajuda',ajudaStep:0,ajudaPlay:false}); };
   fecharAjuda=()=>{ this._ajudaStop(); this.setState({modal:null,ajudaPlay:false}); };
@@ -2753,7 +2768,9 @@ class Component extends DCLogic {
     const f=this.state.fornecedores.find(x=>x.id===fid);
     this.updCot(cid,c=>{ c.lembretes={...(c.lembretes||{}),[fid]:this.hoje()};
       c.historico.push({quando:this.ts(),usuario:this.userName(),acao:'Lembrete de proposta enviado a '+f.nome}); return c; });
-    this.audit('Lembrete de cotação enviado',cid+' → '+f.nome); }; return this._lc[k]; }
+    this.audit('Lembrete de cotação enviado',cid+' → '+f.nome);
+    const cL=this.state.cotacoes.find(x=>x.id===cid);
+    this.notificar('cotacao_lembrete',this._fornEmail(fid),{cotacao:cid,fornecedorNome:f.nome,prazo:(cL?cL.prazo:'')}); }; return this._lc[k]; }
   componentDidMount(){ this._kb=e=>{
     if(this.state.modal==='ajuda'){ const n=(this.ajudaConteudo().passos||[]).length;
       if(e.key==='Escape') this.fecharAjuda();
@@ -2830,11 +2847,14 @@ class Component extends DCLogic {
 
   aprovar(id){ this._ap=this._ap||{}; if(!this._ap[id]) this._ap[id]=(e)=>{ if(e&&e.stopPropagation) e.stopPropagation();
     this.updPed(id,p=>{p.itens=p.itens.map(i=>(i.st||'pendente')==='pendente'?{...i,st:'aprovado'}:i);p.trilha.push(this.tr('Pedido aprovado pela Loja — todos os itens pendentes'));return p;});
-    this.audit('Aprovação de pedido',id); }; return this._ap[id]; }
+    this.audit('Aprovação de pedido',id);
+    const ped=this.state.pedidos.find(p=>p.id===id);
+    if(ped) this.notificar('pedido_aprovado',this._revEmail(ped.revendaId),{pedidoId:id,revendaNome:this._revNome(ped.revendaId),total:this.fmt(this.pedTotal(ped))}); }; return this._ap[id]; }
   aprovarItem(pid,ix){ this._api=this._api||{}; const k=pid+'|'+ix; if(!this._api[k]) this._api[k]=()=>{
     const ped=this.state.pedidos.find(p=>p.id===pid); const prod=this.state.produtos.find(x=>x.id===ped.itens[ix].produtoId);
     this.updPed(pid,p=>{p.itens=p.itens.map((i,j)=>j===ix?{...i,st:'aprovado'}:i);p.trilha.push(this.tr('Item aprovado: '+(prod?prod.descricao:'')));return p;});
-    this.audit('Aprovação de item de pedido',pid+' · '+(prod?prod.codigo:'')); }; return this._api[k]; }
+    this.audit('Aprovação de item de pedido',pid+' · '+(prod?prod.codigo:''));
+    this.notificar('item_aprovado',this._revEmail(ped.revendaId),{pedidoId:pid,produto:(prod?prod.descricao:'')}); }; return this._api[k]; }
   confirmRejeitar=()=>{ const j=(this.state.form.justif||'').trim(); if(!j) return this.err('A justificativa é obrigatória em caso de rejeição (RF16).');
     const id=this.state.form.pedidoId; const ix=this.state.form.itemIdx;
     if(ix!=null){ const ped=this.state.pedidos.find(p=>p.id===id); const prod=this.state.produtos.find(x=>x.id===ped.itens[ix].produtoId);
@@ -2842,6 +2862,9 @@ class Component extends DCLogic {
       this.audit('Rejeição de item de pedido',id+' · '+(prod?prod.codigo:'')+' · '+j); }
     else { this.updPed(id,p=>{p.itens=p.itens.map(i=>(i.st||'pendente')==='pendente'?{...i,st:'rejeitado',justif:j}:i);p.justificativa=j;p.trilha.push(this.tr('Pedido rejeitado — '+j));return p;});
       this.audit('Rejeição de pedido',id+' · '+j); }
+    const pedR=this.state.pedidos.find(p=>p.id===id); const revR=pedR&&pedR.revendaId;
+    if(ix!=null){ const prodR=this.state.produtos.find(x=>x.id===(pedR?pedR.itens[ix].produtoId:null)); this.notificar('item_rejeitado',this._revEmail(revR),{pedidoId:id,produto:(prodR?prodR.descricao:''),justificativa:j}); }
+    else this.notificar('pedido_rejeitado',this._revEmail(revR),{pedidoId:id,revendaNome:this._revNome(revR),justificativa:j});
     this.mClose(); };
   toggleSel(ix){ this._tsl=this._tsl||{}; if(!this._tsl[ix]) this._tsl[ix]=()=>this.setState(s=>{ const sel=s.form.sel||[]; const on=sel.includes(ix);
     return {form:{...s.form,sel:on?sel.filter(x=>x!==ix):[...sel,ix],erro:null}}; }); return this._tsl[ix]; }
@@ -2854,12 +2877,19 @@ class Component extends DCLogic {
     const id=this.state.form.pedidoId; const f=this.state.fornecedores.find(x=>x.id===fid);
     this.updPed(id,p=>{p.itens=p.itens.map((i,ix)=>sel.includes(ix)&&i.st==='aprovado'?{...i,st:'direto',fornecedorId:fid}:i);
       p.trilha.push(this.tr(sel.length+' item(ns) encaminhado(s) (envio direto) a '+f.nome));return p;});
-    this.audit('Envio direto de itens',id+' → '+f.nome+' · '+sel.length+' item(ns)'); this.mClose(); };
+    this.audit('Envio direto de itens',id+' → '+f.nome+' · '+sel.length+' item(ns)');
+    const pedD=this.state.pedidos.find(p=>p.id===id); const revD=pedD&&pedD.revendaId;
+    this.notificar('pedido_fornecedor',this._fornEmail(fid),{pedidoId:id,fornecedorNome:f.nome,revendaNome:this._revNome(revD),itens:String(sel.length)});
+    this.notificar('pedido_encaminhado_revenda',this._revEmail(revD),{pedidoId:id,fornecedorNome:f.nome});
+    this.mClose(); };
   confirmEstoque=()=>{ const sel=this.state.form.sel||[]; if(!sel.length) return this.err('Selecione ao menos um item.');
     const id=this.state.form.pedidoId;
     this.updPed(id,p=>{p.itens=p.itens.map((i,ix)=>sel.includes(ix)&&i.st==='aprovado'?{...i,st:'estoque'}:i);
       p.trilha.push(this.tr(sel.length+' item(ns) atendido(s) com estoque próprio da Loja — sem envio a fornecedor'));return p;});
-    this.audit('Atendimento com estoque próprio',id+' · '+sel.length+' item(ns)'); this.mClose(); };
+    this.audit('Atendimento com estoque próprio',id+' · '+sel.length+' item(ns)');
+    const pedE=this.state.pedidos.find(p=>p.id===id);
+    this.notificar('pedido_estoque_revenda',this._revEmail(pedE&&pedE.revendaId),{pedidoId:id,itens:String(sel.length)});
+    this.mClose(); };
   toggleConv(fid){ this._tc=this._tc||{}; if(!this._tc[fid]) this._tc[fid]=()=>this.setState(s=>{ const c=s.form.convidados||[]; const on=c.includes(fid);
     return {form:{...s.form,convidados:on?c.filter(x=>x!==fid):[...c,fid],erro:null}}; }); return this._tc[fid]; }
   confirmCotacao=()=>{ const f=this.state.form; const conv=f.convidados||[];
@@ -2875,7 +2905,8 @@ class Component extends DCLogic {
     this.setState(s=>({cotacoes:[{id,pedidoId:f.pedidoId,itens:itensCot,vencItens:{},convidados:[...conv],prazo:f.prazo,status:'aguardando propostas',propostas:[],vencedorId:null,justificativa:null,motivoCancel:null,historico:[{quando:this.ts(),usuario:this.userName(),acao:'Cotação aberta ('+itensCot.length+' item(ns)) · convidados notificados: '+nomes}]},...s.cotacoes],seq:{...s.seq,cot:n+1},modal:null,form:{},scr:'cot'}));
     this.updPed(f.pedidoId,p=>{p.itens=p.itens.map((i,ix)=>sel.includes(ix)&&i.st==='aprovado'?{...i,st:'cotacao',cotacaoId:id}:i);
       p.trilha.push(this.tr('Cotação '+id+' aberta para '+sel.length+' item(ns) com '+conv.length+' fornecedores'));return p;});
-    this.audit('Abertura de cotação',id+' · pedido '+f.pedidoId+' · '+sel.length+' item(ns)'); };
+    this.audit('Abertura de cotação',id+' · pedido '+f.pedidoId+' · '+sel.length+' item(ns)');
+    conv.forEach(cf=>this.notificar('cotacao_convite',this._fornEmail(cf),{cotacao:id,fornecedorNome:this._fornNome(cf),itens:String(itensCot.length),prazo:f.prazo})); };
   escolher(cotId,fid){ return ()=>{ const c=this.state.cotacoes.find(x=>x.id===cotId);
     const menor=Math.min(...c.propostas.map(p=>p.preco)); const pr=c.propostas.find(p=>p.fornecedorId===fid);
     if(pr.preco>menor){ this.setState({modal:'justifvenc',pendVenc:{cotId,fid},form:{}}); } else { this.finalizarVenc(cotId,fid,null); } }; }
@@ -2889,7 +2920,9 @@ class Component extends DCLogic {
       x.historico.push({quando:this.ts(),usuario:this.userName(),acao:'Proposta vencedora (todos os itens): '+f.nome+' ('+this.fmt(pr.preco)+')'+(justif?' · Justificativa: '+justif:' — menor preço')});return x;});
     this.updPed(c.pedidoId,p=>{p.itens=p.itens.map(i=>i.st==='cotacao'&&i.cotacaoId===cotId?{...i,st:'direto',fornecedorId:fid,precoNeg:(pr.itens&&pr.itens[i.produtoId]!=null)?pr.itens[i.produtoId]*i.qtd:Math.round(pr.preco*(i.qtd*i.preco)/refTot*100)/100}:i);
       p.trilha.push(this.tr('Itens da '+cotId+' gerados automaticamente para '+f.nome+' (vencedor)'));return p;});
-    this.audit('Seleção de proposta vencedora',cotId+' → '+f.nome+(justif?' · '+justif:'')); this.mClose(); }
+    this.audit('Seleção de proposta vencedora',cotId+' → '+f.nome+(justif?' · '+justif:''));
+    this.notificar('cotacao_vencedor',this._fornEmail(fid),{cotacao:cotId,fornecedorNome:f.nome,valor:this.fmt(pr.preco)});
+    this.mClose(); }
   escolherItem(cotId,pid,fid){ this._ei=this._ei||{}; const k=cotId+'|'+pid+'|'+fid; if(!this._ei[k]) this._ei[k]=()=>{
     const c=this.state.cotacoes.find(x=>x.id===cotId);
     const units=c.propostas.map(pp=>pp.itens?pp.itens[pid]:null).filter(v=>v!=null);
@@ -2911,12 +2944,16 @@ class Component extends DCLogic {
       return x;});
     this.updPed(c.pedidoId,p=>{p.itens=p.itens.map(i=>i.cotacaoId===cotId&&i.produtoId===pid&&i.st==='cotacao'?{...i,st:'direto',fornecedorId:fid,precoNeg}:i);
       p.trilha.push(this.tr('Item '+(prod?prod.descricao:'')+' gerado para '+f.nome+' ('+cotId+')'));return p;});
-    this.audit('Adjudicação de item em cotação',cotId+' · '+(prod?prod.codigo:'')+' → '+f.nome+(justif?' · '+justif:'')); this.mClose(); }
+    this.audit('Adjudicação de item em cotação',cotId+' · '+(prod?prod.codigo:'')+' → '+f.nome+(justif?' · '+justif:''));
+    this.notificar('cotacao_item_vencedor',this._fornEmail(fid),{cotacao:cotId,fornecedorNome:f.nome,produto:(prod?prod.descricao:''),valor:(precoNeg!=null?this.fmt(precoNeg):'')});
+    this.mClose(); }
   confirmCancelarCot=()=>{ const m=(this.state.form.motivo||'').trim(); if(!m) return this.err('Informe o motivo do cancelamento (RF30).');
     const id=this.state.form.cotId; const c=this.state.cotacoes.find(x=>x.id===id);
     this.updCot(id,x=>{x.status='cancelada';x.motivoCancel=m;x.historico.push({quando:this.ts(),usuario:this.userName(),acao:'Cotação cancelada — '+m});return x;});
     this.updPed(c.pedidoId,p=>{p.itens=p.itens.map(i=>i.cotacaoId===id&&i.st==='cotacao'?{...i,st:'aprovado',cotacaoId:null}:i);p.trilha.push(this.tr('Cotação '+id+' cancelada — itens retornaram para decisão de atendimento'));return p;});
-    this.audit('Cancelamento de cotação',id+' · '+m); this.mClose(); };
+    this.audit('Cancelamento de cotação',id+' · '+m);
+    (c.convidados||[]).forEach(cf=>this.notificar('cotacao_cancelada',this._fornEmail(cf),{cotacao:id,fornecedorNome:this._fornNome(cf),motivo:m}));
+    this.mClose(); };
 
   confirmProposta=()=>{ const f=this.state.form; const cid=f.cotId;
     const c=this.state.cotacoes.find(x=>x.id===cid);
@@ -2929,7 +2966,9 @@ class Component extends DCLogic {
     this.updCot(cid,cc=>{ cc.propostas=cc.propostas.filter(p=>p.fornecedorId!==fid);
       cc.propostas.push({fornecedorId:fid,preco:total,itens,prazoEntrega:f.prazoEntrega,validade:f.validade||'—',condicoes:f.condicoes||'—',quando:this.hoje()});
       cc.historico.push({quando:this.ts(),usuario:me.nome,acao:'Proposta registrada por '+me.nome+' ('+this.fmt(total)+')'}); return cc;});
-    this.audit('Registro de proposta',cid+' · '+this.fmt(total)); this.mClose(); };
+    this.audit('Registro de proposta',cid+' · '+this.fmt(total));
+    this.notificar('cotacao_proposta_loja',this._lojaEmail(),{cotacao:cid,fornecedorNome:me.nome,total:this.fmt(total)});
+    this.mClose(); };
   confirmFaturar=()=>{ const f=this.state.form; const valor=this.num(f.valorFat); if(!valor) return this.err('Informe o valor efetivamente faturado (RF34).');
     const pid=f.pedidoId; const fid=this.state.fornAtivo; const ped=this.state.pedidos.find(p=>p.id===pid);
     const meus=ped.itens.filter(i=>i.st==='direto'&&i.fornecedorId===fid);
@@ -2939,17 +2978,23 @@ class Component extends DCLogic {
     this.setState(s=>({faturamentos:[{id:nf,pedidoId:pid,fornecedorId:fid,revendaId:ped.revendaId,cotacaoId:cotRef,valor,data:this.hoje(),competencia:comp,royaltyPct:pct,royaltyValor:Math.round(valor*pct)/100},...s.faturamentos],seq:{...s.seq,nf:n+1},modal:null,form:{}}));
     this.updPed(pid,p=>{p.itens=p.itens.map(i=>i.st==='direto'&&i.fornecedorId===fid?{...i,st:'faturado'}:i);
       p.trilha.push(this.tr('Faturado ('+nf+') diretamente à revenda — '+this.fmt(valor)+' ('+meus.length+' item(ns))'));return p;});
-    this.audit('Registro de faturamento',nf+' · '+pid+' · '+this.fmt(valor)); };
+    this.audit('Registro de faturamento',nf+' · '+pid+' · '+this.fmt(valor));
+    this.notificar('faturamento_revenda',this._revEmail(ped.revendaId),{pedidoId:pid,nf,fornecedorNome:this._fornNome(fid),valor:this.fmt(valor)});
+    this.notificar('faturamento_loja',this._lojaEmail(),{nf,pedidoId:pid,fornecedorNome:this._fornNome(fid),valor:this.fmt(valor),royalty:this.fmt(Math.round(valor*pct)/100)}); };
   toggleFech(chave){ this._tfc=this._tfc||{}; if(!this._tfc[chave]) this._tfc[chave]=()=>this.setState(s=>({expFech:s.expFech===chave?null:chave})); return this._tfc[chave]; }
   emitirCobranca=()=>{ const chave=this.state.form.chave; if(!chave) return;
     const fid=+chave.split('-')[1]; const f=this.state.fornecedores.find(x=>x.id===fid);
     this.setState(s=>({pagamentos:{...s.pagamentos,[chave]:{...(s.pagamentos[chave]||{status:'a pagar'}),cobranca:true,cobrancaData:this.hoje()}},modal:null,form:{}}));
-    this.audit('Documento de cobrança de royalty emitido',chave.split('-')[0]+' · '+(f?f.nome:'')+' · fornecedor notificado'); };
+    this.audit('Documento de cobrança de royalty emitido',chave.split('-')[0]+' · '+(f?f.nome:'')+' · fornecedor notificado');
+    const _comp=chave.split('-')[0]; const _roy=this.state.faturamentos.filter(x=>x.competencia===_comp&&x.fornecedorId===fid).reduce((a,x)=>a+x.royaltyValor,0);
+    this.notificar('royalty_cobranca',this._fornEmail(fid),{competencia:_comp,fornecedorNome:(f?f.nome:''),valor:this.fmt(_roy)}); };
   confirmPagamento=()=>{ const f=this.state.form; const valor=this.num(f.valorPg); if(!valor) return this.err('Informe o valor pago.');
     if(!f.dataPg) return this.err('Informe a data do pagamento (RF40).');
     const chave=f.chave;
     this.setState(s=>({pagamentos:{...s.pagamentos,[chave]:{status:'pago',data:f.dataPg,valor,comprovante:f.comprovante||'—',cobranca:true}},modal:null,form:{}}));
-    this.audit('Pagamento de royalty registrado',chave.split('-')[0]+' · '+f.fornNome+' · '+this.fmt(valor)); };
+    this.audit('Pagamento de royalty registrado',chave.split('-')[0]+' · '+f.fornNome+' · '+this.fmt(valor));
+    const _fidP=+chave.split('-')[1];
+    this.notificar('royalty_pagamento',this._fornEmail(_fidP),{competencia:chave.split('-')[0],fornecedorNome:this._fornNome(_fidP),valor:this.fmt(valor),data:f.dataPg,comprovante:f.comprovante||'—'}); };
 
   addCart(id){ this._ac=this._ac||{}; if(!this._ac[id]) this._ac[id]=()=>this.setState(s=>({cart:{...s.cart,[id]:(s.cart[id]||0)+1}})); return this._ac[id]; }
   subCart(id){ this._sb=this._sb||{}; if(!this._sb[id]) this._sb[id]=()=>this.setState(s=>{ const q=(s.cart[id]||0)-1; const c={...s.cart}; if(q<=0)delete c[id]; else c[id]=q; return {cart:c}; }); return this._sb[id]; }
@@ -2958,7 +3003,10 @@ class Component extends DCLogic {
     const total=itens.reduce((a,i)=>a+i.qtd*i.preco,0);
     const n=this.state.seq.ped; const id='PED-00'+n;
     this.setState(s=>({pedidos:[{id,revendaId:s.revAtivo,fornecedorId:null,cotacaoId:null,itens,total,status:'pendente',justificativa:null,data:this.hoje(),trilha:[this.tr('Pedido criado pela revenda — aguardando aprovação da Loja')]},...s.pedidos],seq:{...s.seq,ped:n+1},cart:{},scr:'rped'}));
-    this.audit('Novo pedido criado',id+' · '+this.fmt(total)); };
+    this.audit('Novo pedido criado',id+' · '+this.fmt(total));
+    const _rev=this.state.revAtivo;
+    this.notificar('pedido_novo_loja',this._lojaEmail(),{pedidoId:id,revendaNome:this._revNome(_rev),itens:String(itens.length),total:this.fmt(total),data:this.hoje()});
+    this.notificar('pedido_recebido_revenda',this._revEmail(_rev),{pedidoId:id,total:this.fmt(total),data:this.hoje()}); };
 
   setRole(r){ this._sr=this._sr||{}; if(!this._sr[r]) this._sr[r]=()=>this.setState({role:r,scr:null,selPed:null,selCot:null,modal:null,form:{}}); return this._sr[r]; }
   setFornAtivo=e=>this.setState({fornAtivo:+e.target.value});

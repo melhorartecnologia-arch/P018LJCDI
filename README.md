@@ -142,10 +142,26 @@ são medidas automaticamente na captura das telas.
 **Configurações Técnicas › Configuração de e-mail (SMTP):** no perfil da Loja
 (administrador) há a seção **Configurações Técnicas** com a tela **Configuração
 de e-mail**, onde se gerenciam todos os parâmetros de envio por SMTP (servidor,
-porta, segurança, usuário/senha, remetente e "responder para"). Os dados ficam
-gravados no banco; a tela permite **Salvar**, **Verificar conexão** e **Enviar
-e-mail de teste** — o envio é feito de verdade pelo servidor Node.js via
-`nodemailer` (endpoints `POST /api/email/verify` e `POST /api/email/test`).
+porta, segurança, usuário/senha, remetente, "responder para" e o e-mail interno
+da Loja). Os dados ficam gravados no banco; a tela permite **Salvar**,
+**Verificar conexão** e **Enviar e-mail de teste** — o envio é feito de verdade
+pelo servidor Node.js via `nodemailer`.
+
+Com o envio **ativado**, a plataforma dispara **e-mails automáticos com modelo
+próprio para cada caso de uso** em todos os fluxos — para revendas, fornecedores
+e para o e-mail interno da Loja:
+
+- **Pedidos:** criado (aviso à Loja + confirmação à revenda), aprovado, item
+  aprovado, rejeitado, item rejeitado, encaminhado a fornecedor, atendido pelo
+  estoque.
+- **Cotações:** convite ao fornecedor, lembrete, nova proposta (à Loja),
+  proposta vencedora, item adjudicado, cotação cancelada.
+- **Faturamento:** aviso à revenda e à Loja (com nota fiscal e royalty).
+- **Royalties:** cobrança emitida e pagamento registrado (ao fornecedor).
+
+Endpoints: `POST /api/email/verify`, `POST /api/email/test` e
+`POST /api/email/notify` (usado pelos fluxos; só envia se a config estiver
+ativa). Os modelos ficam em `server/src/email-templates.js`.
 
 ## Arquitetura
 
