@@ -26,6 +26,42 @@ http://localhost:3000
 O login aceita qualquer e-mail/senha (demonstração). Para parar: `Ctrl+C`.
 Para zerar os dados: apague a pasta `server/.pgdata`.
 
+## Passo a passo no Windows
+
+1. **Instale o Node.js** (versão LTS): https://nodejs.org → baixe o instalador
+   "LTS" para Windows e conclua a instalação (deixe as opções padrão).
+2. **Baixe o projeto** (uma das opções):
+   - Com Git: abra o **PowerShell** e rode
+     ```powershell
+     git clone https://github.com/melhorartecnologia-arch/p018ljcdi.git
+     cd p018ljcdi
+     git checkout claude/plataforma-cidade-imperial-dmxbmw
+     ```
+   - Sem Git: no GitHub, troque para o branch
+     `claude/plataforma-cidade-imperial-dmxbmw`, clique em **Code → Download ZIP**,
+     extraia e abra a pasta.
+3. **Abra o PowerShell na pasta do projeto** (na pasta, clique com o botão
+   direito → "Abrir no Terminal", ou rode `cd caminho\da\pasta`).
+4. **Inicie tudo com um comando:**
+   ```powershell
+   npm start
+   ```
+   Na primeira vez ele baixa as dependências e compila a interface (pode levar
+   alguns minutos); nas próximas é rápido. Não precisa instalar banco de dados —
+   já vem um PostgreSQL embutido.
+5. **Abra no navegador:** http://localhost:3000 — entre com qualquer e-mail e senha.
+6. **Para parar:** volte ao PowerShell e pressione `Ctrl+C`.
+
+Usar o PostgreSQL que você já tem no Windows (opcional) — no PowerShell:
+
+```powershell
+$env:DATABASE_URL = "postgres://postgres:SUA_SENHA@localhost:5432/cidadeimperial"
+npm start
+```
+
+(Para voltar ao banco embutido, feche e abra um novo PowerShell, ou rode
+`Remove-Item Env:DATABASE_URL`.)
+
 ### Usar o seu próprio PostgreSQL (opcional)
 
 Se você já tem um servidor PostgreSQL instalado (no mesmo servidor ou na nuvem),
