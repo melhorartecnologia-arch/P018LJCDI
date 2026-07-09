@@ -28,12 +28,18 @@ Para zerar os dados: apague a pasta `server/.pgdata`.
 
 ### Usar o seu próprio PostgreSQL (opcional)
 
-Se preferir um servidor PostgreSQL de verdade (local ou na nuvem), defina
-`DATABASE_URL` — a aplicação usa o driver `pg` e não sobe o banco embutido:
+Se você já tem um servidor PostgreSQL instalado (no mesmo servidor ou na nuvem),
+defina `DATABASE_URL` — a aplicação usa o driver `pg` e não sobe o banco embutido:
 
 ```bash
 DATABASE_URL="postgres://usuario:senha@localhost:5432/cidadeimperial" npm start
 ```
+
+Se o banco indicado ainda não existir, a aplicação **cria automaticamente** na
+primeira execução (desde que o usuário informado tenha permissão para criar
+bancos); em seguida aplica o schema e carrega os dados iniciais. Caso não tenha
+permissão, crie o banco antes: `createdb cidadeimperial`. O schema e o seed são
+aplicados sempre de forma idempotente (o seed só entra se o banco estiver vazio).
 
 ### Docker (opcional)
 

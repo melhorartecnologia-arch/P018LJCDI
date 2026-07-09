@@ -20,6 +20,7 @@ export let driver
 if (usePg) {
   driver = 'postgres'
   const { default: pg } = await import('pg')
+  await ensureDatabaseExists(pg, process.env.DATABASE_URL)
   const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL })
   impl = {
     query: (sql, params) => pool.query(sql, params),
@@ -69,3 +70,49 @@ export const query = (sql, params) => impl.query(sql, params)
 export const exec = (sql) => impl.exec(sql)
 export const withTx = (fn) => impl.withTx(fn)
 export const waitReady = () => impl.waitReady()
+
+// When pointing at a PostgreSQL you already have installed, the target database
+// may not exist yet. Create it automatically (connecting to the maintenance
+// `postgres` database with the same credentials) so `DATABASE_URL` works on the
+// first run without a manual `createdb`.
+async function ensureDatabaseExists(pg, url) {
+  let target
+  try {
+    target = new URL(url)
+  } catch {
+    return // key=value DSN — leave it to the driver
+  }
+  const dbName = decodeURIComponent(target.pathname.replace(/^\//, ''))
+  if (!dbName || dbName === 'postgres') return
+
+  // Does it already exist? A plain connect tells us.
+  const probe = new pg.Client({ connectionString: url })
+  try {
+    await probe.connect()
+    await probe.end()
+    return
+  } catch (err) {
+    try {
+      await probe.end()
+    } catch {}
+    if (err.code !== '3D000') return // not "database does not exist" — let the pool surface it
+  }
+
+  // Create it via the maintenance database.
+  const admin = new URL(url)
+  admin.pathname = '/postgres'
+  const client = new pg.Client({ connectionString: admin.toString() })
+  try {
+    await client.connect()
+    await client.query(`CREATE DATABASE "${dbName.replace(/"/g, '""')}"`)
+    console.log(`[db] banco "${dbName}" criado automaticamente`)
+  } catch (err) {
+    if (err.code === '42P04') return // already exists (race) — fine
+    console.warn(`[db] não foi possível criar o banco "${dbName}" automaticamente: ${err.message}`)
+    console.warn(`[db] crie manualmente, por exemplo:  createdb ${dbName}`)
+  } finally {
+    try {
+      await client.end()
+    } catch {}
+  }
+}
