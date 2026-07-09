@@ -2098,7 +2098,435 @@ class Component extends DCLogic {
   mClose=()=>{ this._ajudaStop(); this.setState({modal:null,form:{},pendVenc:null,ajudaPlay:false}); };
   // ── Ajuda por rotina (tutorial em vídeo + passo a passo) ────────────────
   AJUDA_CONTEUDO = {
-    _default:{ rotina:'Esta tela', titulo:'Como usar esta tela', resumo:'Guia rápido de uso desta rotina do sistema.', passos:['Explore as informações apresentadas na tela.','Use os botões e filtros disponíveis para realizar as ações.'], dicas:['Passe o mouse sobre os botões para ver dicas rápidas.'] }
+    "dash": {
+      "rotina": "Painel geral",
+      "titulo": "Painel geral da Loja",
+      "resumo": "Tela inicial da Loja que reúne os principais indicadores (pedidos, cotações, faturamento e royalties) e serve de atalho para acompanhar os pedidos recentes e o faturamento por fornecedor. É uma tela de visão e navegação: as aprovações acontecem depois, ao abrir cada pedido.",
+      "passos": [
+        "Ao entrar como Loja, esta é a primeira tela. Logo abaixo do título 'Painel geral', o subtítulo termina com a competência atual (por exemplo, 'competência 07/2026'), indicando o mês a que se referem os números.",
+        "Se houver pendências, aparece uma faixa amarela com o texto 'N pedidos de revendas aguardam análise e aprovação da Loja.'. Clique no botão 'Analisar pedidos', à direita da faixa, para ir direto à tela de Pedidos.",
+        "Leia os quatro cartões no topo: 'Pedidos pendentes', 'Cotações em andamento', 'Faturado no mês' e 'Royalties a receber'. Cada cartão mostra o nome do indicador, o número principal em destaque e uma breve descrição abaixo.",
+        "No painel 'Pedidos recentes', acompanhe a lista com as colunas Pedido, Revenda, Total e Status. Clique sobre qualquer linha para abrir o detalhe daquele pedido.",
+        "Na coluna 'Pedido', cada pedido pode exibir uma miniatura da foto do produto. Clique na miniatura (aparece a dica 'Clique para ampliar') para abrir a imagem em tamanho maior, sem sair do painel.",
+        "Clique em 'Ver todos →', no topo do painel 'Pedidos recentes', para ir à tela completa de Pedidos e usar filtros e aprovações.",
+        "No painel lateral 'Faturamento por fornecedor' (legenda 'Acumulado no sistema · base do royalty'), veja o total de cada fornecedor ao lado da barra e, logo abaixo, o percentual e o valor do royalty no formato 'Royalty X% · R$...'."
+      ],
+      "dicas": [
+        "A aprovação ou rejeição de pedidos não é feita neste painel: ela acontece ao abrir o pedido, seja pela linha em 'Pedidos recentes', pelo botão 'Analisar pedidos' ou por 'Ver todos →'.",
+        "A faixa amarela só aparece quando há pedidos aguardando aprovação; se ela não estiver visível, não há pendências no momento.",
+        "O bloco 'Faturamento por fornecedor' mostra a base usada para calcular o royalty — use-o para conferir rapidamente qual fornecedor mais fatura."
+      ]
+    },
+    "ped": {
+      "rotina": "Pedidos",
+      "titulo": "Aprovar e acompanhar pedidos das revendas",
+      "resumo": "Tela da Loja para revisar os pedidos enviados pelas revendas, aprovar ou rejeitar (o pedido inteiro ou item por item) e acompanhar como cada um é atendido — com estoque da Loja, envio direto ao fornecedor ou cotação.",
+      "passos": [
+        "Comece pelos quatro cartões no topo — 'Pendentes de aprovação', 'Aguardando decisão', 'Em atendimento' e 'Pedidos no mês' — para ter uma visão geral do que precisa da sua atenção.",
+        "Para achar um pedido específico, digite o número do pedido ou o nome da revenda no campo 'Buscar por número do pedido ou revenda…'.",
+        "Para filtrar a lista, use o seletor 'Todas as revendas' para escolher uma revenda e o seletor 'Todos os status' para mostrar só um tipo — por exemplo, 'Pendente' para ver apenas o que aguarda aprovação.",
+        "Na tabela, confira as colunas Pedido, Revenda, Itens, Fornecedor destino, Total e Status; clique em uma miniatura de foto para ampliá-la ('Clique para ampliar').",
+        "Para aprovar um pedido de uma só vez, clique no botão dourado 'Aprovar', que aparece na coluna Status apenas nas linhas pendentes — ele aprova todos os itens que ainda estão pendentes.",
+        "Para recusar, clique em 'Rejeitar' na mesma linha: abre uma janela em que você precisa escrever a justificativa (obrigatória) e confirmar em 'Rejeitar pedido'; essa justificativa fica visível para a revenda.",
+        "Para decidir item por item ou definir como o pedido será atendido (estoque da Loja, envio direto a um fornecedor ou cotação), clique sobre a linha para abrir a tela 'Detalhe do pedido'."
+      ],
+      "dicas": [
+        "Os botões 'Aprovar' e 'Rejeitar' na lista só aparecem nas linhas com status 'Pendente'; pedidos já decididos não mostram essas ações.",
+        "A rejeição sempre exige uma justificativa — sem ela o sistema não conclui a operação, e o texto informado fica visível para a revenda.",
+        "O botão 'Aprovar' da lista libera o pedido inteiro de uma vez; quando quiser tratar os itens de formas diferentes, abra o 'Detalhe do pedido' clicando na linha.",
+        "No detalhe, as opções de atendimento — 'Atender com estoque da Loja…', 'Envio direto a um fornecedor…' e 'Abrir cotação (2+ fornecedores)…' — só ficam disponíveis depois que os itens são aprovados e podem ser combinadas no mesmo pedido."
+      ]
+    },
+    "peddet": {
+      "rotina": "Detalhe do pedido",
+      "titulo": "Analisar e decidir um pedido (Loja)",
+      "resumo": "Tela da Loja para analisar um pedido da revenda: aprovar ou rejeitar (o pedido todo ou item a item), definir como atender (estoque, envio direto ou cotação) e acompanhar a trilha e a cotação vinculada.",
+      "passos": [
+        "Confira o cabeçalho no topo: número do pedido, a etiqueta de status e a barra com as quatro etapas (Criado, Análise da Loja, Atendimento e Faturamento), para saber em que ponto o pedido está. Use o link \"← Voltar para pedidos\" para retornar à lista.",
+        "Revise a tabela \"Itens do pedido\" (colunas Produto, Unid., Qtd, Preço, Subtotal e Situação do item). Clique na miniatura de um produto para ampliá-la. O total aparece no rodapé, em \"Valor total calculado automaticamente\".",
+        "Enquanto o pedido aguarda decisão, aparece à direita o painel \"Análise da Loja\". Para decidir o pedido inteiro de uma vez, clique em \"Aprovar pedido\" (aprova todos os itens pendentes) ou em \"Rejeitar…\".",
+        "Para decidir item a item, use os botões \"Aprovar\" e \"Rejeitar\" que aparecem na coluna \"Situação do item\", em cada linha que ainda estiver pendente.",
+        "Ao clicar em qualquer \"Rejeitar\" (do pedido ou de um item), abre-se uma janela para escrever a justificativa. Ela é obrigatória e fica visível para a revenda; sem o motivo, a rejeição não é concluída.",
+        "Depois de aprovar, surge o painel \"Decisão de atendimento — por item\". Escolha \"Atender com estoque da Loja…\", \"Envio direto a um fornecedor…\" ou \"Abrir cotação (2+ fornecedores)…\"; na janela que abrir, marque os itens e confirme.",
+        "No bloco \"Informações\" (à direita), confira a Revenda e o Fornecedor de destino. Se houver \"Cotação vinculada\", clique no código dela (ex.: COT-008 →) para abrir a cotação.",
+        "Acompanhe cada ação no bloco \"Trilha do pedido — data, hora e usuário\", que registra o que foi feito, por quem e quando."
+      ],
+      "dicas": [
+        "A justificativa é obrigatória ao rejeitar, seja o pedido todo ou um item, e fica visível para a revenda; tenha o motivo pronto antes de clicar em \"Rejeitar\".",
+        "Um mesmo pedido pode combinar os três caminhos de atendimento (estoque, envio direto e cotação); cada ação vale só para os itens que você marcar na janela.",
+        "\"Abrir cotação\" exige convidar 2 ou mais fornecedores homologados e definir a data limite para o envio das propostas.",
+        "Os painéis \"Análise da Loja\" e \"Decisão de atendimento\" só aparecem na fase certa: o primeiro enquanto o pedido aguarda decisão; o segundo depois que ele é aprovado."
+      ]
+    },
+    "cot": {
+      "rotina": "Cotações",
+      "titulo": "Como abrir e conduzir uma cotação",
+      "resumo": "Tela da Loja para cotar os itens de um pedido com 2 ou mais fornecedores, acompanhar as propostas recebidas e escolher a vencedora. É um processo opcional, usado quando a Loja quer comparar preços e condições antes de fechar.",
+      "passos": [
+        "Clique em \"+ Nova cotação\" (botão dourado no canto superior direito) para abrir a janela \"Abrir cotação\".",
+        "No campo \"Pedido de origem\", escolha um pedido da lista (só aparecem pedidos com itens aprovados) e, em \"Itens a cotar\", clique nos itens que quer incluir (não precisa ser o pedido inteiro).",
+        "Em \"Fornecedores convidados (mínimo 2)\", clique para marcar pelo menos dois fornecedores, preencha a \"Data limite para propostas\" (formato dd/mm/aaaa) e clique em \"Abrir cotação e notificar\".",
+        "De volta à lista, use o seletor \"Todos os status\" (no canto direito) para filtrar por \"Aguardando propostas\", \"Encerradas\" ou \"Canceladas\".",
+        "Acompanhe o andamento pelos cards do topo (Em andamento, Taxa de resposta, Economia obtida, Cotações no histórico) e pela barra de progresso da coluna \"Propostas\" de cada linha.",
+        "Clique sobre a linha da cotação na tabela (colunas Cotação, Pedido de origem, Convidados, Propostas, Prazo limite e Status) para abrir o detalhe.",
+        "No detalhe, clique em \"Lembrar\" ao lado de um fornecedor ainda pendente para reenviar a notificação da cotação e compare os valores no \"Mapa comparativo de propostas\" (a etiqueta MENOR PREÇO marca a proposta mais barata).",
+        "Defina o resultado clicando em \"Vencedora (todos os itens)\" no fornecedor escolhido ou, para dividir o pedido, use \"Escolher para este item\" na seção \"Adjudicação por item\"; se precisar encerrar sem escolher, use \"Cancelar cotação…\"."
+      ],
+      "dicas": [
+        "Só aparecem no seletor \"Pedido de origem\" pedidos que já têm itens aprovados — aprove os itens antes de abrir a cotação.",
+        "Se você escolher uma proposta que não seja a de MENOR PREÇO, o sistema abre a janela \"Justificar escolha fora do menor preço\" e exige um motivo, que fica registrado no histórico da cotação.",
+        "Cada fornecedor enxerga apenas a própria proposta; o Mapa comparativo completo é visível somente para a Loja.",
+        "No detalhe da cotação, o \"Histórico completo da cotação (auditoria)\" registra cada ação com data e usuário."
+      ]
+    },
+    "cotdet": {
+      "rotina": "Detalhe da cotação",
+      "titulo": "Comparar propostas e escolher a vencedora",
+      "resumo": "Tela para acompanhar uma cotação, comparar as propostas dos fornecedores no mapa comparativo e escolher a(s) vencedora(s) — a cotação inteira ou dividida item a item.",
+      "passos": [
+        "No cabeçalho, confira o código da cotação, a etiqueta de status e, quando houver, a etiqueta de prazo. Na linha logo abaixo aparecem o valor de referência e o prazo para propostas: clique no código do pedido de origem (marcado com o símbolo ↗) para abrir esse pedido, ou em \"← Voltar para cotações\" para retornar à lista.",
+        "Acompanhe a linha do tempo com as etapas da cotação — a fase atual fica destacada com a etiqueta \"ETAPA ATUAL\" — e os quatro cartões de resumo logo abaixo, que trazem os números principais da cotação.",
+        "Na faixa de fornecedores convidados, cada cartão mostra o nome e uma etiqueta com a situação (quem já enviou proposta e quem ainda está pendente). Para um convidado pendente, clique em \"Lembrar\" para reenviar a notificação da cotação.",
+        "No bloco \"Mapa comparativo de propostas\", compare as colunas Preço, Prazo de entrega, Validade e Condições de cada fornecedor. A proposta mais barata recebe a etiqueta \"MENOR PREÇO\" e a já escolhida, a etiqueta \"VENCEDORA\"; se ninguém respondeu ainda, aparece \"Nenhuma proposta recebida até o momento.\"",
+        "Para dar toda a cotação a um único fornecedor, clique em \"Vencedora (todos os itens)\" na linha dele.",
+        "Para dividir a compra por produto, use o bloco \"Adjudicação por item\" e clique em \"Escolher para este item\" no fornecedor desejado de cada item.",
+        "Se a proposta escolhida não for a de menor preço, o sistema pede uma justificativa obrigatória; informe o motivo e confirme.",
+        "Para encerrar sem escolher vencedor, clique em \"Cancelar cotação…\", no topo do mapa comparativo, e informe o motivo do cancelamento.",
+        "No fim da tela, consulte o \"Histórico completo da cotação (auditoria)\" para revisar todas as ações registradas, com data e responsável."
+      ],
+      "dicas": [
+        "Os botões de ação — \"Lembrar\", \"Vencedora (todos os itens)\", \"Escolher para este item\" e \"Cancelar cotação…\" — só aparecem enquanto a cotação ainda está aberta; depois de encerrada ou cancelada, a tela fica apenas para consulta.",
+        "Ao definir a(s) vencedora(s), os pedidos são gerados automaticamente por fornecedor, que fatura direto à revenda — você não precisa criar o pedido manualmente.",
+        "O mapa comparativo é sigiloso: cada fornecedor enxerga apenas a própria proposta, nunca as dos concorrentes."
+      ]
+    },
+    "forn": {
+      "rotina": "Fornecedores e Contratos",
+      "titulo": "Gerir fornecedores e royalties",
+      "resumo": "Tela da Loja para cadastrar fornecedores, acompanhar seus contratos e definir o percentual de royalty com vigência e histórico de alterações.",
+      "passos": [
+        "Confira os 4 indicadores no topo — Fornecedores ativos, Contratos vigentes, Royalty médio e Royalty gerado — para ter a visão geral antes de agir.",
+        "Para localizar um fornecedor, digite nome, CNPJ ou cidade no campo \"Buscar fornecedor por nome, CNPJ ou cidade…\"; a lista é filtrada conforme você digita.",
+        "Para incluir um fornecedor, clique em \"+ Novo fornecedor\" (canto superior direito), preencha ao menos Razão social e CNPJ (Cidade/UF e Contato são opcionais) e clique em \"Salvar fornecedor\".",
+        "Para ver a ficha completa, clique sobre a linha do fornecedor na tabela (a seta › na coluna Faturado indica que a linha é clicável); abre a página \"Detalhe do fornecedor\" com seus contratos e produtos.",
+        "Na tabela \"Contratos e vigências\", acompanhe as colunas Royalty, Vigência, Histórico de royalty e Status; contratos próximos do fim mostram na Vigência o aviso \"Vence em X dias\" ou \"Vencido há X dias\".",
+        "Para mudar o percentual de um contrato vigente, clique em \"Ajustar royalty…\", informe o \"Novo percentual (%)\" na janela \"Ajustar percentual de royalty\" e clique em \"Salvar alteração\"; a mudança fica registrada na coluna Histórico de royalty.",
+        "Para finalizar um contrato vigente, clique em \"Encerrar\" na mesma linha; o Status passa para \"encerrado\"."
+      ],
+      "dicas": [
+        "As ações Ajustar royalty… e Encerrar aparecem apenas em contratos vigentes; contratos já encerrados não exibem esses botões.",
+        "A coluna Histórico de royalty registra cada alteração com data, valor anterior → novo e usuário — útil para auditoria e conferência.",
+        "O aviso amarelo de vigência aparece quando faltam 180 dias ou menos para o fim do contrato — use-o como lembrete para renovar a tempo."
+      ]
+    },
+    "forndet": {
+      "rotina": "Detalhe do fornecedor",
+      "titulo": "Gerenciar o fornecedor e seus contratos",
+      "resumo": "Tela para consultar os dados de um fornecedor, administrar seus contratos e o percentual de royalty, e acompanhar os produtos homologados vinculados a ele.",
+      "passos": [
+        "No topo aparecem o nome do fornecedor, o selo de situação (ativo/inativo) e, logo abaixo, a linha com CNPJ · cidade · contato; use o link \"← Voltar para fornecedores\" para retornar à lista.",
+        "Confira os 4 cartões de indicadores logo abaixo do cabeçalho para ter um resumo rápido do fornecedor.",
+        "Para corrigir dados cadastrais, clique em \"Editar dados\". Para tirar o fornecedor de operação ou recolocá-lo, use o botão ao lado, que mostra \"Inativar fornecedor\" quando ele está ativo e \"Reativar fornecedor\" quando está inativo.",
+        "Para registrar um contrato e o percentual de royalty, clique em \"+ Novo contrato\" (no topo da tela, ao lado de \"Editar dados\"). Enquanto não houver contrato, a seção \"Contratos e royalty\" mostra o aviso \"Nenhum contrato cadastrado…\".",
+        "Em cada cartão de contrato, confira o número, o selo de situação, a \"Vigência\", o percentual mostrado ao lado como \"royalty …\" e o bloco \"Histórico do percentual (RF04)\".",
+        "Para mudar o percentual de um contrato vigente, clique em \"Ajustar royalty…\": abre a janela \"Ajustar percentual de royalty\", onde você preenche o campo \"Novo percentual (%)\" e clica em \"Salvar alteração\".",
+        "Para finalizar um contrato vigente, clique em \"Encerrar contrato\", no próprio cartão do contrato.",
+        "Na seção \"Produtos homologados deste fornecedor\", consulte a tabela (código, descrição, unidade, preço e situação) e clique na miniatura da foto (\"Clique para ampliar\") para vê-la em tamanho maior.",
+        "Para tirar ou colocar um produto no catálogo, use o link à direita da linha, que mostra \"Inativar\" quando o produto está ativo e \"Ativar\" quando está inativo."
+      ],
+      "dicas": [
+        "Os botões \"Ajustar royalty…\" e \"Encerrar contrato\" só aparecem em contratos vigentes.",
+        "Toda alteração de percentual fica registrada no \"Histórico do percentual (RF04)\" com data e usuário — não precisa anotar à parte.",
+        "Os produtos homologados ficam sempre vinculados a um fornecedor e a um contrato; por isso, cadastre o contrato antes."
+      ]
+    },
+    "prod": {
+      "rotina": "Produtos homologados",
+      "titulo": "Produtos homologados (Loja)",
+      "resumo": "Tela da Loja para manter o catálogo de produtos homologados, sempre vinculados a um fornecedor e a um contrato. Aqui você cadastra, consulta e ativa ou inativa os produtos disponíveis para as revendas.",
+      "passos": [
+        "No topo da tela, confira os quatro indicadores (Ativos no catálogo, Inativos, Fornecedores representados e Movimentado em pedidos) para ter uma visão geral do catálogo.",
+        "Para encontrar um produto, digite no campo \"Buscar por código ou descrição…\" e/ou use os seletores \"Todos os fornecedores\" e \"Todos os status\" (que filtra por Ativos no catálogo ou Inativos).",
+        "Para cadastrar um novo produto, clique no botão \"+ Novo produto\", no canto superior direito.",
+        "Na janela que abrir, preencha a \"Descrição\", escolha o \"Fornecedor / contrato\" e informe a \"Unidade\" e o \"Preço (R$)\" — descrição, fornecedor e preço são obrigatórios.",
+        "Clique em \"Homologar produto\" para salvar o cadastro (ou em \"Cancelar\" para desistir).",
+        "Para ver os detalhes de um produto, clique sobre a linha dele na tabela: abre a tela \"Detalhe do produto\", com fornecedor, contrato, royalty do contrato, histórico de preço e pedidos, além do botão \"Editar produto\".",
+        "Para tirar um produto do catálogo das revendas ou colocá-lo de volta, clique no link \"Inativar\" ou \"Ativar\" à direita da linha; a coluna \"Catálogo\" mostra a situação atual de cada item."
+      ],
+      "dicas": [
+        "No seletor \"Fornecedor / contrato\" só aparecem fornecedores ativos, pois todo produto precisa estar ligado a um fornecedor com contrato vigente.",
+        "Inativar não exclui o produto: ele apenas sai do catálogo das revendas e pode ser reativado a qualquer momento pelo mesmo link.",
+        "Na coluna \"Código\", clique na miniatura da foto do produto para ampliar a imagem."
+      ]
+    },
+    "proddet": {
+      "rotina": "Detalhe do produto",
+      "titulo": "Detalhe do produto: consultar e gerenciar",
+      "resumo": "Tela da Loja para ver todos os dados de um produto homologado — foto, fornecedor, contrato, indicadores e pedidos — e gerenciar sua edição e disponibilidade no catálogo.",
+      "passos": [
+        "No topo, confira o nome do produto e, ao lado dele, o selo de status (Ativo ou Inativo); logo abaixo do título aparecem o código, a unidade em que o produto é vendido e o preço atual.",
+        "Clique na foto principal (ela mostra o aviso 'Clique para ampliar') para vê-la em tamanho grande; as miniaturas logo abaixo trocam a foto exibida em destaque.",
+        "No quadro 'Vínculo — fornecedor e contrato (RF05)', clique no nome do fornecedor para abrir o cadastro dele e confira os campos 'Contrato' e 'Royalty do contrato'.",
+        "Acompanhe os quatro indicadores ('Pedidos com o produto', 'Quantidade pedida', 'Movimentado' e 'Fotos cadastradas') e o quadro 'Histórico de preço', que lista as mudanças de valor.",
+        "Para corrigir dados, clique em 'Editar produto': abre um formulário onde você ajusta descrição, unidade, preço, fornecedor e fotos.",
+        "Use o botão 'Inativar no catálogo' (ou 'Ativar no catálogo', quando o produto já estiver inativo) para tirar ou disponibilizar o produto para as revendas.",
+        "Na seção 'Pedidos com este produto', clique em uma linha da tabela para abrir o pedido correspondente.",
+        "Clique em '← Voltar para produtos', no topo da tela, para retornar à lista de produtos."
+      ],
+      "dicas": [
+        "'Inativar no catálogo' não apaga o produto — apenas o esconde das revendas; depois é só clicar em 'Ativar no catálogo' para disponibilizá-lo de novo.",
+        "No 'Histórico de preço' você vê cada mudança com quem alterou e quando; se aparecer 'Sem alterações de preço desde o cadastro', o preço nunca foi alterado.",
+        "Os indicadores e o valor 'Movimentado' contam apenas pedidos que incluem este produto; se aparecer 'Este produto ainda não apareceu em pedidos', é porque ele ainda não foi pedido."
+      ]
+    },
+    "rev": {
+      "rotina": "Revendas",
+      "titulo": "Cadastrar revendas e controlar visibilidade",
+      "resumo": "Tela da Loja para cadastrar revendas, controlar o acesso (login) e definir quais fornecedores e produtos cada revenda pode ver e pedir.",
+      "passos": [
+        "No topo, confira os 4 cartões — \"Revendas ativas\", \"Pedidos das revendas\", \"Valor em pedidos\" e \"Faturado às revendas\" — para ter o panorama geral.",
+        "Para achar uma revenda, digite no campo \"Buscar revenda por nome, CNPJ ou cidade…\"; a lista filtra sozinha conforme você digita.",
+        "Para cadastrar, clique em \"+ Nova revenda\" (canto superior direito), preencha Nome, CNPJ, Cidade/UF e E-mail de acesso (login) e clique em \"Salvar revenda\".",
+        "Na tabela, acompanhe as colunas Revenda, Acesso (mostra o e-mail de login), Visibilidade, Pedidos, Valor em pedidos e Status de cada revenda.",
+        "Clique em qualquer linha da tabela para abrir o detalhe daquela revenda.",
+        "No detalhe, use \"Editar dados\" para corrigir o cadastro, ou o botão ao lado (\"Inativar revenda\" / \"Reativar revenda\") para ligar ou desligar o acesso da revenda.",
+        "No quadro \"Visibilidade de fornecedores\", clique em cada fornecedor para liberar (fica com ✓) ou ocultar — isso define de quais fornecedores a revenda pode ver e pedir.",
+        "Na tabela \"Visibilidade por produto\", clique em \"Bloquear\" ou \"Liberar\" para restringir itens específicos sem ocultar o fornecedor inteiro.",
+        "Para reenviar o login à revenda, clique em \"Reenviar convite de acesso\"; use \"← Voltar para revendas\" para retornar à lista."
+      ],
+      "dicas": [
+        "Nome e CNPJ são obrigatórios ao cadastrar — sem eles aparece o aviso \"Informe ao menos nome e CNPJ.\".",
+        "A coluna Visibilidade resume quantos fornecedores estão liberados e quantos produtos estão bloqueados; todos esses ajustes ficam dentro do detalhe da revenda.",
+        "A visibilidade de fornecedores só pode ser ajustada depois de salvar o cadastro, entrando no detalhe da revenda."
+      ]
+    },
+    "revdet": {
+      "rotina": "Detalhe da revenda",
+      "titulo": "Gerenciar o detalhe da revenda",
+      "resumo": "Tela da Loja para administrar uma revenda: editar o cadastro, controlar o acesso, definir quais fornecedores e produtos ela enxerga e acompanhar os pedidos que ela fez.",
+      "passos": [
+        "No topo da tela aparece o nome da revenda com uma etiqueta colorida de status ('Ativo' ou 'Inativo'). Para voltar à lista, clique no link '← Voltar para revendas'.",
+        "Logo abaixo, quatro cartões mostram um resumo da revenda ('Pedidos realizados', 'Valor em pedidos', 'Faturado recebido' e 'Produtos visíveis'); eles servem apenas para consulta.",
+        "Clique no botão 'Editar dados' para abrir o formulário e alterar o nome, o CNPJ, a cidade e o e-mail da revenda; depois é só salvar.",
+        "Ao lado, o botão de status alterna entre 'Inativar revenda' e 'Reativar revenda'; use-o para suspender ou liberar novamente a revenda.",
+        "No cartão 'Acesso da revenda', confira o 'E-mail de acesso' e o 'Último acesso'. Se a revenda ainda não conseguiu entrar, clique em 'Reenviar convite de acesso' — surge a mensagem 'Convite reenviado em...' confirmando o envio.",
+        "No cartão 'Visibilidade de fornecedores', clique na etiqueta de cada fornecedor para liberá-lo (fica com ✓ e destacado) ou ocultá-lo para essa revenda.",
+        "Na seção 'Visibilidade por produto', cada item aparece com a etiqueta 'Visível' ou 'Bloqueado'. Use o link à direita 'Bloquear' para esconder um produto específico da revenda ou 'Liberar' para exibi-lo de novo.",
+        "Clique na foto de um produto para ampliá-la e conferir o item.",
+        "Na seção 'Pedidos desta revenda', clique em uma linha para abrir os detalhes do pedido. Se ainda não houver pedidos, aparece 'Esta revenda ainda não fez pedidos.'"
+      ],
+      "dicas": [
+        "Ocultar um fornecedor esconde de uma vez todos os produtos dele. Para tirar só um item da vista da revenda, use 'Bloquear' na tabela de produtos, sem mexer no fornecedor inteiro.",
+        "Se aparecer 'Nenhum fornecedor visível — libere fornecedores acima', a revenda não verá catálogo nenhum até você liberar ao menos um fornecedor.",
+        "Inativar a revenda muda o status para 'Inativo' e suspende o uso dela, mas não apaga o cadastro nem o histórico de pedidos; basta clicar em 'Reativar revenda' para liberar de novo."
+      ]
+    },
+    "fat": {
+      "rotina": "Faturamento",
+      "titulo": "Acompanhar faturamento e royalties",
+      "resumo": "Tela de consulta do perfil Loja para acompanhar as notas de faturamento que o fornecedor emitiu direto para a revenda, com o pedido de origem, o valor faturado e o royalty. Também mostra os pedidos já encaminhados que ainda aguardam o fornecedor faturar.",
+      "passos": [
+        "No menu lateral (perfil Loja), dentro do grupo \"Operação\", clique em \"Faturamento\" para abrir a tela.",
+        "Se aparecer o box laranja \"Pedidos encaminhados aguardando faturamento do fornecedor\", confira nele o que ainda está pendente: cada linha traz o número do pedido, o fornecedor (destino) → a revenda e, à direita, o valor total.",
+        "Na tabela principal, use a coluna \"Nota\" para localizar a nota fiscal: o número aparece em cima (ex.: NF-1207) e a data da nota logo abaixo.",
+        "Na coluna \"Pedido\", veja a qual pedido aquela nota está vinculada.",
+        "Confira as colunas \"Fornecedor\" e \"Revenda\" para identificar as duas partes da operação.",
+        "Na coluna \"Origem\", saiba de onde veio o faturamento: \"Cotação\" seguido do código (ex.: Cotação COT-007) ou \"Envio direto\".",
+        "Confira o \"Valor faturado\" da nota e, na última coluna, o \"Royalty\", que mostra o percentual e o valor em reais (ex.: 3% · R$ 96,60)."
+      ],
+      "dicas": [
+        "O box laranja de pendências só aparece quando há pedidos encaminhados ainda sem nota; se ele não estiver na tela, não há faturamento pendente do fornecedor.",
+        "Esta tela é só de acompanhamento: a nota é emitida pelo fornecedor. Aqui a Loja apenas consulta, não há botões para editar ou lançar notas.",
+        "Use a coluna \"Origem\" para separar rapidamente as notas vindas de cotação das de envio direto, e a coluna \"Royalty\" para conferir o valor devido em cada nota."
+      ]
+    },
+    "roy": {
+      "rotina": "Royalties",
+      "titulo": "Royalties e Fechamento Mensal",
+      "resumo": "Consolida, por fornecedor e por competência, o royalty devido (valor faturado × percentual do contrato). Aqui a Loja confere os valores, emite a cobrança e registra o pagamento recebido.",
+      "passos": [
+        "No menu lateral, em \"Financeiro\", abra \"Royalties & Fechamento\". No topo, confira os quatro indicadores: \"Royalty a receber\", \"Recebido\", \"Em atraso\" e \"Base faturada\".",
+        "Localize o bloco da \"Competência\" (mês/ano) desejada. No cabeçalho de cada bloco você vê \"Faturado\", \"Royalty devido\" e uma barra de progresso com o percentual já pago.",
+        "Na tabela, clique no nome do fornecedor (que traz o link \"ver extrato ▾\") para abrir a \"Composição do fechamento\" e conferir nota a nota: valor × percentual = royalty.",
+        "Confira as colunas de cada fornecedor: \"Royalty\" (percentual do contrato), \"Total faturado\", \"Royalty devido\" e \"Status\".",
+        "Para cobrar, clique em \"Gerar cobrança…\" na coluna \"Ações\". Confira número, competência, vencimento e o \"Total devido\" e clique em \"Emitir e notificar fornecedor\".",
+        "Depois de emitida, o botão passa a \"Ver cobrança\". Use-o sempre que quiser reabrir e conferir o documento.",
+        "Ao receber o valor, clique em \"Registrar pagamento…\". Os campos \"Data do pagamento\" e \"Valor pago (R$)\" já vêm preenchidos com a data de hoje e o valor devido — ajuste se precisar, informe o \"Comprovante\" (opcional) e clique em \"Registrar pagamento\".",
+        "Acompanhe o resultado: os fechamentos pagos atualizam o \"Status\", a barra de progresso e os indicadores do topo."
+      ],
+      "dicas": [
+        "\"Valor pago (R$)\" e \"Data do pagamento\" são obrigatórios; sem eles o sistema exibe um aviso e não conclui o registro. O \"Comprovante\" é opcional.",
+        "Fique atento ao \"vence em\" da cobrança: sem pagamento até a data de vencimento, o \"Status\" do fechamento passa para \"Em atraso\".",
+        "Para recolher a composição do fechamento, clique novamente no nome do fornecedor."
+      ]
+    },
+    "rel": {
+      "rotina": "Relatórios",
+      "titulo": "Consultando os Relatórios da Loja",
+      "resumo": "Painel de consulta da Loja que reúne numa só tela os pedidos por status, o faturamento e os royalties por fornecedor e o desempenho das cotações. É uma tela só de leitura, para acompanhar os números — não tem botões para aprovar ou editar.",
+      "passos": [
+        "Abra \"Relatórios\" no menu da Loja; logo abaixo do título aparece o subtítulo \"Pedidos, faturamento, royalties e desempenho das cotações\", confirmando o conteúdo da tela.",
+        "No primeiro painel, \"Pedidos por período, fornecedor e revenda\", leia as etiquetas coloridas no topo (no formato \"Status: número\") para ver quantos pedidos existem em cada situação.",
+        "Logo abaixo, acompanhe cada pedido na tabela pelas colunas Pedido, Data, Revenda, Fornecedor, Total e Status.",
+        "No painel \"Faturamento & royalties por fornecedor\", veja em cada fornecedor o valor faturado (número de cima, à direita) e, logo abaixo em destaque dourado, o royalty apurado; o percentual usado aparece ao lado do nome como \"royalty ...\".",
+        "No painel \"Cotações — economia, resposta e participação\", confira os três indicadores do topo: \"economia obtida\" (em verde), \"prazo médio de resposta\" e \"participação dos convidados\".",
+        "Na tabela de cotações, analise cada linha pelas colunas Cotação (com o status logo abaixo do código), Participação (número de propostas), Menor preço, Economia e Vencedor."
+      ],
+      "dicas": [
+        "Esta é uma tela de consulta: não há botões de ação, então use-a para acompanhar e conferir os números, não para aprovar ou alterar pedidos.",
+        "Para medir o ganho das compras por cotação, compare a coluna Economia da tabela com o indicador \"economia obtida\" no topo do mesmo painel.",
+        "O valor em dourado no painel de faturamento é o royalty já apurado por fornecedor; o percentual aplicado aparece ao lado do nome, como \"royalty ...\"."
+      ]
+    },
+    "seg": {
+      "rotina": "Segurança e Auditoria",
+      "titulo": "Conferir acessos por perfil e a trilha de auditoria",
+      "resumo": "Tela de consulta da Loja que mostra o que cada perfil (Loja, Fornecedor e Revenda) pode fazer na plataforma e registra as operações críticas em um log de auditoria. Serve para entender permissões e acompanhar quem executou cada ação sensível.",
+      "passos": [
+        "No menu lateral (papel Loja), abra o grupo \"Gestão\" e clique em \"Segurança & Auditoria\" para carregar a tela.",
+        "No topo, leia os três cartões de perfil: \"Loja Cidade Imperial\" (DONA DA PLATAFORMA), \"Fornecedor\" (FORNECE OS PRODUTOS) e \"Revenda\" (COMPRA PARA REVENDER).",
+        "No cartão \"Loja Cidade Imperial\", relembre as ações exclusivas da Loja: homologar produtos, cadastrar contratos e royalties, aprovar pedidos, decidir entre envio direto e cotação, selecionar propostas e receber os royalties no fechamento mensal.",
+        "No cartão \"Fornecedor\", confira o que ele faz: recebe pedidos aprovados e solicitações de cotação, envia propostas (vê apenas as próprias), fatura diretamente à revenda e paga o royalty devido.",
+        "No cartão \"Revenda\", confira que ela só faz pedidos dos produtos homologados visíveis para ela e recebe o faturamento diretamente do fornecedor escolhido.",
+        "Desça até o quadro \"Log de auditoria — operações críticas (RF47)\" para ver o registro das ações sensíveis.",
+        "Na tabela, leia cada linha pelas colunas \"Data / hora\", \"Usuário\", \"Operação\" e \"Detalhe\" para saber quem fez o quê e quando."
+      ],
+      "dicas": [
+        "Esta é uma tela apenas de consulta: não há botões de edição ou filtro aqui. Para executar ou alterar ações, use as rotinas específicas (Pedidos, Cotações, Royalties etc.).",
+        "O log registra somente operações críticas (RF47), como aprovações, cotações e seleção de propostas — use-o para auditoria.",
+        "Acompanhe a coluna \"Data / hora\" para reconstruir a ordem dos eventos ao investigar uma ocorrência."
+      ]
+    },
+    "fped": {
+      "rotina": "Pedidos recebidos",
+      "titulo": "Faturar pedidos recebidos (Fornecedor)",
+      "resumo": "Tela onde o fornecedor vê os pedidos direcionados a ele por envio direto ou por cotação vencida e registra o faturamento direto para a revenda. O royalty é calculado automaticamente sobre o valor informado.",
+      "passos": [
+        "Na lista \"Pedidos recebidos\", encontre o card do pedido pelo número (ex.: \"PED-0042\"), pela etiqueta de status (\"Encaminhado\" ou \"Faturado\") e pela origem (\"Envio direto\" ou \"Cotação COT-...\") com a data.",
+        "Confira os produtos listados no card e o valor total, exibido em destaque no lado direito.",
+        "Verifique em \"Faturar diretamente para:\" o nome da revenda que receberá a nota — o faturamento é feito direto para ela.",
+        "Se aparecer o aviso \"Atendimento parcial: X de Y itens do pedido são seus\", lembre-se de que você fatura apenas os itens que são seus.",
+        "Se quiser, clique nas fotos dos produtos (passe o mouse e aparece \"Clique para ampliar\") para vê-las maiores.",
+        "Clique no botão dourado \"Registrar faturamento…\", no lado direito do card (ele só aparece enquanto houver itens seus pendentes de faturamento).",
+        "Na janela \"Registrar faturamento\", confira o quadro \"Somente os seus itens\" e revise o campo \"Valor efetivamente faturado (R$)\", ajustando o valor se necessário.",
+        "Clique em \"Confirmar faturamento\" para concluir, ou em \"Cancelar\" para fechar sem registrar."
+      ],
+      "dicas": [
+        "O campo \"Valor efetivamente faturado (R$)\" já vem preenchido com a soma dos seus itens pendentes; confira e edite o valor antes de confirmar.",
+        "O royalty é calculado automaticamente sobre o valor faturado, conforme o percentual do seu contrato — você só informa o valor.",
+        "Após confirmar, a etiqueta do card muda para \"Faturado\" e o botão \"Registrar faturamento…\" deixa de aparecer para aquele pedido."
+      ]
+    },
+    "fcot": {
+      "rotina": "Cotações convidadas",
+      "titulo": "Responder cotações convidadas (Fornecedor)",
+      "resumo": "Tela do fornecedor que lista somente as cotações para as quais você foi convidado, permitindo enviar ou editar sua proposta e acompanhar o resultado — sem ver as propostas concorrentes.",
+      "passos": [
+        "Localize na lista o cartão da cotação desejada: cada um mostra o código da cotação, a etiqueta de status, o texto \"prazo:\" e os itens solicitados.",
+        "Clique nas miniaturas das fotos dos itens (passe o mouse e aparece \"Clique para ampliar\") para ver ampliada a imagem do que está sendo cotado.",
+        "Confira o campo \"Minha proposta\": se aparecer \"— não enviada —\", você ainda não respondeu; se mostrar um valor, sua proposta já foi enviada.",
+        "Para responder, clique no botão dourado à direita do cartão — \"Enviar proposta…\" (ou \"Editar proposta…\", se já tiver enviado antes).",
+        "Na janela que abre (\"Proposta —\" seguida do código da cotação), informe o valor em \"Preço unitário por item (R$)\" para cada item; o \"Total da proposta\" é calculado automaticamente.",
+        "Preencha \"Prazo de entrega\" (ex.: 5 dias úteis), \"Validade da proposta\" (data no formato dd/mm/aaaa) e \"Condições comerciais\" (ex.: boleto 28 dias).",
+        "Clique no botão dourado \"Enviar proposta\" para registrar (o botão continua com esse nome mesmo quando você está editando uma proposta já enviada), ou em \"Cancelar\" para fechar sem salvar.",
+        "Em cotações já encerradas, leia a mensagem de resultado no próprio cartão (ex.: \"Sua proposta venceu\" ou \"Você venceu X de Y item(ns)\")."
+      ],
+      "dicas": [
+        "O botão de proposta só aparece enquanto a cotação está com a etiqueta \"Aguardando propostas\"; depois de encerrada ele some e não é mais possível responder.",
+        "Respeite a data mostrada em \"prazo:\" no cartão — é o limite para enviar ou ajustar sua proposta.",
+        "Suas propostas são sigilosas: você não vê os valores dos concorrentes e eles não veem os seus."
+      ]
+    },
+    "ffat": {
+      "rotina": "Meus faturamentos",
+      "titulo": "Consultar meus faturamentos",
+      "resumo": "Tela de consulta onde o fornecedor acompanha todas as notas que emitiu diretamente às revendas, mostrando o valor faturado e o royalty devido de cada uma.",
+      "passos": [
+        "No menu lateral, dentro do grupo \"Operação\", clique em \"Meus faturamentos\" para abrir a tela.",
+        "Confira no subtítulo o percentual de royalty do seu contrato, exibido logo após \"royalty do contrato:\".",
+        "Na coluna \"Nota\", identifique cada faturamento pelo número da nota — a data da nota aparece logo abaixo do número.",
+        "Use a coluna \"Pedido\" para ver a qual pedido cada nota corresponde e a coluna \"Revenda\" para conferir para quem foi faturado.",
+        "Na coluna \"Valor faturado\", verifique o valor total de cada nota emitida diretamente à revenda.",
+        "Na coluna \"Royalty devido\", veja o percentual aplicado e o valor do royalty de cada nota (formato \"X% · valor\").",
+        "Para lançar um novo faturamento que passará a aparecer nesta lista, vá em \"Operação\" > \"Pedidos recebidos\" e use o botão \"Registrar faturamento…\" no pedido desejado.",
+        "Para ver o fechamento mensal consolidado, acesse \"Financeiro\" > \"Royalties devidos\"."
+      ],
+      "dicas": [
+        "Esta tela é apenas de consulta: os lançamentos são criados em \"Pedidos recebidos\", pelo botão \"Registrar faturamento…\".",
+        "O royalty é calculado automaticamente sobre o valor faturado usando o percentual do contrato mostrado no subtítulo.",
+        "Some os valores da coluna \"Royalty devido\" para conferir com o total apresentado em \"Royalties devidos\"."
+      ]
+    },
+    "froy": {
+      "rotina": "Royalties devidos",
+      "titulo": "Consultar royalties devidos",
+      "resumo": "Tela somente de consulta em que o Fornecedor acompanha, mês a mês, o royalty apurado no fechamento (valor faturado × percentual do contrato) e o status de pagamento junto à Loja.",
+      "passos": [
+        "No menu lateral, na seção \"Financeiro\", clique em \"Royalties devidos\" para abrir a tela.",
+        "Leia o subtítulo, logo abaixo do título \"Royalties devidos\": ele traz o nome do seu fornecedor e lembra como o royalty é calculado — valor faturado × percentual do contrato, com o percentual mostrado entre parênteses.",
+        "Na coluna \"Competência\", identifique o mês/ano de cada fechamento (uma linha por competência).",
+        "Confira a coluna \"Faturado\": é o total que você faturou às revendas naquela competência.",
+        "Verifique a coluna \"Royalty devido\": o valor em destaque (dourado) que você deve à Loja, correspondente ao faturado multiplicado pelo percentual do contrato.",
+        "Na coluna \"Status\", veja a situação de cada competência: \"A pagar\", \"Em atraso\" ou \"Pago\".",
+        "Quando o status for \"Pago\", confira a linha verde logo abaixo da competência, no formato \"Pago em [data] · comprovante [número]\", para conferir a baixa."
+      ],
+      "dicas": [
+        "Esta tela é apenas de consulta: os valores são apurados automaticamente no fechamento mensal e você não edita nada aqui. O registro do pagamento e a emissão da cobrança são feitos pela Loja.",
+        "Fique atento às competências com status \"Em atraso\" (exibido em vermelho): indicam royalty vencido e ainda não pago.",
+        "O valor em \"Royalty devido\" sempre corresponde ao percentual do contrato exibido no subtítulo aplicado sobre o total da coluna \"Faturado\"."
+      ]
+    },
+    "cat": {
+      "rotina": "Catálogo de produtos",
+      "titulo": "Montar e enviar pedido pelo catálogo",
+      "resumo": "Tela da Revenda para navegar pelos produtos homologados, escolher as quantidades e enviar o pedido para aprovação da Loja. O total é calculado automaticamente.",
+      "passos": [
+        "No campo \"Buscar produto…\" (topo da tela), digite parte do nome ou do código do produto para filtrar a lista; deixe em branco para ver todos os produtos disponíveis.",
+        "Localize o produto entre os cards, conferindo o código · unidade, a descrição, o fornecedor e o preço mostrados em cada card.",
+        "Para ver a imagem ampliada, clique na foto do produto (aparece a dica \"Clique para ampliar\"); se o card tiver as setas ‹ e ›, use-as para percorrer as demais fotos.",
+        "Clique no botão \"+\" (dourado) do card para adicionar uma unidade ao pedido; assim que adiciona, surgem o botão \"−\" e o número da quantidade atual entre eles.",
+        "Clique no botão \"−\" para diminuir a quantidade; quando ela chega a zero, o item sai do pedido.",
+        "Repita nos demais produtos que quiser incluir no mesmo pedido.",
+        "Confira a barra escura fixa na parte de baixo da tela, que mostra a quantidade de itens no pedido e o total calculado automaticamente.",
+        "Clique em \"Enviar pedido para aprovação\" para finalizar; o pedido é criado com status pendente, o catálogo é esvaziado e você vai para a tela \"Meus pedidos\"."
+      ],
+      "dicas": [
+        "A barra escura com o botão \"Enviar pedido para aprovação\" só aparece depois que você adiciona pelo menos um item; com o pedido vazio ela fica oculta.",
+        "Você não digita valores: o preço vem do cadastro e o total é somado automaticamente conforme as quantidades escolhidas.",
+        "A tela lista apenas os produtos homologados e disponíveis para a sua revenda; se algum item não aparecer, confirme a homologação com a Loja."
+      ]
+    },
+    "rped": {
+      "rotina": "Meus pedidos",
+      "titulo": "Acompanhar Meus Pedidos",
+      "resumo": "Tela onde a Revenda acompanha, em uma única tabela, todos os pedidos que enviou e o status de cada um — de pendente a faturado — sem precisar consultar a Loja.",
+      "passos": [
+        "Na coluna \"Pedido\" você vê o código de cada pedido (por exemplo, PED-0044) e, logo abaixo dele, a data em que o pedido foi criado.",
+        "Na coluna \"Itens\" aparecem as miniaturas das fotos dos produtos e, ao lado, a quantidade de itens do pedido (por exemplo, \"2 itens\").",
+        "Clique em qualquer miniatura da coluna \"Itens\" (aparece a dica \"Clique para ampliar\") para ver a foto do produto em tamanho maior.",
+        "Na coluna \"Fornecedor (faturamento)\" confira quem vai faturar o pedido; enquanto a Loja ainda não definir o fornecedor, o campo mostra apenas um traço (\"—\").",
+        "Veja o valor total do pedido na coluna \"Total\".",
+        "Acompanhe a etiqueta colorida na coluna \"Status\", que indica a situação do pedido (pendente, em cotação, aprovado, rejeitado ou faturado, como explica o texto logo abaixo do título da tela).",
+        "Quando um pedido é rejeitado, aparece um texto em vermelho logo abaixo da etiqueta de status, com a justificativa informada pela Loja."
+      ],
+      "dicas": [
+        "Esta tela serve apenas para acompanhar; para criar um novo pedido, abra a tela \"Catálogo de produtos\" (menu \"Compras\"), adicione os produtos e clique em \"Enviar pedido para aprovação\".",
+        "Todo pedido novo começa como \"pendente\" e só muda depois que a Loja o analisa; a coluna \"Fornecedor (faturamento)\" só é preenchida quando a Loja encaminha o pedido a um fornecedor ou encerra a cotação.",
+        "A coluna \"Fornecedor (faturamento)\" pode mostrar \"Estoque da Loja\" quando o pedido é atendido pelo próprio estoque da Loja."
+      ]
+    },
+    "_default": {
+      "rotina": "Esta tela",
+      "titulo": "Como usar esta tela",
+      "resumo": "Guia rápido de uso desta rotina do sistema.",
+      "passos": [
+        "Explore as informações e indicadores apresentados na tela.",
+        "Use os botões, filtros e campos disponíveis para realizar as ações."
+      ],
+      "dicas": [
+        "Passe o mouse sobre os botões para ver dicas rápidas."
+      ]
+    }
   };
   ajudaConteudo(){ return this.AJUDA_CONTEUDO[this.scr] || this.AJUDA_CONTEUDO._default; }
   abrirAjuda=(e)=>{ if(e&&e.stopPropagation) e.stopPropagation(); this._ajudaStop(); this.setState({modal:'ajuda',ajudaStep:0,ajudaPlay:false}); };

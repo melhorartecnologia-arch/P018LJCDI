@@ -129,6 +129,11 @@ propostas, faturar, pagar royalties, cadastrar fornecedores/produtos/revendas,
 trilha de auditoria, etc.) são **gravadas no PostgreSQL** e sobrevivem a
 reinícios.
 
+**Ajuda em cada rotina:** no topo da tela há o botão **"Como usar"** (com ícone
+de vídeo), presente em todas as rotinas. Ele abre um guia no estilo *tutorial em
+vídeo* — com um passo a passo que avança sozinho ao clicar em "Reproduzir" — e a
+lista de passos em texto e dicas, tudo específico da tela em que você está.
+
 ## Arquitetura
 
 Monorepo com três partes:
