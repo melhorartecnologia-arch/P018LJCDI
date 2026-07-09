@@ -70,6 +70,11 @@ export async function loadState() {
   const aud = await query('SELECT data FROM auditoria ORDER BY ord')
   state.auditoria = aud.rows.map((r) => r.data)
 
+  // Configuração de e-mail (SMTP) — só inclui se já existir uma linha, para não
+  // sobrescrever os padrões do cliente na primeira carga.
+  const ce = await query('SELECT data FROM config_email WHERE id = 1')
+  if (ce.rows[0]) state.configEmail = ce.rows[0].data
+
   return state
 }
 
@@ -114,7 +119,22 @@ export async function saveState(state) {
         await client.query(sql, [i, a.quando, a.usuario, a.acao, a.detalhe, a])
       }
     }
+
+    if (state.configEmail && typeof state.configEmail === 'object') {
+      await client.query(
+        `INSERT INTO config_email (id, data) VALUES (1, $1)
+         ON CONFLICT (id) DO UPDATE SET data = EXCLUDED.data`,
+        [state.configEmail]
+      )
+    }
   })
+}
+
+// Configuração de e-mail atual (usada pelo envio via SMTP quando o cliente não
+// manda a config no corpo da requisição).
+export async function loadConfigEmail() {
+  const res = await query('SELECT data FROM config_email WHERE id = 1')
+  return res.rows[0] ? res.rows[0].data : null
 }
 
 export async function isEmpty() {

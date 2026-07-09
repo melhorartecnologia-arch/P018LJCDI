@@ -106,6 +106,12 @@ CREATE TABLE IF NOT EXISTS pagamentos (
   data    JSONB NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS config_email (
+  id    INTEGER PRIMARY KEY DEFAULT 1,
+  data  JSONB NOT NULL,
+  CONSTRAINT config_email_singleton CHECK (id = 1)
+);
+
 CREATE TABLE IF NOT EXISTS auditoria (
   ord      INTEGER PRIMARY KEY,
   quando   TEXT,

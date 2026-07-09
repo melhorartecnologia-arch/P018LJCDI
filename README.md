@@ -139,6 +139,14 @@ passo em texto e as dicas — tudo específico da rotina em que você está. As
 imagens ficam em `web/public/ajuda/` (uma por rotina) e as posições dos destaques
 são medidas automaticamente na captura das telas.
 
+**Configurações Técnicas › Configuração de e-mail (SMTP):** no perfil da Loja
+(administrador) há a seção **Configurações Técnicas** com a tela **Configuração
+de e-mail**, onde se gerenciam todos os parâmetros de envio por SMTP (servidor,
+porta, segurança, usuário/senha, remetente e "responder para"). Os dados ficam
+gravados no banco; a tela permite **Salvar**, **Verificar conexão** e **Enviar
+e-mail de teste** — o envio é feito de verdade pelo servidor Node.js via
+`nodemailer` (endpoints `POST /api/email/verify` e `POST /api/email/test`).
+
 ## Arquitetura
 
 Monorepo com três partes:

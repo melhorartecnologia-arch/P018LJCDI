@@ -4,7 +4,8 @@ import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { query, driver } from './db.js'
 import { migrate } from './migrate.js'
-import { loadState, saveState, loadCollection, COLLECTION_KEYS } from './repo.js'
+import { loadState, saveState, loadCollection, COLLECTION_KEYS, loadConfigEmail } from './repo.js'
+import { verifyConfig, sendTest } from './email.js'
 import { config } from './config.js'
 
 const here = dirname(fileURLToPath(import.meta.url))
@@ -48,6 +49,31 @@ app.put('/api/state', async (req, res, next) => {
     res.json({ ok: true })
   } catch (err) {
     next(err)
+  }
+})
+
+// ── E-mail (SMTP) — gerenciado no painel de Configurações Técnicas ──────────
+// Usa a configuração enviada no corpo; se ausente, a persistida no banco.
+async function resolveEmailConfig(body) {
+  if (body && body.config && typeof body.config === 'object') return body.config
+  return (await loadConfigEmail()) || {}
+}
+
+app.post('/api/email/verify', async (req, res) => {
+  try {
+    await verifyConfig(await resolveEmailConfig(req.body))
+    res.json({ ok: true, mensagem: 'Conexão SMTP verificada com sucesso.' })
+  } catch (err) {
+    res.status(400).json({ ok: false, error: err.message || String(err) })
+  }
+})
+
+app.post('/api/email/test', async (req, res) => {
+  try {
+    const info = await sendTest(await resolveEmailConfig(req.body), (req.body && req.body.to) || '')
+    res.json({ ok: true, mensagem: 'E-mail de teste enviado.', ...info })
+  } catch (err) {
+    res.status(400).json({ ok: false, error: err.message || String(err) })
   }
 })
 
