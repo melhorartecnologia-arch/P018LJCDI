@@ -164,6 +164,12 @@ do detalhe do pedido (solicitado × saldo por item), nas janelas de atendimento
 (saldo por item) e no e-mail de novo pedido à Loja — dando ao aprovador a
 informação para decidir como atender as quantidades.
 
+O inventário também pode ser feito por **carga de planilha padrão (CSV)**: baixe
+o modelo — **todos os produtos** (quantidades em branco, com a data escolhida no
+download; padrão: hoje), **produtos do último inventário** (pré-preenchidos) ou
+**somente cabeçalho** — preencha no Excel e carregue; a janela de lançamento abre
+preenchida para revisão antes de confirmar.
+
 Todas as alterações (aprovar/rejeitar pedidos, abrir cotações, registrar
 propostas, faturar, pagar royalties, cadastrar fornecedores/produtos/revendas,
 trilha de auditoria, etc.) são **gravadas no PostgreSQL** e sobrevivem a
