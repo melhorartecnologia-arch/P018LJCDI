@@ -23,6 +23,7 @@ a{color:#8f682a}a:hover{color:#B38335}
 input::placeholder,textarea::placeholder{color:#b0a795}
 @keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @keyframes ajPulse{0%,100%{box-shadow:0 0 0 3px rgba(179,131,53,.5),0 0 0 9999px rgba(16,14,11,.4)}50%{box-shadow:0 0 0 7px rgba(255,210,122,.65),0 0 0 9999px rgba(16,14,11,.4)}}
+@keyframes ajSpin{to{transform:rotate(360deg)}}
 </style>
 </helmet>
 <sc-if value="{{sLogin}}" hint-placeholder-val="{{false}}">
@@ -1050,7 +1051,9 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <tbody>
           <sc-for list="{{fatRows}}" as="f" hint-placeholder-count="4">
             <tr>
-              <td style="padding:11px 18px;font-size:13px;font-weight:600;border-bottom:1px solid #f5f1e8">{{f.id}}<div style="font-size:11px;font-weight:400;color:#a89f90">{{f.data}}</div></td>
+              <td style="padding:11px 18px;font-size:13px;font-weight:600;border-bottom:1px solid #f5f1e8">{{f.id}}<div style="font-size:11px;font-weight:400;color:#a89f90">{{f.data}}</div>
+                <sc-if value="{{f.temAnexo}}" hint-placeholder-val="{{false}}"><a href="{{f.anexoUrl}}" target="_blank" title="{{f.anexoNome}}" style="font-size:11px;font-weight:600;color:#8f682a;text-decoration:none">📎 documento fiscal</a></sc-if>
+                <sc-if value="{{f.temAnalise}}" hint-placeholder-val="{{false}}"><div title="{{f.analiseTitulo}}" style="font-size:10.5px;font-weight:600;color:{{f.analiseFg}};cursor:help">{{f.analiseTxt}}</div></sc-if></td>
               <td style="padding:11px 10px;font-size:13px;border-bottom:1px solid #f5f1e8">{{f.pedidoId}}</td>
               <td style="padding:11px 10px;font-size:13px;border-bottom:1px solid #f5f1e8">{{f.fornNome}}</td>
               <td style="padding:11px 10px;font-size:13px;border-bottom:1px solid #f5f1e8">{{f.revNome}}</td>
@@ -1540,7 +1543,9 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <tbody>
           <sc-for list="{{fFatRows}}" as="f" hint-placeholder-count="2">
             <tr>
-              <td style="padding:11px 18px;font-size:13px;font-weight:600;border-bottom:1px solid #f5f1e8">{{f.id}}<div style="font-size:11px;font-weight:400;color:#a89f90">{{f.data}}</div></td>
+              <td style="padding:11px 18px;font-size:13px;font-weight:600;border-bottom:1px solid #f5f1e8">{{f.id}}<div style="font-size:11px;font-weight:400;color:#a89f90">{{f.data}}</div>
+                <sc-if value="{{f.temAnexo}}" hint-placeholder-val="{{false}}"><a href="{{f.anexoUrl}}" target="_blank" title="{{f.anexoNome}}" style="font-size:11px;font-weight:600;color:#8f682a;text-decoration:none">📎 documento fiscal</a></sc-if>
+                <sc-if value="{{f.temAnalise}}" hint-placeholder-val="{{false}}"><div title="{{f.analiseTitulo}}" style="font-size:10.5px;font-weight:600;color:{{f.analiseFg}};cursor:help">{{f.analiseTxt}}</div></sc-if></td>
               <td style="padding:11px 10px;font-size:13px;border-bottom:1px solid #f5f1e8">{{f.pedidoId}}</td>
               <td style="padding:11px 10px;font-size:13px;border-bottom:1px solid #f5f1e8">{{f.revNome}}</td>
               <td style="padding:11px 10px;font-size:13px;font-weight:600;text-align:right;border-bottom:1px solid #f5f1e8">{{f.valorFmt}}</td>
@@ -1737,6 +1742,30 @@ input::placeholder,textarea::placeholder{color:#b0a795}
     </div>
 
     <div style="font-size:11.5px;color:#b0a795;margin-top:14px">As configurações e a senha ficam gravadas no banco de dados da plataforma e são usadas pelo servidor para o envio via SMTP. Apenas o administrador da Loja tem acesso a esta tela.</div>
+  </div>
+</sc-if>
+
+<sc-if value="{{sCfgAnalise}}" hint-placeholder-val="{{false}}">
+  <div data-screen-label="Análise fiscal (IA)" style="animation:fadeUp .25s ease;max-width:820px">
+    <div style="font-size:21px;font-weight:700;margin:2px 0 3px">Análise fiscal por IA</div>
+    <div style="font-size:13px;color:#8a8378;margin-bottom:18px">Verificação automática do documento fiscal (PDF ou XML) anexado pelo fornecedor no registro do faturamento · gerenciado pelo administrador da Loja</div>
+
+    <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:20px 22px;margin-bottom:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:16px">
+        <div>
+          <div style="font-size:14px;font-weight:700">Análise automática do documento fiscal</div>
+          <div style="font-size:12px;color:#8a8378;margin-top:2px">{{afAtivoTxt}}</div>
+        </div>
+        <div onClick="{{toggleAnaliseFiscal}}" title="Habilitar/desabilitar análise fiscal por IA" style="width:42px;height:23px;border-radius:12px;background:{{afSwBg}};position:relative;cursor:pointer;flex:none;transition:background .15s">
+          <div style="position:absolute;top:3px;left:{{afSwX}};width:17px;height:17px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:left .15s"></div>
+        </div>
+      </div>
+      <div style="background:#f7f4ee;border:1px solid #eae3d6;border-radius:10px;padding:12px 15px;font-size:12px;color:#6b6459;line-height:1.55">O anexo do documento fiscal (PDF ou XML da NF-e) é <b>sempre obrigatório</b> quando o fornecedor registra um faturamento. Com a análise <b>habilitada</b>, a plataforma confere automaticamente se o documento se refere ao pedido faturado — emitente (fornecedor), destinatário (revenda), itens e valor total — e <b>aceita ou recusa</b> o documento como evidência na hora. Com a análise <b>desabilitada</b>, o anexo continua obrigatório, mas é aceito sem verificação.</div>
+      <div style="display:flex;align-items:center;gap:9px;margin-top:14px;font-size:12.5px;color:#4a453d">
+        <span style="font-size:15px">🤖</span><b>Motor de análise:</b> {{afEngineTxt}}
+      </div>
+    </div>
+    <div style="font-size:11.5px;color:#b0a795">O resultado de cada análise (aceito/recusado, motivo e motor utilizado) fica registrado no faturamento e na trilha de auditoria. Apenas o administrador da Loja tem acesso a esta tela.</div>
   </div>
 </sc-if>
 
@@ -2219,10 +2248,15 @@ input::placeholder,textarea::placeholder{color:#b0a795}
       <sc-if value="{{fatInfo.itensTxt}}" hint-placeholder-val="{{false}}"><div style="background:#faf7f0;border:1px solid #eee7d8;border-radius:9px;padding:9px 13px;margin-top:12px;font-size:12px;color:#6b6459"><b style="color:#272525">Somente os seus itens:</b> {{fatInfo.itensTxt}}</div></sc-if>
       <div style="font-size:12px;font-weight:600;color:#6b6459;margin:14px 0 5px">Valor efetivamente faturado (R$)</div>
       <input value="{{form.valorFat}}" onChange="{{fxValorFat}}" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:14px 0 5px">Documento fiscal emitido à revenda (PDF ou XML) — obrigatório</div>
+      <input type="file" accept=".pdf,.xml" onChange="{{setAnexoFat}}" style="width:100%;box-sizing:border-box;padding:8px 10px;border:1px dashed #cdbf9d;border-radius:8px;font:inherit;font-size:12.5px;background:#fbf8f1;color:#6b6459;cursor:pointer">
+      <sc-if value="{{temFatAnexo}}" hint-placeholder-val="{{false}}"><div style="font-size:12px;color:#2f6b39;margin-top:6px">📎 {{fatAnexoNome}} anexado</div></sc-if>
+      <sc-if value="{{fatAnaliseOn}}" hint-placeholder-val="{{false}}"><div style="background:#f2f0fa;border:1px solid #ddd8ee;border-radius:9px;padding:9px 13px;margin-top:10px;font-size:11.5px;color:#5d3f96">O documento será analisado automaticamente por IA para confirmar que se refere a este pedido antes de o faturamento ser aceito.</div></sc-if>
+      <sc-if value="{{fatBusy}}" hint-placeholder-val="{{false}}"><div style="display:flex;align-items:center;gap:8px;margin-top:12px;font-size:12.5px;color:#8a5a12"><span style="display:inline-block;width:12px;height:12px;border:2px solid #e6cf9e;border-top-color:#8a5a12;border-radius:50%;animation:ajSpin .8s linear infinite"></span>Enviando e analisando o documento fiscal…</div></sc-if>
       <sc-if value="{{form.erro}}" hint-placeholder-val="{{false}}"><div style="color:#a33a2b;font-size:12.5px;margin-top:12px">{{form.erro}}</div></sc-if>
       <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:18px">
         <div onClick="{{mClose}}" style="border:1px solid #ddd5c7;border-radius:8px;padding:9px 15px;font-size:13px;font-weight:600;cursor:pointer;color:#6b6459" style-hover="background:#f7f3ea">Cancelar</div>
-        <div onClick="{{confirmFaturar}}" style="background:#B38335;color:#fff;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#9a6f2b">Confirmar faturamento</div>
+        <div onClick="{{confirmFaturar}}" style="background:{{fatBtnBg}};color:#fff;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#9a6f2b">Confirmar faturamento</div>
       </div>
     </div>
   </div>
@@ -2507,7 +2541,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
 class Component extends DCLogic {
   // ── Persistência full-stack (API Node.js + PostgreSQL) ──────────────────
   // Coleções persistentes; todo o resto do estado é de sessão/UI.
-  _persistKeys=['seq','fornecedores','contratos','produtos','revendas','pedidos','cotacoes','faturamentos','pagamentos','auditoria','configEmail','usuarios','inventarios'];
+  _persistKeys=['seq','fornecedores','contratos','produtos','revendas','pedidos','cotacoes','faturamentos','pagamentos','auditoria','configEmail','configPlataforma','usuarios','inventarios'];
   _hydrate(){ this._hydrating=true;
     fetch('/api/state').then(r=>r.ok?r.json():null).then(d=>{ if(d&&typeof d==='object'){ const patch={}; this._persistKeys.forEach(k=>{ if(d[k]!==undefined) patch[k]=d[k]; });
       if(Array.isArray(patch.usuarios)&&!patch.usuarios.length) delete patch.usuarios; // banco antigo sem usuários: mantém os iniciais
@@ -2534,6 +2568,7 @@ class Component extends DCLogic {
       {id:1,data:'01/07/2026',ts:1782864000000,usuario:'Ana Ribeiro (Loja)',obs:'Inventário mensal de julho',itens:{1:10,2:6,3:8,4:40,5:30,6:15,7:12,8:25,9:50,10:4}}
     ],
     configEmail:{host:'',porta:'587',seguranca:'starttls',usuario:'',senha:'',remetenteNome:'Cidade Imperial',remetenteEmail:'',responderPara:'',emailLoja:'',ativo:false},
+    configPlataforma:{analiseFiscalIA:true}, analiseEngine:null,
     cfgTestTo:'', cfgMsg:null, cfgMsgTipo:null, cfgBusy:false,
     selPed:null, selCot:null, selForn:null, selProd:null, selRev:null, modal:null, form:{}, pendVenc:null, filtroStatusProd:'todos', buscaRev:'', buscaPed:'', filtroRev:'0',
     busca:'', buscaForn:'', filtroForn:'0', filtroStatus:'todos', buscaCat:'', cart:{}, fotoIdx:{}, lightbox:null, expFech:null, filtroCot:'todas',
@@ -2749,6 +2784,21 @@ class Component extends DCLogic {
       salvarCfgEmail:this.salvarCfgEmail,verificarCfgEmail:this.verificarCfgEmail,enviarTesteEmail:this.enviarTesteEmail,
       cfgBusy:!!S.cfgBusy,cfgNaoBusy:!S.cfgBusy,
       cfgTemMsg:!!S.cfgMsg,cfgMsg:S.cfgMsg||'',cfgMsgOk:S.cfgMsgTipo==='ok',cfgMsgErro:S.cfgMsgTipo==='erro',
+    }; }
+  // ── Configurações Técnicas › Análise fiscal por IA (flag do administrador) ─
+  toggleAnaliseFiscal=()=>{ if(!this.pode('config.analise')) return;
+    const novo=!(this.state.configPlataforma&&this.state.configPlataforma.analiseFiscalIA);
+    this.setState(s=>({configPlataforma:{...(s.configPlataforma||{}),analiseFiscalIA:novo}}),
+      ()=>this.audit('Análise fiscal por IA '+(novo?'habilitada':'desabilitada'),'flag alterado pelo administrador')); };
+  cfgAnaliseVals(){ const S=this.state; const isLoja=this.role==='loja';
+    const on=!!(S.configPlataforma&&S.configPlataforma.analiseFiscalIA);
+    const eng=S.analiseEngine||{};
+    return {
+      sCfgAnalise:isLoja&&this.scr==='cfganalise'&&this.pode('config.analise'),
+      afAtivo:on,afAtivoTxt:on?'Análise do documento fiscal ativada':'Análise do documento fiscal desativada',
+      afSwBg:on?'#2f6b39':'#d9d2c4',afSwX:on?'20px':'3px',toggleAnaliseFiscal:this.toggleAnaliseFiscal,
+      afEngineTxt:eng.engine==='claude'?'IA Claude (API Anthropic) — chave configurada no servidor':'Analisador local do servidor — para usar a IA Claude, configure a variável ANTHROPIC_API_KEY',
+      afEngineClaude:eng.engine==='claude',
     }; }
   // ── Ajuda por rotina (tutorial em vídeo + passo a passo) ────────────────
   AJUDA_CONTEUDO = {
@@ -3065,10 +3115,12 @@ class Component extends DCLogic {
         "Se quiser, clique nas fotos dos produtos (passe o mouse e aparece \"Clique para ampliar\") para vê-las maiores.",
         "Clique no botão dourado \"Registrar faturamento…\", no lado direito do card (ele só aparece enquanto houver itens seus pendentes de faturamento).",
         "Na janela \"Registrar faturamento\", confira o quadro \"Somente os seus itens\" e revise o campo \"Valor efetivamente faturado (R$)\", ajustando o valor se necessário.",
-        "Clique em \"Confirmar faturamento\" para concluir, ou em \"Cancelar\" para fechar sem registrar."
+        "No campo \"Documento fiscal emitido à revenda (PDF ou XML) — obrigatório\", anexe o PDF ou o XML da nota fiscal que você emitiu para a revenda; o nome do arquivo aparece com um 📎 quando anexado.",
+        "Clique em \"Confirmar faturamento\" para concluir, ou em \"Cancelar\" para fechar sem registrar. Se a análise automática estiver habilitada, o documento é verificado na hora: se não corresponder ao pedido, o registro é recusado e o motivo aparece em vermelho na janela."
       ],
       "dicas": [
         "O campo \"Valor efetivamente faturado (R$)\" já vem preenchido com a soma dos seus itens pendentes; confira e edite o valor antes de confirmar.",
+        "O anexo do documento fiscal é obrigatório: sem PDF ou XML da nota não é possível confirmar o faturamento. Prefira o XML da NF-e — ele é lido com mais precisão pela análise automática.",
         "O royalty é calculado automaticamente sobre o valor faturado, conforme o percentual do seu contrato — você só informa o valor.",
         "Após confirmar, a etiqueta do card muda para \"Faturado\" e o botão \"Registrar faturamento…\" deixa de aparecer para aquele pedido."
       ]
@@ -3100,7 +3152,7 @@ class Component extends DCLogic {
       "passos": [
         "No menu lateral, dentro do grupo \"Operação\", clique em \"Meus faturamentos\" para abrir a tela.",
         "Confira no subtítulo o percentual de royalty do seu contrato, exibido logo após \"royalty do contrato:\".",
-        "Na coluna \"Nota\", identifique cada faturamento pelo número da nota — a data da nota aparece logo abaixo do número.",
+        "Na coluna \"Nota\", identifique cada faturamento pelo número da nota — a data da nota aparece logo abaixo do número, junto com o link \"📎 documento fiscal\" para baixar o PDF/XML anexado e o selo da análise automática (ex.: \"✓ validado por análise local\").",
         "Use a coluna \"Pedido\" para ver a qual pedido cada nota corresponde e a coluna \"Revenda\" para conferir para quem foi faturado.",
         "Na coluna \"Valor faturado\", verifique o valor total de cada nota emitida diretamente à revenda.",
         "Na coluna \"Royalty devido\", veja o percentual aplicado e o valor do royalty de cada nota (formato \"X% · valor\").",
@@ -3191,6 +3243,24 @@ class Component extends DCLogic {
         "Só o administrador da Loja enxerga esta tela; a senha fica guardada no banco da plataforma."
       ]
     },
+    "cfganalise": {
+      "rotina": "Análise fiscal (IA)",
+      "titulo": "Habilitar a análise do documento fiscal por IA",
+      "resumo": "Tela do Administrador Técnico com o flag que liga ou desliga a verificação automática do documento fiscal (PDF ou XML) que o fornecedor é obrigado a anexar ao registrar um faturamento. Quando ligada, a plataforma confere se o documento se refere ao pedido e aceita ou recusa o anexo como evidência na hora.",
+      "passos": [
+        "No menu lateral, dentro do grupo \"Configurações Técnicas\", clique em \"Análise fiscal (IA)\" para abrir a tela.",
+        "Leia o estado atual logo abaixo do título \"Análise automática do documento fiscal\" — \"ativada\" ou \"desativada\".",
+        "Use a chave (interruptor) à direita para habilitar ou desabilitar a análise; a alteração vale imediatamente para os próximos faturamentos e fica registrada na auditoria.",
+        "Leia o quadro explicativo: o anexo do documento fiscal é sempre obrigatório; o flag controla apenas a verificação automática (emitente, destinatário, itens e valor total).",
+        "Confira em \"Motor de análise\" qual mecanismo está em uso: \"IA Claude (API Anthropic)\" quando a chave ANTHROPIC_API_KEY está configurada no servidor, ou o analisador local caso contrário.",
+        "Para acompanhar os resultados, abra \"Faturamento\": cada nota mostra o link \"📎 documento fiscal\" e o selo da análise (✓ validado / ⚠ não validado) — passe o mouse sobre o selo para ler o motivo."
+      ],
+      "dicas": [
+        "Com a análise habilitada, um documento que não corresponda ao pedido (outra revenda, outro valor, outros itens) é recusado na hora e o fornecedor vê o motivo na própria janela de faturamento.",
+        "Para usar a IA Claude na análise, defina a variável de ambiente ANTHROPIC_API_KEY no servidor e reinicie a plataforma — sem ela, o analisador local (XML da NF-e e texto do PDF) é usado.",
+        "Cada análise fica gravada no faturamento (aceito/recusado, motivo, motor e data) e na trilha de auditoria."
+      ]
+    },
     "usuarios": {
       "rotina": "Usuários e permissões",
       "titulo": "Gerenciar contas de acesso e permissões",
@@ -3245,7 +3315,7 @@ class Component extends DCLogic {
       ]
     }
   };
-  AJUDA_GEO = {"dash":{"R":0.6859,"rects":[[0,0,1,0.0355],null,[0.0193,0.2304,0.1484,0.0207],[0.0193,0.4225,0.1379,0.0236],[0.0193,0.1233,0.0752,0.0236],[0.5073,0.4239,0.0801,0.0207],[0.6401,0.4254,0.3407,0.0236]]},"ped":{"R":0.7943,"rects":[[0.0172,0.0982,0.1863,0.0166],[0,0.2105,0.5846,0.0497],[0,0.2105,1,0.0497],null,[0.8278,0.3431,0.0726,0.0306],[0.9065,0.3431,0.0742,0.0306],null]},"peddet":{"R":0.6373,"rects":[[0,0,1,0.0238],[0.001,0.3561,0.625,0.0684],[0.2746,0.2035,0.1083,0.0238],[0.4594,0.5056,0.0703,0.0334],[0.5358,0.5056,0.072,0.0334],null,[0.6604,0.3816,0.3203,0.0254],[0.0193,0.8521,0.5885,0.0254]]},"cot":{"R":0.3749,"rects":[[0.852,0.0243,0.148,0.0946],[0.1167,0.6297,0.1749,0.0878],null,[0,0.4838,1,0.1054],[0.7838,0.7784,0.1499,0.0378],null,null,null]},"cotdet":{"R":1.2979,"rects":[[0,0,1,0.0117],[0.2737,0.1749,0.0917,0.0117],[0.6153,0.292,0.0686,0.0141],[0.0193,0.3669,0.4116,0.0125],[0.7701,0.4586,0.2107,0.0219],[0.0193,0.5886,0.9615,0.0125],null,[0.8251,0.3677,0.1557,0.0234],[0.0193,0.8525,0.9615,0.0125]]},"forn":{"R":0.849,"rects":[null,[0,0.1969,1,0.0442],[0.8284,0.0107,0.1716,0.0418],null,[0.0193,0.6134,0.9615,0.0191],[0.8543,0.7291,0.1143,0.0167],[0.9221,0.7518,0.0586,0.0167]]},"forndet":{"R":0.6657,"rects":[[0,0,1,0.0228],null,[0.5476,0.0411,0.1206,0.0533],[0.6773,0.0411,0.1449,0.0533],[0.0193,0.4003,0.4549,0.0228],[0.0193,0.5556,0.2229,0.0502],[0.2513,0.5556,0.2229,0.0502],[0,0.6575,1,0.0274],[0.9273,0.742,0.0535,0.0213]]},"prod":{"R":0.9493,"rects":[null,[0,0.191,0.5704,0.0416],[0.8505,0.0096,0.1495,0.0374],[0.1617,0.2487,0.2783,0.0347],null,null,[0.9273,0.3132,0.0535,0.0149]]},"proddet":{"R":0.6626,"rects":[null,null,[0.4529,0.1774,0.5278,0.0245],[0.4509,0.3991,0.1768,0.0199],[0.6822,0.0413,0.1346,0.0535],[0.8411,0.0566,0.1437,0.0229],[0,0.7615,1,0.0275],[0,0,1,0.0229]]},"rev":{"R":0.5552,"rects":[[0.0172,0.1405,0.1223,0.0237],[0,0.3266,1,0.0675],[0.8492,0.0164,0.1508,0.0639],null,null,null,null,null,null]},"revdet":{"R":1.2219,"rects":[[0.233,0.0311,0.0357,0.0116],[0.0172,0.0945,0.1474,0.0108],[0.7214,0.0224,0.1206,0.029],[0.8664,0.0307,0.1184,0.0124],[0.0193,0.1683,0.3722,0.0133],[0.4442,0.1683,0.5366,0.0133],[0,0.335,1,0.0149],null,[0,0.8284,1,0.0149]]},"fat":{"R":0.3982,"rects":[null,[0.001,0.1552,0.998,0.1018],[0.001,0.3944,0.1056,0.0827],[0.1066,0.3944,0.0891,0.0827],[0.1957,0.3944,0.1958,0.0827],[0.5693,0.3944,0.1366,0.0827],[0.7059,0.3944,0.1426,0.0827]]},"roy":{"R":0.6424,"rects":[null,[0.0193,0.2823,0.1734,0.0252],[0.0193,0.4653,0.1758,0.0205],[0.0172,0.1183,0.1349,0.0205],[0.6438,0.4322,0.1417,0.041],[0.6714,0.6987,0.1141,0.041],[0.8008,0.4322,0.18,0.041],[0.5391,0.3297,0.0865,0.067]]},"rel":{"R":2.2817,"rects":[[0,0.0258,0.2118,0.0164],[0.0152,0.0542,0.0544,0.0049],[0.0193,0.0959,0.553,0.0071],[0.6249,0.0959,0.3558,0.0071],[0.0193,0.2123,0.4544,0.0071],[0.0193,0.3748,0.3558,0.0071],[0.001,0.4849,0.998,0.0191],[0.0193,0.8204,0.4247,0.0071]]},"seg":{"R":0.6047,"rects":[null,[0.0193,0.1592,0.2854,0.0302],[0.0193,0.1592,0.2854,0.0302],[0.1663,0.8425,0.2214,0.0251],[0.1663,0.7286,0.1764,0.0251],[0.001,0.4186,0.998,0.072],[0.001,0.4907,0.1551,0.0511]]},"fped":{"R":0.2513,"rects":[[0,0,1,0.0968],null,[0.1327,0.4738,0.7244,0.0565],null,null,null,null,null]},"fcot":{"R":0.2685,"rects":[[0.387,0.3,0.1074,0.0528],null,[0.1327,0.4434,0.6746,0.0528],null,null,null,null,null]},"ffat":{"R":0.1996,"rects":[null,[0,0.1371,1,0.0761],[0.001,0.3096,0.1575,0.165],[0.1585,0.3096,0.1328,0.165],[0.5564,0.3096,0.2126,0.165],[0.769,0.3096,0.23,0.165],null,null]},"froy":{"R":0.1814,"rects":[null,[0,0,1,0.1341],[0.001,0.3408,0.2681,0.1816],[0.2691,0.3408,0.2085,0.1816],[0.4776,0.3408,0.271,0.1816],[0.7486,0.3408,0.2504,0.1816],null]},"cat":{"R":1.11,"rects":[[0,0.0529,1,0.0356],null,null,null,null,null,null,null]},"rped":{"R":0.2756,"rects":[[0.001,0.2243,0.157,0.1195],[0.2411,0.4265,0.0413,0.0515],[0.2411,0.4265,0.0413,0.0515],[0.3527,0.2243,0.3181,0.1195],[0.6708,0.2243,0.158,0.1195],[0.8289,0.2243,0.1701,0.1195],null]},"cfgemail":{"R":1.072,"rects":[[0.028,0.1126,0.2063,0.0159],[0.028,0.1752,0.6179,0.0159],[0.663,0.1752,0.3089,0.0159],[0.028,0.2548,0.9439,0.0159],[0.028,0.3367,0.6179,0.0159],[0.028,0.4539,0.4634,0.0159],[0.028,0.7327,0.2308,0.0398],[0.028,0.835,0.9439,0.0182]]},"usuarios":{"R":0.5461,"rects":[[0.8541,0.0167,0.1459,0.0649],[0,0.1113,0.7832,0.0724],[0.5031,0.2115,0.1733,0.0826],null,[0.5409,0.3432,0.1052,0.026],[0.8535,0.3358,0.0597,0.0408],[0.9254,0.3432,0.0513,0.026]]},"inv":{"R":0.8926,"rects":[[0.8215,0.0102,0.1785,0.0397],[0.0193,0.0874,0.9615,0.0182],[0.0193,0.185,0.2574,0.0341],[0.001,0.2804,0.998,0.0488],[0.8803,0.3292,0.1187,0.0346],[0.001,0.8456,0.998,0.0488],null,null,null]}};
+  AJUDA_GEO = {"dash":{"R":0.6859,"rects":[[0,0,1,0.0355],null,[0.0193,0.2304,0.1484,0.0207],[0.0193,0.4225,0.1379,0.0236],[0.0193,0.1233,0.0752,0.0236],[0.5073,0.4239,0.0801,0.0207],[0.6401,0.4254,0.3407,0.0236]]},"ped":{"R":0.7943,"rects":[[0.0172,0.0982,0.1863,0.0166],[0,0.2105,0.5846,0.0497],[0,0.2105,1,0.0497],null,[0.8278,0.3431,0.0726,0.0306],[0.9065,0.3431,0.0742,0.0306],null]},"peddet":{"R":0.6373,"rects":[[0,0,1,0.0238],[0.001,0.3561,0.625,0.0684],[0.2746,0.2035,0.1083,0.0238],[0.4594,0.5056,0.0703,0.0334],[0.5358,0.5056,0.072,0.0334],null,[0.6604,0.3816,0.3203,0.0254],[0.0193,0.8521,0.5885,0.0254]]},"cot":{"R":0.3749,"rects":[[0.852,0.0243,0.148,0.0946],[0.1167,0.6297,0.1749,0.0878],null,[0,0.4838,1,0.1054],[0.7838,0.7784,0.1499,0.0378],null,null,null]},"cotdet":{"R":1.2979,"rects":[[0,0,1,0.0117],[0.2737,0.1749,0.0917,0.0117],[0.6153,0.292,0.0686,0.0141],[0.0193,0.3669,0.4116,0.0125],[0.7701,0.4586,0.2107,0.0219],[0.0193,0.5886,0.9615,0.0125],null,[0.8251,0.3677,0.1557,0.0234],[0.0193,0.8525,0.9615,0.0125]]},"forn":{"R":0.849,"rects":[null,[0,0.1969,1,0.0442],[0.8284,0.0107,0.1716,0.0418],null,[0.0193,0.6134,0.9615,0.0191],[0.8543,0.7291,0.1143,0.0167],[0.9221,0.7518,0.0586,0.0167]]},"forndet":{"R":0.6657,"rects":[[0,0,1,0.0228],null,[0.5476,0.0411,0.1206,0.0533],[0.6773,0.0411,0.1449,0.0533],[0.0193,0.4003,0.4549,0.0228],[0.0193,0.5556,0.2229,0.0502],[0.2513,0.5556,0.2229,0.0502],[0,0.6575,1,0.0274],[0.9273,0.742,0.0535,0.0213]]},"prod":{"R":0.9493,"rects":[null,[0,0.191,0.5704,0.0416],[0.8505,0.0096,0.1495,0.0374],[0.1617,0.2487,0.2783,0.0347],null,null,[0.9273,0.3132,0.0535,0.0149]]},"proddet":{"R":0.6626,"rects":[null,null,[0.4529,0.1774,0.5278,0.0245],[0.4509,0.3991,0.1768,0.0199],[0.6822,0.0413,0.1346,0.0535],[0.8411,0.0566,0.1437,0.0229],[0,0.7615,1,0.0275],[0,0,1,0.0229]]},"rev":{"R":0.5552,"rects":[[0.0172,0.1405,0.1223,0.0237],[0,0.3266,1,0.0675],[0.8492,0.0164,0.1508,0.0639],null,null,null,null,null,null]},"revdet":{"R":1.2219,"rects":[[0.233,0.0311,0.0357,0.0116],[0.0172,0.0945,0.1474,0.0108],[0.7214,0.0224,0.1206,0.029],[0.8664,0.0307,0.1184,0.0124],[0.0193,0.1683,0.3722,0.0133],[0.4442,0.1683,0.5366,0.0133],[0,0.335,1,0.0149],null,[0,0.8284,1,0.0149]]},"fat":{"R":0.3982,"rects":[null,[0.001,0.1552,0.998,0.1018],[0.001,0.3944,0.1056,0.0827],[0.1066,0.3944,0.0891,0.0827],[0.1957,0.3944,0.1958,0.0827],[0.5693,0.3944,0.1366,0.0827],[0.7059,0.3944,0.1426,0.0827]]},"roy":{"R":0.6424,"rects":[null,[0.0193,0.2823,0.1734,0.0252],[0.0193,0.4653,0.1758,0.0205],[0.0172,0.1183,0.1349,0.0205],[0.6438,0.4322,0.1417,0.041],[0.6714,0.6987,0.1141,0.041],[0.8008,0.4322,0.18,0.041],[0.5391,0.3297,0.0865,0.067]]},"rel":{"R":2.2817,"rects":[[0,0.0258,0.2118,0.0164],[0.0152,0.0542,0.0544,0.0049],[0.0193,0.0959,0.553,0.0071],[0.6249,0.0959,0.3558,0.0071],[0.0193,0.2123,0.4544,0.0071],[0.0193,0.3748,0.3558,0.0071],[0.001,0.4849,0.998,0.0191],[0.0193,0.8204,0.4247,0.0071]]},"seg":{"R":0.6047,"rects":[null,[0.0193,0.1592,0.2854,0.0302],[0.0193,0.1592,0.2854,0.0302],[0.1663,0.8425,0.2214,0.0251],[0.1663,0.7286,0.1764,0.0251],[0.001,0.4186,0.998,0.072],[0.001,0.4907,0.1551,0.0511]]},"fped":{"R":0.2513,"rects":[[0,0,1,0.0968],null,[0.1327,0.4738,0.7244,0.0565],null,null,null,null,null]},"fcot":{"R":0.2685,"rects":[[0.387,0.3,0.1074,0.0528],null,[0.1327,0.4434,0.6746,0.0528],null,null,null,null,null]},"ffat":{"R":0.1996,"rects":[null,[0,0.1371,1,0.0761],[0.001,0.3096,0.1575,0.165],[0.1585,0.3096,0.1328,0.165],[0.5564,0.3096,0.2126,0.165],[0.769,0.3096,0.23,0.165],null,null]},"froy":{"R":0.1814,"rects":[null,[0,0,1,0.1341],[0.001,0.3408,0.2681,0.1816],[0.2691,0.3408,0.2085,0.1816],[0.4776,0.3408,0.271,0.1816],[0.7486,0.3408,0.2504,0.1816],null]},"cat":{"R":1.11,"rects":[[0,0.0529,1,0.0356],null,null,null,null,null,null,null]},"rped":{"R":0.2756,"rects":[[0.001,0.2243,0.157,0.1195],[0.2411,0.4265,0.0413,0.0515],[0.2411,0.4265,0.0413,0.0515],[0.3527,0.2243,0.3181,0.1195],[0.6708,0.2243,0.158,0.1195],[0.8289,0.2243,0.1701,0.1195],null]},"cfgemail":{"R":1.072,"rects":[[0.028,0.1126,0.2063,0.0159],[0.028,0.1752,0.6179,0.0159],[0.663,0.1752,0.3089,0.0159],[0.028,0.2548,0.9439,0.0159],[0.028,0.3367,0.6179,0.0159],[0.028,0.4539,0.4634,0.0159],[0.028,0.7327,0.2308,0.0398],[0.028,0.835,0.9439,0.0182]]},"cfganalise":{"R":0.4139,"rects":[null,[0.028,0.3359,0.3845,0.0413],[0.9207,0.2961,0.0512,0.0678],[0.028,0.4243,0.9439,0.2958],[0.028,0.7613,0.9439,0.053],null]},"usuarios":{"R":0.5461,"rects":[[0.8541,0.0167,0.1459,0.0649],[0,0.1113,0.7832,0.0724],[0.5031,0.2115,0.1733,0.0826],null,[0.5409,0.3432,0.1052,0.026],[0.8535,0.3358,0.0597,0.0408],[0.9254,0.3432,0.0513,0.026]]},"inv":{"R":0.8926,"rects":[[0.8215,0.0102,0.1785,0.0397],[0.0193,0.0874,0.9615,0.0182],[0.0193,0.185,0.2574,0.0341],[0.001,0.2804,0.998,0.0488],[0.8803,0.3292,0.1187,0.0346],[0.001,0.8456,0.998,0.0488],null,null,null]}};
   ajudaConteudo(){ return this.AJUDA_CONTEUDO[this.scr] || this.AJUDA_CONTEUDO._default; }
   abrirAjuda=(e)=>{ if(e&&e.stopPropagation) e.stopPropagation(); this._ajudaStop(); this.setState({modal:'ajuda',ajudaStep:0,ajudaPlay:false}); };
   fecharAjuda=()=>{ this._ajudaStop(); this.setState({modal:null,ajudaPlay:false}); };
@@ -3366,7 +3436,8 @@ class Component extends DCLogic {
     if(e.key==='ArrowRight') this.lbNav(1)();
     if(e.key==='ArrowLeft') this.lbNav(-1)(); };
     document.addEventListener('keydown',this._kb);
-    this._hydrate(); }
+    this._hydrate();
+    fetch('/api/analise-fiscal/status').then(r=>r.ok?r.json():null).then(d=>{ if(d&&d.ok) this.setState({analiseEngine:d}); }).catch(()=>{}); }
   componentWillUnmount(){ this._ajudaStop(); document.removeEventListener('keydown',this._kb); }
   encerrarCtr(id){ this._ec=this._ec||{}; if(!this._ec[id]) this._ec[id]=()=>{ const c=this.state.contratos.find(x=>x.id===id);
     this.setState(s=>({contratos:s.contratos.map(x=>x.id===id?{...x,vigente:false}:x)}));
@@ -3687,19 +3758,55 @@ class Component extends DCLogic {
     const _ilP=citens.map(it=>{ const pp=this._prodInfo(it.produtoId); const u=itens[it.produtoId]; return {codigo:pp.codigo||'',descricao:pp.descricao||('Produto '+it.produtoId),qtd:it.qtd,unidade:pp.unidade||'',valor:this.fmt((u||0)*it.qtd)}; });
     this.notificar('cotacao_proposta_loja',this._lojaEmail(),{cotacao:cid,fornecedorNome:me.nome,total:this.fmt(total),itensLista:_ilP});
     this.mClose(); };
-  confirmFaturar=()=>{ if(!this.pode('faturamento.faturar')) return this.err('Você não tem permissão para registrar faturamento.'); const f=this.state.form; const valor=this.num(f.valorFat); if(!valor) return this.err('Informe o valor efetivamente faturado (RF34).');
+  // Como o anexo/análise de um faturamento aparece nas tabelas (📎 + selo IA)
+  _anexoView(f){ const a=f.analise;
+    return { temAnexo:!!f.anexoId, anexoUrl:f.anexoId?('/api/anexos/'+f.anexoId):'', anexoNome:f.anexoNome||'documento fiscal',
+      temAnalise:!!a, analiseTxt:a?(a.aceito?('✓ validado por '+(a.engine==='claude'?'IA Claude':'análise local')):'⚠ não validado'):'',
+      analiseFg:a&&a.aceito?'#2f6b39':'#8a5a12', analiseTitulo:a?(a.motivo||''):'' }; }
+  // Seleção do documento fiscal (PDF/XML) obrigatório no registro de faturamento
+  setAnexoFat=e=>{ const file=e.target&&e.target.files&&e.target.files[0]; if(!file) return;
+    const ext=(file.name.split('.').pop()||'').toLowerCase();
+    if(ext!=='pdf'&&ext!=='xml') return this.err('O anexo deve ser o PDF ou o XML do documento fiscal.');
+    if(file.size>5*1024*1024) return this.err('Anexo muito grande (máximo 5 MB).');
+    const rd=new FileReader();
+    rd.onload=()=>{ const b64=String(rd.result).split(',')[1]||'';
+      this.setState(s=>({form:{...s.form,anexoNome:file.name,anexoTipo:ext==='pdf'?'application/pdf':'text/xml',anexoB64:b64,erro:null}})); };
+    rd.readAsDataURL(file); };
+  confirmFaturar=async()=>{ if(!this.pode('faturamento.faturar')) return this.err('Você não tem permissão para registrar faturamento.'); const f=this.state.form; if(f.fatBusy) return; const valor=this.num(f.valorFat); if(!valor) return this.err('Informe o valor efetivamente faturado (RF34).');
+    if(!f.anexoB64) return this.err('Anexe o documento fiscal (PDF ou XML) emitido para a revenda — o anexo é obrigatório.');
     const pid=f.pedidoId; const fid=this.state.fornAtivo; const ped=this.state.pedidos.find(p=>p.id===pid);
     const meus=ped.itens.filter(i=>i.st==='direto'&&i.fornecedorId===fid);
     const cotRef=(meus.find(i=>i.cotacaoId)||{}).cotacaoId||null;
     const ctr=this.state.contratos.find(c=>c.fornecedorId===fid&&c.vigente); const pct=ctr?ctr.royalty:0;
+    const forn=this.state.fornecedores.find(x=>x.id===fid)||{}; const rev=this.state.revendas.find(x=>x.id===ped.revendaId)||{};
+    const analiseOn=!!(this.state.configPlataforma&&this.state.configPlataforma.analiseFiscalIA);
+    this.setState(s=>({form:{...s.form,fatBusy:true,erro:null}}));
+    let anexoId=null, analise=null;
+    try{
+      const up=await fetch('/api/anexos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nome:f.anexoNome,tipo:f.anexoTipo,dados:f.anexoB64})}).then(r=>r.json());
+      if(!up.ok) throw new Error(up.error||'Falha ao enviar o anexo.');
+      anexoId=up.id;
+      if(analiseOn){
+        const ctx={pedidoId:pid,valor,fornecedorNome:forn.nome||'',fornecedorCnpj:forn.cnpj||'',revendaNome:rev.nome||'',revendaCnpj:rev.cnpj||'',
+          itens:meus.map(i=>{ const p=this._prodInfo(i.produtoId); return {descricao:p.descricao||('Produto '+i.produtoId),qtd:i.qtd}; })};
+        const an=await fetch('/api/faturamento/analisar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({anexoId,pedido:ctx})}).then(r=>r.json());
+        if(!an.ok) throw new Error(an.error||'Falha na análise do documento.');
+        analise={aceito:!!an.aceito,confianca:an.confianca||'media',motivo:an.motivo||'',engine:an.engine||'local',quando:this.ts()};
+        if(!an.aceito){
+          this.audit('Documento fiscal recusado pela análise (IA)',pid+' · '+(f.anexoNome||'anexo')+' · '+(an.motivo||''));
+          this.setState(s=>({form:{...s.form,fatBusy:false,erro:'Documento recusado como evidência: '+(an.motivo||'não corresponde ao pedido.')}}));
+          return; }
+      }
+    }catch(e){ this.setState(s=>({form:{...s.form,fatBusy:false,erro:e.message||'Falha ao processar o anexo do documento fiscal.'}})); return; }
     const n=this.state.seq.nf; const nf='NF-'+n; const comp=this.compAtual();
-    this.setState(s=>({faturamentos:[{id:nf,pedidoId:pid,fornecedorId:fid,revendaId:ped.revendaId,cotacaoId:cotRef,valor,data:this.hoje(),competencia:comp,royaltyPct:pct,royaltyValor:Math.round(valor*pct)/100},...s.faturamentos],seq:{...s.seq,nf:n+1},modal:null,form:{}}));
+    this.setState(s=>({faturamentos:[{id:nf,pedidoId:pid,fornecedorId:fid,revendaId:ped.revendaId,cotacaoId:cotRef,valor,data:this.hoje(),competencia:comp,royaltyPct:pct,royaltyValor:Math.round(valor*pct)/100,anexoId,anexoNome:f.anexoNome||null,analise},...s.faturamentos],seq:{...s.seq,nf:n+1},modal:null,form:{}}));
     this.updPed(pid,p=>{p.itens=p.itens.map(i=>i.st==='direto'&&i.fornecedorId===fid?{...i,st:'faturado'}:i);
-      p.trilha.push(this.tr('Faturado ('+nf+') diretamente à revenda — '+this.fmt(valor)+' ('+meus.length+' item(ns))'));return p;});
-    this.audit('Registro de faturamento',nf+' · '+pid+' · '+this.fmt(valor));
+      p.trilha.push(this.tr('Faturado ('+nf+') diretamente à revenda — '+this.fmt(valor)+' ('+meus.length+' item(ns))'+(analise?' · documento fiscal validado pela análise ('+analise.engine+')':' · documento fiscal anexado')));return p;});
+    this.audit('Registro de faturamento',nf+' · '+pid+' · '+this.fmt(valor)+(analise?' · anexo validado ('+(analise.engine==='claude'?'IA Claude':'analisador local')+')':' · anexo: '+(f.anexoNome||'—')));
     const _ilF=meus.map(i=>this._itemView(i));
     this.notificar('faturamento_revenda',this._revEmail(ped.revendaId),{pedidoId:pid,nf,fornecedorNome:this._fornNome(fid),valor:this.fmt(valor),itensLista:_ilF});
-    this.notificar('faturamento_loja',this._lojaEmail(),{nf,pedidoId:pid,fornecedorNome:this._fornNome(fid),valor:this.fmt(valor),royalty:this.fmt(Math.round(valor*pct)/100),itensLista:_ilF}); };
+    this.notificar('faturamento_loja',this._lojaEmail(),{nf,pedidoId:pid,fornecedorNome:this._fornNome(fid),valor:this.fmt(valor),royalty:this.fmt(Math.round(valor*pct)/100),itensLista:_ilF});
+    setTimeout(()=>this._flushPersist(),0); }; // grava imediatamente: registro com anexo não pode se perder
   toggleFech(chave){ this._tfc=this._tfc||{}; if(!this._tfc[chave]) this._tfc[chave]=()=>this.setState(s=>({expFech:s.expFech===chave?null:chave})); return this._tfc[chave]; }
   emitirCobranca=()=>{ if(!this.pode('royalties.cobrar')) return; const chave=this.state.form.chave; if(!chave) return;
     const fid=+chave.split('-')[1]; const f=this.state.fornecedores.find(x=>x.id===fid);
@@ -3771,6 +3878,7 @@ class Component extends DCLogic {
       ['auditoria.ver','Ver segurança e auditoria',['admin','loja']]]},
     {mod:'Configurações Técnicas',itens:[
       ['config.email','Gerenciar configuração de e-mail (SMTP)',['admin']],
+      ['config.analise','Habilitar/desabilitar análise fiscal por IA',['admin']],
       ['config.usuarios','Gerenciar usuários e permissões',['admin']]]},
   ];
   PAPEIS={admin:'Administrador Técnico',loja:'Loja Cidade Imperial',fornecedor:'Fornecedor',revenda:'Revenda'};
@@ -3889,6 +3997,7 @@ class Component extends DCLogic {
       {label:'Financeiro',items:[pode('royalties.ver')&&mk('roy','Royalties & Fechamento')]},
       {label:'Gestão',items:[pode('relatorios.ver')&&mk('rel','Relatórios'),pode('auditoria.ver')&&mk('seg','Segurança & Auditoria')]},
       {label:'Configurações Técnicas',items:[pode('config.email')&&mk('cfgemail','Configuração de e-mail'),
+        pode('config.analise')&&mk('cfganalise','Análise fiscal (IA)'),
         pode('config.usuarios')&&mk('usuarios','Usuários e permissões')]}]; }
     else if(isForn) navGroups=[
       {label:'Operação',items:[mk('fped','Pedidos recebidos',fPedPend),mk('fcot','Cotações convidadas',fCotPend),mk('ffat','Meus faturamentos')]},
@@ -4263,7 +4372,8 @@ class Component extends DCLogic {
     // faturamento (loja)
     const fatRows=S.faturamentos.map(f=>({id:f.id,data:f.data,pedidoId:f.pedidoId,fornNome:F(f.fornecedorId).nome,revNome:R(f.revendaId).nome,
       origem:f.cotacaoId?'Cotação '+f.cotacaoId:'Envio direto',valorFmt:this.fmt(f.valor),
-      royStr:String(f.royaltyPct).replace('.',',')+'% · '+this.fmt(f.royaltyValor)}));
+      royStr:String(f.royaltyPct).replace('.',',')+'% · '+this.fmt(f.royaltyValor),
+      ...this._anexoView(f)}));
     const aguardFat=PEDS.filter(p=>p.itens.some(i=>i.st==='direto')).map(p=>({id:p.id,fornNome:destTxt(p),revNome:R(p.revendaId).nome,totalFmt:this.fmt(p.itens.filter(i=>i.st==='direto').reduce((a,i)=>a+this.itemTotal(i),0))}));
 
     // ── relatórios e painéis ──
@@ -4396,7 +4506,7 @@ class Component extends DCLogic {
         podeProp:c.status==='aguardando propostas'&&this.pode('cotacoes.proposta'),
         propLabel:own?'Editar proposta':'Enviar proposta',
         prop:this.open('proposta',seedP)};});
-    const fFatRows=S.faturamentos.filter(f=>f.fornecedorId===fid).map(f=>({id:f.id,data:f.data,pedidoId:f.pedidoId,revNome:R(f.revendaId).nome,valorFmt:this.fmt(f.valor),royStr:String(f.royaltyPct).replace('.',',')+'% · '+this.fmt(f.royaltyValor)}));
+    const fFatRows=S.faturamentos.filter(f=>f.fornecedorId===fid).map(f=>({id:f.id,data:f.data,pedidoId:f.pedidoId,revNome:R(f.revendaId).nome,valorFmt:this.fmt(f.valor),royStr:String(f.royaltyPct).replace('.',',')+'% · '+this.fmt(f.royaltyValor),...this._anexoView(f)}));
     const fRoyRows=fechRows.filter(r=>r.fornecedorId===fid);
     const fPctStr=String(pctOf(fid)||0).replace('.',',')+'%';
 
@@ -4566,6 +4676,7 @@ class Component extends DCLogic {
       ...this.ajudaVals(),
       // configurações técnicas · e-mail (SMTP)
       ...this.cfgEmailVals(),
+      ...this.cfgAnaliseVals(),
       // dashboard
       kpis,recRows,barRows,
       // pedidos
@@ -4617,6 +4728,9 @@ class Component extends DCLogic {
       fxJustif:this.fx('justif'),fxPedidoId:this.fx('pedidoId'),fxPrazo:this.fx('prazo'),
       fxPrecoP:this.fx('precoP'),fxPrazoEntrega:this.fx('prazoEntrega'),fxValidade:this.fx('validade'),fxCondicoes:this.fx('condicoes'),
       fxValorFat:this.fx('valorFat'),fxDataPg:this.fx('dataPg'),fxValorPg:this.fx('valorPg'),fxComprovante:this.fx('comprovante'),fxMotivo:this.fx('motivo'),
+      setAnexoFat:this.setAnexoFat,fatAnexoNome:S.form.anexoNome||'',temFatAnexo:!!S.form.anexoB64,
+      fatBusy:!!S.form.fatBusy,fatNaoBusy:!S.form.fatBusy,fatBtnBg:S.form.fatBusy?'#c9b78f':'#B38335',
+      fatAnaliseOn:!!(S.configPlataforma&&S.configPlataforma.analiseFiscalIA),
       mForn:M==='fornecedor',mCtr:M==='contrato',mRoy:M==='royalty',mProd:M==='produto',mRev:M==='revenda',
       mRej:M==='rejeitar',mDir:M==='direto',mCot:M==='cotacao',mEst:M==='estoque',mJusV:M==='justifvenc',mCanC:M==='cancelarcot',
       mProp:M==='proposta',mFat:M==='faturar',mPag:M==='pagamento',

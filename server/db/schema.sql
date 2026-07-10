@@ -130,6 +130,25 @@ CREATE TABLE IF NOT EXISTS config_email (
   CONSTRAINT config_email_singleton CHECK (id = 1)
 );
 
+-- Flags gerais da plataforma gerenciadas pelo administrador (ex.: análise
+-- fiscal por IA no registro de faturamento).
+CREATE TABLE IF NOT EXISTS config_plataforma (
+  id    INTEGER PRIMARY KEY DEFAULT 1,
+  data  JSONB NOT NULL,
+  CONSTRAINT config_plataforma_singleton CHECK (id = 1)
+);
+
+-- Anexos binários (documentos fiscais PDF/XML do faturamento). Ficam fora do
+-- estado sincronizado (/api/state) — são gravados uma vez e lidos por id.
+CREATE TABLE IF NOT EXISTS anexos (
+  id         TEXT PRIMARY KEY,
+  nome       TEXT,
+  tipo       TEXT,
+  tamanho    INTEGER,
+  criado_em  TEXT,
+  dados      TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS auditoria (
   ord      INTEGER PRIMARY KEY,
   quando   TEXT,

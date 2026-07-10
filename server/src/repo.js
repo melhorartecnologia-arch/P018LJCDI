@@ -85,6 +85,10 @@ export async function loadState() {
   const ce = await query('SELECT data FROM config_email WHERE id = 1')
   if (ce.rows[0]) state.configEmail = ce.rows[0].data
 
+  // Configurações gerais da plataforma (flags administrativas) — idem.
+  const cp = await query('SELECT data FROM config_plataforma WHERE id = 1')
+  if (cp.rows[0]) state.configPlataforma = cp.rows[0].data
+
   return state
 }
 
@@ -137,6 +141,14 @@ export async function saveState(state) {
         [state.configEmail]
       )
     }
+
+    if (state.configPlataforma && typeof state.configPlataforma === 'object') {
+      await client.query(
+        `INSERT INTO config_plataforma (id, data) VALUES (1, $1)
+         ON CONFLICT (id) DO UPDATE SET data = EXCLUDED.data`,
+        [state.configPlataforma]
+      )
+    }
   })
 }
 
@@ -145,6 +157,27 @@ export async function saveState(state) {
 export async function loadConfigEmail() {
   const res = await query('SELECT data FROM config_email WHERE id = 1')
   return res.rows[0] ? res.rows[0].data : null
+}
+
+export async function loadConfigPlataforma() {
+  const res = await query('SELECT data FROM config_plataforma WHERE id = 1')
+  return res.rows[0] ? res.rows[0].data : null
+}
+
+// ---- Anexos (documentos fiscais do faturamento) ----
+// Gravados uma única vez (imutáveis) e lidos por id; `dados` é base64.
+export async function saveAnexo({ id, nome, tipo, tamanho, criadoEm, dados }) {
+  await query(
+    `INSERT INTO anexos (id, nome, tipo, tamanho, criado_em, dados)
+     VALUES ($1, $2, $3, $4, $5, $6)
+     ON CONFLICT (id) DO NOTHING`,
+    [id, nome, tipo, tamanho, criadoEm, dados]
+  )
+}
+
+export async function loadAnexo(id) {
+  const res = await query('SELECT id, nome, tipo, tamanho, criado_em, dados FROM anexos WHERE id = $1', [id])
+  return res.rows[0] || null
 }
 
 export async function isEmpty() {

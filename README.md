@@ -112,6 +112,7 @@ embutido na porta 3000.
 | `PGSSL` | `false` | Ativa TLS/SSL (bancos gerenciados). |
 | `DB_AUTO_CREATE` | `true` | Cria o banco automaticamente se não existir. |
 | `DB_SEED` | `true` | Carrega os dados iniciais quando o banco está vazio. |
+| `ANTHROPIC_API_KEY` | — | Chave da API Anthropic: liga a análise do documento fiscal por IA Claude (sem ela, usa o analisador local). |
 
 O arquivo `.env` **não é versionado** (contém segredos); o `.env.example` fica no
 repositório como referência.
@@ -210,6 +211,33 @@ e para o e-mail interno da Loja:
 Endpoints: `POST /api/email/verify`, `POST /api/email/test` e
 `POST /api/email/notify` (usado pelos fluxos; só envia se a config estiver
 ativa). Os modelos ficam em `server/src/email-templates.js`.
+
+### Documento fiscal obrigatório e análise por IA no faturamento
+
+Ao **registrar um faturamento**, o fornecedor é **obrigado a anexar o documento
+fiscal** emitido para a revenda — o **PDF** ou o **XML da NF-e** (até 5 MB). O
+anexo fica gravado no banco (tabela `anexos`) e pode ser baixado pelo link
+"📎 documento fiscal" nas telas de Faturamento da Loja e do fornecedor.
+
+Antes de aceitar o registro, a plataforma pode **analisar o documento** para
+verificar se ele de fato se refere ao pedido faturado — emitente (fornecedor),
+destinatário (revenda), itens e valor total — **aceitando ou recusando o anexo
+como evidência na hora** (o motivo aparece na própria janela). O resultado
+(aceito/recusado, motivo, motor e data) fica no faturamento e na auditoria.
+
+- **Motor IA Claude:** com `ANTHROPIC_API_KEY` configurada no servidor, a
+  análise é feita pelo modelo `claude-opus-4-8` da Anthropic (PDF analisado
+  nativamente; XML como texto).
+- **Analisador local:** sem a chave, o servidor extrai os dados do XML da NF-e
+  (ou o texto do PDF) e confere contra o pedido, sem depender de serviços
+  externos.
+
+O recurso é controlado por um **flag do administrador** em **Configurações
+Técnicas › Análise fiscal (IA)** — desabilitado, o anexo continua obrigatório,
+mas é aceito sem verificação. Endpoints: `POST /api/anexos`,
+`GET /api/anexos/:id`, `POST /api/faturamento/analisar` e
+`GET /api/analise-fiscal/status`. A lógica fica em
+`server/src/analise-fiscal.js`.
 
 ## Arquitetura
 

@@ -958,5 +958,8 @@
         "10": 4
       }
     }
-  ]
+  ],
+  "configPlataforma": {
+    "analiseFiscalIA": true
+  }
 }
