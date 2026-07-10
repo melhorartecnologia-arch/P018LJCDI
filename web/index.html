@@ -1931,12 +1931,23 @@ input::placeholder,textarea::placeholder{color:#b0a795}
   <div style="position:fixed;inset:0;background:rgba(39,37,37,.45);display:flex;align-items:center;justify-content:center;z-index:50">
     <div style="background:#fff;border-radius:14px;width:460px;max-width:92vw;padding:22px 24px;box-shadow:0 18px 50px rgba(39,37,37,.25)">
       <div style="font-size:16px;font-weight:700">Envio direto — {{form.pedidoId}}</div>
-      <div style="font-size:12.5px;color:#8a8378;margin-top:2px">RF17–RF18 — os itens selecionados serão encaminhados automaticamente ao fornecedor escolhido; os demais podem seguir outro caminho</div>
+      <div style="font-size:12.5px;color:#8a8378;margin-top:2px">RF17–RF18 — os itens (ou parte da quantidade de cada item) serão encaminhados ao fornecedor escolhido; o restante pode seguir outro caminho</div>
       <div style="font-size:12px;font-weight:600;color:#6b6459;margin:14px 0 6px">Itens a encaminhar</div>
       <div style="display:flex;flex-direction:column;gap:6px">
         <sc-for list="{{selItens}}" as="si" hint-placeholder-count="2">
-          <div onClick="{{si.toggle}}" style="display:flex;justify-content:space-between;gap:10px;border:1px solid {{si.bd}};background:{{si.bg}};border-radius:9px;padding:8px 12px;cursor:pointer;font-size:12.5px">
-            <span style="font-weight:600">{{si.mark}}{{si.label}} <span style="color:#a89f90;font-weight:400">{{si.qtdTxt}}</span></span><span style="font-weight:600;white-space:nowrap">{{si.valFmt}}</span>
+          <div style="border:1px solid {{si.bd}};background:{{si.bg}};border-radius:9px;padding:8px 12px;font-size:12.5px">
+            <div onClick="{{si.toggle}}" style="display:flex;justify-content:space-between;gap:10px;cursor:pointer">
+              <span style="font-weight:600">{{si.mark}}{{si.label}} <span style="color:#a89f90;font-weight:400">{{si.qtdTxt}}</span></span><span style="font-weight:600;white-space:nowrap">{{si.valFmt}}</span>
+            </div>
+            <sc-if value="{{si.sel}}" hint-placeholder-val="{{false}}">
+              <sc-if value="{{si.podeDividir}}" hint-placeholder-val="{{false}}">
+                <div style="display:flex;align-items:center;gap:7px;margin-top:7px;padding-top:7px;border-top:1px dashed #e8e1d2;flex-wrap:wrap">
+                  <span style="font-size:11.5px;color:#6b6459;font-weight:600">Quantidade neste caminho:</span>
+                  <input value="{{si.qtdVal}}" onChange="{{si.setQtd}}" title="Quantidade a atender por este caminho" style="width:56px;padding:5px 8px;border:1px solid #ddd5c7;border-radius:7px;font:inherit;font-size:12.5px;text-align:center;outline:none;background:#fff;color:#272525">
+                  <span style="font-size:11px;color:#a89f90">de {{si.qtdMax}} {{si.unid}} · o saldo permanece aprovado para outro caminho</span>
+                </div>
+              </sc-if>
+            </sc-if>
           </div>
         </sc-for>
       </div>
@@ -1968,11 +1979,22 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <option value="">Selecione um pedido com itens aprovados…</option>
         <sc-for list="{{pedAprovOpts}}" as="o" hint-placeholder-count="1"><option value="{{o.id}}">{{o.label}}</option></sc-for>
       </select>
-      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 6px">Itens a cotar (não precisa ser o pedido inteiro)</div>
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 6px">Itens a cotar (não precisa ser o pedido inteiro — nem a quantidade inteira de cada item)</div>
       <div style="display:flex;flex-direction:column;gap:6px">
         <sc-for list="{{selItens}}" as="si" hint-placeholder-count="1">
-          <div onClick="{{si.toggle}}" style="display:flex;justify-content:space-between;gap:10px;border:1px solid {{si.bd}};background:{{si.bg}};border-radius:9px;padding:8px 12px;cursor:pointer;font-size:12.5px">
-            <span style="font-weight:600">{{si.mark}}{{si.label}} <span style="color:#a89f90;font-weight:400">{{si.qtdTxt}}</span></span><span style="font-weight:600;white-space:nowrap">{{si.valFmt}}</span>
+          <div style="border:1px solid {{si.bd}};background:{{si.bg}};border-radius:9px;padding:8px 12px;font-size:12.5px">
+            <div onClick="{{si.toggle}}" style="display:flex;justify-content:space-between;gap:10px;cursor:pointer">
+              <span style="font-weight:600">{{si.mark}}{{si.label}} <span style="color:#a89f90;font-weight:400">{{si.qtdTxt}}</span></span><span style="font-weight:600;white-space:nowrap">{{si.valFmt}}</span>
+            </div>
+            <sc-if value="{{si.sel}}" hint-placeholder-val="{{false}}">
+              <sc-if value="{{si.podeDividir}}" hint-placeholder-val="{{false}}">
+                <div style="display:flex;align-items:center;gap:7px;margin-top:7px;padding-top:7px;border-top:1px dashed #e8e1d2;flex-wrap:wrap">
+                  <span style="font-size:11.5px;color:#6b6459;font-weight:600">Quantidade neste caminho:</span>
+                  <input value="{{si.qtdVal}}" onChange="{{si.setQtd}}" title="Quantidade a atender por este caminho" style="width:56px;padding:5px 8px;border:1px solid #ddd5c7;border-radius:7px;font:inherit;font-size:12.5px;text-align:center;outline:none;background:#fff;color:#272525">
+                  <span style="font-size:11px;color:#a89f90">de {{si.qtdMax}} {{si.unid}} · o saldo permanece aprovado para outro caminho</span>
+                </div>
+              </sc-if>
+            </sc-if>
           </div>
         </sc-for>
       </div>
@@ -1997,12 +2019,23 @@ input::placeholder,textarea::placeholder{color:#b0a795}
   <div style="position:fixed;inset:0;background:rgba(39,37,37,.45);display:flex;align-items:center;justify-content:center;z-index:50">
     <div style="background:#fff;border-radius:14px;width:460px;max-width:92vw;padding:22px 24px;box-shadow:0 18px 50px rgba(39,37,37,.25)">
       <div style="font-size:16px;font-weight:700">Atender com estoque da Loja — {{form.pedidoId}}</div>
-      <div style="font-size:12.5px;color:#8a8378;margin-top:2px">Os itens selecionados serão atendidos com estoque próprio da Loja Cidade Imperial, sem envio a fornecedor e sem cotação.</div>
+      <div style="font-size:12.5px;color:#8a8378;margin-top:2px">Os itens selecionados (ou parte da quantidade de cada um) serão atendidos com estoque próprio da Loja Cidade Imperial, sem envio a fornecedor e sem cotação.</div>
       <div style="font-size:12px;font-weight:600;color:#6b6459;margin:14px 0 6px">Itens a atender com estoque</div>
       <div style="display:flex;flex-direction:column;gap:6px">
         <sc-for list="{{selItens}}" as="si" hint-placeholder-count="2">
-          <div onClick="{{si.toggle}}" style="display:flex;justify-content:space-between;gap:10px;border:1px solid {{si.bd}};background:{{si.bg}};border-radius:9px;padding:8px 12px;cursor:pointer;font-size:12.5px">
-            <span style="font-weight:600">{{si.mark}}{{si.label}} <span style="color:#a89f90;font-weight:400">{{si.qtdTxt}}</span></span><span style="font-weight:600;white-space:nowrap">{{si.valFmt}}</span>
+          <div style="border:1px solid {{si.bd}};background:{{si.bg}};border-radius:9px;padding:8px 12px;font-size:12.5px">
+            <div onClick="{{si.toggle}}" style="display:flex;justify-content:space-between;gap:10px;cursor:pointer">
+              <span style="font-weight:600">{{si.mark}}{{si.label}} <span style="color:#a89f90;font-weight:400">{{si.qtdTxt}}</span></span><span style="font-weight:600;white-space:nowrap">{{si.valFmt}}</span>
+            </div>
+            <sc-if value="{{si.sel}}" hint-placeholder-val="{{false}}">
+              <sc-if value="{{si.podeDividir}}" hint-placeholder-val="{{false}}">
+                <div style="display:flex;align-items:center;gap:7px;margin-top:7px;padding-top:7px;border-top:1px dashed #e8e1d2;flex-wrap:wrap">
+                  <span style="font-size:11.5px;color:#6b6459;font-weight:600">Quantidade neste caminho:</span>
+                  <input value="{{si.qtdVal}}" onChange="{{si.setQtd}}" title="Quantidade a atender por este caminho" style="width:56px;padding:5px 8px;border:1px solid #ddd5c7;border-radius:7px;font:inherit;font-size:12.5px;text-align:center;outline:none;background:#fff;color:#272525">
+                  <span style="font-size:11px;color:#a89f90">de {{si.qtdMax}} {{si.unid}} · o saldo permanece aprovado para outro caminho</span>
+                </div>
+              </sc-if>
+            </sc-if>
           </div>
         </sc-for>
       </div>
@@ -2647,7 +2680,7 @@ class Component extends DCLogic {
       ],
       "dicas": [
         "A justificativa é obrigatória ao rejeitar, seja o pedido todo ou um item, e fica visível para a revenda; tenha o motivo pronto antes de clicar em \"Rejeitar\".",
-        "Um mesmo pedido pode combinar os três caminhos de atendimento (estoque, envio direto e cotação); cada ação vale só para os itens que você marcar na janela.",
+        "Um mesmo pedido pode combinar os três caminhos de atendimento (estoque, envio direto e cotação); cada ação vale só para os itens que você marcar na janela — e você pode informar uma quantidade parcial por item: o saldo continua aprovado para outro caminho.",
         "\"Abrir cotação\" exige convidar 2 ou mais fornecedores homologados e definir a data limite para o envio das propostas.",
         "Os painéis \"Análise da Loja\" e \"Decisão de atendimento\" só aparecem na fase certa: o primeiro enquanto o pedido aguarda decisão; o segundo depois que ele é aprovado."
       ]
@@ -3270,28 +3303,51 @@ class Component extends DCLogic {
     this.mClose(); };
   toggleSel(ix){ this._tsl=this._tsl||{}; if(!this._tsl[ix]) this._tsl[ix]=()=>this.setState(s=>{ const sel=s.form.sel||[]; const on=sel.includes(ix);
     return {form:{...s.form,sel:on?sel.filter(x=>x!==ix):[...sel,ix],erro:null}}; }); return this._tsl[ix]; }
+  // Atendimento com quantidade parcial: lê as quantidades informadas e divide o
+  // item quando a quantidade alocada é menor que a do pedido (o saldo permanece
+  // aprovado para seguir outro caminho: estoque, envio direto ou cotação).
+  _lerQtds(ped,sel){ const f=this.state.form; const qtds={};
+    for(const ix of sel){ const it=ped.itens[ix]; if(!it) continue;
+      const raw=f['q'+ix]; const q=(raw==null||String(raw).trim()==='')?it.qtd:parseInt(String(raw).replace(/\D/g,''),10);
+      const nomeP=(this._prodInfo(it.produtoId).descricao||'item');
+      if(!q||q<1||q>it.qtd) return {erro:'Quantidade inválida para '+nomeP+': informe entre 1 e '+it.qtd+'.'};
+      qtds[ix]=q; }
+    return {qtds}; }
+  _splitAlocar(itens,sel,qtds,alloc){ const novo=[],alocados=[]; let parcial=false;
+    itens.forEach((i,ix)=>{ if(sel.includes(ix)&&i.st==='aprovado'){ const q=qtds[ix];
+        if(q<i.qtd){ parcial=true; const a={...i,qtd:q,...alloc}; novo.push(a); alocados.push(a); novo.push({...i,qtd:i.qtd-q}); }
+        else { const a={...i,...alloc}; novo.push(a); alocados.push(a); } }
+      else novo.push(i); });
+    return {novo,alocados,parcial}; }
   setPedidoCot=e=>{ const v=e.target.value; const p=this.state.pedidos.find(x=>x.id===v);
     const sel=p?p.itens.map((i,ix)=>i.st==='aprovado'?ix:-1).filter(ix=>ix>=0):[];
-    this.setState(s=>({form:{...s.form,pedidoId:v,sel,erro:null}})); };
+    this.setState(s=>{ const f={...s.form}; Object.keys(f).forEach(k=>{ if(/^q\d+$/.test(k)) delete f[k]; });
+      return {form:{...f,pedidoId:v,sel,erro:null}}; }); };
   pickForn(fid){ this._pf=this._pf||{}; if(!this._pf[fid]) this._pf[fid]=()=>this.setState(s=>({form:{...s.form,fornecedorId:String(fid),erro:null}})); return this._pf[fid]; }
   confirmDireto=()=>{ if(!this.pode('pedidos.atender')) return this.err('Você não tem permissão para definir o atendimento.'); const fid=+this.state.form.fornecedorId; if(!fid) return this.err('Selecione o fornecedor de destino.');
     const sel=this.state.form.sel||[]; if(!sel.length) return this.err('Selecione ao menos um item para encaminhar.');
     const id=this.state.form.pedidoId; const f=this.state.fornecedores.find(x=>x.id===fid);
-    this.updPed(id,p=>{p.itens=p.itens.map((i,ix)=>sel.includes(ix)&&i.st==='aprovado'?{...i,st:'direto',fornecedorId:fid}:i);
-      p.trilha.push(this.tr(sel.length+' item(ns) encaminhado(s) (envio direto) a '+f.nome));return p;});
-    this.audit('Envio direto de itens',id+' → '+f.nome+' · '+sel.length+' item(ns)');
-    const pedD=this.state.pedidos.find(p=>p.id===id); const revD=pedD&&pedD.revendaId;
-    const _rawD=pedD?pedD.itens.filter(i=>i.st==='direto'&&i.fornecedorId===fid):[]; const _ilD=_rawD.map(i=>this._itemView(i));
+    const ped0=this.state.pedidos.find(p=>p.id===id); if(!ped0) return;
+    const lq=this._lerQtds(ped0,sel); if(lq.erro) return this.err(lq.erro);
+    const {novo,alocados,parcial}=this._splitAlocar(ped0.itens,sel,lq.qtds,{st:'direto',fornecedorId:fid});
+    const totQ=alocados.reduce((a,i)=>a+i.qtd,0);
+    this.updPed(id,p=>{p.itens=novo;
+      p.trilha.push(this.tr(alocados.length+' item(ns) · '+totQ+' unidade(s) encaminhado(s) (envio direto) a '+f.nome+(parcial?' — quantidade parcial; o saldo permanece aprovado':'')));return p;});
+    this.audit('Envio direto de itens',id+' → '+f.nome+' · '+alocados.length+' item(ns) · '+totQ+' un'+(parcial?' (parcial)':''));
+    const revD=ped0.revendaId; const _ilD=alocados.map(i=>this._itemView(i));
     this.notificar('pedido_fornecedor',this._fornEmail(fid),{pedidoId:id,fornecedorNome:f.nome,revendaNome:this._revNome(revD),itensLista:_ilD});
-    this.notificar('pedido_encaminhado_revenda',this._revEmail(revD),{pedidoId:id,fornecedorNome:f.nome,itensLista:_ilD,ocultarValor:this._revOcultar(_rawD)});
+    this.notificar('pedido_encaminhado_revenda',this._revEmail(revD),{pedidoId:id,fornecedorNome:f.nome,itensLista:_ilD,ocultarValor:this._revOcultar(alocados)});
     this.mClose(); };
   confirmEstoque=()=>{ if(!this.pode('pedidos.atender')) return this.err('Você não tem permissão para definir o atendimento.'); const sel=this.state.form.sel||[]; if(!sel.length) return this.err('Selecione ao menos um item.');
     const id=this.state.form.pedidoId;
-    this.updPed(id,p=>{p.itens=p.itens.map((i,ix)=>sel.includes(ix)&&i.st==='aprovado'?{...i,st:'estoque'}:i);
-      p.trilha.push(this.tr(sel.length+' item(ns) atendido(s) com estoque próprio da Loja — sem envio a fornecedor'));return p;});
-    this.audit('Atendimento com estoque próprio',id+' · '+sel.length+' item(ns)');
-    const pedE=this.state.pedidos.find(p=>p.id===id);
-    this.notificar('pedido_estoque_revenda',this._revEmail(pedE&&pedE.revendaId),{pedidoId:id,itensLista:this._itensPed(pedE,i=>i.st==='estoque'),ocultarValor:true});
+    const ped0=this.state.pedidos.find(p=>p.id===id); if(!ped0) return;
+    const lq=this._lerQtds(ped0,sel); if(lq.erro) return this.err(lq.erro);
+    const {novo,alocados,parcial}=this._splitAlocar(ped0.itens,sel,lq.qtds,{st:'estoque'});
+    const totQ=alocados.reduce((a,i)=>a+i.qtd,0);
+    this.updPed(id,p=>{p.itens=novo;
+      p.trilha.push(this.tr(alocados.length+' item(ns) · '+totQ+' unidade(s) atendido(s) com estoque próprio da Loja'+(parcial?' — quantidade parcial; o saldo permanece aprovado':'')));return p;});
+    this.audit('Atendimento com estoque próprio',id+' · '+alocados.length+' item(ns) · '+totQ+' un'+(parcial?' (parcial)':''));
+    this.notificar('pedido_estoque_revenda',this._revEmail(ped0.revendaId),{pedidoId:id,itensLista:alocados.map(i=>this._itemView(i)),ocultarValor:true});
     this.mClose(); };
   toggleConv(fid){ this._tc=this._tc||{}; if(!this._tc[fid]) this._tc[fid]=()=>this.setState(s=>{ const c=s.form.convidados||[]; const on=c.includes(fid);
     return {form:{...s.form,convidados:on?c.filter(x=>x!==fid):[...c,fid],erro:null}}; }); return this._tc[fid]; }
@@ -3302,13 +3358,16 @@ class Component extends DCLogic {
     const ped=this.state.pedidos.find(p=>p.id===f.pedidoId);
     const sel=(f.sel&&f.sel.length?f.sel:ped.itens.map((i,ix)=>i.st==='aprovado'?ix:-1).filter(ix=>ix>=0));
     if(!sel.length) return this.err('Selecione ao menos um item aprovado para cotar.');
+    const lq=this._lerQtds(ped,sel); if(lq.erro) return this.err(lq.erro);
     const n=this.state.seq.cot; const id='COT-00'+n;
-    const itensCot=sel.map(ix=>({produtoId:ped.itens[ix].produtoId,qtd:ped.itens[ix].qtd,preco:ped.itens[ix].preco}));
+    const {novo,alocados,parcial}=this._splitAlocar(ped.itens,sel,lq.qtds,{st:'cotacao',cotacaoId:id});
+    const itensCot=alocados.map(i=>({produtoId:i.produtoId,qtd:i.qtd,preco:i.preco}));
+    const totQ=alocados.reduce((a,i)=>a+i.qtd,0);
     const nomes=this.state.fornecedores.filter(x=>conv.includes(x.id)).map(x=>x.nome).join(', ');
-    this.setState(s=>({cotacoes:[{id,pedidoId:f.pedidoId,itens:itensCot,vencItens:{},convidados:[...conv],prazo:f.prazo,status:'aguardando propostas',propostas:[],vencedorId:null,justificativa:null,motivoCancel:null,historico:[{quando:this.ts(),usuario:this.userName(),acao:'Cotação aberta ('+itensCot.length+' item(ns)) · convidados notificados: '+nomes}]},...s.cotacoes],seq:{...s.seq,cot:n+1},modal:null,form:{},scr:'cot'}));
-    this.updPed(f.pedidoId,p=>{p.itens=p.itens.map((i,ix)=>sel.includes(ix)&&i.st==='aprovado'?{...i,st:'cotacao',cotacaoId:id}:i);
-      p.trilha.push(this.tr('Cotação '+id+' aberta para '+sel.length+' item(ns) com '+conv.length+' fornecedores'));return p;});
-    this.audit('Abertura de cotação',id+' · pedido '+f.pedidoId+' · '+sel.length+' item(ns)');
+    this.setState(s=>({cotacoes:[{id,pedidoId:f.pedidoId,itens:itensCot,vencItens:{},convidados:[...conv],prazo:f.prazo,status:'aguardando propostas',propostas:[],vencedorId:null,justificativa:null,motivoCancel:null,historico:[{quando:this.ts(),usuario:this.userName(),acao:'Cotação aberta ('+itensCot.length+' item(ns) · '+totQ+' unidade(s)) · convidados notificados: '+nomes}]},...s.cotacoes],seq:{...s.seq,cot:n+1},modal:null,form:{},scr:'cot'}));
+    this.updPed(f.pedidoId,p=>{p.itens=novo;
+      p.trilha.push(this.tr('Cotação '+id+' aberta para '+alocados.length+' item(ns) · '+totQ+' unidade(s) com '+conv.length+' fornecedores'+(parcial?' — quantidade parcial; o saldo permanece aprovado':'')));return p;});
+    this.audit('Abertura de cotação',id+' · pedido '+f.pedidoId+' · '+alocados.length+' item(ns) · '+totQ+' un'+(parcial?' (parcial)':''));
     const _ilC=itensCot.map(it=>{ const pp=this._prodInfo(it.produtoId); return {codigo:pp.codigo||'',descricao:pp.descricao||('Produto '+it.produtoId),qtd:it.qtd,unidade:pp.unidade||'',valor:this.fmt(it.qtd*it.preco)}; });
     conv.forEach(cf=>this.notificar('cotacao_convite',this._fornEmail(cf),{cotacao:id,fornecedorNome:this._fornNome(cf),prazo:f.prazo,itensLista:_ilC})); };
   escolher(cotId,fid){ return ()=>{ const c=this.state.cotacoes.find(x=>x.id===cotId);
@@ -4126,7 +4185,9 @@ class Component extends DCLogic {
     let selItens=[];
     if((M==='direto'||M==='cotacao'||M==='estoque')&&S.form.pedidoId){ const p=PEDS.find(x=>x.id===S.form.pedidoId);
       if(p) selItens=p.itens.map((i,ix)=>({i,ix})).filter(x=>x.i.st==='aprovado').map(x=>{ const prod=P(x.i.produtoId); const on=(S.form.sel||[]).includes(x.ix);
-        return {label:(prod.codigo||'')+' · '+(prod.descricao||''),qtdTxt:'×'+x.i.qtd,valFmt:this.fmt(x.i.qtd*x.i.preco),toggle:this.toggleSel(x.ix),bg:on?'#faf5e9':'#fff',bd:on?'#B38335':'#e8e1d2',mark:on?'✓ ':''};}); }
+        const qRaw=S.form['q'+x.ix]; const qtdVal=(qRaw==null||qRaw==='')?String(x.i.qtd):String(qRaw);
+        return {label:(prod.codigo||'')+' · '+(prod.descricao||''),qtdTxt:'×'+x.i.qtd,valFmt:this.fmt(x.i.qtd*x.i.preco),toggle:this.toggleSel(x.ix),bg:on?'#faf5e9':'#fff',bd:on?'#B38335':'#e8e1d2',mark:on?'✓ ':'',
+          sel:on,qtdVal,qtdMax:String(x.i.qtd),unid:prod.unidade||'un',setQtd:this.fx('q'+x.ix),podeDividir:x.i.qtd>1};}); }
     let royInfo={ctrNum:'',fornNome:'',atual:''};
     if(M==='royalty'&&S.form.contratoId){ const c=S.contratos.find(x=>x.id===S.form.contratoId);
       if(c) royInfo={ctrNum:c.numero,fornNome:F(c.fornecedorId).nome,atual:String(c.royalty).replace('.',',')+'%'}; }

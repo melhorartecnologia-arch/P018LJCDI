@@ -148,6 +148,13 @@ Perfis de acesso:
 | **Fornecedor** | Pedidos recebidos, cotações convidadas, meus faturamentos e royalties devidos. |
 | **Revenda** | Catálogo de produtos homologados (com carrinho), envio de pedidos para aprovação e acompanhamento dos meus pedidos. |
 
+**Atendimento por item e por quantidade:** cada item de um pedido pode seguir um
+dos três caminhos — estoque da Loja, envio direto a um fornecedor ou cotação — e
+também pode ser **fracionado por quantidade**: nas janelas de atendimento, o campo
+"Quantidade neste caminho" permite alocar parte das unidades de um item a um
+caminho; o saldo permanece aprovado para seguir outro (ex.: de 10 unidades,
+4 pelo estoque, 3 direto e 3 em cotação, no mesmo pedido).
+
 Todas as alterações (aprovar/rejeitar pedidos, abrir cotações, registrar
 propostas, faturar, pagar royalties, cadastrar fornecedores/produtos/revendas,
 trilha de auditoria, etc.) são **gravadas no PostgreSQL** e sobrevivem a
