@@ -23,7 +23,8 @@ API Node.js e sobe um **PostgreSQL embutido** (PGlite) que grava os dados em
 http://localhost:3000
 ```
 
-O login aceita qualquer e-mail/senha (demonstração). Para parar: `Ctrl+C`.
+Entre com um dos acessos de demonstração listados na tela de login (ex.:
+`admin@cidadeimperial.com.br` / `admin123`). Para parar: `Ctrl+C`.
 Para zerar os dados: apague a pasta `server/.pgdata`.
 
 ## Passo a passo no Windows
@@ -49,7 +50,8 @@ Para zerar os dados: apague a pasta `server/.pgdata`.
    Na primeira vez ele baixa as dependências e compila a interface (pode levar
    alguns minutos); nas próximas é rápido. Não precisa instalar banco de dados —
    já vem um PostgreSQL embutido.
-5. **Abra no navegador:** http://localhost:3000 — entre com qualquer e-mail e senha.
+5. **Abra no navegador:** http://localhost:3000 — entre com um dos acessos de
+   demonstração listados na própria tela de login (ex.: `admin@cidadeimperial.com.br` / `admin123`).
 6. **Para parar:** volte ao PowerShell e pressione `Ctrl+C`.
 
 Usar o PostgreSQL que você já tem no Windows (opcional) — no PowerShell:
