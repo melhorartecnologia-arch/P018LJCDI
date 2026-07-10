@@ -1124,47 +1124,125 @@ input::placeholder,textarea::placeholder{color:#b0a795}
 
 <sc-if value="{{sRel}}" hint-placeholder-val="{{false}}">
   <div data-screen-label="Relatórios" style="animation:fadeUp .25s ease">
-    <div style="font-size:21px;font-weight:700;margin:2px 0 3px">Relatórios</div>
-    <div style="font-size:13px;color:#8a8378;margin-bottom:18px">Pedidos, faturamento, royalties e desempenho das cotações</div>
-    <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;overflow:hidden;margin-bottom:14px">
-      <div style="padding:13px 18px;border-bottom:1px solid #f1ece2">
-        <div style="font-size:14px;font-weight:700">Pedidos por período, fornecedor e revenda</div>
-        <div style="display:flex;gap:8px;margin-top:9px;flex-wrap:wrap">
-          <sc-for list="{{relStatus}}" as="s" hint-placeholder-count="6">
-            <span style="font-size:11.5px;font-weight:600;border-radius:7px;padding:3px 9px;background:{{s.stBg}};color:{{s.stFg}}">{{s.stLabel}}: {{s.n}}</span>
-          </sc-for>
-        </div>
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-bottom:14px">
+      <div>
+        <div style="font-size:21px;font-weight:700;margin:2px 0 3px">Relatórios e Painéis</div>
+        <div style="font-size:13px;color:#8a8378">Indicadores, evolução, rankings e desempenho de pedidos, cotações, faturamento e royalties</div>
       </div>
-      <table style="width:100%;border-collapse:collapse">
-        <thead><tr>
-          <th style="text-align:left;padding:9px 18px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Pedido</th>
-          <th style="text-align:left;padding:9px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Data</th>
-          <th style="text-align:left;padding:9px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Revenda</th>
-          <th style="text-align:left;padding:9px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Fornecedor</th>
-          <th style="text-align:right;padding:9px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Total</th>
-          <th style="text-align:left;padding:9px 18px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Status</th>
-        </tr></thead>
-        <tbody>
-          <sc-for list="{{relPedRows}}" as="p" hint-placeholder-count="5">
-            <tr>
-              <td style="padding:9px 18px;font-size:12.5px;font-weight:600;border-bottom:1px solid #f5f1e8">{{p.id}}</td>
-              <td style="padding:9px 10px;font-size:12.5px;color:#8a8378;border-bottom:1px solid #f5f1e8">{{p.data}}</td>
-              <td style="padding:9px 10px;font-size:12.5px;border-bottom:1px solid #f5f1e8">{{p.revNome}}</td>
-              <td style="padding:9px 10px;font-size:12.5px;border-bottom:1px solid #f5f1e8">{{p.fornNome}}</td>
-              <td style="padding:9px 10px;font-size:12.5px;font-weight:600;text-align:right;border-bottom:1px solid #f5f1e8">{{p.totalFmt}}</td>
-              <td style="padding:9px 18px;border-bottom:1px solid #f5f1e8"><span style="font-size:11px;font-weight:600;border-radius:6px;padding:2px 8px;background:{{p.stBg}};color:{{p.stFg}};white-space:nowrap">{{p.stLabel}}</span></td>
-            </tr>
-          </sc-for>
-        </tbody>
-      </table>
+      <div style="display:flex;gap:8px;flex:none">
+        <div onClick="{{exportRelPedidos}}" title="Baixa os pedidos filtrados em planilha (CSV)" style="background:#272525;color:#fff;border-radius:9px;padding:9px 14px;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="background:#3a3735">⬇ Pedidos (CSV)</div>
+        <div onClick="{{exportRelFat}}" title="Baixa os faturamentos filtrados em planilha (CSV)" style="border:1px solid #ddd5c7;color:#4a453d;background:#fff;border-radius:9px;padding:9px 14px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:#f7f3ea">⬇ Faturamentos (CSV)</div>
+      </div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1.4fr;gap:14px;align-items:start">
-      <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;overflow:hidden">
-        <div style="padding:13px 18px;font-size:14px;font-weight:700;border-bottom:1px solid #f1ece2">Faturamento &amp; royalties por fornecedor</div>
-        <sc-for list="{{relFatRows}}" as="f" hint-placeholder-count="3">
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 18px;border-bottom:1px solid #f5f1e8">
-            <div><div style="font-size:13px;font-weight:600">{{f.nome}}</div><div style="font-size:11px;color:#a89f90">royalty {{f.pct}}</div></div>
-            <div style="text-align:right"><div style="font-size:13px;font-weight:600">{{f.totalFatFmt}}</div><div style="font-size:11.5px;color:#8f682a;font-weight:600">{{f.totalRoyFmt}}</div></div>
+
+    <div style="display:flex;gap:10px;margin-bottom:14px;align-items:center;flex-wrap:wrap">
+      <select value="{{relComp}}" onChange="{{setRelComp}}" style="padding:9px 12px;border:1px solid #e5ddcd;border-radius:9px;font:inherit;font-size:12.5px;font-weight:600;color:#272525;background:#fff;outline:none;cursor:pointer">
+        <sc-for list="{{relCompOpts}}" as="o" hint-placeholder-count="3"><option value="{{o.v}}">{{o.label}}</option></sc-for>
+      </select>
+      <select value="{{relRevF}}" onChange="{{setRelRevF}}" style="padding:9px 12px;border:1px solid #e5ddcd;border-radius:9px;font:inherit;font-size:12.5px;font-weight:600;color:#272525;background:#fff;outline:none;cursor:pointer">
+        <sc-for list="{{relRevOpts}}" as="o" hint-placeholder-count="3"><option value="{{o.v}}">{{o.label}}</option></sc-for>
+      </select>
+      <select value="{{relFornF}}" onChange="{{setRelFornF}}" style="padding:9px 12px;border:1px solid #e5ddcd;border-radius:9px;font:inherit;font-size:12.5px;font-weight:600;color:#272525;background:#fff;outline:none;cursor:pointer">
+        <sc-for list="{{relFornOpts}}" as="o" hint-placeholder-count="3"><option value="{{o.v}}">{{o.label}}</option></sc-for>
+      </select>
+      <select value="{{relStF}}" onChange="{{setRelStF}}" style="padding:9px 12px;border:1px solid #e5ddcd;border-radius:9px;font:inherit;font-size:12.5px;font-weight:600;color:#272525;background:#fff;outline:none;cursor:pointer">
+        <sc-for list="{{relStOpts}}" as="o" hint-placeholder-count="3"><option value="{{o.v}}">{{o.label}}</option></sc-for>
+      </select>
+      <sc-if value="{{relTemFiltro}}" hint-placeholder-val="{{false}}">
+        <div onClick="{{limparRelFiltros}}" style="font-size:12px;font-weight:600;color:#8f682a;cursor:pointer;padding:6px 4px">✕ Limpar filtros</div>
+      </sc-if>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:14px">
+      <sc-for list="{{relKpis}}" as="k" hint-placeholder-count="6">
+        <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:12px 14px;min-width:0">
+          <div style="font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#a89f90;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{k.label}}</div>
+          <div style="font-size:17px;font-weight:700;margin:5px 0 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{k.val}}</div>
+          <div style="font-size:10.5px;color:#b0a795;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{k.sub}}</div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:14px;align-items:stretch;margin-bottom:14px">
+      <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:16px 18px">
+        <div style="font-size:14px;font-weight:700">Evolução mensal do faturamento</div>
+        <div style="font-size:11.5px;color:#a89f90;margin-bottom:14px">Por competência · a barra dourada clara é a competência filtrada</div>
+        <sc-if value="{{temSerie}}" hint-placeholder-val="{{true}}">
+          <div style="display:flex;gap:10px;height:170px">
+            <sc-for list="{{relMeses}}" as="m" hint-placeholder-count="6">
+              <div title="{{m.tip}}" style="flex:1;display:flex;flex-direction:column;min-width:0">
+                <div style="font-size:10px;font-weight:600;color:#8a8378;text-align:center;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{m.valFmt}}</div>
+                <div style="flex:1;display:flex;align-items:flex-end">
+                  <div style="width:100%;height:{{m.h}}%;background:{{m.bg}};border-radius:6px 6px 0 0;min-height:4px"></div>
+                </div>
+                <div style="font-size:10.5px;font-weight:700;color:#a89f90;text-align:center;margin-top:6px;white-space:nowrap">{{m.label}}</div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+      <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:16px 18px">
+        <div style="font-size:14px;font-weight:700">Pedidos por status</div>
+        <div style="font-size:11.5px;color:#a89f90;margin-bottom:12px">Distribuição no período filtrado</div>
+        <div style="display:flex;height:13px;border-radius:7px;overflow:hidden;background:#f1ece2;margin-bottom:12px">
+          <sc-for list="{{relStatus}}" as="s" hint-placeholder-count="4"><div title="{{s.stLabel}}: {{s.nStr}}" style="width:{{s.w}}%;background:{{s.stFg}}"></div></sc-for>
+        </div>
+        <sc-for list="{{relStatus}}" as="s" hint-placeholder-count="5">
+          <div style="display:flex;align-items:center;gap:9px;padding:5px 0">
+            <span style="width:9px;height:9px;border-radius:3px;background:{{s.stFg}};flex:none"></span>
+            <span style="font-size:12.5px;flex:1">{{s.stLabel}}</span>
+            <span style="font-size:12.5px;font-weight:700">{{s.nStr}}</span>
+            <span style="font-size:11px;color:#a89f90;min-width:34px;text-align:right">{{s.pct}}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+      <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:16px 18px">
+        <div style="font-size:14px;font-weight:700">Produtos mais pedidos</div>
+        <div style="font-size:11.5px;color:#a89f90;margin-bottom:13px">Top 5 por valor no período · itens rejeitados não contam</div>
+        <sc-for list="{{relTopProds}}" as="t" hint-placeholder-count="5">
+          <div style="display:flex;align-items:center;gap:11px;padding:7px 0">
+            <sc-if value="{{t.foto}}" hint-placeholder-val="{{false}}"><img loading="lazy" src="{{t.foto}}" alt="{{t.nome}}" onClick="{{t.ver}}" title="Clique para ampliar" style="width:34px;height:34px;object-fit:cover;border-radius:8px;border:1px solid #eae3d6;flex:none;cursor:zoom-in"></sc-if>
+            <div style="flex:1;min-width:0">
+              <div style="display:flex;justify-content:space-between;gap:8px;font-size:12.5px;margin-bottom:4px">
+                <span style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><span style="color:#b0a795;font-weight:700">{{t.pos}}º</span> {{t.nome}}</span>
+                <span style="font-weight:700;white-space:nowrap">{{t.valFmt}}</span>
+              </div>
+              <div style="height:7px;background:#f1ece2;border-radius:4px;overflow:hidden"><div style="height:100%;border-radius:4px;background:linear-gradient(90deg,#cfa055,#B38335);width:{{t.w}}%"></div></div>
+              <div style="font-size:10.5px;color:#b0a795;margin-top:3px">{{t.codigo}} · {{t.qtd}}</div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:16px 18px">
+        <div style="font-size:14px;font-weight:700">Revendas que mais compram</div>
+        <div style="font-size:11.5px;color:#a89f90;margin-bottom:13px">Top 5 por valor em pedidos no período</div>
+        <sc-for list="{{relTopRevs}}" as="t" hint-placeholder-count="5">
+          <div style="padding:7px 0">
+            <div style="display:flex;justify-content:space-between;gap:8px;font-size:12.5px;margin-bottom:4px">
+              <span style="font-weight:600"><span style="color:#b0a795;font-weight:700">{{t.pos}}º</span> {{t.nome}}</span>
+              <span style="font-weight:700;white-space:nowrap">{{t.valFmt}}</span>
+            </div>
+            <div style="height:7px;background:#f1ece2;border-radius:4px;overflow:hidden"><div style="height:100%;border-radius:4px;background:linear-gradient(90deg,#cfa055,#B38335);width:{{t.w}}%"></div></div>
+            <div style="font-size:10.5px;color:#b0a795;margin-top:3px">{{t.n}}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1.5fr;gap:14px;align-items:stretch;margin-bottom:14px">
+      <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:16px 18px">
+        <div style="font-size:14px;font-weight:700">Funil de atendimento</div>
+        <div style="font-size:11.5px;color:#a89f90;margin-bottom:14px">Do pedido criado ao faturamento</div>
+        <sc-for list="{{relFunil}}" as="f" hint-placeholder-count="4">
+          <div style="margin-bottom:12px">
+            <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:5px">
+              <span style="font-weight:600">{{f.label}}</span>
+              <span><b>{{f.n}}</b> <span style="color:#a89f90;font-size:11px">({{f.pct}})</span></span>
+            </div>
+            <div style="height:11px;background:#f1ece2;border-radius:6px;overflow:hidden"><div style="height:100%;border-radius:6px;background:{{f.cor}};width:{{f.w}}%"></div></div>
           </div>
         </sc-for>
       </div>
@@ -1187,7 +1265,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
           </tr></thead>
           <tbody>
             <sc-for list="{{relCotRows}}" as="c" hint-placeholder-count="2">
-              <tr>
+              <tr onClick="{{c.abrir}}" style="cursor:pointer" style-hover="background:#faf7f0">
                 <td style="padding:9px 18px;font-size:12.5px;font-weight:600;border-bottom:1px solid #f5f1e8">{{c.id}}<div style="font-size:10.5px;font-weight:400;color:#a89f90">{{c.stLabel}}</div></td>
                 <td style="padding:9px 10px;font-size:12.5px;color:#8a8378;border-bottom:1px solid #f5f1e8">{{c.part}} propostas</td>
                 <td style="padding:9px 10px;font-size:12.5px;text-align:right;border-bottom:1px solid #f5f1e8">{{c.menorFmt}}</td>
@@ -1198,6 +1276,124 @@ input::placeholder,textarea::placeholder{color:#b0a795}
           </tbody>
         </table>
       </div>
+    </div>
+
+    <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;overflow:hidden;margin-bottom:14px">
+      <div style="padding:13px 18px;font-size:14px;font-weight:700;border-bottom:1px solid #f1ece2">Desempenho por fornecedor <span style="font-size:11.5px;font-weight:500;color:#a89f90">· faturamento, royalties e cotações no período</span></div>
+      <table style="width:100%;border-collapse:collapse">
+        <thead><tr>
+          <th style="text-align:left;padding:9px 18px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Fornecedor</th>
+          <th style="text-align:left;padding:9px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Royalty</th>
+          <th style="text-align:left;padding:9px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Notas</th>
+          <th style="text-align:right;padding:9px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Faturado</th>
+          <th style="text-align:right;padding:9px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Royalties</th>
+          <th style="text-align:left;padding:9px 18px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Cotações</th>
+        </tr></thead>
+        <tbody>
+          <sc-for list="{{relFornRows}}" as="f" hint-placeholder-count="4">
+            <tr>
+              <td style="padding:9px 18px;font-size:12.5px;border-bottom:1px solid #f5f1e8"><span style="font-weight:600">{{f.nome}}</span> <span style="font-size:10.5px;font-weight:600;border-radius:6px;padding:2px 7px;background:{{f.stBg}};color:{{f.stFg}}">{{f.stLabel}}</span></td>
+              <td style="padding:9px 10px;font-size:12.5px;color:#8a8378;border-bottom:1px solid #f5f1e8">{{f.pct}}</td>
+              <td style="padding:9px 10px;font-size:12.5px;color:#8a8378;border-bottom:1px solid #f5f1e8">{{f.nfs}}</td>
+              <td style="padding:9px 10px;font-size:12.5px;font-weight:600;text-align:right;border-bottom:1px solid #f5f1e8">{{f.fatFmt}}</td>
+              <td style="padding:9px 10px;font-size:12.5px;font-weight:600;color:#8f682a;text-align:right;border-bottom:1px solid #f5f1e8">{{f.royFmt}}</td>
+              <td style="padding:9px 18px;font-size:12px;color:#8a8378;border-bottom:1px solid #f5f1e8">{{f.cot}}</td>
+            </tr>
+          </sc-for>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;overflow:hidden;margin-bottom:14px">
+      <div style="padding:13px 18px;font-size:14px;font-weight:700;border-bottom:1px solid #f1ece2">Desempenho por revenda <span style="font-size:11.5px;font-weight:500;color:#a89f90">· pedidos, aprovação e faturamento no período</span></div>
+      <table style="width:100%;border-collapse:collapse">
+        <thead><tr>
+          <th style="text-align:left;padding:9px 18px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Revenda</th>
+          <th style="text-align:right;padding:9px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Pedidos</th>
+          <th style="text-align:right;padding:9px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Valor</th>
+          <th style="text-align:right;padding:9px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Aprovação</th>
+          <th style="text-align:right;padding:9px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Rejeitados</th>
+          <th style="text-align:right;padding:9px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Faturado</th>
+          <th style="text-align:left;padding:9px 18px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Último pedido</th>
+        </tr></thead>
+        <tbody>
+          <sc-for list="{{relRevRows}}" as="r" hint-placeholder-count="4">
+            <tr>
+              <td style="padding:9px 18px;font-size:12.5px;border-bottom:1px solid #f5f1e8"><span style="font-weight:600">{{r.nome}}</span><div style="font-size:10.5px;color:#a89f90">{{r.cidade}}</div></td>
+              <td style="padding:9px 10px;font-size:12.5px;text-align:right;border-bottom:1px solid #f5f1e8">{{r.n}}</td>
+              <td style="padding:9px 10px;font-size:12.5px;font-weight:600;text-align:right;border-bottom:1px solid #f5f1e8">{{r.valFmt}}</td>
+              <td style="padding:9px 10px;font-size:12.5px;text-align:right;border-bottom:1px solid #f5f1e8">{{r.aprov}}</td>
+              <td style="padding:9px 10px;font-size:12.5px;text-align:right;border-bottom:1px solid #f5f1e8">{{r.rej}}</td>
+              <td style="padding:9px 10px;font-size:12.5px;font-weight:600;text-align:right;border-bottom:1px solid #f5f1e8">{{r.fatFmt}}</td>
+              <td style="padding:9px 18px;font-size:12.5px;color:#8a8378;border-bottom:1px solid #f5f1e8">{{r.ult}}</td>
+            </tr>
+          </sc-for>
+        </tbody>
+      </table>
+    </div>
+
+    <sc-if value="{{temRoyRows}}" hint-placeholder-val="{{false}}">
+      <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;overflow:hidden;margin-bottom:14px">
+        <div style="padding:13px 18px;font-size:14px;font-weight:700;border-bottom:1px solid #f1ece2">Royalties por competência <span style="font-size:11.5px;font-weight:500;color:#a89f90">· situação de cobrança e pagamento</span></div>
+        <table style="width:100%;border-collapse:collapse">
+          <thead><tr>
+            <th style="text-align:left;padding:9px 18px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Competência</th>
+            <th style="text-align:left;padding:9px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Fornecedor</th>
+            <th style="text-align:left;padding:9px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Notas</th>
+            <th style="text-align:right;padding:9px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Faturado</th>
+            <th style="text-align:right;padding:9px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Royalty</th>
+            <th style="text-align:left;padding:9px 18px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Situação</th>
+          </tr></thead>
+          <tbody>
+            <sc-for list="{{relRoyRows}}" as="y" hint-placeholder-count="3">
+              <tr>
+                <td style="padding:9px 18px;font-size:12.5px;font-weight:600;border-bottom:1px solid #f5f1e8">{{y.comp}}</td>
+                <td style="padding:9px 10px;font-size:12.5px;border-bottom:1px solid #f5f1e8">{{y.nome}}</td>
+                <td style="padding:9px 10px;font-size:12.5px;color:#8a8378;border-bottom:1px solid #f5f1e8">{{y.nfs}}</td>
+                <td style="padding:9px 10px;font-size:12.5px;text-align:right;border-bottom:1px solid #f5f1e8">{{y.fatFmt}}</td>
+                <td style="padding:9px 10px;font-size:12.5px;font-weight:600;color:#8f682a;text-align:right;border-bottom:1px solid #f5f1e8">{{y.royFmt}}</td>
+                <td style="padding:9px 18px;border-bottom:1px solid #f5f1e8"><span style="font-size:11px;font-weight:600;border-radius:6px;padding:2px 8px;background:{{y.stBg}};color:{{y.stFg}};white-space:nowrap">{{y.stLabel}}</span><sc-if value="{{y.pgInfo}}" hint-placeholder-val="{{false}}"><span style="font-size:10.5px;color:#a89f90;margin-left:7px">{{y.pgInfo}}</span></sc-if></td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+      </div>
+    </sc-if>
+
+    <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;overflow:hidden">
+      <div style="padding:13px 18px;border-bottom:1px solid #f1ece2;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+        <div style="font-size:14px;font-weight:700">Pedidos detalhados <span style="font-size:11.5px;font-weight:500;color:#a89f90">· {{relPedsN}} pedido(s) no filtro atual · clique para abrir</span></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <sc-for list="{{relStatus}}" as="s" hint-placeholder-count="6">
+            <span style="font-size:11px;font-weight:600;border-radius:7px;padding:2px 8px;background:{{s.stBg}};color:{{s.stFg}}">{{s.stLabel}}: {{s.nStr}}</span>
+          </sc-for>
+        </div>
+      </div>
+      <table style="width:100%;border-collapse:collapse">
+        <thead><tr>
+          <th style="text-align:left;padding:9px 18px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Pedido</th>
+          <th style="text-align:left;padding:9px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Data</th>
+          <th style="text-align:left;padding:9px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Revenda</th>
+          <th style="text-align:left;padding:9px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Fornecedor</th>
+          <th style="text-align:right;padding:9px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Total</th>
+          <th style="text-align:left;padding:9px 18px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Status</th>
+        </tr></thead>
+        <tbody>
+          <sc-for list="{{relPedRows}}" as="p" hint-placeholder-count="5">
+            <tr onClick="{{p.abrir}}" style="cursor:pointer" style-hover="background:#faf7f0">
+              <td style="padding:9px 18px;font-size:12.5px;font-weight:600;border-bottom:1px solid #f5f1e8">{{p.id}}</td>
+              <td style="padding:9px 10px;font-size:12.5px;color:#8a8378;border-bottom:1px solid #f5f1e8">{{p.data}}</td>
+              <td style="padding:9px 10px;font-size:12.5px;border-bottom:1px solid #f5f1e8">{{p.revNome}}</td>
+              <td style="padding:9px 10px;font-size:12.5px;border-bottom:1px solid #f5f1e8">{{p.fornNome}}</td>
+              <td style="padding:9px 10px;font-size:12.5px;font-weight:600;text-align:right;border-bottom:1px solid #f5f1e8">{{p.totalFmt}}</td>
+              <td style="padding:9px 18px;border-bottom:1px solid #f5f1e8"><span style="font-size:11px;font-weight:600;border-radius:6px;padding:2px 8px;background:{{p.stBg}};color:{{p.stFg}};white-space:nowrap">{{p.stLabel}}</span></td>
+            </tr>
+          </sc-for>
+        </tbody>
+      </table>
+      <sc-if value="{{semPedRows}}" hint-placeholder-val="{{false}}">
+        <div style="padding:22px 18px;text-align:center;font-size:13px;color:#a89f90">Nenhum pedido encontrado com os filtros atuais — ajuste os filtros acima ou clique em "Limpar filtros".</div>
+      </sc-if>
     </div>
   </div>
 </sc-if>
@@ -2042,6 +2238,7 @@ class Component extends DCLogic {
     cfgTestTo:'', cfgMsg:null, cfgMsgTipo:null, cfgBusy:false,
     selPed:null, selCot:null, selForn:null, selProd:null, selRev:null, modal:null, form:{}, pendVenc:null, filtroStatusProd:'todos', buscaRev:'', buscaPed:'', filtroRev:'0',
     busca:'', buscaForn:'', filtroForn:'0', filtroStatus:'todos', buscaCat:'', cart:{}, fotoIdx:{}, lightbox:null, expFech:null, filtroCot:'todas',
+    relComp:'todas', relRevF:'0', relFornF:'0', relStF:'todos',
     seq:{ped:47,cot:9,forn:5,prod:11,rev:5,ctr:5,nf:1210},
     fornecedores:[
       {id:1,nome:'Distribuidora Serra Verde',cnpj:'12.345.678/0001-90',cidade:'Petrópolis/RJ',contato:'comercial@serraverde.com.br',ativo:true},
@@ -2517,21 +2714,23 @@ class Component extends DCLogic {
       ]
     },
     "rel": {
-      "rotina": "Relatórios",
-      "titulo": "Consultando os Relatórios da Loja",
-      "resumo": "Painel de consulta da Loja que reúne numa só tela os pedidos por status, o faturamento e os royalties por fornecedor e o desempenho das cotações. É uma tela só de leitura, para acompanhar os números — não tem botões para aprovar ou editar.",
+      "rotina": "Relatórios e Painéis",
+      "titulo": "Analisar indicadores e exportar relatórios",
+      "resumo": "Painel gerencial da Loja com indicadores, gráficos, rankings, funil e tabelas de desempenho — tudo recalculado pelos filtros — além de exportação em CSV.",
       "passos": [
-        "Abra \"Relatórios\" no menu da Loja; logo abaixo do título aparece o subtítulo \"Pedidos, faturamento, royalties e desempenho das cotações\", confirmando o conteúdo da tela.",
-        "No primeiro painel, \"Pedidos por período, fornecedor e revenda\", leia as etiquetas coloridas no topo (no formato \"Status: número\") para ver quantos pedidos existem em cada situação.",
-        "Logo abaixo, acompanhe cada pedido na tabela pelas colunas Pedido, Data, Revenda, Fornecedor, Total e Status.",
-        "No painel \"Faturamento & royalties por fornecedor\", veja em cada fornecedor o valor faturado (número de cima, à direita) e, logo abaixo em destaque dourado, o royalty apurado; o percentual usado aparece ao lado do nome como \"royalty ...\".",
-        "No painel \"Cotações — economia, resposta e participação\", confira os três indicadores do topo: \"economia obtida\" (em verde), \"prazo médio de resposta\" e \"participação dos convidados\".",
-        "Na tabela de cotações, analise cada linha pelas colunas Cotação (com o status logo abaixo do código), Participação (número de propostas), Menor preço, Economia e Vencedor."
+        "Use os filtros no topo — \"Todas as competências\", \"Todas as revendas\", \"Todos os fornecedores\" e \"Todos os status\" — para delimitar o período e os parceiros; todo o painel recalcula na hora.",
+        "Confira os seis indicadores: \"Pedidos\", \"Valor em pedidos\", \"Ticket médio\", \"Taxa de aprovação\", \"Faturado\" e \"Royalties\".",
+        "No gráfico \"Evolução mensal do faturamento\", acompanhe as competências; passe o mouse sobre uma barra para ver o faturado e o royalty do mês.",
+        "Em \"Pedidos por status\", veja a distribuição na barra colorida e a lista com quantidade e percentual de cada status.",
+        "Compare os rankings \"Produtos mais pedidos\" e \"Revendas que mais compram\" (top 5 por valor no período).",
+        "Acompanhe o \"Funil de atendimento\" — Criados, Aprovados, Em atendimento e Faturados — para ver onde os pedidos param.",
+        "Analise as tabelas \"Desempenho por fornecedor\", \"Desempenho por revenda\" e \"Royalties por competência\" para a visão por parceiro.",
+        "Em \"Pedidos detalhados\", clique em uma linha para abrir o pedido; para levar os dados ao Excel, use \"⬇ Pedidos (CSV)\" ou \"⬇ Faturamentos (CSV)\" no topo."
       ],
       "dicas": [
-        "Esta é uma tela de consulta: não há botões de ação, então use-a para acompanhar e conferir os números, não para aprovar ou alterar pedidos.",
-        "Para medir o ganho das compras por cotação, compare a coluna Economia da tabela com o indicador \"economia obtida\" no topo do mesmo painel.",
-        "O valor em dourado no painel de faturamento é o royalty já apurado por fornecedor; o percentual aplicado aparece ao lado do nome, como \"royalty ...\"."
+        "Os filtros valem para tudo — indicadores, gráficos, rankings, tabelas e também para os arquivos CSV exportados.",
+        "Quando algum filtro está ativo, aparece \"✕ Limpar filtros\" ao lado dos seletores.",
+        "O prazo médio de resposta e a economia das cotações são calculados a partir das propostas registradas."
       ]
     },
     "seg": {
@@ -2704,7 +2903,7 @@ class Component extends DCLogic {
       ]
     }
   };
-  AJUDA_GEO = {"dash":{"R":0.6859,"rects":[[0,0,1,0.0355],null,[0.0193,0.2304,0.1484,0.0207],[0.0193,0.4225,0.1379,0.0236],[0.0193,0.1233,0.0752,0.0236],[0.5073,0.4239,0.0801,0.0207],[0.6401,0.4254,0.3407,0.0236]]},"ped":{"R":0.7943,"rects":[[0.0172,0.0982,0.1863,0.0166],[0,0.2105,0.5846,0.0497],[0,0.2105,1,0.0497],null,[0.8278,0.3431,0.0726,0.0306],[0.9065,0.3431,0.0742,0.0306],null]},"peddet":{"R":0.6373,"rects":[[0,0,1,0.0238],[0.001,0.3561,0.625,0.0684],[0.2746,0.2035,0.1083,0.0238],[0.4594,0.5056,0.0703,0.0334],[0.5358,0.5056,0.072,0.0334],null,[0.6604,0.3816,0.3203,0.0254],[0.0193,0.8521,0.5885,0.0254]]},"cot":{"R":0.3749,"rects":[[0.852,0.0243,0.148,0.0946],[0.1167,0.6297,0.1749,0.0878],null,[0,0.4838,1,0.1054],[0.7838,0.7784,0.1499,0.0378],null,null,null]},"cotdet":{"R":1.2979,"rects":[[0,0,1,0.0117],[0.2737,0.1749,0.0917,0.0117],[0.6153,0.292,0.0686,0.0141],[0.0193,0.3669,0.4116,0.0125],[0.7701,0.4586,0.2107,0.0219],[0.0193,0.5886,0.9615,0.0125],null,[0.8251,0.3677,0.1557,0.0234],[0.0193,0.8525,0.9615,0.0125]]},"forn":{"R":0.849,"rects":[null,[0,0.1969,1,0.0442],[0.8284,0.0107,0.1716,0.0418],null,[0.0193,0.6134,0.9615,0.0191],[0.8543,0.7291,0.1143,0.0167],[0.9221,0.7518,0.0586,0.0167]]},"forndet":{"R":0.6657,"rects":[[0,0,1,0.0228],null,[0.5476,0.0411,0.1206,0.0533],[0.6773,0.0411,0.1449,0.0533],[0.0193,0.4003,0.4549,0.0228],[0.0193,0.5556,0.2229,0.0502],[0.2513,0.5556,0.2229,0.0502],[0,0.6575,1,0.0274],[0.9273,0.742,0.0535,0.0213]]},"prod":{"R":0.9493,"rects":[null,[0,0.191,0.5704,0.0416],[0.8505,0.0096,0.1495,0.0374],[0.1617,0.2487,0.2783,0.0347],null,null,[0.9273,0.3132,0.0535,0.0149]]},"proddet":{"R":0.6626,"rects":[null,null,[0.4529,0.1774,0.5278,0.0245],[0.4509,0.3991,0.1768,0.0199],[0.6822,0.0413,0.1346,0.0535],[0.8411,0.0566,0.1437,0.0229],[0,0.7615,1,0.0275],[0,0,1,0.0229]]},"rev":{"R":0.5552,"rects":[[0.0172,0.1405,0.1223,0.0237],[0,0.3266,1,0.0675],[0.8492,0.0164,0.1508,0.0639],null,null,null,null,null,null]},"revdet":{"R":1.2219,"rects":[[0.233,0.0311,0.0357,0.0116],[0.0172,0.0945,0.1474,0.0108],[0.7214,0.0224,0.1206,0.029],[0.8664,0.0307,0.1184,0.0124],[0.0193,0.1683,0.3722,0.0133],[0.4442,0.1683,0.5366,0.0133],[0,0.335,1,0.0149],null,[0,0.8284,1,0.0149]]},"fat":{"R":0.3982,"rects":[null,[0.001,0.1552,0.998,0.1018],[0.001,0.3944,0.1056,0.0827],[0.1066,0.3944,0.0891,0.0827],[0.1957,0.3944,0.1958,0.0827],[0.5693,0.3944,0.1366,0.0827],[0.7059,0.3944,0.1426,0.0827]]},"roy":{"R":0.6424,"rects":[null,[0.0193,0.2823,0.1734,0.0252],[0.0193,0.4653,0.1758,0.0205],[0.0172,0.1183,0.1349,0.0205],[0.6438,0.4322,0.1417,0.041],[0.6714,0.6987,0.1141,0.041],[0.8008,0.4322,0.18,0.041],[0.5391,0.3297,0.0865,0.067]]},"rel":{"R":0.769,"rects":[[0,0,1,0.0316],[0.0193,0.0975,0.9615,0.0211],null,[0.001,0.6877,0.4087,0.0567],[0.4442,0.7049,0.5366,0.0211],null]},"seg":{"R":0.6047,"rects":[null,[0.0193,0.1592,0.2854,0.0302],[0.0193,0.1592,0.2854,0.0302],[0.1663,0.8425,0.2214,0.0251],[0.1663,0.7286,0.1764,0.0251],[0.001,0.4186,0.998,0.072],[0.001,0.4907,0.1551,0.0511]]},"fped":{"R":0.2513,"rects":[[0,0,1,0.0968],null,[0.1327,0.4738,0.7244,0.0565],null,null,null,null,null]},"fcot":{"R":0.2685,"rects":[[0.387,0.3,0.1074,0.0528],null,[0.1327,0.4434,0.6746,0.0528],null,null,null,null,null]},"ffat":{"R":0.1996,"rects":[null,[0,0.1371,1,0.0761],[0.001,0.3096,0.1575,0.165],[0.1585,0.3096,0.1328,0.165],[0.5564,0.3096,0.2126,0.165],[0.769,0.3096,0.23,0.165],null,null]},"froy":{"R":0.1814,"rects":[null,[0,0,1,0.1341],[0.001,0.3408,0.2681,0.1816],[0.2691,0.3408,0.2085,0.1816],[0.4776,0.3408,0.271,0.1816],[0.7486,0.3408,0.2504,0.1816],null]},"cat":{"R":1.11,"rects":[[0,0.0529,1,0.0356],null,null,null,null,null,null,null]},"rped":{"R":0.2756,"rects":[[0.001,0.2243,0.157,0.1195],[0.2411,0.4265,0.0413,0.0515],[0.2411,0.4265,0.0413,0.0515],[0.3527,0.2243,0.3181,0.1195],[0.6708,0.2243,0.158,0.1195],[0.8289,0.2243,0.1701,0.1195],null]},"cfgemail":{"R":1.072,"rects":[[0.028,0.1126,0.2063,0.0159],[0.028,0.1752,0.6179,0.0159],[0.663,0.1752,0.3089,0.0159],[0.028,0.2548,0.9439,0.0159],[0.028,0.3367,0.6179,0.0159],[0.028,0.4539,0.4634,0.0159],[0.028,0.7327,0.2308,0.0398],[0.028,0.835,0.9439,0.0182]]}};
+  AJUDA_GEO = {"dash":{"R":0.6859,"rects":[[0,0,1,0.0355],null,[0.0193,0.2304,0.1484,0.0207],[0.0193,0.4225,0.1379,0.0236],[0.0193,0.1233,0.0752,0.0236],[0.5073,0.4239,0.0801,0.0207],[0.6401,0.4254,0.3407,0.0236]]},"ped":{"R":0.7943,"rects":[[0.0172,0.0982,0.1863,0.0166],[0,0.2105,0.5846,0.0497],[0,0.2105,1,0.0497],null,[0.8278,0.3431,0.0726,0.0306],[0.9065,0.3431,0.0742,0.0306],null]},"peddet":{"R":0.6373,"rects":[[0,0,1,0.0238],[0.001,0.3561,0.625,0.0684],[0.2746,0.2035,0.1083,0.0238],[0.4594,0.5056,0.0703,0.0334],[0.5358,0.5056,0.072,0.0334],null,[0.6604,0.3816,0.3203,0.0254],[0.0193,0.8521,0.5885,0.0254]]},"cot":{"R":0.3749,"rects":[[0.852,0.0243,0.148,0.0946],[0.1167,0.6297,0.1749,0.0878],null,[0,0.4838,1,0.1054],[0.7838,0.7784,0.1499,0.0378],null,null,null]},"cotdet":{"R":1.2979,"rects":[[0,0,1,0.0117],[0.2737,0.1749,0.0917,0.0117],[0.6153,0.292,0.0686,0.0141],[0.0193,0.3669,0.4116,0.0125],[0.7701,0.4586,0.2107,0.0219],[0.0193,0.5886,0.9615,0.0125],null,[0.8251,0.3677,0.1557,0.0234],[0.0193,0.8525,0.9615,0.0125]]},"forn":{"R":0.849,"rects":[null,[0,0.1969,1,0.0442],[0.8284,0.0107,0.1716,0.0418],null,[0.0193,0.6134,0.9615,0.0191],[0.8543,0.7291,0.1143,0.0167],[0.9221,0.7518,0.0586,0.0167]]},"forndet":{"R":0.6657,"rects":[[0,0,1,0.0228],null,[0.5476,0.0411,0.1206,0.0533],[0.6773,0.0411,0.1449,0.0533],[0.0193,0.4003,0.4549,0.0228],[0.0193,0.5556,0.2229,0.0502],[0.2513,0.5556,0.2229,0.0502],[0,0.6575,1,0.0274],[0.9273,0.742,0.0535,0.0213]]},"prod":{"R":0.9493,"rects":[null,[0,0.191,0.5704,0.0416],[0.8505,0.0096,0.1495,0.0374],[0.1617,0.2487,0.2783,0.0347],null,null,[0.9273,0.3132,0.0535,0.0149]]},"proddet":{"R":0.6626,"rects":[null,null,[0.4529,0.1774,0.5278,0.0245],[0.4509,0.3991,0.1768,0.0199],[0.6822,0.0413,0.1346,0.0535],[0.8411,0.0566,0.1437,0.0229],[0,0.7615,1,0.0275],[0,0,1,0.0229]]},"rev":{"R":0.5552,"rects":[[0.0172,0.1405,0.1223,0.0237],[0,0.3266,1,0.0675],[0.8492,0.0164,0.1508,0.0639],null,null,null,null,null,null]},"revdet":{"R":1.2219,"rects":[[0.233,0.0311,0.0357,0.0116],[0.0172,0.0945,0.1474,0.0108],[0.7214,0.0224,0.1206,0.029],[0.8664,0.0307,0.1184,0.0124],[0.0193,0.1683,0.3722,0.0133],[0.4442,0.1683,0.5366,0.0133],[0,0.335,1,0.0149],null,[0,0.8284,1,0.0149]]},"fat":{"R":0.3982,"rects":[null,[0.001,0.1552,0.998,0.1018],[0.001,0.3944,0.1056,0.0827],[0.1066,0.3944,0.0891,0.0827],[0.1957,0.3944,0.1958,0.0827],[0.5693,0.3944,0.1366,0.0827],[0.7059,0.3944,0.1426,0.0827]]},"roy":{"R":0.6424,"rects":[null,[0.0193,0.2823,0.1734,0.0252],[0.0193,0.4653,0.1758,0.0205],[0.0172,0.1183,0.1349,0.0205],[0.6438,0.4322,0.1417,0.041],[0.6714,0.6987,0.1141,0.041],[0.8008,0.4322,0.18,0.041],[0.5391,0.3297,0.0865,0.067]]},"rel":{"R":2.2817,"rects":[[0,0.0258,0.2118,0.0164],[0.0152,0.0542,0.0544,0.0049],[0.0193,0.0959,0.553,0.0071],[0.6249,0.0959,0.3558,0.0071],[0.0193,0.2123,0.4544,0.0071],[0.0193,0.3748,0.3558,0.0071],[0.001,0.4849,0.998,0.0191],[0.0193,0.8204,0.4247,0.0071]]},"seg":{"R":0.6047,"rects":[null,[0.0193,0.1592,0.2854,0.0302],[0.0193,0.1592,0.2854,0.0302],[0.1663,0.8425,0.2214,0.0251],[0.1663,0.7286,0.1764,0.0251],[0.001,0.4186,0.998,0.072],[0.001,0.4907,0.1551,0.0511]]},"fped":{"R":0.2513,"rects":[[0,0,1,0.0968],null,[0.1327,0.4738,0.7244,0.0565],null,null,null,null,null]},"fcot":{"R":0.2685,"rects":[[0.387,0.3,0.1074,0.0528],null,[0.1327,0.4434,0.6746,0.0528],null,null,null,null,null]},"ffat":{"R":0.1996,"rects":[null,[0,0.1371,1,0.0761],[0.001,0.3096,0.1575,0.165],[0.1585,0.3096,0.1328,0.165],[0.5564,0.3096,0.2126,0.165],[0.769,0.3096,0.23,0.165],null,null]},"froy":{"R":0.1814,"rects":[null,[0,0,1,0.1341],[0.001,0.3408,0.2681,0.1816],[0.2691,0.3408,0.2085,0.1816],[0.4776,0.3408,0.271,0.1816],[0.7486,0.3408,0.2504,0.1816],null]},"cat":{"R":1.11,"rects":[[0,0.0529,1,0.0356],null,null,null,null,null,null,null]},"rped":{"R":0.2756,"rects":[[0.001,0.2243,0.157,0.1195],[0.2411,0.4265,0.0413,0.0515],[0.2411,0.4265,0.0413,0.0515],[0.3527,0.2243,0.3181,0.1195],[0.6708,0.2243,0.158,0.1195],[0.8289,0.2243,0.1701,0.1195],null]},"cfgemail":{"R":1.072,"rects":[[0.028,0.1126,0.2063,0.0159],[0.028,0.1752,0.6179,0.0159],[0.663,0.1752,0.3089,0.0159],[0.028,0.2548,0.9439,0.0159],[0.028,0.3367,0.6179,0.0159],[0.028,0.4539,0.4634,0.0159],[0.028,0.7327,0.2308,0.0398],[0.028,0.835,0.9439,0.0182]]}};
   ajudaConteudo(){ return this.AJUDA_CONTEUDO[this.scr] || this.AJUDA_CONTEUDO._default; }
   abrirAjuda=(e)=>{ if(e&&e.stopPropagation) e.stopPropagation(); this._ajudaStop(); this.setState({modal:'ajuda',ajudaStep:0,ajudaPlay:false}); };
   fecharAjuda=()=>{ this._ajudaStop(); this.setState({modal:null,ajudaPlay:false}); };
@@ -2776,6 +2975,37 @@ class Component extends DCLogic {
   mkStep(label,sub,st){ const m={done:['#B38335','#B38335','#272525'],current:['#fff','#B38335','#272525'],pending:['#fff','#ddd5c7','#a89f90'],rejected:['#a33a2b','#a33a2b','#a33a2b'],skipped:['#f1ece2','#e8e1d2','#b0a795']}[st];
     return {label,sub,dotBg:m[0],dotBd:m[1],fg:m[2],atual:st==='current'}; }
   setFiltroCot=e=>this.setState({filtroCot:e.target.value});
+  // ── Relatórios e Painéis ─────────────────────────────────────────────────
+  setRelComp=e=>this.setState({relComp:e.target.value});
+  setRelRevF=e=>this.setState({relRevF:e.target.value});
+  setRelFornF=e=>this.setState({relFornF:e.target.value});
+  setRelStF=e=>this.setState({relStF:e.target.value});
+  limparRelFiltros=()=>this.setState({relComp:'todas',relRevF:'0',relFornF:'0',relStF:'todos'});
+  parseData(d){ if(!d) return null; const m=String(d).match(/(\d{2})\/(\d{2})\/(\d{4})/); return m?new Date(+m[3],+m[2]-1,+m[1]):null; }
+  _relPedsFiltrados(){ const S=this.state;
+    return S.pedidos.map(p=>({...p,status:this.pedStatus(p),total:this.pedTotal(p)}))
+      .filter(p=>(S.relComp==='todas'||(p.data||'').slice(3)===S.relComp)
+        &&(S.relRevF==='0'||p.revendaId===+S.relRevF)
+        &&(S.relFornF==='0'||p.itens.some(i=>i.fornecedorId===+S.relFornF))
+        &&(S.relStF==='todos'||p.status===S.relStF)); }
+  _relFatsFiltrados(){ const S=this.state;
+    return S.faturamentos.filter(f=>(S.relComp==='todas'||f.competencia===S.relComp)
+      &&(S.relRevF==='0'||f.revendaId===+S.relRevF)
+      &&(S.relFornF==='0'||f.fornecedorId===+S.relFornF)); }
+  baixarCSV(nome,linhas){ const csv=linhas.map(r=>r.map(v=>{ v=String(v==null?'':v); return /[";\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; }).join(';')).join('\r\n');
+    const blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=nome;
+    document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },150); }
+  exportRelPedidos=()=>{ const linhas=[['Pedido','Data','Revenda','Fornecedor destino','Itens','Total (R$)','Status','Justificativa']];
+    this._relPedsFiltrados().forEach(p=>{ const rev=this.state.revendas.find(x=>x.id===p.revendaId)||{};
+      const forns=[...new Set(p.itens.filter(i=>i.fornecedorId).map(i=>this._fornNome(i.fornecedorId)))].join(', ')||'—';
+      const itens=p.itens.map(i=>{ const pr=this._prodInfo(i.produtoId); return (pr.codigo||'')+' '+(pr.descricao||'')+' x'+i.qtd; }).join(' | ');
+      linhas.push([p.id,p.data,rev.nome||'',forns,itens,p.total.toFixed(2).replace('.',','),p.status,p.justificativa||'']); });
+    this.baixarCSV('relatorio-pedidos.csv',linhas); this.audit('Exportação de relatório','Pedidos (CSV) · '+(linhas.length-1)+' linha(s)'); };
+  exportRelFat=()=>{ const linhas=[['Nota fiscal','Data','Competência','Pedido','Fornecedor','Revenda','Cotação','Valor (R$)','Royalty %','Royalty (R$)']];
+    this._relFatsFiltrados().forEach(f=>{ linhas.push([f.id,f.data,f.competencia,f.pedidoId,this._fornNome(f.fornecedorId),this._revNome(f.revendaId),f.cotacaoId||'—',
+      f.valor.toFixed(2).replace('.',','),String(f.royaltyPct).replace('.',','),f.royaltyValor.toFixed(2).replace('.',',')]); });
+    this.baixarCSV('relatorio-faturamentos.csv',linhas); this.audit('Exportação de relatório','Faturamentos (CSV) · '+(linhas.length-1)+' linha(s)'); };
   lembrarCot(cid,fid){ this._lc=this._lc||{}; const k=cid+'-'+fid; if(!this._lc[k]) this._lc[k]=(e)=>{ if(e&&e.stopPropagation) e.stopPropagation();
     const f=this.state.fornecedores.find(x=>x.id===fid);
     this.updCot(cid,c=>{ c.lembretes={...(c.lembretes||{}),[fid]:this.hoje()};
@@ -3442,19 +3672,102 @@ class Component extends DCLogic {
       royStr:String(f.royaltyPct).replace('.',',')+'% · '+this.fmt(f.royaltyValor)}));
     const aguardFat=PEDS.filter(p=>p.itens.some(i=>i.st==='direto')).map(p=>({id:p.id,fornNome:destTxt(p),revNome:R(p.revendaId).nome,totalFmt:this.fmt(p.itens.filter(i=>i.st==='direto').reduce((a,i)=>a+this.itemTotal(i),0))}));
 
-    // relatórios
-    const relStatus=['pendente','aprovado','em cotação','encaminhado','faturado','atendido','rejeitado'].map(s=>({...this.chip(s),n:String(PEDS.filter(p=>p.status===s).length)}));
-    const relPedRows=PEDS.map(p=>({id:p.id,data:p.data,revNome:R(p.revendaId).nome,fornNome:destTxt(p),totalFmt:this.fmt(p.total),...this.chip(p.status)}));
-    const relFatRows=fatPorForn.map(x=>({nome:x.nome,pct:x.pct,totalFatFmt:this.fmt(x.tot),totalRoyFmt:this.fmt(x.roy)}));
-    let ecoTotal=0, convTot=0, propTot=0;
+    // ── relatórios e painéis ──
+    const relPeds=this._relPedsFiltrados();
+    const relFats=this._relFatsFiltrados();
+    const relTemFiltro=S.relComp!=='todas'||S.relRevF!=='0'||S.relFornF!=='0'||S.relStF!=='todos';
+    const compKey=c=>{ const [m,y]=c.split('/'); return y+m; };
+    const relComps=[...new Set([...S.pedidos.map(p=>(p.data||'').slice(3)),...S.faturamentos.map(f=>f.competencia)])].filter(c=>/^\d{2}\/\d{4}$/.test(c)).sort((a,b)=>compKey(b).localeCompare(compKey(a)));
+    const relCompOpts=[{v:'todas',label:'Todas as competências'},...relComps.map(c=>({v:c,label:'Competência '+c}))];
+    const relRevOpts=[{v:'0',label:'Todas as revendas'},...S.revendas.map(r=>({v:String(r.id),label:r.nome}))];
+    const relFornOpts=[{v:'0',label:'Todos os fornecedores'},...S.fornecedores.map(f=>({v:String(f.id),label:f.nome}))];
+    const relStOpts=[{v:'todos',label:'Todos os status'},...['pendente','aprovado','em cotação','encaminhado','atendido','faturado','rejeitado'].map(s=>({v:s,label:this.chip(s).stLabel}))];
+    // KPIs
+    const relValorPed=relPeds.reduce((a,p)=>a+p.total,0);
+    const relDecididos=relPeds.filter(p=>p.status!=='pendente');
+    const relTaxaAprov=relDecididos.length?Math.round(relDecididos.filter(p=>p.status!=='rejeitado').length/relDecididos.length*100)+'%':'—';
+    const relFatTotal=relFats.reduce((a,f)=>a+f.valor,0);
+    const relRoyTotal=relFats.reduce((a,f)=>a+f.royaltyValor,0);
+    const relKpis=[
+      {label:'Pedidos',val:String(relPeds.length),sub:'no período filtrado'},
+      {label:'Valor em pedidos',val:this.fmt(relValorPed),sub:'soma dos pedidos'},
+      {label:'Ticket médio',val:relPeds.length?this.fmt(relValorPed/relPeds.length):'—',sub:'por pedido'},
+      {label:'Taxa de aprovação',val:relTaxaAprov,sub:relDecididos.length+' pedido(s) decidido(s)'},
+      {label:'Faturado',val:this.fmt(relFatTotal),sub:relFats.length+' nota(s) fiscal(is)'},
+      {label:'Royalties',val:this.fmt(relRoyTotal),sub:'sobre o faturado'}];
+    // evolução mensal do faturamento (ignora o filtro de competência para mostrar a série)
+    const relFatSerie=S.faturamentos.filter(f=>(S.relRevF==='0'||f.revendaId===+S.relRevF)&&(S.relFornF==='0'||f.fornecedorId===+S.relFornF));
+    const mesesMap={}; relFatSerie.forEach(f=>{ const m=mesesMap[f.competencia]||(mesesMap[f.competencia]={fat:0,roy:0}); m.fat+=f.valor; m.roy+=f.royaltyValor; });
+    const mesesOrd=Object.keys(mesesMap).sort((a,b)=>compKey(a).localeCompare(compKey(b))).slice(-8);
+    const maxFatMes=Math.max(1,...mesesOrd.map(c=>mesesMap[c].fat));
+    const relMeses=mesesOrd.map(c=>({label:c.slice(0,3)+c.slice(-2),h:Math.max(4,Math.round(mesesMap[c].fat/maxFatMes*100)),
+      ativo:S.relComp===c,bg:S.relComp===c?'linear-gradient(180deg,#e3bf7e,#B38335)':'linear-gradient(180deg,#cfa055,#B38335)',
+      valFmt:this.fmt(mesesMap[c].fat),royFmt:this.fmt(mesesMap[c].roy),tip:c+' · faturado '+this.fmt(mesesMap[c].fat)+' · royalty '+this.fmt(mesesMap[c].roy)}));
+    const temSerie=relMeses.length>0;
+    // distribuição por status
+    const relStatus=['pendente','aprovado','em cotação','encaminhado','atendido','faturado','rejeitado']
+      .map(s=>({...this.chip(s),s,n:relPeds.filter(p=>p.status===s).length})).filter(x=>x.n>0)
+      .map(x=>({...x,nStr:String(x.n),w:Math.round(x.n/Math.max(1,relPeds.length)*100),pct:Math.round(x.n/Math.max(1,relPeds.length)*100)+'%'}));
+    // top produtos e top revendas
+    const prodAgg={}; relPeds.forEach(p=>p.itens.filter(i=>i.st!=='rejeitado').forEach(i=>{ const a=prodAgg[i.produtoId]||(prodAgg[i.produtoId]={qtd:0,val:0}); a.qtd+=i.qtd; a.val+=this.itemTotal(i); }));
+    const topProdArr=Object.entries(prodAgg).sort((a,b)=>b[1].val-a[1].val).slice(0,5);
+    const maxProdVal=Math.max(1,...topProdArr.map(([,a])=>a.val));
+    const relTopProds=topProdArr.map(([pid,a],ix)=>{ const pr=P(+pid); return {pos:String(ix+1),nome:pr.descricao||'—',codigo:pr.codigo||'',qtd:a.qtd+' '+(pr.unidade||'un')+(a.qtd>1?'s':''),valFmt:this.fmt(a.val),w:Math.max(6,Math.round(a.val/maxProdVal*100)),foto:this.fotosDe(pr)[0],ver:this.verFoto(+pid)};});
+    const revAgg={}; relPeds.forEach(p=>{ const a=revAgg[p.revendaId]||(revAgg[p.revendaId]={n:0,val:0}); a.n++; a.val+=p.total; });
+    const topRevArr=Object.entries(revAgg).sort((a,b)=>b[1].val-a[1].val).slice(0,5);
+    const maxRevVal=Math.max(1,...topRevArr.map(([,a])=>a.val));
+    const relTopRevs=topRevArr.map(([rid,a],ix)=>({pos:String(ix+1),nome:R(+rid).nome,n:a.n+' pedido'+(a.n>1?'s':''),valFmt:this.fmt(a.val),w:Math.max(6,Math.round(a.val/maxRevVal*100))}));
+    // funil de atendimento
+    const fCriado=relPeds.length;
+    const fAprov=relPeds.filter(p=>p.status!=='pendente'&&p.status!=='rejeitado').length;
+    const fAtend=relPeds.filter(p=>['encaminhado','atendido','faturado'].includes(p.status)).length;
+    const fFatur=relPeds.filter(p=>p.status==='faturado').length;
+    const relFunil=[['Criados',fCriado,'#b0a795'],['Aprovados',fAprov,'#B38335'],['Em atendimento',fAtend,'#5d3f96'],['Faturados',fFatur,'#1f6b5e']]
+      .map(([label,n,cor])=>({label,n:String(n),cor,w:Math.max(fCriado?Math.round(n/fCriado*100):0,n>0?8:2),pct:fCriado?Math.round(n/fCriado*100)+'%':'—'}));
+    // desempenho por fornecedor
+    const relFornRows=S.fornecedores.map(fo=>{
+      const fs=relFats.filter(x=>x.fornecedorId===fo.id);
+      const conv=S.cotacoes.filter(c=>c.convidados.includes(fo.id));
+      const resp=conv.filter(c=>c.propostas.some(p=>p.fornecedorId===fo.id));
+      const ganhas=S.cotacoes.filter(c=>c.vencedorId===fo.id||Object.values(c.vencItens||{}).includes(fo.id)).length;
+      const ctr=S.contratos.find(c=>c.fornecedorId===fo.id&&c.vigente);
+      return {nome:fo.nome,...this.chip(fo.ativo?'ativo':'inativo'),
+        nfs:fs.length?fs.length+' NF'+(fs.length>1?'s':''):'—',fatFmt:fs.length?this.fmt(fs.reduce((a,x)=>a+x.valor,0)):'—',
+        royFmt:fs.length?this.fmt(fs.reduce((a,x)=>a+x.royaltyValor,0)):'—',pct:ctr?String(ctr.royalty).replace('.',',')+'%':'—',
+        cot:conv.length?resp.length+'/'+conv.length+' respondidas · '+ganhas+' vencida(s)':'—'};});
+    // desempenho por revenda
+    const relRevRows=S.revendas.map(rv=>{
+      const ps=relPeds.filter(p=>p.revendaId===rv.id);
+      const dec=ps.filter(p=>p.status!=='pendente');
+      const fatR=relFats.filter(f=>f.revendaId===rv.id).reduce((a,f)=>a+f.valor,0);
+      const datas=ps.map(p=>this.parseData(p.data)).filter(Boolean);
+      const ult=datas.length?new Date(Math.max(...datas.map(d=>d.getTime()))).toLocaleDateString('pt-BR'):'—';
+      return {nome:rv.nome,cidade:rv.cidade,...this.chip(rv.ativo?'ativo':'inativo'),n:String(ps.length),
+        valFmt:ps.length?this.fmt(ps.reduce((a,p)=>a+p.total,0)):'—',
+        aprov:dec.length?Math.round(dec.filter(p=>p.status!=='rejeitado').length/dec.length*100)+'%':'—',
+        rej:String(ps.filter(p=>p.status==='rejeitado').length),fatFmt:fatR?this.fmt(fatR):'—',ult};});
+    // royalties por competência
+    const relRoyRows=[];
+    [...new Set(relFats.map(f=>f.competencia))].sort((a,b)=>compKey(b).localeCompare(compKey(a))).forEach(comp=>{
+      S.fornecedores.forEach(fo=>{ const fs=relFats.filter(x=>x.competencia===comp&&x.fornecedorId===fo.id); if(!fs.length) return;
+        const pg=S.pagamentos[comp+'-'+fo.id]||{}; const st=pg.status||'a pagar';
+        relRoyRows.push({comp,nome:fo.nome,nfs:fs.length+' NF'+(fs.length>1?'s':''),fatFmt:this.fmt(fs.reduce((a,x)=>a+x.valor,0)),
+          royFmt:this.fmt(fs.reduce((a,x)=>a+x.royaltyValor,0)),...this.chip(st),
+          pgInfo:pg.data?('pago em '+pg.data):(pg.cobranca?'cobrança emitida':'')}); }); });
+    // pedidos detalhados + cotações
+    const relPedRows=relPeds.map(p=>({id:p.id,data:p.data,revNome:R(p.revendaId).nome,fornNome:destTxt(p),totalFmt:this.fmt(p.total),...this.chip(p.status),abrir:this.openPed(p.id)}));
+    let ecoTotal=0, convTot=0, propTot=0, prazoSoma=0, prazoN=0;
     const relCotRows=S.cotacoes.map(c=>{ convTot+=c.convidados.length; propTot+=c.propostas.length;
+      const abertura=this.parseData((c.historico&&c.historico[0]&&c.historico[0].quando)||'');
+      c.propostas.forEach(p=>{ const dp=this.parseData(p.quando); if(abertura&&dp){ prazoSoma+=Math.max(0,(dp-abertura)/86400000); prazoN++; } });
       const menor=c.propostas.length?Math.min(...c.propostas.map(p=>p.preco)):0;
       const media=c.propostas.length?c.propostas.reduce((a,p)=>a+p.preco,0)/c.propostas.length:0;
       const venc=c.vencedorId?c.propostas.find(p=>p.fornecedorId===c.vencedorId):null;
       const eco=venc?media-venc.preco:0; if(c.status==='encerrada') ecoTotal+=eco;
       return {id:c.id,pedidoId:c.pedidoId,...this.chip(c.status),part:c.propostas.length+' / '+c.convidados.length,
-        menorFmt:menor?this.fmt(menor):'—',ecoFmt:c.status==='encerrada'?this.fmt(eco):'—',vencNome:c.vencedorId?F(c.vencedorId).nome:'—'};});
-    const relCot={ecoFmt:this.fmt(ecoTotal),taxa:convTot?Math.round(propTot/convTot*100)+'%':'—',prazoMedio:'≈ 1,5 dia'};
+        menorFmt:menor?this.fmt(menor):'—',ecoFmt:c.status==='encerrada'?this.fmt(eco):'—',vencNome:c.vencedorId?F(c.vencedorId).nome:'—',abrir:this.openCot(c.id)};});
+    const relCot={ecoFmt:this.fmt(ecoTotal),taxa:convTot?Math.round(propTot/convTot*100)+'%':'—',
+      prazoMedio:prazoN?(Math.round(prazoSoma/prazoN*10)/10).toLocaleString('pt-BR')+' dia(s)':'—'};
 
     const audRows=S.auditoria;
 
@@ -3602,7 +3915,15 @@ class Component extends DCLogic {
       fatRows,aguardFat,temAguardFat:aguardFat.length>0,royGroups,royKpis,
       mCob:M==='cobranca'&&!!cobInfo,cobInfo:cobInfo||{rows:[]},emitirCobranca:this.emitirCobranca,
       // relatórios / segurança
-      relStatus,relPedRows,relFatRows,relCotRows,relCot,audRows,
+      relStatus,relPedRows,relCotRows,relCot,audRows,
+      relCompOpts,relRevOpts,relFornOpts,relStOpts,
+      relComp:S.relComp,relRevF:S.relRevF,relFornF:S.relFornF,relStF:S.relStF,
+      setRelComp:this.setRelComp,setRelRevF:this.setRelRevF,setRelFornF:this.setRelFornF,setRelStF:this.setRelStF,
+      relTemFiltro,limparRelFiltros:this.limparRelFiltros,
+      relKpis,relMeses,temSerie,relTopProds,relTopRevs,relFunil,relFornRows,relRevRows,relRoyRows,
+      temRoyRows:relRoyRows.length>0,semPedRows:relPedRows.length===0,
+      relPedsN:String(relPedRows.length),relFatsN:String(relFats.length),
+      exportRelPedidos:this.exportRelPedidos,exportRelFat:this.exportRelFat,
       // fornecedor
       fMeNome:fMe.nome||'',fPctStr,fPedRows,fCotRows,fFatRows,fRoyRows,
       // revenda

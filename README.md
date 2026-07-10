@@ -120,7 +120,7 @@ Aplicação de página única com **login por perfil** e três perfis de acesso:
 
 | Perfil | Visão principal |
 | --- | --- |
-| **Loja Cidade Imperial** | Painel geral, aprovação de pedidos (total ou por item), cotações com fornecedores, cadastro de fornecedores/contratos, produtos homologados, revendas, faturamento, royalties, relatórios e auditoria. |
+| **Loja Cidade Imperial** | Painel geral, aprovação de pedidos (total ou por item), cotações com fornecedores, cadastro de fornecedores/contratos, produtos homologados, revendas, faturamento, royalties, relatórios e painéis gerenciais (filtros por competência/revenda/fornecedor/status, KPIs, gráficos, rankings, funil, desempenho por parceiro e exportação CSV) e auditoria. |
 | **Fornecedor** | Pedidos recebidos, cotações convidadas, meus faturamentos e royalties devidos. |
 | **Revenda** | Catálogo de produtos homologados (com carrinho), envio de pedidos para aprovação e acompanhamento dos meus pedidos. |
 
