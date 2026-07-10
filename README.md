@@ -155,6 +155,15 @@ também pode ser **fracionado por quantidade**: nas janelas de atendimento, o ca
 caminho; o saldo permanece aprovado para seguir outro (ex.: de 10 unidades,
 4 pelo estoque, 3 direto e 3 em cotação, no mesmo pedido).
 
+**Inventário de estoque com alertas nos pedidos:** em **Operação › Inventário de
+estoque**, a Loja lança contagens por produto em datas de lançamento. O saldo
+(contagem do último inventário − atendimentos "com estoque" desde então) gera
+**alertas automáticos**: na lista de pedidos pendentes (◈ "Estoque cobre os
+itens" / "parcialmente" / "Sem saldo"), no painel "Disponibilidade em estoque"
+do detalhe do pedido (solicitado × saldo por item), nas janelas de atendimento
+(saldo por item) e no e-mail de novo pedido à Loja — dando ao aprovador a
+informação para decidir como atender as quantidades.
+
 Todas as alterações (aprovar/rejeitar pedidos, abrir cotações, registrar
 propostas, faturar, pagar royalties, cadastrar fornecedores/produtos/revendas,
 trilha de auditoria, etc.) são **gravadas no PostgreSQL** e sobrevivem a

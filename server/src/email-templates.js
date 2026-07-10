@@ -89,7 +89,8 @@ export const TEMPLATES = {
     subject: `Novo pedido ${v.pedidoId} aguardando aprovação`,
     html: layout('Novo pedido aguardando aprovação',
       p(`Um novo pedido foi criado por ${b(v.revendaNome)} e aguarda análise e aprovação da Loja.`) +
-      linhas([['Pedido', v.pedidoId], ['Revenda', v.revendaNome], ['Total', v.total], ['Data', v.data]]) + itensDe(v), 'Pedido'),
+      linhas([['Pedido', v.pedidoId], ['Revenda', v.revendaNome], ['Total', v.total], ['Data', v.data],
+        v.estoqueInfo ? ['Estoque (inventário)', v.estoqueInfo] : null]) + itensDe(v), 'Pedido'),
   }),
   pedido_recebido_revenda: (v) => ({
     subject: `Recebemos seu pedido ${v.pedidoId}`,

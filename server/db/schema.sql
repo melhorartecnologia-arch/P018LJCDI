@@ -106,6 +106,14 @@ CREATE TABLE IF NOT EXISTS pagamentos (
   data    JSONB NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS inventarios (
+  id        INTEGER PRIMARY KEY,
+  ord       INTEGER NOT NULL,
+  data_lanc TEXT,
+  usuario   TEXT,
+  data      JSONB NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS usuarios (
   id        INTEGER PRIMARY KEY,
   ord       INTEGER NOT NULL,

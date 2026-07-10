@@ -42,6 +42,11 @@ const ARRAY_TABLES = [
     row: (o, i) => [o.id, i, o.pedidoId, o.fornecedorId, o.revendaId, o.valor, o.competencia, o.royaltyPct, o.royaltyValor, o],
   },
   {
+    name: 'inventarios',
+    columns: ['id', 'ord', 'data_lanc', 'usuario', 'data'],
+    row: (o, i) => [o.id, i, o.data, o.usuario, o],
+  },
+  {
     name: 'usuarios',
     columns: ['id', 'ord', 'nome', 'email', 'papel', 'ativo', 'data'],
     row: (o, i) => [o.id, i, o.nome, o.email, o.papel, o.ativo, o],
