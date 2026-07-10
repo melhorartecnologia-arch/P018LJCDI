@@ -33,16 +33,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <div style="font-size:12px;color:#a89f90;letter-spacing:.08em;margin-top:3px">PLATAFORMA DA LOJA · ACESSO POR PERFIL</div>
       </div>
       <div style="background:#fff;border:1px solid #eae3d6;border-radius:16px;padding:24px 26px;box-shadow:0 14px 40px rgba(39,37,37,.08)">
-        <div style="font-size:12px;font-weight:600;color:#6b6459;margin:0 0 7px">Entrar como</div>
-        <div style="display:flex;flex-direction:column;gap:8px">
-          <sc-for list="{{loginRoles}}" as="lr" hint-placeholder-count="3">
-            <div onClick="{{lr.pick}}" style="display:flex;align-items:center;gap:11px;border:1px solid {{lr.bd}};background:{{lr.bg}};border-radius:10px;padding:10px 13px;cursor:pointer">
-              <div style="width:15px;height:15px;border-radius:50%;border:2px solid {{lr.dot}};flex:none;display:flex;align-items:center;justify-content:center"><div style="width:7px;height:7px;border-radius:50%;background:{{lr.dot}}"></div></div>
-              <div><div style="font-size:13.5px;font-weight:600;color:{{lr.fg}}">{{lr.label}}</div><div style="font-size:11.5px;color:#a89f90">{{lr.desc}}</div></div>
-            </div>
-          </sc-for>
-        </div>
-        <div style="font-size:12px;font-weight:600;color:#6b6459;margin:14px 0 5px">E-mail</div>
+        <div style="font-size:12px;font-weight:600;color:#6b6459;margin:0 0 5px">E-mail</div>
         <input value="{{loginEmail}}" onChange="{{setLoginEmail}}" placeholder="voce@empresa.com.br" style="width:100%;box-sizing:border-box;padding:10px 13px;border:1px solid #ddd5c7;border-radius:9px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
         <div style="display:flex;align-items:center;justify-content:space-between;margin:12px 0 5px">
           <div style="font-size:12px;font-weight:600;color:#6b6459">Senha</div>
@@ -51,7 +42,15 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <input type="password" value="{{loginSenha}}" onChange="{{setLoginSenha}}" placeholder="••••••••" style="width:100%;box-sizing:border-box;padding:10px 13px;border:1px solid #ddd5c7;border-radius:9px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
         <sc-if value="{{loginErro}}" hint-placeholder-val="{{false}}"><div style="color:#a33a2b;font-size:12.5px;margin-top:11px">{{loginErro}}</div></sc-if>
         <div onClick="{{fazerLogin}}" style="margin-top:18px;text-align:center;background:#B38335;color:#fff;border-radius:10px;padding:12px 0;font-size:14px;font-weight:700;cursor:pointer" style-hover="background:#9a6f2b">Entrar na plataforma</div>
-        <div style="font-size:11.5px;color:#b0a795;text-align:center;margin-top:13px">Acesso simulado para demonstração — qualquer e-mail e senha funcionam.</div>
+        <div style="margin-top:16px;border-top:1px solid #f1ece2;padding-top:13px">
+          <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#b0a795;margin-bottom:7px">Acessos de demonstração — clique para preencher</div>
+          <sc-for list="{{loginDemo}}" as="d" hint-placeholder-count="4">
+            <div onClick="{{d.pick}}" style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 9px;border-radius:8px;cursor:pointer;font-size:11.5px" style-hover="background:#f7f3ea">
+              <span style="font-weight:600;color:#4a453d">{{d.label}}</span>
+              <span style="color:#a89f90;white-space:nowrap">{{d.email}} · {{d.senha}}</span>
+            </div>
+          </sc-for>
+        </div>
       </div>
     </div>
   </div>
@@ -68,17 +67,19 @@ input::placeholder,textarea::placeholder{color:#b0a795}
       </div>
     </div>
     <div style="flex:1"></div>
-    <div style="display:flex;background:#f1ece2;border-radius:10px;padding:3px;gap:2px">
-      <sc-for list="{{roleBtns}}" as="rb" hint-placeholder-count="3">
-        <div onClick="{{rb.pick}}" style="padding:6px 13px;border-radius:8px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;background:{{rb.bg}};color:{{rb.fg}};box-shadow:{{rb.sh}}">{{rb.label}}</div>
-      </sc-for>
-    </div>
-    <sc-if value="{{isForn}}" hint-placeholder-val="{{false}}">
+    <sc-if value="{{temRoleBtns}}" hint-placeholder-val="{{true}}">
+      <div style="display:flex;background:#f1ece2;border-radius:10px;padding:3px;gap:2px">
+        <sc-for list="{{roleBtns}}" as="rb" hint-placeholder-count="3">
+          <div onClick="{{rb.pick}}" style="padding:6px 13px;border-radius:8px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;background:{{rb.bg}};color:{{rb.fg}};box-shadow:{{rb.sh}}">{{rb.label}}</div>
+        </sc-for>
+      </div>
+    </sc-if>
+    <sc-if value="{{mostraSelForn}}" hint-placeholder-val="{{false}}">
       <select value="{{fornAtivoStr}}" onChange="{{setFornAtivo}}" style="padding:8px 10px;border:1px solid #e5ddcd;border-radius:9px;font:inherit;font-size:12.5px;font-weight:600;color:#272525;background:#fff;outline:none;cursor:pointer;max-width:210px">
         <sc-for list="{{fornOpts}}" as="o" hint-placeholder-count="2"><option value="{{o.id}}">{{o.nome}}</option></sc-for>
       </select>
     </sc-if>
-    <sc-if value="{{isRev}}" hint-placeholder-val="{{false}}">
+    <sc-if value="{{mostraSelRev}}" hint-placeholder-val="{{false}}">
       <select value="{{revAtivoStr}}" onChange="{{setRevAtivo}}" style="padding:8px 10px;border:1px solid #e5ddcd;border-radius:9px;font:inherit;font-size:12.5px;font-weight:600;color:#272525;background:#fff;outline:none;cursor:pointer;max-width:210px">
         <sc-for list="{{revOpts}}" as="o" hint-placeholder-count="2"><option value="{{o.id}}">{{o.nome}}</option></sc-for>
       </select>
@@ -232,8 +233,8 @@ input::placeholder,textarea::placeholder{color:#b0a795}
                   </div>
                   <sc-if value="{{p.pendente}}" hint-placeholder-val="{{false}}">
                     <div style="display:flex;gap:6px;flex:none">
-                      <span onClick="{{p.aprovarFn}}" title="Aprovar pedido" style="font-size:11.5px;font-weight:700;color:#fff;background:#B38335;border-radius:7px;padding:5px 10px;cursor:pointer;white-space:nowrap" style-hover="background:#9a6f2b">Aprovar</span>
-                      <span onClick="{{p.rejeitarFn}}" title="Rejeitar com justificativa" style="font-size:11.5px;font-weight:700;color:#a33a2b;border:1px solid #e7c4bc;border-radius:7px;padding:4px 10px;cursor:pointer;white-space:nowrap;background:#fff" style-hover="background:#fbf1ef">Rejeitar</span>
+                      <sc-if value="{{podeAprovar}}" hint-placeholder-val="{{true}}"><span onClick="{{p.aprovarFn}}" title="Aprovar pedido" style="font-size:11.5px;font-weight:700;color:#fff;background:#B38335;border-radius:7px;padding:5px 10px;cursor:pointer;white-space:nowrap" style-hover="background:#9a6f2b">Aprovar</span></sc-if>
+                      <sc-if value="{{podeRejeitar}}" hint-placeholder-val="{{true}}"><span onClick="{{p.rejeitarFn}}" title="Rejeitar com justificativa" style="font-size:11.5px;font-weight:700;color:#a33a2b;border:1px solid #e7c4bc;border-radius:7px;padding:4px 10px;cursor:pointer;white-space:nowrap;background:#fff" style-hover="background:#fbf1ef">Rejeitar</span></sc-if>
                     </div>
                   </sc-if>
                 </div>
@@ -293,8 +294,8 @@ input::placeholder,textarea::placeholder{color:#b0a795}
                   <td style="padding:10px 18px;text-align:right;border-bottom:1px solid #f5f1e8">
                     <sc-if value="{{i.pendItem}}" hint-placeholder-val="{{false}}">
                       <div style="display:flex;gap:6px;justify-content:flex-end">
-                        <span onClick="{{i.aprovarItemFn}}" style="font-size:11px;font-weight:700;color:#fff;background:#B38335;border-radius:7px;padding:4px 10px;cursor:pointer;white-space:nowrap" style-hover="background:#9a6f2b">Aprovar</span>
-                        <span onClick="{{i.rejeitarItemFn}}" style="font-size:11px;font-weight:700;color:#a33a2b;border:1px solid #e7c4bc;border-radius:7px;padding:3px 10px;cursor:pointer;white-space:nowrap;background:#fff" style-hover="background:#fbf1ef">Rejeitar</span>
+                        <sc-if value="{{podeAprovar}}" hint-placeholder-val="{{true}}"><span onClick="{{i.aprovarItemFn}}" style="font-size:11px;font-weight:700;color:#fff;background:#B38335;border-radius:7px;padding:4px 10px;cursor:pointer;white-space:nowrap" style-hover="background:#9a6f2b">Aprovar</span></sc-if>
+                        <sc-if value="{{podeRejeitar}}" hint-placeholder-val="{{true}}"><span onClick="{{i.rejeitarItemFn}}" style="font-size:11px;font-weight:700;color:#a33a2b;border:1px solid #e7c4bc;border-radius:7px;padding:3px 10px;cursor:pointer;white-space:nowrap;background:#fff" style-hover="background:#fbf1ef">Rejeitar</span></sc-if>
                       </div>
                     </sc-if>
                     <sc-if value="{{i.naoPend}}" hint-placeholder-val="{{false}}">
@@ -347,8 +348,8 @@ input::placeholder,textarea::placeholder{color:#b0a795}
             <div style="font-size:14px;font-weight:700;margin-bottom:4px">Análise da Loja</div>
             <div style="font-size:12.5px;color:#8a8378;margin-bottom:13px">Aprove ou rejeite o pedido como um todo — ou decida item a item usando as ações na tabela de itens.</div>
             <div style="display:flex;gap:9px">
-              <div onClick="{{pd.aprovarFn}}" style="flex:1;text-align:center;background:#B38335;color:#fff;border-radius:9px;padding:10px 0;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#9a6f2b">Aprovar pedido</div>
-              <div onClick="{{pd.rejeitarFn}}" style="flex:1;text-align:center;background:#fff;color:#a33a2b;border:1px solid #e7c4bc;border-radius:9px;padding:10px 0;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#fbf1ef">Rejeitar…</div>
+              <sc-if value="{{podeAprovar}}" hint-placeholder-val="{{true}}"><div onClick="{{pd.aprovarFn}}" style="flex:1;text-align:center;background:#B38335;color:#fff;border-radius:9px;padding:10px 0;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#9a6f2b">Aprovar pedido</div></sc-if>
+              <sc-if value="{{podeRejeitar}}" hint-placeholder-val="{{true}}"><div onClick="{{pd.rejeitarFn}}" style="flex:1;text-align:center;background:#fff;color:#a33a2b;border:1px solid #e7c4bc;border-radius:9px;padding:10px 0;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#fbf1ef">Rejeitar…</div></sc-if>
             </div>
           </div>
         </sc-if>
@@ -375,7 +376,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <div style="font-size:21px;font-weight:700;margin:2px 0 3px">Cotações</div>
         <div style="font-size:13px;color:#8a8378">Processo opcional acionado pela Loja — convide 2+ fornecedores e compare propostas</div>
       </div>
-      <div onClick="{{novaCotacao}}" style="background:#B38335;color:#fff;border-radius:9px;padding:10px 16px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:#9a6f2b">+ Nova cotação</div>
+      <sc-if value="{{podeCotAbrir}}" hint-placeholder-val="{{true}}"><div onClick="{{novaCotacao}}" style="background:#B38335;color:#fff;border-radius:9px;padding:10px 16px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:#9a6f2b">+ Nova cotação</div></sc-if>
     </div>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px">
       <sc-for list="{{cotKpis}}" as="k" hint-placeholder-count="4">
@@ -1129,10 +1130,12 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <div style="font-size:21px;font-weight:700;margin:2px 0 3px">Relatórios e Painéis</div>
         <div style="font-size:13px;color:#8a8378">Indicadores, evolução, rankings e desempenho de pedidos, cotações, faturamento e royalties</div>
       </div>
-      <div style="display:flex;gap:8px;flex:none">
-        <div onClick="{{exportRelPedidos}}" title="Baixa os pedidos filtrados em planilha (CSV)" style="background:#272525;color:#fff;border-radius:9px;padding:9px 14px;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="background:#3a3735">⬇ Pedidos (CSV)</div>
-        <div onClick="{{exportRelFat}}" title="Baixa os faturamentos filtrados em planilha (CSV)" style="border:1px solid #ddd5c7;color:#4a453d;background:#fff;border-radius:9px;padding:9px 14px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:#f7f3ea">⬇ Faturamentos (CSV)</div>
-      </div>
+      <sc-if value="{{podeExportar}}" hint-placeholder-val="{{true}}">
+        <div style="display:flex;gap:8px;flex:none">
+          <div onClick="{{exportRelPedidos}}" title="Baixa os pedidos filtrados em planilha (CSV)" style="background:#272525;color:#fff;border-radius:9px;padding:9px 14px;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="background:#3a3735">⬇ Pedidos (CSV)</div>
+          <div onClick="{{exportRelFat}}" title="Baixa os faturamentos filtrados em planilha (CSV)" style="border:1px solid #ddd5c7;color:#4a453d;background:#fff;border-radius:9px;padding:9px 14px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:#f7f3ea">⬇ Faturamentos (CSV)</div>
+        </div>
+      </sc-if>
     </div>
 
     <div style="display:flex;gap:10px;margin-bottom:14px;align-items:center;flex-wrap:wrap">
@@ -1590,7 +1593,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
                 <div onClick="{{p.sub}}" style="width:30px;height:30px;border:1px solid #e5ddcd;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:#8f682a;font-weight:700" style-hover="background:#f7f3ea">−</div>
                 <div style="min-width:20px;text-align:center;font-size:14px;font-weight:700">{{p.qtd}}</div>
               </sc-if>
-              <div onClick="{{p.add}}" style="width:30px;height:30px;background:#B38335;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:#fff;font-weight:700" style-hover="background:#9a6f2b">+</div>
+              <sc-if value="{{podePedCriar}}" hint-placeholder-val="{{true}}"><div onClick="{{p.add}}" style="width:30px;height:30px;background:#B38335;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:#fff;font-weight:700" style-hover="background:#9a6f2b">+</div></sc-if>
             </div>
           </div>
         </div>
@@ -1719,6 +1722,58 @@ input::placeholder,textarea::placeholder{color:#b0a795}
     </div>
 
     <div style="font-size:11.5px;color:#b0a795;margin-top:14px">As configurações e a senha ficam gravadas no banco de dados da plataforma e são usadas pelo servidor para o envio via SMTP. Apenas o administrador da Loja tem acesso a esta tela.</div>
+  </div>
+</sc-if>
+
+<sc-if value="{{sUsuarios}}" hint-placeholder-val="{{false}}">
+  <div data-screen-label="Usuários e permissões" style="animation:fadeUp .25s ease">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-bottom:16px">
+      <div>
+        <div style="font-size:21px;font-weight:700;margin:2px 0 3px">Usuários e permissões</div>
+        <div style="font-size:13px;color:#8a8378">Contas de acesso por perfil (Administrador Técnico, Loja, Fornecedor, Revenda) e permissões individuais de granularidade fina</div>
+      </div>
+      <div onClick="{{novoUsuario}}" style="background:#B38335;color:#fff;border-radius:9px;padding:10px 16px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex:none" style-hover="background:#9a6f2b">+ Novo usuário</div>
+    </div>
+    <div style="display:flex;gap:10px;margin-bottom:14px">
+      <input value="{{buscaUsr}}" onChange="{{setBuscaUsr}}" placeholder="Buscar por nome ou e-mail…" style="flex:1;padding:10px 14px;border:1px solid #e5ddcd;border-radius:9px;font:inherit;font-size:13px;background:#fff;outline:none;color:#272525">
+      <select value="{{filtroPapel}}" onChange="{{setFiltroPapel}}" style="padding:10px 12px;border:1px solid #e5ddcd;border-radius:9px;font:inherit;font-size:12.5px;font-weight:600;color:#272525;background:#fff;outline:none;cursor:pointer">
+        <sc-for list="{{papelOpts}}" as="o" hint-placeholder-count="4"><option value="{{o.v}}">{{o.label}}</option></sc-for>
+      </select>
+    </div>
+    <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;overflow:hidden">
+      <table style="width:100%;border-collapse:collapse">
+        <thead><tr>
+          <th style="text-align:left;padding:10px 18px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Usuário</th>
+          <th style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Perfil</th>
+          <th style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Vínculo</th>
+          <th style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Permissões</th>
+          <th style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Último acesso</th>
+          <th style="text-align:left;padding:10px 18px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Situação</th>
+        </tr></thead>
+        <tbody>
+          <sc-for list="{{usrRows}}" as="u" hint-placeholder-count="5">
+            <tr>
+              <td style="padding:11px 18px;border-bottom:1px solid #f5f1e8"><div style="font-size:13px;font-weight:600">{{u.nome}}<sc-if value="{{u.souEu}}" hint-placeholder-val="{{false}}"><span style="font-size:10px;font-weight:700;color:#8a5a12;background:#fdf3e0;border-radius:6px;padding:1px 6px;margin-left:7px">você</span></sc-if></div><div style="font-size:11.5px;color:#a89f90">{{u.email}}</div></td>
+              <td style="padding:11px 10px;font-size:12.5px;border-bottom:1px solid #f5f1e8">{{u.papelLabel}}</td>
+              <td style="padding:11px 10px;font-size:12.5px;color:#8a8378;border-bottom:1px solid #f5f1e8">{{u.vinculo}}</td>
+              <td style="padding:11px 10px;border-bottom:1px solid #f5f1e8">
+                <div onClick="{{u.permissoes}}" title="Abrir editor de permissões" style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:#8f682a;border:1px solid #e6cf9e;background:#faf3e4;border-radius:8px;padding:4px 10px;cursor:pointer" style-hover="background:#f5ebd2">⚙ {{u.overTxt}}</div>
+              </td>
+              <td style="padding:11px 10px;font-size:11.5px;color:#8a8378;border-bottom:1px solid #f5f1e8">{{u.ultimo}}</td>
+              <td style="padding:11px 18px;border-bottom:1px solid #f5f1e8">
+                <div style="display:flex;align-items:center;gap:8px">
+                  <span style="font-size:11px;font-weight:600;border-radius:6px;padding:2px 8px;background:{{u.stBg}};color:{{u.stFg}}">{{u.stLabel}}</span>
+                  <span onClick="{{u.editar}}" style="font-size:11.5px;font-weight:600;color:#4a453d;border:1px solid #e5ddcd;border-radius:7px;padding:3px 9px;cursor:pointer;background:#fff" style-hover="background:#f7f3ea">Editar</span>
+                  <sc-if value="{{u.souEu}}" hint-placeholder-val="{{false}}"></sc-if>
+                  <span onClick="{{u.toggle}}" style="font-size:11.5px;font-weight:600;color:#8a8378;cursor:pointer;padding:3px 4px">{{u.toggleLabel}}</span>
+                </div>
+              </td>
+            </tr>
+          </sc-for>
+        </tbody>
+      </table>
+    </div>
+    <div style="font-size:11.5px;color:#b0a795;margin-top:12px">Cada perfil tem um conjunto padrão de permissões; o editor "⚙" permite conceder ou negar qualquer permissão individualmente por usuário. É obrigatório manter ao menos um Administrador Técnico ativo.</div>
   </div>
 </sc-if>
 
@@ -2124,6 +2179,80 @@ input::placeholder,textarea::placeholder{color:#b0a795}
   </div>
 </sc-if>
 
+<sc-if value="{{mUsr}}" hint-placeholder-val="{{false}}">
+  <div style="position:fixed;inset:0;background:rgba(39,37,37,.45);display:flex;align-items:center;justify-content:center;z-index:50">
+    <div style="background:#fff;border-radius:14px;width:460px;max-width:92vw;max-height:88vh;overflow-y:auto;padding:22px 24px;box-shadow:0 18px 50px rgba(39,37,37,.25)">
+      <div style="font-size:16px;font-weight:700;margin-bottom:2px"><sc-if value="{{usrEditando}}" hint-placeholder-val="{{false}}">Editar usuário</sc-if><sc-if value="{{usrNovo}}" hint-placeholder-val="{{true}}">Novo usuário</sc-if></div>
+      <div style="font-size:12.5px;color:#8a8378;margin-bottom:14px">Conta de acesso à plataforma · o perfil define as permissões padrão</div>
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:10px 0 5px">Nome completo</div>
+      <input value="{{form.nome}}" onChange="{{fxNomeU}}" placeholder="Nome do usuário" style="width:100%;box-sizing:border-box;padding:10px 13px;border:1px solid #ddd5c7;border-radius:9px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">E-mail (login)</div>
+      <input value="{{form.email}}" onChange="{{fxEmailU}}" placeholder="usuario@empresa.com.br" style="width:100%;box-sizing:border-box;padding:10px 13px;border:1px solid #ddd5c7;border-radius:9px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Perfil de acesso</div>
+      <select value="{{form.papel}}" onChange="{{fxPapel}}" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid #ddd5c7;border-radius:9px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525;cursor:pointer">
+        <sc-for list="{{papelFormOpts}}" as="o" hint-placeholder-count="4"><option value="{{o.v}}">{{o.label}}</option></sc-for>
+      </select>
+      <sc-if value="{{formPapelForn}}" hint-placeholder-val="{{false}}">
+        <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Fornecedor vinculado</div>
+        <select value="{{form.fornecedorId}}" onChange="{{fxFornecedorId}}" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid #ddd5c7;border-radius:9px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525;cursor:pointer">
+          <option value="">Selecione…</option>
+          <sc-for list="{{fornOpts}}" as="o" hint-placeholder-count="3"><option value="{{o.id}}">{{o.nome}}</option></sc-for>
+        </select>
+      </sc-if>
+      <sc-if value="{{formPapelRev}}" hint-placeholder-val="{{false}}">
+        <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Revenda vinculada</div>
+        <select value="{{form.revendaId}}" onChange="{{fxRevendaId}}" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid #ddd5c7;border-radius:9px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525;cursor:pointer">
+          <option value="">Selecione…</option>
+          <sc-for list="{{revOpts}}" as="o" hint-placeholder-count="3"><option value="{{o.id}}">{{o.nome}}</option></sc-for>
+        </select>
+      </sc-if>
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px"><sc-if value="{{usrEditando}}" hint-placeholder-val="{{false}}">Nova senha (deixe em branco para manter)</sc-if><sc-if value="{{usrNovo}}" hint-placeholder-val="{{true}}">Senha inicial</sc-if></div>
+      <input type="password" value="{{form.senha}}" onChange="{{fxSenhaU}}" placeholder="••••••••" style="width:100%;box-sizing:border-box;padding:10px 13px;border:1px solid #ddd5c7;border-radius:9px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
+      <sc-if value="{{form.erro}}" hint-placeholder-val="{{false}}"><div style="color:#a33a2b;font-size:12.5px;margin-top:11px">{{form.erro}}</div></sc-if>
+      <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:18px">
+        <div onClick="{{mClose}}" style="border:1px solid #e5ddcd;color:#6b6459;border-radius:8px;padding:9px 15px;font-size:13px;font-weight:600;cursor:pointer;background:#fff" style-hover="background:#f7f3ea">Cancelar</div>
+        <div onClick="{{salvarUsuario}}" style="background:#B38335;color:#fff;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#9a6f2b">Salvar usuário</div>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{mPerms}}" hint-placeholder-val="{{false}}">
+  <div style="position:fixed;inset:0;background:rgba(39,37,37,.45);display:flex;align-items:center;justify-content:center;z-index:50">
+    <div style="background:#fff;border-radius:14px;width:560px;max-width:94vw;max-height:88vh;overflow-y:auto;padding:22px 24px;box-shadow:0 18px 50px rgba(39,37,37,.25)">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+        <div>
+          <div style="font-size:16px;font-weight:700">Permissões de {{permUsr.nome}}</div>
+          <div style="font-size:12.5px;color:#8a8378;margin-top:2px">Perfil {{permUsr.papelLabel}} · alterações valem só para este usuário e sobrepõem o padrão do perfil</div>
+        </div>
+        <div onClick="{{mClose}}" title="Fechar" style="font-size:20px;line-height:1;color:#a89f90;cursor:pointer;padding:2px 9px;border-radius:8px;flex:none" style-hover="background:#f7f3ea">×</div>
+      </div>
+      <sc-for list="{{permGrupos}}" as="g" hint-placeholder-count="4">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#a89f90;margin:17px 0 7px">{{g.mod}}</div>
+        <sc-for list="{{g.itens}}" as="p" hint-placeholder-count="3">
+          <div style="display:flex;align-items:center;gap:11px;padding:7px 2px;border-bottom:1px solid #f5f1e8">
+            <div onClick="{{p.toggle}}" title="Permitir/negar" style="width:36px;height:20px;border-radius:11px;background:{{p.swBg}};position:relative;cursor:pointer;flex:none;transition:background .15s">
+              <div style="position:absolute;top:2px;left:{{p.swX}};width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:left .15s"></div>
+            </div>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:13px;color:#272525">{{p.label}}</div>
+              <div style="font-size:10.5px;color:{{p.origemFg}}">{{p.origem}}<sc-if value="{{p.temPadraoDif}}" hint-placeholder-val="{{false}}"><span style="color:#b0a795"> · {{p.padraoTxt}}</span></sc-if></div>
+            </div>
+            <div style="font-size:10px;color:#d9d2c4;font-family:monospace">{{p.k}}</div>
+          </div>
+        </sc-for>
+      </sc-for>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px">
+        <sc-if value="{{permUsr.temOver}}" hint-placeholder-val="{{false}}">
+          <div onClick="{{permUsr.restaurar}}" style="font-size:12px;font-weight:600;color:#8f682a;cursor:pointer">↺ Restaurar padrão do perfil</div>
+        </sc-if>
+        <sc-if value="{{permUsr.temOver}}" hint-placeholder-val="{{true}}"><div></div></sc-if>
+        <div onClick="{{mClose}}" style="background:#272525;color:#fff;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#3a3735">Concluir</div>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
 <sc-if value="{{mAjuda}}" hint-placeholder-val="{{false}}">
   <div style="position:fixed;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;padding:24px;box-sizing:border-box">
     <div onClick="{{ajClose}}" style="position:absolute;inset:0;background:rgba(24,22,20,.55)"></div>
@@ -2221,9 +2350,11 @@ input::placeholder,textarea::placeholder{color:#b0a795}
 class Component extends DCLogic {
   // ── Persistência full-stack (API Node.js + PostgreSQL) ──────────────────
   // Coleções persistentes; todo o resto do estado é de sessão/UI.
-  _persistKeys=['seq','fornecedores','contratos','produtos','revendas','pedidos','cotacoes','faturamentos','pagamentos','auditoria','configEmail'];
+  _persistKeys=['seq','fornecedores','contratos','produtos','revendas','pedidos','cotacoes','faturamentos','pagamentos','auditoria','configEmail','usuarios'];
   _hydrate(){ this._hydrating=true;
-    fetch('/api/state').then(r=>r.ok?r.json():null).then(d=>{ if(d&&typeof d==='object'){ const patch={}; this._persistKeys.forEach(k=>{ if(d[k]!==undefined) patch[k]=d[k]; }); this.setState(patch); } })
+    fetch('/api/state').then(r=>r.ok?r.json():null).then(d=>{ if(d&&typeof d==='object'){ const patch={}; this._persistKeys.forEach(k=>{ if(d[k]!==undefined) patch[k]=d[k]; });
+      if(Array.isArray(patch.usuarios)&&!patch.usuarios.length) delete patch.usuarios; // banco antigo sem usuários: mantém os iniciais
+      this.setState(patch); } })
       .catch(()=>{}).finally(()=>{ this._hydrating=false; }); }
   setState(update,cb){ super.setState(update,cb); if(!this._hydrating) this._schedulePersist(); }
   _schedulePersist(){ clearTimeout(this._persistTimer); this._persistTimer=setTimeout(()=>this._persist(),450); }
@@ -2234,6 +2365,14 @@ class Component extends DCLogic {
   state = {
     logado:false, loginRole:'loja', loginEmail:'', loginSenha:'', loginErro:null,
     role:null, scr:null, fornAtivo:1, revAtivo:1, ajudaStep:0, ajudaPlay:false,
+    usuario:null, buscaUsr:'', filtroPapel:'todos',
+    usuarios:[
+      {id:1,nome:'Administrador Técnico',email:'admin@cidadeimperial.com.br',senhaHash:'108bf99ab7e362',papel:'admin',fornecedorId:null,revendaId:null,ativo:true,permissoes:{},ultimoAcesso:null,criadoEm:'01/01/2026'},
+      {id:2,nome:'Ana Ribeiro',email:'ana@cidadeimperial.com.br',senhaHash:'1b37f53827b438',papel:'loja',fornecedorId:null,revendaId:null,ativo:true,permissoes:{},ultimoAcesso:'09/07/2026 08:00',criadoEm:'01/01/2026'},
+      {id:3,nome:'Carlos Mota (analista)',email:'carlos@cidadeimperial.com.br',senhaHash:'1b37f53827b438',papel:'loja',fornecedorId:null,revendaId:null,ativo:true,permissoes:{'pedidos.aprovar':false,'pedidos.rejeitar':false,'pedidos.atender':false,'royalties.pagar':false},ultimoAcesso:null,criadoEm:'15/03/2026'},
+      {id:4,nome:'Distribuidora Serra Verde',email:'comercial@serraverde.com.br',senhaHash:'16cda9748c5e68',papel:'fornecedor',fornecedorId:1,revendaId:null,ativo:true,permissoes:{},ultimoAcesso:'07/07/2026 10:02',criadoEm:'01/02/2026'},
+      {id:5,nome:'Bar do Imperador',email:'compras@bardoimperador.com.br',senhaHash:'11717ff2d26463',papel:'revenda',fornecedorId:null,revendaId:1,ativo:true,permissoes:{},ultimoAcesso:'09/07/2026 08:14',criadoEm:'01/02/2026'}
+    ],
     configEmail:{host:'',porta:'587',seguranca:'starttls',usuario:'',senha:'',remetenteNome:'Cidade Imperial',remetenteEmail:'',responderPara:'',emailLoja:'',ativo:false},
     cfgTestTo:'', cfgMsg:null, cfgMsgTipo:null, cfgBusy:false,
     selPed:null, selCot:null, selForn:null, selProd:null, selRev:null, modal:null, form:{}, pendVenc:null, filtroStatusProd:'todos', buscaRev:'', buscaPed:'', filtroRev:'0',
@@ -2380,6 +2519,8 @@ class Component extends DCLogic {
   ts(){ return this.hoje()+' '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}); }
   compAtual(){ const d=new Date(); return String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear(); }
   userName(){
+    const u=this.usuarioAtual();
+    if(u){ const tag={admin:'Admin',loja:'Loja',fornecedor:'Fornecedor',revenda:'Revenda'}[u.papel]||u.papel; return u.nome+' ('+tag+')'; }
     if(this.role==='loja') return 'Ana Ribeiro (Loja)';
     if(this.role==='fornecedor'){ const f=this.state.fornecedores.find(x=>x.id===this.state.fornAtivo); return (f?f.nome:'Fornecedor')+' (Fornecedor)'; }
     const r=this.state.revendas.find(x=>x.id===this.state.revAtivo); return (r?r.nome:'Revenda')+' (Revenda)';
@@ -2435,7 +2576,7 @@ class Component extends DCLogic {
       .catch(e=>this.setState({cfgBusy:false,cfgMsg:'Erro ao enviar: '+e.message,cfgMsgTipo:'erro'})); };
   cfgEmailVals(){ const S=this.state; const c=S.configEmail||{}; const isLoja=this.role==='loja';
     return {
-      sCfgEmail:isLoja&&this.scr==='cfgemail',
+      sCfgEmail:isLoja&&this.scr==='cfgemail'&&this.pode('config.email'),
       ceHost:c.host||'',cePorta:c.porta||'',ceSeguranca:c.seguranca||'starttls',ceUsuario:c.usuario||'',ceSenha:c.senha||'',
       ceRemNome:c.remetenteNome||'',ceRemEmail:c.remetenteEmail||'',ceReplyTo:c.responderPara||'',ceEmailLoja:c.emailLoja||'',ceAtivo:!!c.ativo,
       ceSegOpts:[{v:'starttls',label:'STARTTLS · porta 587 (recomendado)'},{v:'ssl',label:'SSL/TLS · porta 465'},{v:'none',label:'Nenhuma (sem criptografia)'}],
@@ -2890,6 +3031,25 @@ class Component extends DCLogic {
         "Só o administrador da Loja enxerga esta tela; a senha fica guardada no banco da plataforma."
       ]
     },
+    "usuarios": {
+      "rotina": "Usuários e permissões",
+      "titulo": "Gerenciar contas de acesso e permissões",
+      "resumo": "Tela do Administrador Técnico para criar usuários por perfil (Administrador, Loja, Fornecedor, Revenda) e ajustar permissões individuais de granularidade fina.",
+      "passos": [
+        "Clique em \"+ Novo usuário\" para criar uma conta: informe nome, e-mail (login), o perfil de acesso e a senha inicial; para Fornecedor e Revenda, selecione também o vínculo.",
+        "Use o campo \"Buscar por nome ou e-mail…\" e o seletor \"Todos os perfis\" para localizar contas na lista.",
+        "Na coluna \"Permissões\", o selo \"⚙ padrão do perfil\" indica que o usuário segue o padrão; \"personalizada(s)\" mostra quantas permissões foram ajustadas individualmente.",
+        "Clique no selo \"⚙\" para abrir o editor de permissões: cada chave do sistema (aprovar pedidos, decidir cotações, faturar, cobrar royalties, exportar…) tem um interruptor permitir/negar.",
+        "No editor, a linha mostra a origem de cada permissão — \"padrão do perfil\" ou \"personalizada\" (com o padrão entre parênteses); use \"↺ Restaurar padrão do perfil\" para limpar os ajustes.",
+        "Use \"Editar\" para alterar nome, e-mail, perfil, vínculo ou redefinir a senha (deixe em branco para manter a atual).",
+        "Use \"Inativar\"/\"Reativar\" para bloquear ou devolver o acesso — um usuário inativo não consegue entrar na plataforma."
+      ],
+      "dicas": [
+        "O sistema exige ao menos um Administrador Técnico ativo — o último admin não pode ser inativado nem rebaixado.",
+        "As permissões personalizadas sobrepõem o padrão do perfil apenas para aquele usuário; os demais continuam no padrão.",
+        "Cada alteração de permissão fica registrada na trilha de auditoria (Segurança & Auditoria)."
+      ]
+    },
     "_default": {
       "rotina": "Esta tela",
       "titulo": "Como usar esta tela",
@@ -2903,7 +3063,7 @@ class Component extends DCLogic {
       ]
     }
   };
-  AJUDA_GEO = {"dash":{"R":0.6859,"rects":[[0,0,1,0.0355],null,[0.0193,0.2304,0.1484,0.0207],[0.0193,0.4225,0.1379,0.0236],[0.0193,0.1233,0.0752,0.0236],[0.5073,0.4239,0.0801,0.0207],[0.6401,0.4254,0.3407,0.0236]]},"ped":{"R":0.7943,"rects":[[0.0172,0.0982,0.1863,0.0166],[0,0.2105,0.5846,0.0497],[0,0.2105,1,0.0497],null,[0.8278,0.3431,0.0726,0.0306],[0.9065,0.3431,0.0742,0.0306],null]},"peddet":{"R":0.6373,"rects":[[0,0,1,0.0238],[0.001,0.3561,0.625,0.0684],[0.2746,0.2035,0.1083,0.0238],[0.4594,0.5056,0.0703,0.0334],[0.5358,0.5056,0.072,0.0334],null,[0.6604,0.3816,0.3203,0.0254],[0.0193,0.8521,0.5885,0.0254]]},"cot":{"R":0.3749,"rects":[[0.852,0.0243,0.148,0.0946],[0.1167,0.6297,0.1749,0.0878],null,[0,0.4838,1,0.1054],[0.7838,0.7784,0.1499,0.0378],null,null,null]},"cotdet":{"R":1.2979,"rects":[[0,0,1,0.0117],[0.2737,0.1749,0.0917,0.0117],[0.6153,0.292,0.0686,0.0141],[0.0193,0.3669,0.4116,0.0125],[0.7701,0.4586,0.2107,0.0219],[0.0193,0.5886,0.9615,0.0125],null,[0.8251,0.3677,0.1557,0.0234],[0.0193,0.8525,0.9615,0.0125]]},"forn":{"R":0.849,"rects":[null,[0,0.1969,1,0.0442],[0.8284,0.0107,0.1716,0.0418],null,[0.0193,0.6134,0.9615,0.0191],[0.8543,0.7291,0.1143,0.0167],[0.9221,0.7518,0.0586,0.0167]]},"forndet":{"R":0.6657,"rects":[[0,0,1,0.0228],null,[0.5476,0.0411,0.1206,0.0533],[0.6773,0.0411,0.1449,0.0533],[0.0193,0.4003,0.4549,0.0228],[0.0193,0.5556,0.2229,0.0502],[0.2513,0.5556,0.2229,0.0502],[0,0.6575,1,0.0274],[0.9273,0.742,0.0535,0.0213]]},"prod":{"R":0.9493,"rects":[null,[0,0.191,0.5704,0.0416],[0.8505,0.0096,0.1495,0.0374],[0.1617,0.2487,0.2783,0.0347],null,null,[0.9273,0.3132,0.0535,0.0149]]},"proddet":{"R":0.6626,"rects":[null,null,[0.4529,0.1774,0.5278,0.0245],[0.4509,0.3991,0.1768,0.0199],[0.6822,0.0413,0.1346,0.0535],[0.8411,0.0566,0.1437,0.0229],[0,0.7615,1,0.0275],[0,0,1,0.0229]]},"rev":{"R":0.5552,"rects":[[0.0172,0.1405,0.1223,0.0237],[0,0.3266,1,0.0675],[0.8492,0.0164,0.1508,0.0639],null,null,null,null,null,null]},"revdet":{"R":1.2219,"rects":[[0.233,0.0311,0.0357,0.0116],[0.0172,0.0945,0.1474,0.0108],[0.7214,0.0224,0.1206,0.029],[0.8664,0.0307,0.1184,0.0124],[0.0193,0.1683,0.3722,0.0133],[0.4442,0.1683,0.5366,0.0133],[0,0.335,1,0.0149],null,[0,0.8284,1,0.0149]]},"fat":{"R":0.3982,"rects":[null,[0.001,0.1552,0.998,0.1018],[0.001,0.3944,0.1056,0.0827],[0.1066,0.3944,0.0891,0.0827],[0.1957,0.3944,0.1958,0.0827],[0.5693,0.3944,0.1366,0.0827],[0.7059,0.3944,0.1426,0.0827]]},"roy":{"R":0.6424,"rects":[null,[0.0193,0.2823,0.1734,0.0252],[0.0193,0.4653,0.1758,0.0205],[0.0172,0.1183,0.1349,0.0205],[0.6438,0.4322,0.1417,0.041],[0.6714,0.6987,0.1141,0.041],[0.8008,0.4322,0.18,0.041],[0.5391,0.3297,0.0865,0.067]]},"rel":{"R":2.2817,"rects":[[0,0.0258,0.2118,0.0164],[0.0152,0.0542,0.0544,0.0049],[0.0193,0.0959,0.553,0.0071],[0.6249,0.0959,0.3558,0.0071],[0.0193,0.2123,0.4544,0.0071],[0.0193,0.3748,0.3558,0.0071],[0.001,0.4849,0.998,0.0191],[0.0193,0.8204,0.4247,0.0071]]},"seg":{"R":0.6047,"rects":[null,[0.0193,0.1592,0.2854,0.0302],[0.0193,0.1592,0.2854,0.0302],[0.1663,0.8425,0.2214,0.0251],[0.1663,0.7286,0.1764,0.0251],[0.001,0.4186,0.998,0.072],[0.001,0.4907,0.1551,0.0511]]},"fped":{"R":0.2513,"rects":[[0,0,1,0.0968],null,[0.1327,0.4738,0.7244,0.0565],null,null,null,null,null]},"fcot":{"R":0.2685,"rects":[[0.387,0.3,0.1074,0.0528],null,[0.1327,0.4434,0.6746,0.0528],null,null,null,null,null]},"ffat":{"R":0.1996,"rects":[null,[0,0.1371,1,0.0761],[0.001,0.3096,0.1575,0.165],[0.1585,0.3096,0.1328,0.165],[0.5564,0.3096,0.2126,0.165],[0.769,0.3096,0.23,0.165],null,null]},"froy":{"R":0.1814,"rects":[null,[0,0,1,0.1341],[0.001,0.3408,0.2681,0.1816],[0.2691,0.3408,0.2085,0.1816],[0.4776,0.3408,0.271,0.1816],[0.7486,0.3408,0.2504,0.1816],null]},"cat":{"R":1.11,"rects":[[0,0.0529,1,0.0356],null,null,null,null,null,null,null]},"rped":{"R":0.2756,"rects":[[0.001,0.2243,0.157,0.1195],[0.2411,0.4265,0.0413,0.0515],[0.2411,0.4265,0.0413,0.0515],[0.3527,0.2243,0.3181,0.1195],[0.6708,0.2243,0.158,0.1195],[0.8289,0.2243,0.1701,0.1195],null]},"cfgemail":{"R":1.072,"rects":[[0.028,0.1126,0.2063,0.0159],[0.028,0.1752,0.6179,0.0159],[0.663,0.1752,0.3089,0.0159],[0.028,0.2548,0.9439,0.0159],[0.028,0.3367,0.6179,0.0159],[0.028,0.4539,0.4634,0.0159],[0.028,0.7327,0.2308,0.0398],[0.028,0.835,0.9439,0.0182]]}};
+  AJUDA_GEO = {"dash":{"R":0.6859,"rects":[[0,0,1,0.0355],null,[0.0193,0.2304,0.1484,0.0207],[0.0193,0.4225,0.1379,0.0236],[0.0193,0.1233,0.0752,0.0236],[0.5073,0.4239,0.0801,0.0207],[0.6401,0.4254,0.3407,0.0236]]},"ped":{"R":0.7943,"rects":[[0.0172,0.0982,0.1863,0.0166],[0,0.2105,0.5846,0.0497],[0,0.2105,1,0.0497],null,[0.8278,0.3431,0.0726,0.0306],[0.9065,0.3431,0.0742,0.0306],null]},"peddet":{"R":0.6373,"rects":[[0,0,1,0.0238],[0.001,0.3561,0.625,0.0684],[0.2746,0.2035,0.1083,0.0238],[0.4594,0.5056,0.0703,0.0334],[0.5358,0.5056,0.072,0.0334],null,[0.6604,0.3816,0.3203,0.0254],[0.0193,0.8521,0.5885,0.0254]]},"cot":{"R":0.3749,"rects":[[0.852,0.0243,0.148,0.0946],[0.1167,0.6297,0.1749,0.0878],null,[0,0.4838,1,0.1054],[0.7838,0.7784,0.1499,0.0378],null,null,null]},"cotdet":{"R":1.2979,"rects":[[0,0,1,0.0117],[0.2737,0.1749,0.0917,0.0117],[0.6153,0.292,0.0686,0.0141],[0.0193,0.3669,0.4116,0.0125],[0.7701,0.4586,0.2107,0.0219],[0.0193,0.5886,0.9615,0.0125],null,[0.8251,0.3677,0.1557,0.0234],[0.0193,0.8525,0.9615,0.0125]]},"forn":{"R":0.849,"rects":[null,[0,0.1969,1,0.0442],[0.8284,0.0107,0.1716,0.0418],null,[0.0193,0.6134,0.9615,0.0191],[0.8543,0.7291,0.1143,0.0167],[0.9221,0.7518,0.0586,0.0167]]},"forndet":{"R":0.6657,"rects":[[0,0,1,0.0228],null,[0.5476,0.0411,0.1206,0.0533],[0.6773,0.0411,0.1449,0.0533],[0.0193,0.4003,0.4549,0.0228],[0.0193,0.5556,0.2229,0.0502],[0.2513,0.5556,0.2229,0.0502],[0,0.6575,1,0.0274],[0.9273,0.742,0.0535,0.0213]]},"prod":{"R":0.9493,"rects":[null,[0,0.191,0.5704,0.0416],[0.8505,0.0096,0.1495,0.0374],[0.1617,0.2487,0.2783,0.0347],null,null,[0.9273,0.3132,0.0535,0.0149]]},"proddet":{"R":0.6626,"rects":[null,null,[0.4529,0.1774,0.5278,0.0245],[0.4509,0.3991,0.1768,0.0199],[0.6822,0.0413,0.1346,0.0535],[0.8411,0.0566,0.1437,0.0229],[0,0.7615,1,0.0275],[0,0,1,0.0229]]},"rev":{"R":0.5552,"rects":[[0.0172,0.1405,0.1223,0.0237],[0,0.3266,1,0.0675],[0.8492,0.0164,0.1508,0.0639],null,null,null,null,null,null]},"revdet":{"R":1.2219,"rects":[[0.233,0.0311,0.0357,0.0116],[0.0172,0.0945,0.1474,0.0108],[0.7214,0.0224,0.1206,0.029],[0.8664,0.0307,0.1184,0.0124],[0.0193,0.1683,0.3722,0.0133],[0.4442,0.1683,0.5366,0.0133],[0,0.335,1,0.0149],null,[0,0.8284,1,0.0149]]},"fat":{"R":0.3982,"rects":[null,[0.001,0.1552,0.998,0.1018],[0.001,0.3944,0.1056,0.0827],[0.1066,0.3944,0.0891,0.0827],[0.1957,0.3944,0.1958,0.0827],[0.5693,0.3944,0.1366,0.0827],[0.7059,0.3944,0.1426,0.0827]]},"roy":{"R":0.6424,"rects":[null,[0.0193,0.2823,0.1734,0.0252],[0.0193,0.4653,0.1758,0.0205],[0.0172,0.1183,0.1349,0.0205],[0.6438,0.4322,0.1417,0.041],[0.6714,0.6987,0.1141,0.041],[0.8008,0.4322,0.18,0.041],[0.5391,0.3297,0.0865,0.067]]},"rel":{"R":2.2817,"rects":[[0,0.0258,0.2118,0.0164],[0.0152,0.0542,0.0544,0.0049],[0.0193,0.0959,0.553,0.0071],[0.6249,0.0959,0.3558,0.0071],[0.0193,0.2123,0.4544,0.0071],[0.0193,0.3748,0.3558,0.0071],[0.001,0.4849,0.998,0.0191],[0.0193,0.8204,0.4247,0.0071]]},"seg":{"R":0.6047,"rects":[null,[0.0193,0.1592,0.2854,0.0302],[0.0193,0.1592,0.2854,0.0302],[0.1663,0.8425,0.2214,0.0251],[0.1663,0.7286,0.1764,0.0251],[0.001,0.4186,0.998,0.072],[0.001,0.4907,0.1551,0.0511]]},"fped":{"R":0.2513,"rects":[[0,0,1,0.0968],null,[0.1327,0.4738,0.7244,0.0565],null,null,null,null,null]},"fcot":{"R":0.2685,"rects":[[0.387,0.3,0.1074,0.0528],null,[0.1327,0.4434,0.6746,0.0528],null,null,null,null,null]},"ffat":{"R":0.1996,"rects":[null,[0,0.1371,1,0.0761],[0.001,0.3096,0.1575,0.165],[0.1585,0.3096,0.1328,0.165],[0.5564,0.3096,0.2126,0.165],[0.769,0.3096,0.23,0.165],null,null]},"froy":{"R":0.1814,"rects":[null,[0,0,1,0.1341],[0.001,0.3408,0.2681,0.1816],[0.2691,0.3408,0.2085,0.1816],[0.4776,0.3408,0.271,0.1816],[0.7486,0.3408,0.2504,0.1816],null]},"cat":{"R":1.11,"rects":[[0,0.0529,1,0.0356],null,null,null,null,null,null,null]},"rped":{"R":0.2756,"rects":[[0.001,0.2243,0.157,0.1195],[0.2411,0.4265,0.0413,0.0515],[0.2411,0.4265,0.0413,0.0515],[0.3527,0.2243,0.3181,0.1195],[0.6708,0.2243,0.158,0.1195],[0.8289,0.2243,0.1701,0.1195],null]},"cfgemail":{"R":1.072,"rects":[[0.028,0.1126,0.2063,0.0159],[0.028,0.1752,0.6179,0.0159],[0.663,0.1752,0.3089,0.0159],[0.028,0.2548,0.9439,0.0159],[0.028,0.3367,0.6179,0.0159],[0.028,0.4539,0.4634,0.0159],[0.028,0.7327,0.2308,0.0398],[0.028,0.835,0.9439,0.0182]]},"usuarios":{"R":0.5461,"rects":[[0.8541,0.0167,0.1459,0.0649],[0,0.1113,0.7832,0.0724],[0.5031,0.2115,0.1733,0.0826],null,[0.5409,0.3432,0.1052,0.026],[0.8535,0.3358,0.0597,0.0408],[0.9254,0.3432,0.0513,0.026]]}};
   ajudaConteudo(){ return this.AJUDA_CONTEUDO[this.scr] || this.AJUDA_CONTEUDO._default; }
   abrirAjuda=(e)=>{ if(e&&e.stopPropagation) e.stopPropagation(); this._ajudaStop(); this.setState({modal:'ajuda',ajudaStep:0,ajudaPlay:false}); };
   fecharAjuda=()=>{ this._ajudaStop(); this.setState({modal:null,ajudaPlay:false}); };
@@ -2996,17 +3156,17 @@ class Component extends DCLogic {
     const blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});
     const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=nome;
     document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },150); }
-  exportRelPedidos=()=>{ const linhas=[['Pedido','Data','Revenda','Fornecedor destino','Itens','Total (R$)','Status','Justificativa']];
+  exportRelPedidos=()=>{ if(!this.pode('relatorios.exportar')) return; const linhas=[['Pedido','Data','Revenda','Fornecedor destino','Itens','Total (R$)','Status','Justificativa']];
     this._relPedsFiltrados().forEach(p=>{ const rev=this.state.revendas.find(x=>x.id===p.revendaId)||{};
       const forns=[...new Set(p.itens.filter(i=>i.fornecedorId).map(i=>this._fornNome(i.fornecedorId)))].join(', ')||'—';
       const itens=p.itens.map(i=>{ const pr=this._prodInfo(i.produtoId); return (pr.codigo||'')+' '+(pr.descricao||'')+' x'+i.qtd; }).join(' | ');
       linhas.push([p.id,p.data,rev.nome||'',forns,itens,p.total.toFixed(2).replace('.',','),p.status,p.justificativa||'']); });
     this.baixarCSV('relatorio-pedidos.csv',linhas); this.audit('Exportação de relatório','Pedidos (CSV) · '+(linhas.length-1)+' linha(s)'); };
-  exportRelFat=()=>{ const linhas=[['Nota fiscal','Data','Competência','Pedido','Fornecedor','Revenda','Cotação','Valor (R$)','Royalty %','Royalty (R$)']];
+  exportRelFat=()=>{ if(!this.pode('relatorios.exportar')) return; const linhas=[['Nota fiscal','Data','Competência','Pedido','Fornecedor','Revenda','Cotação','Valor (R$)','Royalty %','Royalty (R$)']];
     this._relFatsFiltrados().forEach(f=>{ linhas.push([f.id,f.data,f.competencia,f.pedidoId,this._fornNome(f.fornecedorId),this._revNome(f.revendaId),f.cotacaoId||'—',
       f.valor.toFixed(2).replace('.',','),String(f.royaltyPct).replace('.',','),f.royaltyValor.toFixed(2).replace('.',',')]); });
     this.baixarCSV('relatorio-faturamentos.csv',linhas); this.audit('Exportação de relatório','Faturamentos (CSV) · '+(linhas.length-1)+' linha(s)'); };
-  lembrarCot(cid,fid){ this._lc=this._lc||{}; const k=cid+'-'+fid; if(!this._lc[k]) this._lc[k]=(e)=>{ if(e&&e.stopPropagation) e.stopPropagation();
+  lembrarCot(cid,fid){ this._lc=this._lc||{}; const k=cid+'-'+fid; if(!this._lc[k]) this._lc[k]=(e)=>{ if(e&&e.stopPropagation) e.stopPropagation(); if(!this.pode('cotacoes.lembrar')) return;
     const f=this.state.fornecedores.find(x=>x.id===fid);
     this.updCot(cid,c=>{ c.lembretes={...(c.lembretes||{}),[fid]:this.hoje()};
       c.historico.push({quando:this.ts(),usuario:this.userName(),acao:'Lembrete de proposta enviado a '+f.nome}); return c; });
@@ -3034,7 +3194,7 @@ class Component extends DCLogic {
   updPed(id,fn){ this.setState(s=>({pedidos:s.pedidos.map(p=>p.id===id?fn({...p,trilha:[...p.trilha]}):p)})); }
   updCot(id,fn){ this.setState(s=>({cotacoes:s.cotacoes.map(c=>c.id===id?fn({...c,propostas:[...c.propostas],historico:[...c.historico]}):c)})); }
 
-  salvarForn=()=>{ const f=this.state.form; if(!f.nome||!f.cnpj) return this.err('Informe ao menos nome e CNPJ.');
+  salvarForn=()=>{ if(!this.pode('cadastros.fornecedores')) return this.err('Você não tem permissão para gerenciar fornecedores.'); const f=this.state.form; if(!f.nome||!f.cnpj) return this.err('Informe ao menos nome e CNPJ.');
     if(f.editId){ this.setState(s=>({fornecedores:s.fornecedores.map(x=>x.id===f.editId?{...x,nome:f.nome,cnpj:f.cnpj,cidade:f.cidade||'—',contato:f.contato||'—'}:x),modal:null,form:{}}));
       this.audit('Edição de fornecedor',f.nome); return; }
     const id=this.state.seq.forn;
@@ -3043,18 +3203,18 @@ class Component extends DCLogic {
   toggleForn(id){ this._tf=this._tf||{}; if(!this._tf[id]) this._tf[id]=()=>{ const f=this.state.fornecedores.find(x=>x.id===id);
     this.setState(s=>({fornecedores:s.fornecedores.map(x=>x.id===id?{...x,ativo:!x.ativo}:x)}));
     this.audit(f.ativo?'Inativação de fornecedor':'Reativação de fornecedor',f.nome); }; return this._tf[id]; }
-  salvarContrato=()=>{ const f=this.state.form; const pct=this.num(f.royalty);
+  salvarContrato=()=>{ if(!this.pode('cadastros.fornecedores')) return this.err('Você não tem permissão para gerenciar contratos.'); const f=this.state.form; const pct=this.num(f.royalty);
     if(!f.fornecedorId) return this.err('Selecione o fornecedor.');
     if(!pct) return this.err('Informe o percentual de royalty (RF03).');
     if(!f.inicio||!f.fim) return this.err('Informe início e fim de vigência (RF03).');
     const id=this.state.seq.ctr; const numero='CT-2026-00'+id;
     this.setState(s=>({contratos:[...s.contratos,{id,fornecedorId:+f.fornecedorId,numero,royalty:pct,inicio:f.inicio,fim:f.fim,vigente:true,historico:[]}],seq:{...s.seq,ctr:id+1},modal:null,form:{}}));
     this.audit('Cadastro de contrato',numero+' · royalty '+pct+'%'); };
-  salvarRoyalty=()=>{ const f=this.state.form; const pct=this.num(f.royalty); if(!pct) return this.err('Informe o novo percentual.');
+  salvarRoyalty=()=>{ if(!this.pode('cadastros.fornecedores')) return this.err('Você não tem permissão para alterar royalties.'); const f=this.state.form; const pct=this.num(f.royalty); if(!pct) return this.err('Informe o novo percentual.');
     const c=this.state.contratos.find(x=>x.id===f.contratoId);
     this.setState(s=>({contratos:s.contratos.map(x=>x.id===f.contratoId?{...x,royalty:pct,historico:[...x.historico,{data:this.hoje(),de:String(x.royalty).replace('.',',')+'%',para:String(pct).replace('.',',')+'%',usuario:this.userName()}]}:x),modal:null,form:{}}));
     this.audit('Alteração de royalty',c.numero+' → '+pct+'%'); };
-  salvarProduto=()=>{ const f=this.state.form; if(!f.descricao||!f.fornecedorId) return this.err('Informe descrição e fornecedor (RF05).');
+  salvarProduto=()=>{ if(!this.pode('cadastros.produtos')) return this.err('Você não tem permissão para gerenciar produtos.'); const f=this.state.form; if(!f.descricao||!f.fornecedorId) return this.err('Informe descrição e fornecedor (RF05).');
     const preco=this.num(f.preco); if(!preco) return this.err('Informe o preço (RF06).');
     if(f.editId){ const old=this.state.produtos.find(x=>x.id===f.editId);
       const fotosAtuais=this.fotosDe(old); const fp=f.fotoP||0;
@@ -3072,7 +3232,7 @@ class Component extends DCLogic {
   toggleProd(id){ this._tp=this._tp||{}; if(!this._tp[id]) this._tp[id]=(e)=>{ if(e&&e.stopPropagation) e.stopPropagation(); const p=this.state.produtos.find(x=>x.id===id);
     this.setState(s=>({produtos:s.produtos.map(x=>x.id===id?{...x,ativo:!x.ativo}:x)}));
     this.audit(p.ativo?'Inativação de produto no catálogo':'Ativação de produto no catálogo',p.codigo+' · '+p.descricao); }; return this._tp[id]; }
-  salvarRevenda=()=>{ const f=this.state.form; if(!f.nome||!f.cnpj) return this.err('Informe ao menos nome e CNPJ.');
+  salvarRevenda=()=>{ if(!this.pode('cadastros.revendas')) return this.err('Você não tem permissão para gerenciar revendas.'); const f=this.state.form; if(!f.nome||!f.cnpj) return this.err('Informe ao menos nome e CNPJ.');
     if(f.editId){ this.setState(s=>({revendas:s.revendas.map(x=>x.id===f.editId?{...x,nome:f.nome,cnpj:f.cnpj,cidade:f.cidade||'—',email:f.email||x.email}:x),modal:null,form:{}}));
       this.audit('Edição de revenda',f.nome); return; }
     const id=this.state.seq.rev;
@@ -3087,17 +3247,17 @@ class Component extends DCLogic {
       return {...x,visibilidade:on?x.visibilidade.filter(v=>v!==fid):[...x.visibilidade,fid]}; })}));
     this.audit('Regra de visibilidade alterada',r.nome+' × '+f.nome); }; return this._tv[k]; }
 
-  aprovar(id){ this._ap=this._ap||{}; if(!this._ap[id]) this._ap[id]=(e)=>{ if(e&&e.stopPropagation) e.stopPropagation();
+  aprovar(id){ this._ap=this._ap||{}; if(!this._ap[id]) this._ap[id]=(e)=>{ if(e&&e.stopPropagation) e.stopPropagation(); if(!this.pode('pedidos.aprovar')) return;
     this.updPed(id,p=>{p.itens=p.itens.map(i=>(i.st||'pendente')==='pendente'?{...i,st:'aprovado'}:i);p.trilha.push(this.tr('Pedido aprovado pela Loja — todos os itens pendentes'));return p;});
     this.audit('Aprovação de pedido',id);
     const ped=this.state.pedidos.find(p=>p.id===id);
     if(ped){ const _sub=ped.itens.filter(i=>i.st!=='rejeitado'); this.notificar('pedido_aprovado',this._revEmail(ped.revendaId),{pedidoId:id,revendaNome:this._revNome(ped.revendaId),itensLista:_sub.map(i=>this._itemView(i)),ocultarValor:this._revOcultar(_sub)}); } }; return this._ap[id]; }
-  aprovarItem(pid,ix){ this._api=this._api||{}; const k=pid+'|'+ix; if(!this._api[k]) this._api[k]=()=>{
+  aprovarItem(pid,ix){ this._api=this._api||{}; const k=pid+'|'+ix; if(!this._api[k]) this._api[k]=()=>{ if(!this.pode('pedidos.aprovar')) return;
     const ped=this.state.pedidos.find(p=>p.id===pid); const prod=this.state.produtos.find(x=>x.id===ped.itens[ix].produtoId);
     this.updPed(pid,p=>{p.itens=p.itens.map((i,j)=>j===ix?{...i,st:'aprovado'}:i);p.trilha.push(this.tr('Item aprovado: '+(prod?prod.descricao:'')));return p;});
     this.audit('Aprovação de item de pedido',pid+' · '+(prod?prod.codigo:''));
     this.notificar('item_aprovado',this._revEmail(ped.revendaId),{pedidoId:pid,produto:(prod?prod.descricao:'')}); }; return this._api[k]; }
-  confirmRejeitar=()=>{ const j=(this.state.form.justif||'').trim(); if(!j) return this.err('A justificativa é obrigatória em caso de rejeição (RF16).');
+  confirmRejeitar=()=>{ if(!this.pode('pedidos.rejeitar')) return this.err('Você não tem permissão para rejeitar.'); const j=(this.state.form.justif||'').trim(); if(!j) return this.err('A justificativa é obrigatória em caso de rejeição (RF16).');
     const id=this.state.form.pedidoId; const ix=this.state.form.itemIdx;
     if(ix!=null){ const ped=this.state.pedidos.find(p=>p.id===id); const prod=this.state.produtos.find(x=>x.id===ped.itens[ix].produtoId);
       this.updPed(id,p=>{p.itens=p.itens.map((i,jx)=>jx===ix?{...i,st:'rejeitado',justif:j}:i);p.trilha.push(this.tr('Item rejeitado: '+(prod?prod.descricao:'')+' — '+j));return p;});
@@ -3114,7 +3274,7 @@ class Component extends DCLogic {
     const sel=p?p.itens.map((i,ix)=>i.st==='aprovado'?ix:-1).filter(ix=>ix>=0):[];
     this.setState(s=>({form:{...s.form,pedidoId:v,sel,erro:null}})); };
   pickForn(fid){ this._pf=this._pf||{}; if(!this._pf[fid]) this._pf[fid]=()=>this.setState(s=>({form:{...s.form,fornecedorId:String(fid),erro:null}})); return this._pf[fid]; }
-  confirmDireto=()=>{ const fid=+this.state.form.fornecedorId; if(!fid) return this.err('Selecione o fornecedor de destino.');
+  confirmDireto=()=>{ if(!this.pode('pedidos.atender')) return this.err('Você não tem permissão para definir o atendimento.'); const fid=+this.state.form.fornecedorId; if(!fid) return this.err('Selecione o fornecedor de destino.');
     const sel=this.state.form.sel||[]; if(!sel.length) return this.err('Selecione ao menos um item para encaminhar.');
     const id=this.state.form.pedidoId; const f=this.state.fornecedores.find(x=>x.id===fid);
     this.updPed(id,p=>{p.itens=p.itens.map((i,ix)=>sel.includes(ix)&&i.st==='aprovado'?{...i,st:'direto',fornecedorId:fid}:i);
@@ -3125,7 +3285,7 @@ class Component extends DCLogic {
     this.notificar('pedido_fornecedor',this._fornEmail(fid),{pedidoId:id,fornecedorNome:f.nome,revendaNome:this._revNome(revD),itensLista:_ilD});
     this.notificar('pedido_encaminhado_revenda',this._revEmail(revD),{pedidoId:id,fornecedorNome:f.nome,itensLista:_ilD,ocultarValor:this._revOcultar(_rawD)});
     this.mClose(); };
-  confirmEstoque=()=>{ const sel=this.state.form.sel||[]; if(!sel.length) return this.err('Selecione ao menos um item.');
+  confirmEstoque=()=>{ if(!this.pode('pedidos.atender')) return this.err('Você não tem permissão para definir o atendimento.'); const sel=this.state.form.sel||[]; if(!sel.length) return this.err('Selecione ao menos um item.');
     const id=this.state.form.pedidoId;
     this.updPed(id,p=>{p.itens=p.itens.map((i,ix)=>sel.includes(ix)&&i.st==='aprovado'?{...i,st:'estoque'}:i);
       p.trilha.push(this.tr(sel.length+' item(ns) atendido(s) com estoque próprio da Loja — sem envio a fornecedor'));return p;});
@@ -3135,7 +3295,7 @@ class Component extends DCLogic {
     this.mClose(); };
   toggleConv(fid){ this._tc=this._tc||{}; if(!this._tc[fid]) this._tc[fid]=()=>this.setState(s=>{ const c=s.form.convidados||[]; const on=c.includes(fid);
     return {form:{...s.form,convidados:on?c.filter(x=>x!==fid):[...c,fid],erro:null}}; }); return this._tc[fid]; }
-  confirmCotacao=()=>{ const f=this.state.form; const conv=f.convidados||[];
+  confirmCotacao=()=>{ if(!this.pode('cotacoes.abrir')) return this.err('Você não tem permissão para abrir cotações.'); const f=this.state.form; const conv=f.convidados||[];
     if(!f.pedidoId) return this.err('Selecione o pedido de origem (RF20).');
     if(conv.length<2) return this.err('Selecione dois ou mais fornecedores homologados (RF21).');
     if(!f.prazo) return this.err('Defina a data limite para envio das propostas (RF22).');
@@ -3157,7 +3317,7 @@ class Component extends DCLogic {
   confirmJustifVenc=()=>{ const j=(this.state.form.justif||'').trim(); if(!j) return this.err('Justificativa obrigatória: a proposta escolhida não é a de menor preço (RF28).');
     const pv=this.state.pendVenc;
     if(pv.produtoId!=null) this.finalizarVencItem(pv.cotId,pv.produtoId,pv.fid,j); else this.finalizarVenc(pv.cotId,pv.fid,j); };
-  finalizarVenc(cotId,fid,justif){ const c=this.state.cotacoes.find(x=>x.id===cotId);
+  finalizarVenc(cotId,fid,justif){ if(!this.pode('cotacoes.decidir')) return; const c=this.state.cotacoes.find(x=>x.id===cotId);
     const f=this.state.fornecedores.find(x=>x.id===fid); const pr=c.propostas.find(p=>p.fornecedorId===fid);
     const refTot=(c.itens||[]).reduce((a,x2)=>a+x2.qtd*x2.preco,0)||1;
     this.updCot(cotId,x=>{x.status='encerrada';x.vencedorId=fid;x.vencItens=(x.itens||[]).reduce((m,it)=>({...m,[it.produtoId]:fid}),{});x.justificativa=justif;
@@ -3174,7 +3334,7 @@ class Component extends DCLogic {
     const menor=units.length?Math.min(...units):null;
     if(menor!=null&&u!=null&&u>menor){ this.setState({modal:'justifvenc',pendVenc:{cotId,fid,produtoId:pid},form:{}}); }
     else this.finalizarVencItem(cotId,pid,fid,null); }; return this._ei[k]; }
-  finalizarVencItem(cotId,pid,fid,justif){ const c=this.state.cotacoes.find(x=>x.id===cotId);
+  finalizarVencItem(cotId,pid,fid,justif){ if(!this.pode('cotacoes.decidir')) return; const c=this.state.cotacoes.find(x=>x.id===cotId);
     const f=this.state.fornecedores.find(x=>x.id===fid); const prod=this.state.produtos.find(x=>x.id===pid);
     const pr=c.propostas.find(x=>x.fornecedorId===fid); const it=(c.itens||[]).find(x=>x.produtoId===pid)||{qtd:1,preco:0};
     const u=pr.itens?pr.itens[pid]:null; const precoNeg=u!=null?u*it.qtd:null;
@@ -3191,7 +3351,7 @@ class Component extends DCLogic {
     this.audit('Adjudicação de item em cotação',cotId+' · '+(prod?prod.codigo:'')+' → '+f.nome+(justif?' · '+justif:''));
     this.notificar('cotacao_item_vencedor',this._fornEmail(fid),{cotacao:cotId,fornecedorNome:f.nome,produto:(prod?prod.descricao:''),valor:(precoNeg!=null?this.fmt(precoNeg):'')});
     this.mClose(); }
-  confirmCancelarCot=()=>{ const m=(this.state.form.motivo||'').trim(); if(!m) return this.err('Informe o motivo do cancelamento (RF30).');
+  confirmCancelarCot=()=>{ if(!this.pode('cotacoes.abrir')) return this.err('Você não tem permissão para cancelar cotações.'); const m=(this.state.form.motivo||'').trim(); if(!m) return this.err('Informe o motivo do cancelamento (RF30).');
     const id=this.state.form.cotId; const c=this.state.cotacoes.find(x=>x.id===id);
     this.updCot(id,x=>{x.status='cancelada';x.motivoCancel=m;x.historico.push({quando:this.ts(),usuario:this.userName(),acao:'Cotação cancelada — '+m});return x;});
     this.updPed(c.pedidoId,p=>{p.itens=p.itens.map(i=>i.cotacaoId===id&&i.st==='cotacao'?{...i,st:'aprovado',cotacaoId:null}:i);p.trilha.push(this.tr('Cotação '+id+' cancelada — itens retornaram para decisão de atendimento'));return p;});
@@ -3200,7 +3360,7 @@ class Component extends DCLogic {
     (c.convidados||[]).forEach(cf=>this.notificar('cotacao_cancelada',this._fornEmail(cf),{cotacao:id,fornecedorNome:this._fornNome(cf),motivo:m,itensLista:_ilCC}));
     this.mClose(); };
 
-  confirmProposta=()=>{ const f=this.state.form; const cid=f.cotId;
+  confirmProposta=()=>{ if(!this.pode('cotacoes.proposta')) return this.err('Você não tem permissão para registrar propostas.'); const f=this.state.form; const cid=f.cotId;
     const c=this.state.cotacoes.find(x=>x.id===cid);
     const ped=this.state.pedidos.find(p=>p.id===c.pedidoId)||{itens:[]};
     const citens=c.itens||ped.itens||[];
@@ -3215,7 +3375,7 @@ class Component extends DCLogic {
     const _ilP=citens.map(it=>{ const pp=this._prodInfo(it.produtoId); const u=itens[it.produtoId]; return {codigo:pp.codigo||'',descricao:pp.descricao||('Produto '+it.produtoId),qtd:it.qtd,unidade:pp.unidade||'',valor:this.fmt((u||0)*it.qtd)}; });
     this.notificar('cotacao_proposta_loja',this._lojaEmail(),{cotacao:cid,fornecedorNome:me.nome,total:this.fmt(total),itensLista:_ilP});
     this.mClose(); };
-  confirmFaturar=()=>{ const f=this.state.form; const valor=this.num(f.valorFat); if(!valor) return this.err('Informe o valor efetivamente faturado (RF34).');
+  confirmFaturar=()=>{ if(!this.pode('faturamento.faturar')) return this.err('Você não tem permissão para registrar faturamento.'); const f=this.state.form; const valor=this.num(f.valorFat); if(!valor) return this.err('Informe o valor efetivamente faturado (RF34).');
     const pid=f.pedidoId; const fid=this.state.fornAtivo; const ped=this.state.pedidos.find(p=>p.id===pid);
     const meus=ped.itens.filter(i=>i.st==='direto'&&i.fornecedorId===fid);
     const cotRef=(meus.find(i=>i.cotacaoId)||{}).cotacaoId||null;
@@ -3229,13 +3389,13 @@ class Component extends DCLogic {
     this.notificar('faturamento_revenda',this._revEmail(ped.revendaId),{pedidoId:pid,nf,fornecedorNome:this._fornNome(fid),valor:this.fmt(valor),itensLista:_ilF});
     this.notificar('faturamento_loja',this._lojaEmail(),{nf,pedidoId:pid,fornecedorNome:this._fornNome(fid),valor:this.fmt(valor),royalty:this.fmt(Math.round(valor*pct)/100),itensLista:_ilF}); };
   toggleFech(chave){ this._tfc=this._tfc||{}; if(!this._tfc[chave]) this._tfc[chave]=()=>this.setState(s=>({expFech:s.expFech===chave?null:chave})); return this._tfc[chave]; }
-  emitirCobranca=()=>{ const chave=this.state.form.chave; if(!chave) return;
+  emitirCobranca=()=>{ if(!this.pode('royalties.cobrar')) return; const chave=this.state.form.chave; if(!chave) return;
     const fid=+chave.split('-')[1]; const f=this.state.fornecedores.find(x=>x.id===fid);
     this.setState(s=>({pagamentos:{...s.pagamentos,[chave]:{...(s.pagamentos[chave]||{status:'a pagar'}),cobranca:true,cobrancaData:this.hoje()}},modal:null,form:{}}));
     this.audit('Documento de cobrança de royalty emitido',chave.split('-')[0]+' · '+(f?f.nome:'')+' · fornecedor notificado');
     const _comp=chave.split('-')[0]; const _roy=this.state.faturamentos.filter(x=>x.competencia===_comp&&x.fornecedorId===fid).reduce((a,x)=>a+x.royaltyValor,0);
     this.notificar('royalty_cobranca',this._fornEmail(fid),{competencia:_comp,fornecedorNome:(f?f.nome:''),valor:this.fmt(_roy)}); };
-  confirmPagamento=()=>{ const f=this.state.form; const valor=this.num(f.valorPg); if(!valor) return this.err('Informe o valor pago.');
+  confirmPagamento=()=>{ if(!this.pode('royalties.pagar')) return this.err('Você não tem permissão para registrar pagamentos.'); const f=this.state.form; const valor=this.num(f.valorPg); if(!valor) return this.err('Informe o valor pago.');
     if(!f.dataPg) return this.err('Informe a data do pagamento (RF40).');
     const chave=f.chave;
     this.setState(s=>({pagamentos:{...s.pagamentos,[chave]:{status:'pago',data:f.dataPg,valor,comprovante:f.comprovante||'—',cobranca:true}},modal:null,form:{}}));
@@ -3245,7 +3405,7 @@ class Component extends DCLogic {
 
   addCart(id){ this._ac=this._ac||{}; if(!this._ac[id]) this._ac[id]=()=>this.setState(s=>({cart:{...s.cart,[id]:(s.cart[id]||0)+1}})); return this._ac[id]; }
   subCart(id){ this._sb=this._sb||{}; if(!this._sb[id]) this._sb[id]=()=>this.setState(s=>{ const q=(s.cart[id]||0)-1; const c={...s.cart}; if(q<=0)delete c[id]; else c[id]=q; return {cart:c}; }); return this._sb[id]; }
-  enviarPedido=()=>{ const cart=this.state.cart; const ids=Object.keys(cart); if(!ids.length)return;
+  enviarPedido=()=>{ if(!this.pode('pedidos.criar')) return; const cart=this.state.cart; const ids=Object.keys(cart); if(!ids.length)return;
     const itens=ids.map(k=>{ const p=this.state.produtos.find(x=>x.id===+k); return {produtoId:p.id,qtd:cart[k],preco:p.preco,st:'pendente'}; });
     const total=itens.reduce((a,i)=>a+i.qtd*i.preco,0);
     const n=this.state.seq.ped; const id='PED-00'+n;
@@ -3263,15 +3423,111 @@ class Component extends DCLogic {
   setFiltroStatus=e=>this.setState({filtroStatus:e.target.value});
   setBuscaCat=e=>this.setState({buscaCat:e.target.value});
 
-  pickLoginRole(r){ this._plr=this._plr||{}; if(!this._plr[r]) this._plr[r]=()=>this.setState({loginRole:r,loginErro:null}); return this._plr[r]; }
+  // ── Usuários, autenticação e permissionamento ────────────────────────────
+  // Catálogo de permissões (granularidade fina): [chave, rótulo, papéis com padrão ativo]
+  PERMS=[
+    {mod:'Pedidos',itens:[
+      ['pedidos.ver','Ver pedidos e detalhes',['admin','loja']],
+      ['pedidos.aprovar','Aprovar pedidos e itens',['admin','loja']],
+      ['pedidos.rejeitar','Rejeitar pedidos e itens',['admin','loja']],
+      ['pedidos.atender','Definir atendimento (estoque, envio direto, cotação)',['admin','loja']],
+      ['pedidos.criar','Criar pedidos no catálogo (revenda)',['admin','revenda']]]},
+    {mod:'Cotações',itens:[
+      ['cotacoes.ver','Ver cotações e propostas',['admin','loja']],
+      ['cotacoes.abrir','Abrir e cancelar cotações',['admin','loja']],
+      ['cotacoes.decidir','Escolher vencedora / adjudicar itens',['admin','loja']],
+      ['cotacoes.lembrar','Enviar lembretes aos convidados',['admin','loja']],
+      ['cotacoes.proposta','Registrar proposta (fornecedor)',['admin','fornecedor']]]},
+    {mod:'Financeiro',itens:[
+      ['faturamento.ver','Ver faturamento',['admin','loja']],
+      ['faturamento.faturar','Registrar faturamento (fornecedor)',['admin','fornecedor']],
+      ['royalties.ver','Ver royalties e fechamentos',['admin','loja']],
+      ['royalties.cobrar','Emitir cobrança de royalties',['admin','loja']],
+      ['royalties.pagar','Registrar pagamento de royalties',['admin','loja']]]},
+    {mod:'Cadastros',itens:[
+      ['cadastros.fornecedores','Gerenciar fornecedores e contratos',['admin','loja']],
+      ['cadastros.produtos','Gerenciar produtos homologados',['admin','loja']],
+      ['cadastros.revendas','Gerenciar revendas e visibilidade',['admin','loja']]]},
+    {mod:'Gestão',itens:[
+      ['relatorios.ver','Ver relatórios e painéis',['admin','loja']],
+      ['relatorios.exportar','Exportar relatórios (CSV)',['admin','loja']],
+      ['auditoria.ver','Ver segurança e auditoria',['admin','loja']]]},
+    {mod:'Configurações Técnicas',itens:[
+      ['config.email','Gerenciar configuração de e-mail (SMTP)',['admin']],
+      ['config.usuarios','Gerenciar usuários e permissões',['admin']]]},
+  ];
+  PAPEIS={admin:'Administrador Técnico',loja:'Loja Cidade Imperial',fornecedor:'Fornecedor',revenda:'Revenda'};
+  hashSenha(str){ let h1=0xdeadbeef,h2=0x41c6ce57; for(let i=0;i<str.length;i++){ const ch=str.charCodeAt(i);
+      h1=Math.imul(h1^ch,2654435761); h2=Math.imul(h2^ch,1597334677); }
+    h1=Math.imul(h1^(h1>>>16),2246822507); h1^=Math.imul(h2^(h2>>>13),3266489909);
+    h2=Math.imul(h2^(h2>>>16),2246822507); h2^=Math.imul(h1^(h1>>>13),3266489909);
+    return (4294967296*(2097151&h2)+(h1>>>0)).toString(16); }
+  usuarioAtual(){ return this.state.usuarios.find(u=>u.id===this.state.usuario)||null; }
+  permPadrao(papel,chave){ for(const g of this.PERMS) for(const [k,,pap] of g.itens) if(k===chave) return pap.includes(papel); return false; }
+  pode(chave){ const u=this.usuarioAtual(); if(!u) return true; // sessão antiga sem usuário: comportamento aberto
+    if(u.permissoes&&u.permissoes[chave]!==undefined&&u.permissoes[chave]!==null) return !!u.permissoes[chave];
+    return this.permPadrao(u.papel,chave); }
   setLoginEmail=e=>this.setState({loginEmail:e.target.value,loginErro:null});
   setLoginSenha=e=>this.setState({loginSenha:e.target.value,loginErro:null});
-  fazerLogin=()=>{ const {loginEmail,loginSenha,loginRole}=this.state;
+  preencherLogin(email,senha){ this._pl=this._pl||{}; const k=email; if(!this._pl[k]) this._pl[k]=()=>this.setState({loginEmail:email,loginSenha:senha,loginErro:null}); return this._pl[k]; }
+  fazerLogin=()=>{ const {loginEmail,loginSenha}=this.state;
     if(!loginEmail.trim()||!loginEmail.includes('@')) return this.setState({loginErro:'Informe um e-mail válido.'});
     if(!loginSenha.trim()) return this.setState({loginErro:'Informe a senha.'});
-    this.setState({logado:true,role:loginRole,scr:null,selPed:null,selCot:null},()=>this.audit('Login realizado',loginEmail));
+    const u=this.state.usuarios.find(x=>x.email.toLowerCase()===loginEmail.trim().toLowerCase());
+    if(!u) return this.setState({loginErro:'Usuário não encontrado. Verifique o e-mail ou fale com o administrador.'});
+    if(!u.ativo) return this.setState({loginErro:'Usuário inativo. Fale com o administrador da plataforma.'});
+    if(this.hashSenha(loginSenha)!==u.senhaHash) return this.setState({loginErro:'Senha incorreta.'});
+    const view=u.papel==='admin'?'loja':u.papel;
+    this.setState(s=>({logado:true,usuario:u.id,role:view,scr:null,selPed:null,selCot:null,loginSenha:'',
+      fornAtivo:u.fornecedorId||s.fornAtivo,revAtivo:u.revendaId||s.revAtivo,
+      usuarios:s.usuarios.map(x=>x.id===u.id?{...x,ultimoAcesso:this.ts()}:x)}),
+      ()=>this.audit('Login realizado',u.email+' · perfil '+(this.PAPEIS[u.papel]||u.papel)));
   };
-  sair=()=>this.setState({logado:false,role:null,scr:null,selPed:null,selCot:null,modal:null,form:{},loginSenha:''});
+  sair=()=>this.setState({logado:false,usuario:null,role:null,scr:null,selPed:null,selCot:null,modal:null,form:{},loginSenha:''});
+  // CRUD de usuários (Configurações Técnicas › Usuários e permissões)
+  setBuscaUsr=e=>this.setState({buscaUsr:e.target.value});
+  setFiltroPapel=e=>this.setState({filtroPapel:e.target.value});
+  salvarUsuario=()=>{ if(!this.pode('config.usuarios')) return this.err('Você não tem permissão para gerenciar usuários.');
+    const f=this.state.form; const nome=(f.nome||'').trim(), email=(f.email||'').trim().toLowerCase();
+    if(!nome) return this.err('Informe o nome do usuário.');
+    if(!email||!email.includes('@')) return this.err('Informe um e-mail válido.');
+    const papel=f.papel||'loja';
+    if(papel==='fornecedor'&&!f.fornecedorId) return this.err('Selecione o fornecedor vinculado.');
+    if(papel==='revenda'&&!f.revendaId) return this.err('Selecione a revenda vinculada.');
+    const dup=this.state.usuarios.find(u=>u.email===email&&u.id!==f.editId);
+    if(dup) return this.err('Já existe um usuário com este e-mail.');
+    if(f.editId){ const old=this.state.usuarios.find(u=>u.id===f.editId);
+      if(old.papel==='admin'&&papel!=='admin'&&this.state.usuarios.filter(u=>u.papel==='admin'&&u.ativo&&u.id!==old.id).length===0)
+        return this.err('É preciso manter ao menos um Administrador Técnico ativo.');
+      this.setState(s=>({usuarios:s.usuarios.map(u=>u.id===f.editId?{...u,nome,email,papel,
+        fornecedorId:papel==='fornecedor'?+f.fornecedorId:null,revendaId:papel==='revenda'?+f.revendaId:null,
+        senhaHash:(f.senha||'').trim()?this.hashSenha(f.senha.trim()):u.senhaHash}:u),modal:null,form:{}}));
+      this.audit('Edição de usuário',nome+' · '+(this.PAPEIS[papel]||papel)+((f.senha||'').trim()?' · senha redefinida':'')); return; }
+    if(!(f.senha||'').trim()) return this.err('Defina a senha inicial do usuário.');
+    const id=Math.max(0,...this.state.usuarios.map(u=>u.id))+1;
+    this.setState(s=>({usuarios:[...s.usuarios,{id,nome,email,papel,senhaHash:this.hashSenha(f.senha.trim()),
+      fornecedorId:papel==='fornecedor'?+f.fornecedorId:null,revendaId:papel==='revenda'?+f.revendaId:null,
+      ativo:true,permissoes:{},ultimoAcesso:null,criadoEm:this.hoje()}],modal:null,form:{}}));
+    this.audit('Cadastro de usuário',nome+' · '+email+' · '+(this.PAPEIS[papel]||papel)); };
+  toggleUsuario(id){ this._tu=this._tu||{}; if(!this._tu[id]) this._tu[id]=()=>{ if(!this.pode('config.usuarios')) return;
+    const u=this.state.usuarios.find(x=>x.id===id); if(!u) return;
+    if(u.ativo&&u.papel==='admin'&&this.state.usuarios.filter(x=>x.papel==='admin'&&x.ativo&&x.id!==id).length===0) return;
+    if(u.id===this.state.usuario&&u.ativo) return; // não inativa a si mesmo
+    this.setState(s=>({usuarios:s.usuarios.map(x=>x.id===id?{...x,ativo:!x.ativo}:x)}));
+    this.audit(u.ativo?'Inativação de usuário':'Reativação de usuário',u.nome+' · '+u.email); }; return this._tu[id]; }
+  abrirPermissoes(id){ this._apm=this._apm||{}; if(!this._apm[id]) this._apm[id]=()=>this.setState({modal:'permissoes',form:{usuarioId:id}}); return this._apm[id]; }
+  togglePermissao(uid,chave){ this._tpm=this._tpm||{}; const k=uid+'|'+chave; if(!this._tpm[k]) this._tpm[k]=()=>{
+    if(!this.pode('config.usuarios')) return;
+    const u=this.state.usuarios.find(x=>x.id===uid); if(!u) return;
+    const atual=(u.permissoes&&u.permissoes[chave]!==undefined&&u.permissoes[chave]!==null)?!!u.permissoes[chave]:this.permPadrao(u.papel,chave);
+    const novo=!atual; const padrao=this.permPadrao(u.papel,chave);
+    this.setState(s=>({usuarios:s.usuarios.map(x=>{ if(x.id!==uid) return x; const p={...(x.permissoes||{})};
+      if(novo===padrao) delete p[chave]; else p[chave]=novo; return {...x,permissoes:p}; })}));
+    this.audit('Permissão alterada',u.nome+' · '+chave+' → '+(novo?'permitido':'negado')); }; return this._tpm[k]; }
+  restaurarPermissoes(uid){ this._rpm=this._rpm||{}; if(!this._rpm[uid]) this._rpm[uid]=()=>{ if(!this.pode('config.usuarios')) return;
+    const u=this.state.usuarios.find(x=>x.id===uid);
+    this.setState(s=>({usuarios:s.usuarios.map(x=>x.id===uid?{...x,permissoes:{}}:x)}));
+    this.audit('Permissões restauradas ao padrão do perfil',u?u.nome:String(uid)); }; return this._rpm[uid]; }
 
   renderVals(){
     const S=this.state, role=this.role, scr=this.scr;
@@ -3287,30 +3543,41 @@ class Component extends DCLogic {
     const fMe=F(fid), rMe=R(rid);
 
     // topbar
-    const roleBtns=[['loja','Loja Cidade Imperial'],['fornecedor','Fornecedor'],['revenda','Revenda']].map(([k,label])=>({
+    const uAtual=this.usuarioAtual();
+    const ehAdmin=!!uAtual&&uAtual.papel==='admin';
+    const pode=k=>this.pode(k);
+    const roleBtns=(ehAdmin?[['loja','Loja Cidade Imperial'],['fornecedor','Fornecedor'],['revenda','Revenda']]:[]).map(([k,label])=>({
       label,pick:this.setRole(k),bg:role===k?'#fff':'transparent',fg:role===k?'#272525':'#8a8378',sh:role===k?'0 1px 3px rgba(39,37,37,.12)':'none'}));
     const un=this.userName(); const userNome=un.replace(/\s*\(.*\)$/,'');
     const userIni=userNome.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
-    const userPapel=isLoja?'Dona da plataforma':(isForn?'Fornecedor homologado':'Revenda');
+    const userPapel=uAtual?(this.PAPEIS[uAtual.papel]||uAtual.papel):(isLoja?'Dona da plataforma':(isForn?'Fornecedor homologado':'Revenda'));
+    const mostraSelForn=isForn&&(!uAtual||ehAdmin);
+    const mostraSelRev=isRev&&(!uAtual||ehAdmin);
 
-    // nav
+    // nav (itens filtrados pelas permissões do usuário)
     const act=k=>scr===k||(k==='ped'&&scr==='peddet')||(k==='cot'&&scr==='cotdet')||(k==='forn'&&scr==='forndet')||(k==='prod'&&scr==='proddet')||(k==='rev'&&scr==='revdet');
     const mk=(k,label,badge)=>({label,badge:badge?String(badge):'',temBadge:!!badge,go:this.go(k),
       bg:act(k)?'#f5efe3':'transparent',fg:act(k)?'#8f682a':'#4a453d',fw:act(k)?'600':'500'});
     const fPedPend=PEDS.filter(p=>p.itens.some(i=>i.st==='direto'&&i.fornecedorId===fid)).length;
     const fCotPend=S.cotacoes.filter(c=>c.convidados.includes(fid)&&c.status==='aguardando propostas'&&!c.propostas.some(p=>p.fornecedorId===fid)).length;
     let navGroups;
-    if(isLoja) navGroups=[
-      {label:'Operação',items:[mk('dash','Painel geral'),mk('ped','Pedidos',pendentes),mk('cot','Cotações',S.cotacoes.filter(c=>c.status==='aguardando propostas').length),mk('fat','Faturamento')]},
-      {label:'Cadastros',items:[mk('forn','Fornecedores & Contratos'),mk('prod','Produtos homologados'),mk('rev','Revendas')]},
-      {label:'Financeiro',items:[mk('roy','Royalties & Fechamento')]},
-      {label:'Gestão',items:[mk('rel','Relatórios'),mk('seg','Segurança & Auditoria')]},
-      {label:'Configurações Técnicas',items:[mk('cfgemail','Configuração de e-mail')]}];
+    if(isLoja){ navGroups=[
+      {label:'Operação',items:[mk('dash','Painel geral'),
+        pode('pedidos.ver')&&mk('ped','Pedidos',pendentes),
+        pode('cotacoes.ver')&&mk('cot','Cotações',S.cotacoes.filter(c=>c.status==='aguardando propostas').length),
+        pode('faturamento.ver')&&mk('fat','Faturamento')]},
+      {label:'Cadastros',items:[pode('cadastros.fornecedores')&&mk('forn','Fornecedores & Contratos'),
+        pode('cadastros.produtos')&&mk('prod','Produtos homologados'),pode('cadastros.revendas')&&mk('rev','Revendas')]},
+      {label:'Financeiro',items:[pode('royalties.ver')&&mk('roy','Royalties & Fechamento')]},
+      {label:'Gestão',items:[pode('relatorios.ver')&&mk('rel','Relatórios'),pode('auditoria.ver')&&mk('seg','Segurança & Auditoria')]},
+      {label:'Configurações Técnicas',items:[pode('config.email')&&mk('cfgemail','Configuração de e-mail'),
+        pode('config.usuarios')&&mk('usuarios','Usuários e permissões')]}]; }
     else if(isForn) navGroups=[
       {label:'Operação',items:[mk('fped','Pedidos recebidos',fPedPend),mk('fcot','Cotações convidadas',fCotPend),mk('ffat','Meus faturamentos')]},
       {label:'Financeiro',items:[mk('froy','Royalties devidos')]}];
     else navGroups=[
       {label:'Compras',items:[mk('cat','Catálogo de produtos'),mk('rped','Meus pedidos')]}];
+    navGroups=navGroups.map(g=>({...g,items:g.items.filter(Boolean)})).filter(g=>g.items.length);
 
     // fechamentos
     const comps=[...new Set(S.faturamentos.map(f=>f.competencia))].sort((a,b)=>(b.split('/')[1]+b.split('/')[0]).localeCompare(a.split('/')[1]+a.split('/')[0]));
@@ -3322,7 +3589,7 @@ class Component extends DCLogic {
       fechRows.push({comp,chave,fornecedorId:fo.id,fornNome:fo.nome,pct:String(fs[0].royaltyPct).replace('.',',')+'%',qtd:fs.length,
         qtdTxt:fs.length+' nota'+(fs.length>1?'s':''),
         totalFat,totalRoy,totalFatFmt:this.fmt(totalFat),totalRoyFmt:this.fmt(totalRoy),status,
-        ...this.chip(status),pago:status==='pago',naoPago:status!=='pago',cobranca:!!pg.cobranca,semCobranca:!pg.cobranca&&status!=='pago',
+        ...this.chip(status),pago:status==='pago',naoPago:status!=='pago'&&this.pode('royalties.pagar'),cobranca:!!pg.cobranca,semCobranca:!pg.cobranca&&status!=='pago'&&this.pode('royalties.cobrar'),
         cobrancaInfo:pg.cobranca?('Cobrança emitida'+(pg.cobrancaData?' em '+pg.cobrancaData:'')):'',
         pgInfo:pg.data?('Pago em '+pg.data+' · comprovante '+(pg.comprovante||'—')):'',
         aberto:S.expFech===chave,toggleExp:this.toggleFech(chave),
@@ -3383,7 +3650,7 @@ class Component extends DCLogic {
     const pedRows=PEDS.filter(p=>(S.filtroStatus==='todos'||p.status===S.filtroStatus)
         &&(S.filtroRev==='0'||p.revendaId===+S.filtroRev)
         &&(!bp||p.id.toLowerCase().includes(bp)||R(p.revendaId).nome.toLowerCase().includes(bp)))
-      .map(p=>({...pedRow(p),pendente:p.status==='pendente',aguarda:p.status==='pendente'?idade(p.data):'',
+      .map(p=>({...pedRow(p),pendente:p.status==='pendente'&&(this.pode('pedidos.aprovar')||this.pode('pedidos.rejeitar')),aguarda:p.status==='pendente'?idade(p.data):'',
         aprovarFn:this.aprovar(p.id),rejeitarFn:this.open('rejeitar',{pedidoId:p.id})}));
     const valMes=PEDS.filter(p=>p.data.endsWith('/'+this.compAtual().replace('/','/'))||p.data.slice(3)===this.compAtual()).reduce((a,p)=>a+(p.total),0);
     const pedKpis=[
@@ -3423,13 +3690,13 @@ class Component extends DCLogic {
             return {codigo:pr.codigo,descricao:pr.descricao,unidade:pr.unidade,qtd:String(i.qtd),precoFmt:this.fmt(i.preco),subFmt:this.fmt(this.itemTotal(i)),
               temNegI:i.precoNeg!=null,
               ...this.chip(st),destino,temDestino:!!destino,
-              pendItem:st==='pendente',naoPend:st!=='pendente',
+              pendItem:st==='pendente'&&(this.pode('pedidos.aprovar')||this.pode('pedidos.rejeitar')),naoPend:st!=='pendente',
               aprovarItemFn:this.aprovarItem(p.id,ix),rejeitarItemFn:this.open('rejeitar',{pedidoId:p.id,itemIdx:ix}),
               foto:this.fotosDe(pr)[0],ver:this.verFoto(i.produtoId)};}),
           totalFmt:this.fmt(p.total),temNeg:p.itens.some(i=>i.precoNeg!=null),negFmt:this.fmt(p.total),
           justificativa:p.justificativa||'',temJustif:!!p.justificativa,
           trilha:[...p.trilha].reverse(),
-          podeAprovar,podeRejeitar:podeAprovar,podeDecidir,semAcoes:!podeAprovar&&!podeDecidir,
+          podeAprovar:podeAprovar&&(this.pode('pedidos.aprovar')||this.pode('pedidos.rejeitar')),podeRejeitar:podeAprovar&&this.pode('pedidos.rejeitar'),podeDecidir:podeDecidir&&this.pode('pedidos.atender'),semAcoes:!podeAprovar&&!podeDecidir,
           aprovarFn:this.aprovar(p.id),rejeitarFn:this.open('rejeitar',{pedidoId:p.id}),
           diretoFn:this.open('direto',{pedidoId:p.id,fornecedorId:'',sel:aprIdx}),
           cotarFn:this.open('cotacao',{pedidoId:p.id,convidados:[],prazo:'',sel:aprIdx}),
@@ -3496,7 +3763,7 @@ class Component extends DCLogic {
           demandaFotos:citens.map(i=>({src:this.fotosDe(P(i.produtoId))[0],nome:P(i.produtoId).descricao||'',ver:this.verFoto(i.produtoId)})),
           convChips:c.convidados.map(cf=>{const recebida=c.propostas.some(p=>p.fornecedorId===cf);
             return {nome:F(cf).nome,tag:recebida?'proposta recebida':'aguardando',bg:recebida?'#e9f3ea':'#fdf3e0',fg:recebida?'#2f6b39':'#8a5a12',
-              pendente:aguardando&&!recebida,lembrar:this.lembrarCot(c.id,cf),
+              pendente:aguardando&&!recebida&&this.pode('cotacoes.lembrar'),lembrar:this.lembrarCot(c.id,cf),
               lembrete:(c.lembretes||{})[cf]?'lembrete '+(c.lembretes||{})[cf]:''};}),
           mapa:c.propostas.slice().sort((a,b)=>a.preco-b.preco).map(p=>{const eMenor=p.preco===menor;
             const d=p.preco-refTot;
@@ -3513,10 +3780,10 @@ class Component extends DCLogic {
               cells:c.propostas.map(pp=>{ const u=pp.itens?pp.itens[it.produtoId]:null;
                 return {fornNome:F(pp.fornecedorId).nome,totFmt:u!=null?this.fmt(u*it.qtd):'—',
                   menor:u!=null&&u===menorU,vencedora:venc===pp.fornecedorId,
-                  pode:aguardando&&u!=null&&venc==null,escolher:this.escolherItem(c.id,it.produtoId,pp.fornecedorId)};})};}),
+                  pode:aguardando&&u!=null&&venc==null&&this.pode('cotacoes.decidir'),escolher:this.escolherItem(c.id,it.produtoId,pp.fornecedorId)};})};}),
           temAdj:citens.length>0&&c.propostas.some(pp=>pp.itens),
           temPropostas:c.propostas.length>0,semPropostas:c.propostas.length===0,
-          podeSelecionar:aguardando&&c.propostas.length>0,podeCancelar:aguardando,
+          podeSelecionar:aguardando&&c.propostas.length>0&&this.pode('cotacoes.decidir'),podeCancelar:aguardando&&this.pode('cotacoes.abrir'),
           encerrada:c.status==='encerrada',cancelada:c.status==='cancelada',
           vencNome:c.vencedorId?F(c.vencedorId).nome:(Object.keys(c.vencItens||{}).length?'itens divididos entre fornecedores':''),temJust:!!c.justificativa,justificativa:c.justificativa||'',
           motivoCancel:c.motivoCancel||'',
@@ -3779,7 +4046,7 @@ class Component extends DCLogic {
       fPedRows.push({id:p.id,data:p.data,revNome:R(p.revendaId).nome,
         origem:meus.some(i=>i.cotacaoId)?'Cotação '+meus.find(i=>i.cotacaoId).cotacaoId:'Envio direto',
         parcial:meus.length<p.itens.length?('Atendimento parcial: '+meus.length+' de '+p.itens.length+' itens do pedido são seus'):'',
-        totalFmt:this.fmt(tot),...this.chip(pend.length?'encaminhado':'faturado'),podeFaturar:pend.length>0,
+        totalFmt:this.fmt(tot),...this.chip(pend.length?'encaminhado':'faturado'),podeFaturar:pend.length>0&&this.pode('faturamento.faturar'),
         itensTxt:meus.map(i=>P(i.produtoId).descricao+' ×'+i.qtd).join(', '),
         fotos:meus.map(i=>({src:this.fotosDe(P(i.produtoId))[0],ver:this.verFoto(i.produtoId)})),
         faturar:this.open('faturar',{pedidoId:p.id,valorFat:pend.reduce((a,i)=>a+this.itemTotal(i),0).toFixed(2).replace('.',','),nf:''})});});
@@ -3799,7 +4066,7 @@ class Component extends DCLogic {
         fotos:citens.map(i=>({src:this.fotosDe(P(i.produtoId))[0],ver:this.verFoto(i.produtoId)})),
         minhaFmt:own?this.fmt(own.preco):'— não enviada —',enviada:!!own,
         resultado,temResultado:!!resultado,venceu:c.status==='encerrada'&&(c.vencedorId===fid||(c.vencItens&&Object.values(c.vencItens).includes(fid))),
-        podeProp:c.status==='aguardando propostas',
+        podeProp:c.status==='aguardando propostas'&&this.pode('cotacoes.proposta'),
         propLabel:own?'Editar proposta':'Enviar proposta',
         prop:this.open('proposta',seedP)};});
     const fFatRows=S.faturamentos.filter(f=>f.fornecedorId===fid).map(f=>({id:f.id,data:f.data,pedidoId:f.pedidoId,revNome:R(f.revendaId).nome,valorFmt:this.fmt(f.valor),royStr:String(f.royaltyPct).replace('.',',')+'% · '+this.fmt(f.royaltyValor)}));
@@ -3864,20 +4131,67 @@ class Component extends DCLogic {
     if(M==='royalty'&&S.form.contratoId){ const c=S.contratos.find(x=>x.id===S.form.contratoId);
       if(c) royInfo={ctrNum:c.numero,fornNome:F(c.fornecedorId).nome,atual:String(c.royalty).replace('.',',')+'%'}; }
 
-    const loginRoles=[
-      {r:'loja',label:'Loja Cidade Imperial',desc:'Dona da plataforma'},
-      {r:'fornecedor',label:'Fornecedor',desc:'Fornece os produtos'},
-      {r:'revenda',label:'Revenda',desc:'Compra para revender'}
-    ].map(x=>{ const on=S.loginRole===x.r; return {...x,pick:this.pickLoginRole(x.r),
-      bg:on?'#faf5e9':'#fff',bd:on?'#B38335':'#e8e1d2',fg:on?'#8f682a':'#272525',dot:on?'#B38335':'#e8e1d2'};});
+    const loginDemo=[
+      {label:'Administrador Técnico',email:'admin@cidadeimperial.com.br',senha:'admin123'},
+      {label:'Loja (Ana Ribeiro)',email:'ana@cidadeimperial.com.br',senha:'loja123'},
+      {label:'Loja · analista sem aprovação',email:'carlos@cidadeimperial.com.br',senha:'loja123'},
+      {label:'Fornecedor (Serra Verde)',email:'comercial@serraverde.com.br',senha:'forn123'},
+      {label:'Revenda (Bar do Imperador)',email:'compras@bardoimperador.com.br',senha:'rev123'}
+    ].map(x=>({...x,pick:this.preencherLogin(x.email,x.senha)}));
+
+    // usuários e permissões (Configurações Técnicas)
+    const busU=(S.buscaUsr||'').toLowerCase();
+    const usrRows=S.usuarios
+      .filter(u=>(S.filtroPapel==='todos'||u.papel===S.filtroPapel)&&(!busU||u.nome.toLowerCase().includes(busU)||u.email.toLowerCase().includes(busU)))
+      .map(u=>{ const nOver=Object.keys(u.permissoes||{}).length;
+        const vinculo=u.papel==='fornecedor'?(F(u.fornecedorId).nome||'—'):(u.papel==='revenda'?(R(u.revendaId).nome||'—'):'—');
+        return {id:u.id,nome:u.nome,email:u.email,papelLabel:this.PAPEIS[u.papel]||u.papel,vinculo,
+          ...this.chip(u.ativo?'ativo':'inativo'),ultimo:u.ultimoAcesso||'— nunca acessou —',
+          overTxt:nOver?nOver+' personalizada(s)':'padrão do perfil',temOver:nOver>0,
+          souEu:u.id===S.usuario,
+          editar:this.open('usuario',{editId:u.id,nome:u.nome,email:u.email,papel:u.papel,
+            fornecedorId:u.fornecedorId?String(u.fornecedorId):'',revendaId:u.revendaId?String(u.revendaId):'',senha:''}),
+          permissoes:this.abrirPermissoes(u.id),toggle:this.toggleUsuario(u.id),toggleLabel:u.ativo?'Inativar':'Reativar'};});
+    const papelOpts=[{v:'todos',label:'Todos os perfis'},...Object.entries(this.PAPEIS).map(([v,label])=>({v,label}))];
+    const papelFormOpts=Object.entries(this.PAPEIS).map(([v,label])=>({v,label}));
+    // editor de permissões (modal)
+    let permGrupos=[],permUsr={nome:'',papelLabel:'',temOver:false,restaurar:null};
+    if(M==='permissoes'&&S.form.usuarioId){ const u=S.usuarios.find(x=>x.id===S.form.usuarioId);
+      if(u){ permUsr={nome:u.nome,papelLabel:this.PAPEIS[u.papel]||u.papel,temOver:Object.keys(u.permissoes||{}).length>0,restaurar:this.restaurarPermissoes(u.id)};
+        permGrupos=this.PERMS.map(g=>({mod:g.mod,itens:g.itens.map(([k,label])=>{
+          const padrao=this.permPadrao(u.papel,k);
+          const over=u.permissoes&&u.permissoes[k]!==undefined&&u.permissoes[k]!==null;
+          const efetiva=over?!!u.permissoes[k]:padrao;
+          return {k,label,toggle:this.togglePermissao(u.id,k),
+            swBg:efetiva?'#2f6b39':'#d9d2c4',swX:efetiva?'17px':'3px',
+            origem:over?'personalizada':'padrão do perfil',origemFg:over?'#8a5a12':'#b0a795',
+            temPadraoDif:over,padraoTxt:over?('padrão: '+(padrao?'permitido':'negado')):''};})})); } }
+    const permFlags={
+      podeAprovar:pode('pedidos.aprovar'),podeRejeitar:pode('pedidos.rejeitar'),podeAtender:pode('pedidos.atender'),
+      podeAnalise:pode('pedidos.aprovar')||pode('pedidos.rejeitar'),
+      podeCotAbrir:pode('cotacoes.abrir'),podeCotDecidir:pode('cotacoes.decidir'),podeCotLembrar:pode('cotacoes.lembrar'),
+      podeProposta:pode('cotacoes.proposta'),podeFaturar:pode('faturamento.faturar'),
+      podeCobrar:pode('royalties.cobrar'),podePagar:pode('royalties.pagar'),
+      podeExportar:pode('relatorios.exportar'),podePedCriar:pode('pedidos.criar'),
+      podeCadForn:pode('cadastros.fornecedores'),podeCadProd:pode('cadastros.produtos'),podeCadRev:pode('cadastros.revendas')};
 
     return {
       // login
-      sLogin:!S.logado,sApp:S.logado,loginRoles,
+      sLogin:!S.logado,sApp:S.logado,loginDemo,
       loginEmail:S.loginEmail,loginSenha:S.loginSenha,loginErro:S.loginErro||'',
       setLoginEmail:this.setLoginEmail,setLoginSenha:this.setLoginSenha,fazerLogin:this.fazerLogin,sair:this.sair,
       // shell
-      roleBtns,isLoja,isForn,isRev,navGroups,userIni,userNome,userPapel,
+      roleBtns,temRoleBtns:roleBtns.length>0,isLoja,isForn,isRev,navGroups,userIni,userNome,userPapel,
+      mostraSelForn,mostraSelRev,
+      // usuários e permissões
+      sUsuarios:isLoja&&scr==='usuarios'&&pode('config.usuarios'),
+      usrRows,papelOpts,papelFormOpts,buscaUsr:S.buscaUsr,setBuscaUsr:this.setBuscaUsr,
+      filtroPapel:S.filtroPapel,setFiltroPapel:this.setFiltroPapel,
+      novoUsuario:this.open('usuario',{papel:'loja'}),salvarUsuario:this.salvarUsuario,
+      mUsr:M==='usuario',usrEditando:!!S.form.editId,usrNovo:M==='usuario'&&!S.form.editId,mPerms:M==='permissoes',permGrupos,permUsr,
+      fxNomeU:this.fx('nome'),fxEmailU:this.fx('email'),fxSenhaU:this.fx('senha'),fxPapel:this.fx('papel'),
+      formPapelForn:S.form.papel==='fornecedor',formPapelRev:S.form.papel==='revenda',
+      ...permFlags,
       fornOpts:S.fornecedores.map(f=>({id:String(f.id),nome:f.nome})),
       revOpts:S.revendas.map(r=>({id:String(r.id),nome:r.nome})),
       fornAtivoStr:String(fid),revAtivoStr:String(rid),
@@ -3886,10 +4200,10 @@ class Component extends DCLogic {
       compAtualLabel:'competência '+compA,
       exibirBanner:(this.props.exibirBannerPendencias??true)&&isLoja&&pendentes>0&&scr==='dash',
       // screens flags
-      sDash:isLoja&&scr==='dash',sPed:isLoja&&scr==='ped',sPedDet:isLoja&&scr==='peddet'&&!!pd,
-      sCot:isLoja&&scr==='cot',sCotDet:isLoja&&scr==='cotdet'&&!!cd,
-      sForn:isLoja&&scr==='forn',sFornDet:isLoja&&scr==='forndet'&&!!fd,sProd:isLoja&&scr==='prod',sProdDet:isLoja&&scr==='proddet'&&!!pdd,sRev:isLoja&&scr==='rev',sRevDet:isLoja&&scr==='revdet'&&!!rd,
-      sFat:isLoja&&scr==='fat',sRoy:isLoja&&scr==='roy',sRel:isLoja&&scr==='rel',sSeg:isLoja&&scr==='seg',
+      sDash:isLoja&&scr==='dash',sPed:isLoja&&scr==='ped'&&pode('pedidos.ver'),sPedDet:isLoja&&scr==='peddet'&&!!pd&&pode('pedidos.ver'),
+      sCot:isLoja&&scr==='cot'&&pode('cotacoes.ver'),sCotDet:isLoja&&scr==='cotdet'&&!!cd&&pode('cotacoes.ver'),
+      sForn:isLoja&&scr==='forn'&&pode('cadastros.fornecedores'),sFornDet:isLoja&&scr==='forndet'&&!!fd&&pode('cadastros.fornecedores'),sProd:isLoja&&scr==='prod'&&pode('cadastros.produtos'),sProdDet:isLoja&&scr==='proddet'&&!!pdd&&pode('cadastros.produtos'),sRev:isLoja&&scr==='rev'&&pode('cadastros.revendas'),sRevDet:isLoja&&scr==='revdet'&&!!rd&&pode('cadastros.revendas'),
+      sFat:isLoja&&scr==='fat'&&pode('faturamento.ver'),sRoy:isLoja&&scr==='roy'&&pode('royalties.ver'),sRel:isLoja&&scr==='rel'&&pode('relatorios.ver'),sSeg:isLoja&&scr==='seg'&&pode('auditoria.ver'),
       sFPed:isForn&&scr==='fped',sFCot:isForn&&scr==='fcot',sFFat:isForn&&scr==='ffat',sFRoy:isForn&&scr==='froy',
       sCat:isRev&&scr==='cat',sRPed:isRev&&scr==='rped',
       // ajuda contextual (tutorial + passo a passo)
@@ -3942,7 +4256,7 @@ class Component extends DCLogic {
       // modals
       form:S.form,mClose:this.mClose,
       fxNome:this.fx('nome'),fxCnpj:this.fx('cnpj'),fxCidade:this.fx('cidade'),fxContato:this.fx('contato'),
-      fxRoyalty:this.fx('royalty'),fxInicio:this.fx('inicio'),fxFim:this.fx('fim'),fxFornecedorId:this.fx('fornecedorId'),
+      fxRoyalty:this.fx('royalty'),fxInicio:this.fx('inicio'),fxFim:this.fx('fim'),fxFornecedorId:this.fx('fornecedorId'),fxRevendaId:this.fx('revendaId'),
       fxCodigo:this.fx('codigo'),fxDescricao:this.fx('descricao'),fxUnidade:this.fx('unidade'),fxPreco:this.fx('preco'),
       fxJustif:this.fx('justif'),fxPedidoId:this.fx('pedidoId'),fxPrazo:this.fx('prazo'),
       fxPrecoP:this.fx('precoP'),fxPrazoEntrega:this.fx('prazoEntrega'),fxValidade:this.fx('validade'),fxCondicoes:this.fx('condicoes'),

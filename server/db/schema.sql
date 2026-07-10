@@ -106,6 +106,16 @@ CREATE TABLE IF NOT EXISTS pagamentos (
   data    JSONB NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS usuarios (
+  id        INTEGER PRIMARY KEY,
+  ord       INTEGER NOT NULL,
+  nome      TEXT,
+  email     TEXT,
+  papel     TEXT,
+  ativo     BOOLEAN,
+  data      JSONB NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS config_email (
   id    INTEGER PRIMARY KEY DEFAULT 1,
   data  JSONB NOT NULL,

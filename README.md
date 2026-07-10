@@ -116,7 +116,29 @@ repositório como referência.
 
 ## O que a plataforma faz
 
-Aplicação de página única com **login por perfil** e três perfis de acesso:
+Aplicação de página única com **login real por usuário** (e-mail e senha) e
+quatro perfis de acesso — **Administrador Técnico**, **Loja**, **Fornecedor** e
+**Revenda** — com **permissionamento de granularidade fina**: cada perfil tem um
+conjunto padrão de permissões e o administrador pode conceder ou negar qualquer
+permissão individualmente por usuário (ex.: um analista da Loja que vê pedidos
+mas não aprova). Usuários de Fornecedor/Revenda ficam travados no seu vínculo.
+
+Acessos de demonstração (semeados no banco): `admin@cidadeimperial.com.br` /
+`admin123` (Administrador Técnico), `ana@cidadeimperial.com.br` / `loja123`,
+`carlos@cidadeimperial.com.br` / `loja123` (analista com permissões
+personalizadas), `comercial@serraverde.com.br` / `forn123` e
+`compras@bardoimperador.com.br` / `rev123`. A tela de login lista esses acessos.
+
+A gestão fica em **Configurações Técnicas › Usuários e permissões**
+(Administrador Técnico): criar/editar usuários, definir perfil e vínculo,
+redefinir senha, inativar/reativar e abrir o **editor de permissões** por
+usuário (interruptor permitir/negar por chave, com indicação de
+"padrão do perfil" × "personalizada" e restauração ao padrão). Todas as
+alterações vão para a trilha de auditoria. As senhas são guardadas como hash
+(não reversível); para produção real recomenda-se autenticação no servidor
+com bcrypt/argon2.
+
+Perfis de acesso:
 
 | Perfil | Visão principal |
 | --- | --- |

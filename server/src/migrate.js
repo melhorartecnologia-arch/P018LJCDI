@@ -24,6 +24,17 @@ export async function migrate() {
     console.log('[migrate] dados iniciais carregados')
   } else {
     console.log('[migrate] dados existentes encontrados — seed ignorado')
+    // Banco criado antes do módulo de usuários: semeia só os usuários iniciais
+    // para que o login continue possível.
+    const { query } = await import('./db.js')
+    const nu = await query('SELECT COUNT(*)::int AS n FROM usuarios')
+    if (nu.rows[0].n === 0) {
+      const seed = JSON.parse(await readFile(resolve(dbDir, 'seed.json'), 'utf8'))
+      if (Array.isArray(seed.usuarios) && seed.usuarios.length) {
+        await saveState({ usuarios: seed.usuarios })
+        console.log('[migrate] usuários iniciais semeados em banco existente')
+      }
+    }
   }
 }
 

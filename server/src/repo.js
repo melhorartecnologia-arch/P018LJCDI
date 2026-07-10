@@ -41,6 +41,11 @@ const ARRAY_TABLES = [
     columns: ['id', 'ord', 'pedido_id', 'fornecedor_id', 'revenda_id', 'valor', 'competencia', 'royalty_pct', 'royalty_valor', 'data'],
     row: (o, i) => [o.id, i, o.pedidoId, o.fornecedorId, o.revendaId, o.valor, o.competencia, o.royaltyPct, o.royaltyValor, o],
   },
+  {
+    name: 'usuarios',
+    columns: ['id', 'ord', 'nome', 'email', 'papel', 'ativo', 'data'],
+    row: (o, i) => [o.id, i, o.nome, o.email, o.papel, o.ativo, o],
+  },
 ]
 
 const ARRAY_KEYS = ARRAY_TABLES.map((t) => t.name)
