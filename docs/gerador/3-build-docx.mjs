@@ -70,6 +70,10 @@ const WF = [
     ]},
 ]
 
+// A revenda nunca vê o preço de catálogo: nestes e-mails o valor é ocultado.
+const OCULTAR = new Set(['pedido_recebido_revenda','pedido_aprovado','pedido_encaminhado_revenda','pedido_estoque_revenda','pedido_rejeitado'])
+for (const wf of WF) for (const ev of wf.eventos) { if (OCULTAR.has(ev.id)) { ev.vars.ocultarValor = true; ev.ocultaValor = true } }
+
 // ── Renderiza os templates para imagem ──
 const pngSize = (buf) => ({ w: buf.readUInt32BE(16), h: buf.readUInt32BE(20) })
 const browser = await chromium.launch({ executablePath:'/opt/pw-browsers/chromium' })
@@ -102,7 +106,7 @@ function infoBox(ev) {
   const line = (k,v) => new TableRow({ children:[ cell([P(k,{bold:true,color:GOLD,size:18})],{width:26,shading:'FAF7F0'}), cell([P(v,{size:20})],{width:74}) ] })
   return new Table({ width:{size:100,type:WidthType.PERCENTAGE}, rows:[
     line('Gatilho', ev.gatilho), line('Destinatário', ev.dest), line('Assunto', ev.subject),
-    line('Itens no e-mail', ev.itens ? 'Sim — lista de produtos, quantidade/unidade e valor' : 'Não se aplica (financeiro por competência)'),
+    line('Itens no e-mail', !ev.itens ? 'Não se aplica (financeiro por competência)' : (ev.ocultaValor ? 'Sim — produtos e quantidades (valor NÃO exibido à revenda)' : 'Sim — produtos, quantidade/unidade e valor')),
   ]})
 }
 
@@ -130,6 +134,7 @@ children.push(P([run('Conclusão: ',{bold:true}), run('as rotinas já atendem ao
 // 2. Correção aplicada
 children.push(H1('2. Correção aplicada — itens nas comunicações'))
 children.push(P('Antes, os e-mails traziam apenas a contagem de itens. Agora, cada comunicação de pedido, cotação e faturamento inclui a tabela de itens do processo (código, descrição, quantidade/unidade e valor), coerente com a decisão que foi tomada — inteira ou por item.'))
+children.push(P([run('Regra de preço para a revenda: ',{bold:true,color:GOLD}), run('a revenda nunca vê o preço de catálogo do produto — no catálogo, no carrinho e em "Meus pedidos" os valores aparecem como “sob negociação” ou “a definir”. Ela só passa a ver valores quando a Loja negocia (cotação) ou fatura os itens. Por isso os e-mails à revenda de pedido recebido, aprovado, encaminhado e atendido pelo estoque listam os produtos sem valor.',{})]))
 const evAll = WF.flatMap(w => w.eventos.map(e => [w.nome, e.titulo, e.itens ? 'Sim' : 'Não']))
 children.push(grid(['Fluxo','Comunicação','Inclui itens?'], evAll))
 

@@ -47,7 +47,9 @@ const b = (v) => '<b>' + esc(v) + '</b>'
 
 // Tabela dos itens envolvidos no processo (pedido/cotação/faturamento).
 // itens: [{ codigo, descricao, qtd, unidade, valor }]
-const tabelaItens = (itens, titulo = 'Itens') => {
+// mostrarValor=false oculta a coluna de valor (ex.: e-mails à revenda antes de a
+// Loja negociar/faturar — a revenda nunca vê o preço de catálogo).
+const tabelaItens = (itens, titulo = 'Itens', mostrarValor = true) => {
   if (!Array.isArray(itens) || !itens.length) return ''
   const th = 'text-align:left;padding:6px 8px;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #eae3d6'
   return (
@@ -56,7 +58,7 @@ const tabelaItens = (itens, titulo = 'Itens') => {
     '<thead><tr>' +
     '<th style="' + th + '">Produto</th>' +
     '<th style="' + th + ';text-align:right;white-space:nowrap">Qtd</th>' +
-    '<th style="' + th + ';text-align:right">Valor</th>' +
+    (mostrarValor ? '<th style="' + th + ';text-align:right">Valor</th>' : '') +
     '</tr></thead><tbody>' +
     itens
       .map(
@@ -68,16 +70,18 @@ const tabelaItens = (itens, titulo = 'Itens') => {
           '<td style="padding:7px 8px;font-size:12.5px;text-align:right;white-space:nowrap;border-bottom:1px solid #f1ece2">' +
           esc(it.qtd) + (it.unidade ? ' ' + esc(it.unidade) : '') +
           '</td>' +
-          '<td style="padding:7px 8px;font-size:12.5px;font-weight:600;text-align:right;white-space:nowrap;border-bottom:1px solid #f1ece2">' +
-          (it.valor ? esc(it.valor) : '—') +
-          '</td>' +
+          (mostrarValor
+            ? '<td style="padding:7px 8px;font-size:12.5px;font-weight:600;text-align:right;white-space:nowrap;border-bottom:1px solid #f1ece2">' +
+              (it.valor ? esc(it.valor) : '—') + '</td>'
+            : '') +
           '</tr>'
       )
       .join('') +
-    '</tbody></table>'
+    '</tbody></table>' +
+    (mostrarValor ? '' : '<div style="font-size:12px;color:#8a8378;margin:-6px 0 12px">Os valores serão informados após a negociação/aprovação da Loja.</div>')
   )
 }
-const itensDe = (v, titulo) => tabelaItens(v.itensLista, titulo)
+const itensDe = (v, titulo) => tabelaItens(v.itensLista, titulo, !v.ocultarValor)
 
 export const TEMPLATES = {
   // ── Pedidos ───────────────────────────────────────────────────────────
@@ -91,13 +95,13 @@ export const TEMPLATES = {
     subject: `Recebemos seu pedido ${v.pedidoId}`,
     html: layout('Recebemos o seu pedido',
       p('Olá! Recebemos o seu pedido e ele já está em análise pela Loja Cidade Imperial. Avisaremos assim que for aprovado.') +
-      linhas([['Pedido', v.pedidoId], ['Total', v.total], ['Data', v.data]]) + itensDe(v), 'Pedido'),
+      linhas([['Pedido', v.pedidoId], ['Data', v.data]]) + itensDe(v), 'Pedido'),
   }),
   pedido_aprovado: (v) => ({
     subject: `Seu pedido ${v.pedidoId} foi aprovado`,
     html: layout('Pedido aprovado',
       p(`Boa notícia${v.revendaNome ? ', ' + esc(v.revendaNome) : ''}! Seu pedido foi <b style="color:#2f6b39">aprovado</b> pela Loja e seguirá para atendimento.`) +
-      linhas([['Pedido', v.pedidoId], ['Total', v.total]]) + itensDe(v, 'Itens aprovados'), 'Pedido'),
+      linhas([['Pedido', v.pedidoId]]) + itensDe(v, 'Itens aprovados'), 'Pedido'),
   }),
   item_aprovado: (v) => ({
     subject: `Item aprovado no pedido ${v.pedidoId}`,

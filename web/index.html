@@ -1388,7 +1388,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
           <div style="font-size:14px;font-weight:700;line-height:1.35">{{p.descricao}}</div>
           <div style="font-size:12px;color:#8a8378">{{p.fornNome}}</div>
           <div style="display:flex;align-items:center;justify-content:space-between;margin-top:9px">
-            <div style="font-size:15.5px;font-weight:700">{{p.precoFmt}}</div>
+            <div style="font-size:12px;font-weight:600;color:#a89f90" title="O valor é definido pela Loja após a aprovação/negociação do pedido">Valor sob negociação</div>
             <div style="display:flex;align-items:center;gap:8px">
               <sc-if value="{{p.temQtd}}" hint-placeholder-val="{{false}}">
                 <div onClick="{{p.sub}}" style="width:30px;height:30px;border:1px solid #e5ddcd;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:#8f682a;font-weight:700" style-hover="background:#f7f3ea">−</div>
@@ -1402,7 +1402,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
     </div>
     <sc-if value="{{temCart}}" hint-placeholder-val="{{false}}">
       <div style="position:sticky;bottom:14px;background:#272525;border-radius:13px;padding:13px 20px;display:flex;align-items:center;justify-content:space-between;gap:14px;box-shadow:0 10px 30px rgba(39,37,37,.3)">
-        <div style="font-size:13.5px;color:#d9d2c6"><b style="color:#fff">{{cartCount}} itens</b> no pedido · total calculado automaticamente: <b style="color:#e3bf7e">{{cartTotalFmt}}</b></div>
+        <div style="font-size:13.5px;color:#d9d2c6"><b style="color:#fff">{{cartCount}} itens</b> no pedido · o valor será definido pela Loja após a aprovação</div>
         <div onClick="{{enviarPedido}}" style="background:#B38335;color:#fff;border-radius:9px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="background:#9a6f2b">Enviar pedido para aprovação</div>
       </div>
     </sc-if>
@@ -2199,6 +2199,14 @@ class Component extends DCLogic {
   _itemView(i){ const p=this._prodInfo(i.produtoId); const sub=(i.precoNeg!=null?i.precoNeg:(i.qtd*i.preco)); return {codigo:p.codigo||'',descricao:p.descricao||('Produto '+i.produtoId),qtd:i.qtd,unidade:p.unidade||'',valor:this.fmt(sub)}; }
   _itensPed(ped,pred){ return (ped&&ped.itens||[]).filter(pred||(()=>true)).map(i=>this._itemView(i)); }
   _itensCot(c){ return ((c&&c.itens)||[]).map(it=>{ const p=this._prodInfo(it.produtoId); return {codigo:p.codigo||'',descricao:p.descricao||('Produto '+it.produtoId),qtd:it.qtd,unidade:p.unidade||'',valor:this.fmt(it.qtd*it.preco)}; }); }
+  // A revenda só vê valores de itens já negociados (cotação → precoNeg) ou faturados.
+  _itemNegociado(i){ return i.precoNeg!=null || i.st==='faturado'; }
+  _revOcultar(rawItens){ return (rawItens||[]).some(i=>!this._itemNegociado(i)); }
+  _revTotalFmt(p){ const fats=this.state.faturamentos.filter(f=>f.pedidoId===p.id);
+    if(fats.length) return this.fmt(fats.reduce((a,f)=>a+f.valor,0)); // valor efetivamente faturado
+    const act=p.itens.filter(i=>i.st!=='rejeitado');
+    if(act.length && act.every(i=>i.precoNeg!=null)) return this.fmt(act.reduce((a,i)=>a+i.precoNeg,0));
+    return 'A definir'; }
   notificar(evento,to,vars){ const c=this.state.configEmail;
     if(!(c&&c.ativo)) return; // só notifica quando o envio de e-mail está ativo
     const tos=(Array.isArray(to)?to:[to]).map(x=>(x||'').trim()).filter(Boolean); if(!tos.length) return;
@@ -2853,7 +2861,7 @@ class Component extends DCLogic {
     this.updPed(id,p=>{p.itens=p.itens.map(i=>(i.st||'pendente')==='pendente'?{...i,st:'aprovado'}:i);p.trilha.push(this.tr('Pedido aprovado pela Loja — todos os itens pendentes'));return p;});
     this.audit('Aprovação de pedido',id);
     const ped=this.state.pedidos.find(p=>p.id===id);
-    if(ped) this.notificar('pedido_aprovado',this._revEmail(ped.revendaId),{pedidoId:id,revendaNome:this._revNome(ped.revendaId),total:this.fmt(this.pedTotal(ped)),itensLista:this._itensPed(ped,i=>i.st!=='rejeitado')}); }; return this._ap[id]; }
+    if(ped){ const _sub=ped.itens.filter(i=>i.st!=='rejeitado'); this.notificar('pedido_aprovado',this._revEmail(ped.revendaId),{pedidoId:id,revendaNome:this._revNome(ped.revendaId),itensLista:_sub.map(i=>this._itemView(i)),ocultarValor:this._revOcultar(_sub)}); } }; return this._ap[id]; }
   aprovarItem(pid,ix){ this._api=this._api||{}; const k=pid+'|'+ix; if(!this._api[k]) this._api[k]=()=>{
     const ped=this.state.pedidos.find(p=>p.id===pid); const prod=this.state.produtos.find(x=>x.id===ped.itens[ix].produtoId);
     this.updPed(pid,p=>{p.itens=p.itens.map((i,j)=>j===ix?{...i,st:'aprovado'}:i);p.trilha.push(this.tr('Item aprovado: '+(prod?prod.descricao:'')));return p;});
@@ -2868,7 +2876,7 @@ class Component extends DCLogic {
       this.audit('Rejeição de pedido',id+' · '+j); }
     const pedR=this.state.pedidos.find(p=>p.id===id); const revR=pedR&&pedR.revendaId;
     if(ix!=null){ const prodR=this.state.produtos.find(x=>x.id===(pedR?pedR.itens[ix].produtoId:null)); this.notificar('item_rejeitado',this._revEmail(revR),{pedidoId:id,produto:(prodR?prodR.descricao:''),justificativa:j}); }
-    else this.notificar('pedido_rejeitado',this._revEmail(revR),{pedidoId:id,revendaNome:this._revNome(revR),justificativa:j,itensLista:this._itensPed(pedR,i=>i.st==='rejeitado')});
+    else this.notificar('pedido_rejeitado',this._revEmail(revR),{pedidoId:id,revendaNome:this._revNome(revR),justificativa:j,itensLista:this._itensPed(pedR,i=>i.st==='rejeitado'),ocultarValor:true});
     this.mClose(); };
   toggleSel(ix){ this._tsl=this._tsl||{}; if(!this._tsl[ix]) this._tsl[ix]=()=>this.setState(s=>{ const sel=s.form.sel||[]; const on=sel.includes(ix);
     return {form:{...s.form,sel:on?sel.filter(x=>x!==ix):[...sel,ix],erro:null}}; }); return this._tsl[ix]; }
@@ -2883,9 +2891,9 @@ class Component extends DCLogic {
       p.trilha.push(this.tr(sel.length+' item(ns) encaminhado(s) (envio direto) a '+f.nome));return p;});
     this.audit('Envio direto de itens',id+' → '+f.nome+' · '+sel.length+' item(ns)');
     const pedD=this.state.pedidos.find(p=>p.id===id); const revD=pedD&&pedD.revendaId;
-    const _ilD=this._itensPed(pedD,i=>i.st==='direto'&&i.fornecedorId===fid);
+    const _rawD=pedD?pedD.itens.filter(i=>i.st==='direto'&&i.fornecedorId===fid):[]; const _ilD=_rawD.map(i=>this._itemView(i));
     this.notificar('pedido_fornecedor',this._fornEmail(fid),{pedidoId:id,fornecedorNome:f.nome,revendaNome:this._revNome(revD),itensLista:_ilD});
-    this.notificar('pedido_encaminhado_revenda',this._revEmail(revD),{pedidoId:id,fornecedorNome:f.nome,itensLista:_ilD});
+    this.notificar('pedido_encaminhado_revenda',this._revEmail(revD),{pedidoId:id,fornecedorNome:f.nome,itensLista:_ilD,ocultarValor:this._revOcultar(_rawD)});
     this.mClose(); };
   confirmEstoque=()=>{ const sel=this.state.form.sel||[]; if(!sel.length) return this.err('Selecione ao menos um item.');
     const id=this.state.form.pedidoId;
@@ -2893,7 +2901,7 @@ class Component extends DCLogic {
       p.trilha.push(this.tr(sel.length+' item(ns) atendido(s) com estoque próprio da Loja — sem envio a fornecedor'));return p;});
     this.audit('Atendimento com estoque próprio',id+' · '+sel.length+' item(ns)');
     const pedE=this.state.pedidos.find(p=>p.id===id);
-    this.notificar('pedido_estoque_revenda',this._revEmail(pedE&&pedE.revendaId),{pedidoId:id,itensLista:this._itensPed(pedE,i=>i.st==='estoque')});
+    this.notificar('pedido_estoque_revenda',this._revEmail(pedE&&pedE.revendaId),{pedidoId:id,itensLista:this._itensPed(pedE,i=>i.st==='estoque'),ocultarValor:true});
     this.mClose(); };
   toggleConv(fid){ this._tc=this._tc||{}; if(!this._tc[fid]) this._tc[fid]=()=>this.setState(s=>{ const c=s.form.convidados||[]; const on=c.includes(fid);
     return {form:{...s.form,convidados:on?c.filter(x=>x!==fid):[...c,fid],erro:null}}; }); return this._tc[fid]; }
@@ -3015,7 +3023,7 @@ class Component extends DCLogic {
     this.audit('Novo pedido criado',id+' · '+this.fmt(total));
     const _rev=this.state.revAtivo; const _il=itens.map(i=>this._itemView(i));
     this.notificar('pedido_novo_loja',this._lojaEmail(),{pedidoId:id,revendaNome:this._revNome(_rev),itensLista:_il,total:this.fmt(total),data:this.hoje()});
-    this.notificar('pedido_recebido_revenda',this._revEmail(_rev),{pedidoId:id,itensLista:_il,total:this.fmt(total),data:this.hoje()}); };
+    this.notificar('pedido_recebido_revenda',this._revEmail(_rev),{pedidoId:id,itensLista:_il,ocultarValor:true,data:this.hoje()}); };
 
   setRole(r){ this._sr=this._sr||{}; if(!this._sr[r]) this._sr[r]=()=>this.setState({role:r,scr:null,selPed:null,selCot:null,modal:null,form:{}}); return this._sr[r]; }
   setFornAtivo=e=>this.setState({fornAtivo:+e.target.value});
@@ -3499,7 +3507,7 @@ class Component extends DCLogic {
     const cartTotal=cartIds.reduce((a,k)=>a+S.cart[k]*(P(+k).preco||0),0);
     const rPedRows=PEDS.filter(p=>p.revendaId===rid).map(p=>({id:p.id,data:p.data,
       fotos:p.itens.map(i=>({src:this.fotosDe(P(i.produtoId))[0],ver:this.verFoto(i.produtoId)})),
-      itensN:p.itens.length+(p.itens.length===1?' item':' itens'),totalFmt:this.fmt(p.total),
+      itensN:p.itens.length+(p.itens.length===1?' item':' itens'),totalFmt:this._revTotalFmt(p),
       fornNome:destTxt(p),...this.chip(p.status),
       justificativa:p.justificativa||'',temJustif:!!p.justificativa}));
 
