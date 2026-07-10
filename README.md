@@ -239,6 +239,27 @@ mas é aceito sem verificação. Endpoints: `POST /api/anexos`,
 `GET /api/analise-fiscal/status`. A lógica fica em
 `server/src/analise-fiscal.js`.
 
+### Royalties & Fechamento mensal (RF36–RF41)
+
+O royalty de cada faturamento é calculado automaticamente (valor faturado ×
+percentual do contrato vigente — RF36) e consolidado por fornecedor e
+competência no fechamento mensal (RF37), com totais do período, extrato nota a
+nota e barra de recebimento (RF38). A tela tem KPIs (a receber, recebido, em
+atraso e próximo vencimento), filtros por competência/fornecedor/status e
+**exportação XLSX** do recorte filtrado (permissão `royalties.exportar`).
+
+A **cobrança** (RF39) gera um documento numerado (COB-AAAAMM-NN) com
+**vencimento definido pela Loja** na emissão (sugerido o dia 10 do mês
+seguinte) e notifica o fornecedor por e-mail com valor, documento e prazo. O
+**status** (RF41) é derivado automaticamente: `a pagar` → `em atraso` (cobrança
+vencida sem pagamento, com contagem de dias de atraso) → `pago`. Fechamentos em
+atraso ganham o botão **"Lembrete de atraso"**, que envia o e-mail de cobrança
+vencida (template próprio) e registra o envio. O **pagamento** (RF40) guarda
+data, valor e comprovante, marca `pago com atraso` quando feito após o
+vencimento, e tudo fica na trilha de auditoria. O fornecedor acompanha
+competência, faturado, royalty devido, vencimento (com dias de atraso) e status
+na tela "Royalties devidos".
+
 ### Trilha de auditoria (Segurança & Auditoria)
 
 Cada operação crítica gera um evento com **quem** (usuário, e-mail e papel),

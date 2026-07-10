@@ -812,11 +812,17 @@
       "data": "08/07/2026",
       "valor": 171.2,
       "comprovante": "PIX-88213",
-      "cobranca": true
+      "cobranca": true,
+      "cobrancaData": "01/07/2026",
+      "vencimento": "10/07/2026",
+      "numero": "COB-202606-02"
     },
     "06/2026-1": {
       "status": "em atraso",
-      "cobranca": true
+      "cobranca": true,
+      "cobrancaData": "01/07/2026",
+      "vencimento": "05/07/2026",
+      "numero": "COB-202606-01"
     },
     "06/2026-3": {
       "status": "a pagar"

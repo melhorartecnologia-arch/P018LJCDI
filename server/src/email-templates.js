@@ -197,8 +197,15 @@ export const TEMPLATES = {
     subject: `Cobrança de royalties — competência ${v.competencia}`,
     html: layout('Cobrança de royalties',
       p(`Olá${v.fornecedorNome ? ', ' + esc(v.fornecedorNome) : ''}. Segue a cobrança de royalties referente à competência ${b(v.competencia)}, conforme o contrato vigente.`) +
-      linhas([['Competência', v.competencia], ['Valor devido', v.valor]]) +
-      p('Por favor, providencie o pagamento e registre o comprovante junto à Loja.'), 'Royalties'),
+      linhas([['Competência', v.competencia], v.documento && ['Documento de cobrança', v.documento], ['Valor devido', v.valor], v.vencimento && ['Vencimento', v.vencimento]]) +
+      p(`Por favor, providencie o pagamento${v.vencimento ? ' até o vencimento' : ''} e registre o comprovante junto à Loja. Após o vencimento, o fechamento passa ao status "em atraso".`), 'Royalties'),
+  }),
+  royalty_atraso: (v) => ({
+    subject: `Royalties em atraso — competência ${v.competencia}`,
+    html: layout('Royalties em atraso',
+      p(`Olá${v.fornecedorNome ? ', ' + esc(v.fornecedorNome) : ''}. Não identificamos o pagamento dos royalties da competência ${b(v.competencia)}, vencidos em ${b(v.vencimento || '—')}${v.diasAtraso ? ' (' + esc(v.diasAtraso) + ' dia(s) de atraso)' : ''}.`) +
+      linhas([['Competência', v.competencia], v.documento && ['Documento de cobrança', v.documento], ['Valor devido', v.valor], ['Vencimento', v.vencimento || '—'], v.diasAtraso && ['Dias de atraso', v.diasAtraso]]) +
+      p('Por favor, regularize o pagamento e registre o comprovante junto à Loja. Se o pagamento já foi feito, desconsidere este aviso e informe o comprovante.'), 'Royalties'),
   }),
   royalty_pagamento: (v) => ({
     subject: `Pagamento de royalties ${v.competencia} registrado`,
