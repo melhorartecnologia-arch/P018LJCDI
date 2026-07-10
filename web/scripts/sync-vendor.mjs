@@ -12,6 +12,7 @@ const outDir = resolve(root, 'public/vendor')
 const files = [
   ['node_modules/react/umd/react.production.min.js', 'react.production.min.js'],
   ['node_modules/react-dom/umd/react-dom.production.min.js', 'react-dom.production.min.js'],
+  ['node_modules/xlsx/dist/xlsx.full.min.js', 'xlsx.full.min.js'],
 ]
 
 await mkdir(outDir, { recursive: true })

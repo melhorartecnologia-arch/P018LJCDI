@@ -9,6 +9,7 @@
 <!-- dc-runtime requires window.React + window.ReactDOM (UMD) before support.js -->
 <script src="./vendor/react.production.min.js"></script>
 <script src="./vendor/react-dom.production.min.js"></script>
+<script src="./vendor/xlsx.full.min.js"></script>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -1805,7 +1806,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
     <sc-if value="{{podeInvGerenciar}}" hint-placeholder-val="{{true}}">
       <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:16px 18px;margin-bottom:14px">
         <div style="font-size:14px;font-weight:700;margin-bottom:2px">Carga por planilha padrão</div>
-        <div style="font-size:12px;color:#8a8378;margin-bottom:12px">Baixe um modelo, preencha as quantidades no Excel e carregue a planilha para lançar o inventário (formato CSV).</div>
+        <div style="font-size:12px;color:#8a8378;margin-bottom:12px">Baixe um modelo em Excel (.xlsx), preencha as quantidades e carregue a planilha para lançar o inventário.</div>
         <div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap">
           <span style="font-size:12px;font-weight:600;color:#6b6459">Data para o modelo:</span>
           <input value="{{invTplData}}" onChange="{{setInvTplData}}" placeholder="dd/mm/aaaa" title="Data que sairá gravada no modelo baixado (padrão: hoje)" style="width:110px;padding:8px 10px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:12.5px;text-align:center;background:#fff;outline:none;color:#272525">
@@ -1813,9 +1814,9 @@ input::placeholder,textarea::placeholder{color:#b0a795}
           <div onClick="{{baixarModeloUltimo}}" title="Somente os produtos que tinham quantidade no último inventário (pré-preenchidos)" style="border:1px solid #ddd5c7;color:#4a453d;background:#fff;border-radius:8px;padding:8px 13px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:#f7f3ea">⬇ Produtos do último inventário</div>
           <div onClick="{{baixarModeloVazio}}" title="Planilha sem registros, apenas com o cabeçalho" style="border:1px solid #ddd5c7;color:#4a453d;background:#fff;border-radius:8px;padding:8px 13px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:#f7f3ea">⬇ Somente cabeçalho</div>
           <div onClick="{{clicarUploadInv}}" style="background:#272525;color:#fff;border-radius:8px;padding:8px 15px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="background:#3a3735">⬆ Carregar planilha preenchida…</div>
-          <input id="inv-file-input" type="file" accept=".csv,text/csv,text/plain" onChange="{{carregarPlanilha}}" style="display:none">
+          <input id="inv-file-input" type="file" accept=".xlsx,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv" onChange="{{carregarPlanilha}}" style="display:none">
         </div>
-        <div style="font-size:11px;color:#b0a795;margin-top:9px">A planilha carregada abre a janela de lançamento já preenchida para revisão — nada é gravado sem a sua confirmação. No Excel, salve como "CSV UTF-8".</div>
+        <div style="font-size:11px;color:#b0a795;margin-top:9px">A planilha carregada abre a janela de lançamento já preenchida para revisão — nada é gravado sem a sua confirmação. Aceita .xlsx (recomendado) e CSV.</div>
       </div>
     </sc-if>
     <sc-if value="{{temInvAtual}}" hint-placeholder-val="{{true}}">
@@ -3216,7 +3217,7 @@ class Component extends DCLogic {
       "passos": [
         "Clique em \"+ Lançar inventário\" para registrar uma contagem: informe a \"Data do inventário\", uma observação opcional e a quantidade contada de cada produto (o formulário vem pré-preenchido com o saldo atual).",
         "Para fazer o inventário por planilha: em \"Carga por planilha padrão\", informe a \"Data para o modelo\" (padrão: hoje) e baixe um dos modelos — \"⬇ Todos os produtos\" (quantidades em branco), \"⬇ Produtos do último inventário\" (pré-preenchidos) ou \"⬇ Somente cabeçalho\".",
-        "Preencha as quantidades no Excel (salve como CSV) e clique em \"⬆ Carregar planilha preenchida…\" — a janela de lançamento abre já preenchida para você revisar e confirmar.",
+        "Preencha as quantidades no Excel e clique em \"⬆ Carregar planilha preenchida…\" — a janela de lançamento abre já preenchida para você revisar e confirmar.",
         "Confira a tabela \"Saldo atual por produto\": a coluna \"Contagem\" mostra o último inventário, \"Consumido\" o que já foi atendido com estoque desde o lançamento, e \"Saldo\" o disponível.",
         "A coluna \"Situação\" resume cada produto: \"Com saldo\", \"Saldo baixo\" ou \"Sem saldo\".",
         "Acompanhe o \"Histórico de lançamentos\" com data, responsável, observação e totais de cada inventário.",
@@ -3505,58 +3506,72 @@ class Component extends DCLogic {
     this.audit('Lançamento de inventário',f.dataInv+' · '+Object.keys(itens).length+' produto(s)'+(f.origemPlanilha?' · via planilha':'')); };
   // ── Carga de inventário por planilha (CSV padrão) ───────────────────────
   setInvTplData=e=>this.setState({invTplData:e.target.value});
-  _invTplLinhas(produtos,qtdFn,dataTpl){ const linhas=[["Data do inventário",dataTpl],["Observação",""],[""],["Código","Produto","Unidade","Quantidade"]];
+  _invTplLinhas(produtos,qtdFn,dataTpl){ const linhas=[["Data do inventário",dataTpl],["Observação",""],[],["Código","Produto","Unidade","Quantidade"]];
     produtos.forEach(pr=>linhas.push([pr.codigo,pr.descricao,pr.unidade,qtdFn(pr)])); return linhas; }
   baixarModeloInv(tipo){ this._bmi=this._bmi||{}; if(!this._bmi[tipo]) this._bmi[tipo]=()=>{
+    if(typeof XLSX==='undefined') return alert('Componente de planilha não carregado — recarregue a página.');
     const dataTpl=(this.state.invTplData||'').trim()||this.hoje();
     if(!/^\d{2}\/\d{2}\/\d{4}$/.test(dataTpl)) return alert('Informe a data do modelo no formato dd/mm/aaaa.');
     const ativos=this.state.produtos.filter(x=>x.ativo);
     let linhas,nome;
-    if(tipo==='todos'){ linhas=this._invTplLinhas(ativos,()=>'',dataTpl); nome='modelo-inventario-todos-os-produtos.csv'; }
+    if(tipo==='todos'){ linhas=this._invTplLinhas(ativos,()=>'',dataTpl); nome='modelo-inventario-todos-os-produtos.xlsx'; }
     else if(tipo==='ultimo'){ const inv=this._invAtual();
       if(!inv) return alert('Ainda não há inventário lançado — use o modelo com todos os produtos.');
       const compilados=ativos.filter(pr=>+((inv.itens||{})[pr.id]||0)>0);
       if(!compilados.length) return alert('O último inventário não tem produtos com quantidade.');
-      linhas=this._invTplLinhas(compilados,pr=>String(+((inv.itens||{})[pr.id]||0)),dataTpl); nome='modelo-inventario-ultimo-inventario.csv'; }
-    else { linhas=this._invTplLinhas([],()=>'',dataTpl); nome='modelo-inventario-somente-cabecalho.csv'; }
-    this.baixarCSV(nome,linhas);
-    this.audit('Download de modelo de inventário',{todos:'todos os produtos',ultimo:'produtos do último inventário',vazio:'somente cabeçalho'}[tipo]+' · data '+dataTpl); };
+      linhas=this._invTplLinhas(compilados,pr=>+((inv.itens||{})[pr.id]||0),dataTpl); nome='modelo-inventario-ultimo-inventario.xlsx'; }
+    else { linhas=this._invTplLinhas([],()=>'',dataTpl); nome='modelo-inventario-somente-cabecalho.xlsx'; }
+    const ws=XLSX.utils.aoa_to_sheet(linhas);
+    ws['!cols']=[{wch:14},{wch:42},{wch:12},{wch:12}];
+    if(ws.B1) ws.B1.z='@'; // data como texto, preserva dd/mm/aaaa
+    const wb=XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb,ws,'Inventário');
+    XLSX.writeFile(wb,nome);
+    this.audit('Download de modelo de inventário',{todos:'todos os produtos',ultimo:'produtos do último inventário',vazio:'somente cabeçalho'}[tipo]+' · data '+dataTpl+' · .xlsx'); };
     return this._bmi[tipo]; }
   _csvCells(line,sep){ const out=[]; let cur='',q=false; for(let i=0;i<line.length;i++){ const c=line[i];
       if(q){ if(c==='"'){ if(line[i+1]==='"'){cur+='"';i++;} else q=false; } else cur+=c; }
       else if(c==='"') q=true; else if(c===sep){ out.push(cur); cur=''; } else cur+=c; }
     out.push(cur); return out.map(x=>x.trim()); }
-  lerPlanilhaInventario(text){ const norm=t=>t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-    const lines=String(text).replace(/^\uFEFF/,'').split(/\r?\n/).filter(l=>l.trim()!=='');
-    if(!lines.length) throw new Error('A planilha está vazia.');
-    const sep=lines[0].includes(';')?';':(lines[0].includes('\t')?'\t':',');
+  _fmtDataCel(v){ if(v instanceof Date&&!isNaN(v)) return String(v.getDate()).padStart(2,'0')+'/'+String(v.getMonth()+1).padStart(2,'0')+'/'+v.getFullYear();
+    return String(v==null?'':v).trim(); }
+  lerPlanilhaInventario(rows){ const norm=t=>String(t==null?'':t).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
+    if(!rows||!rows.length) throw new Error('A planilha está vazia.');
     let data='',obs='',headerIx=-1;
-    lines.forEach((l,ix)=>{ const c=this._csvCells(l,sep); const k=norm(c[0]||'');
-      if(k.startsWith('data do invent')) data=(c[1]||'').trim();
-      else if(k.startsWith('observa')) obs=(c[1]||'').trim();
-      else if(headerIx<0&&(k==='codigo')) headerIx=ix; });
-    if(headerIx<0) throw new Error('Cabeçalho não encontrado — a planilha precisa da linha "Código;Produto;Unidade;Quantidade".');
+    rows.forEach((c,ix)=>{ const k=norm(c[0]);
+      if(k.startsWith('data do invent')) data=this._fmtDataCel(c[1]);
+      else if(k.startsWith('observa')) obs=String(c[1]==null?'':c[1]).trim();
+      else if(headerIx<0&&k==='codigo') headerIx=ix; });
+    if(headerIx<0) throw new Error('Cabeçalho não encontrado — a planilha precisa da linha "Código | Produto | Unidade | Quantidade".');
     const qtds={},naoEncontrados=[]; let lidos=0;
-    for(let ix=headerIx+1;ix<lines.length;ix++){ const c=this._csvCells(lines[ix],sep);
-      const cod=(c[0]||'').trim().toUpperCase(); if(!cod) continue;
+    for(let ix=headerIx+1;ix<rows.length;ix++){ const c=rows[ix]||[];
+      const cod=String(c[0]==null?'':c[0]).trim().toUpperCase(); if(!cod) continue;
       const pr=this.state.produtos.find(x=>(x.codigo||'').toUpperCase()===cod);
       if(!pr){ naoEncontrados.push(cod); continue; }
-      const raw=(c[3]||'').trim(); const q=raw===''?0:parseInt(raw.replace(/\D/g,''),10);
+      const raw=c[3]; let q;
+      if(raw==null||String(raw).trim()==='') q=0;
+      else if(typeof raw==='number') q=Math.round(raw);
+      else q=parseInt(String(raw).replace(/\D/g,''),10);
       if(isNaN(q)||q<0) throw new Error('Quantidade inválida para '+cod+' (linha '+(ix+1)+').');
       qtds[pr.id]=q; lidos++; }
     if(!lidos) throw new Error('Nenhum produto reconhecido na planilha — confira a coluna Código.');
     return {data,obs,qtds,naoEncontrados,lidos}; }
   clicarUploadInv=()=>{ const el=document.getElementById('inv-file-input'); if(el) el.click(); };
   carregarPlanilha=e=>{ const input=e.target; const file=input.files&&input.files[0]; if(!file) return;
+    const isCsv=/\.(csv|txt)$/i.test(file.name||'');
     const fr=new FileReader();
     fr.onload=()=>{ input.value='';
-      try{ const r=this.lerPlanilhaInventario(String(fr.result));
+      try{ if(typeof XLSX==='undefined') throw new Error('componente de planilha não carregado — recarregue a página.');
+        const wb=isCsv?XLSX.read(String(fr.result),{type:'string',cellDates:true}):XLSX.read(fr.result,{type:'array',cellDates:true});
+        const ws=wb.Sheets[wb.SheetNames[0]]; if(!ws) throw new Error('nenhuma aba encontrada no arquivo.');
+        const rows=XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:''});
+        const r=this.lerPlanilhaInventario(rows);
         const seed={dataInv:(/^\d{2}\/\d{2}\/\d{4}$/.test(r.data)?r.data:this.hoje()),obs:r.obs,origemPlanilha:true,
           avisoPlanilha:'Planilha carregada: '+r.lidos+' produto(s) lido(s)'+(r.naoEncontrados.length?' · códigos não reconhecidos: '+r.naoEncontrados.slice(0,5).join(', ')+(r.naoEncontrados.length>5?'…':''):'')+'. Revise e confirme o lançamento.'};
         this.state.produtos.filter(x=>x.ativo).forEach(pr=>{ seed['iq'+pr.id]=r.qtds[pr.id]!=null?String(r.qtds[pr.id]):'0'; });
         this.setState({modal:'inventario',form:seed});
       }catch(err){ this.setState({modal:'inventario',form:{dataInv:this.hoje(),obs:'',erro:'Falha ao ler a planilha: '+err.message}}); } };
-    fr.readAsText(file,'utf-8'); };
+    if(isCsv) fr.readAsText(file,'utf-8'); else fr.readAsArrayBuffer(file); };
   setPedidoCot=e=>{ const v=e.target.value; const p=this.state.pedidos.find(x=>x.id===v);
     const sel=p?p.itens.map((i,ix)=>i.st==='aprovado'?ix:-1).filter(ix=>ix>=0):[];
     this.setState(s=>{ const f={...s.form}; Object.keys(f).forEach(k=>{ if(/^q\d+$/.test(k)) delete f[k]; });
