@@ -45,25 +45,59 @@ const linhas = (pairs) =>
 // v() → valor escapado e em negrito para uso no meio de frases
 const b = (v) => '<b>' + esc(v) + '</b>'
 
+// Tabela dos itens envolvidos no processo (pedido/cotação/faturamento).
+// itens: [{ codigo, descricao, qtd, unidade, valor }]
+const tabelaItens = (itens, titulo = 'Itens') => {
+  if (!Array.isArray(itens) || !itens.length) return ''
+  const th = 'text-align:left;padding:6px 8px;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #eae3d6'
+  return (
+    '<div style="font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#a89f90;margin:2px 0 8px">' + esc(titulo) + '</div>' +
+    '<table style="width:100%;border-collapse:collapse;margin:0 0 14px">' +
+    '<thead><tr>' +
+    '<th style="' + th + '">Produto</th>' +
+    '<th style="' + th + ';text-align:right;white-space:nowrap">Qtd</th>' +
+    '<th style="' + th + ';text-align:right">Valor</th>' +
+    '</tr></thead><tbody>' +
+    itens
+      .map(
+        (it) =>
+          '<tr>' +
+          '<td style="padding:7px 8px;font-size:12.5px;color:#272525;border-bottom:1px solid #f1ece2">' +
+          (it.codigo ? '<b>' + esc(it.codigo) + '</b> · ' : '') + esc(it.descricao) +
+          '</td>' +
+          '<td style="padding:7px 8px;font-size:12.5px;text-align:right;white-space:nowrap;border-bottom:1px solid #f1ece2">' +
+          esc(it.qtd) + (it.unidade ? ' ' + esc(it.unidade) : '') +
+          '</td>' +
+          '<td style="padding:7px 8px;font-size:12.5px;font-weight:600;text-align:right;white-space:nowrap;border-bottom:1px solid #f1ece2">' +
+          (it.valor ? esc(it.valor) : '—') +
+          '</td>' +
+          '</tr>'
+      )
+      .join('') +
+    '</tbody></table>'
+  )
+}
+const itensDe = (v, titulo) => tabelaItens(v.itensLista, titulo)
+
 export const TEMPLATES = {
   // ── Pedidos ───────────────────────────────────────────────────────────
   pedido_novo_loja: (v) => ({
     subject: `Novo pedido ${v.pedidoId} aguardando aprovação`,
     html: layout('Novo pedido aguardando aprovação',
       p(`Um novo pedido foi criado por ${b(v.revendaNome)} e aguarda análise e aprovação da Loja.`) +
-      linhas([['Pedido', v.pedidoId], ['Revenda', v.revendaNome], ['Itens', v.itens], ['Total', v.total], ['Data', v.data]]), 'Pedido'),
+      linhas([['Pedido', v.pedidoId], ['Revenda', v.revendaNome], ['Total', v.total], ['Data', v.data]]) + itensDe(v), 'Pedido'),
   }),
   pedido_recebido_revenda: (v) => ({
     subject: `Recebemos seu pedido ${v.pedidoId}`,
     html: layout('Recebemos o seu pedido',
       p('Olá! Recebemos o seu pedido e ele já está em análise pela Loja Cidade Imperial. Avisaremos assim que for aprovado.') +
-      linhas([['Pedido', v.pedidoId], ['Total', v.total], ['Data', v.data]]), 'Pedido'),
+      linhas([['Pedido', v.pedidoId], ['Total', v.total], ['Data', v.data]]) + itensDe(v), 'Pedido'),
   }),
   pedido_aprovado: (v) => ({
     subject: `Seu pedido ${v.pedidoId} foi aprovado`,
     html: layout('Pedido aprovado',
       p(`Boa notícia${v.revendaNome ? ', ' + esc(v.revendaNome) : ''}! Seu pedido foi <b style="color:#2f6b39">aprovado</b> pela Loja e seguirá para atendimento.`) +
-      linhas([['Pedido', v.pedidoId], ['Total', v.total]]), 'Pedido'),
+      linhas([['Pedido', v.pedidoId], ['Total', v.total]]) + itensDe(v, 'Itens aprovados'), 'Pedido'),
   }),
   item_aprovado: (v) => ({
     subject: `Item aprovado no pedido ${v.pedidoId}`,
@@ -74,7 +108,7 @@ export const TEMPLATES = {
     subject: `Seu pedido ${v.pedidoId} foi rejeitado`,
     html: layout('Pedido rejeitado',
       p(`Olá${v.revendaNome ? ', ' + esc(v.revendaNome) : ''}. Infelizmente seu pedido foi <b style="color:#a33a2b">rejeitado</b> pela Loja.`) +
-      linhas([['Pedido', v.pedidoId], ['Motivo', v.justificativa]]), 'Pedido'),
+      linhas([['Pedido', v.pedidoId], ['Motivo', v.justificativa]]) + itensDe(v, 'Itens rejeitados'), 'Pedido'),
   }),
   item_rejeitado: (v) => ({
     subject: `Item rejeitado no pedido ${v.pedidoId}`,
@@ -86,18 +120,18 @@ export const TEMPLATES = {
     subject: `Novo pedido ${v.pedidoId} para faturamento`,
     html: layout('Novo pedido para faturamento',
       p(`Olá${v.fornecedorNome ? ', ' + esc(v.fornecedorNome) : ''}. A Loja Cidade Imperial encaminhou um pedido para faturamento direto à revenda.`) +
-      linhas([['Pedido', v.pedidoId], ['Revenda', v.revendaNome], ['Itens', v.itens]]), 'Novo pedido'),
+      linhas([['Pedido', v.pedidoId], ['Revenda', v.revendaNome]]) + itensDe(v, 'Itens a faturar'), 'Novo pedido'),
   }),
   pedido_encaminhado_revenda: (v) => ({
     subject: `Seu pedido ${v.pedidoId} foi encaminhado ao fornecedor`,
     html: layout('Pedido encaminhado ao fornecedor',
-      p(`Seu pedido ${b(v.pedidoId)} foi aprovado e encaminhado para o fornecedor ${b(v.fornecedorNome)}, responsável pelo faturamento e pela entrega.`), 'Pedido'),
+      p(`Seu pedido ${b(v.pedidoId)} foi aprovado e encaminhado para o fornecedor ${b(v.fornecedorNome)}, responsável pelo faturamento e pela entrega.`) + itensDe(v, 'Itens encaminhados'), 'Pedido'),
   }),
   pedido_estoque_revenda: (v) => ({
     subject: `Seu pedido ${v.pedidoId} será atendido pela Loja`,
     html: layout('Pedido atendido pelo estoque da Loja',
       p(`Seu pedido ${b(v.pedidoId)} será atendido diretamente pelo estoque da Loja Cidade Imperial.`) +
-      linhas([['Itens', v.itens]]), 'Pedido'),
+      itensDe(v, 'Itens atendidos'), 'Pedido'),
   }),
 
   // ── Cotações ──────────────────────────────────────────────────────────
@@ -105,26 +139,26 @@ export const TEMPLATES = {
     subject: `Convite para cotação ${v.cotacao}`,
     html: layout('Convite para cotação',
       p(`Olá${v.fornecedorNome ? ', ' + esc(v.fornecedorNome) : ''}. Você foi convidado a enviar uma proposta para a cotação ${b(v.cotacao)}.`) +
-      linhas([['Cotação', v.cotacao], ['Itens', v.itens], ['Prazo para propostas', v.prazo]]) +
-      p('Acesse a plataforma para registrar a sua proposta antes do prazo.'), 'Cotação'),
+      linhas([['Cotação', v.cotacao], ['Prazo para propostas', v.prazo]]) + itensDe(v, 'Itens a cotar') +
+      p('Acesse a plataforma para registrar a sua proposta (por item) antes do prazo.'), 'Cotação'),
   }),
   cotacao_lembrete: (v) => ({
     subject: `Lembrete: cotação ${v.cotacao} aguarda sua proposta`,
     html: layout('Lembrete de cotação',
       p(`Olá${v.fornecedorNome ? ', ' + esc(v.fornecedorNome) : ''}. A cotação ${b(v.cotacao)} ainda aguarda a sua proposta.`) +
-      linhas([['Cotação', v.cotacao], ['Prazo para propostas', v.prazo]]), 'Cotação'),
+      linhas([['Cotação', v.cotacao], ['Prazo para propostas', v.prazo]]) + itensDe(v, 'Itens a cotar'), 'Cotação'),
   }),
   cotacao_proposta_loja: (v) => ({
     subject: `Nova proposta na cotação ${v.cotacao}`,
     html: layout('Nova proposta recebida',
       p(`O fornecedor ${b(v.fornecedorNome)} registrou uma proposta na cotação ${b(v.cotacao)}.`) +
-      linhas([['Cotação', v.cotacao], ['Fornecedor', v.fornecedorNome], ['Valor da proposta', v.total]]), 'Cotação'),
+      linhas([['Cotação', v.cotacao], ['Fornecedor', v.fornecedorNome], ['Valor da proposta', v.total]]) + itensDe(v, 'Itens cotados (preço por item)'), 'Cotação'),
   }),
   cotacao_vencedor: (v) => ({
     subject: `Sua proposta venceu a cotação ${v.cotacao}`,
     html: layout('Proposta vencedora',
       p(`Parabéns${v.fornecedorNome ? ', ' + esc(v.fornecedorNome) : ''}! Sua proposta foi selecionada como vencedora da cotação ${b(v.cotacao)}. Um pedido será gerado para faturamento.`) +
-      linhas([['Cotação', v.cotacao], ['Valor', v.valor]]), 'Cotação'),
+      linhas([['Cotação', v.cotacao], ['Valor', v.valor]]) + itensDe(v, 'Itens adjudicados'), 'Cotação'),
   }),
   cotacao_item_vencedor: (v) => ({
     subject: `Item adjudicado a você — cotação ${v.cotacao}`,
@@ -136,7 +170,7 @@ export const TEMPLATES = {
     subject: `Cotação ${v.cotacao} cancelada`,
     html: layout('Cotação cancelada',
       p(`Olá${v.fornecedorNome ? ', ' + esc(v.fornecedorNome) : ''}. A cotação ${b(v.cotacao)} foi cancelada pela Loja.`) +
-      linhas([['Cotação', v.cotacao], ['Motivo', v.motivo]]), 'Cotação'),
+      linhas([['Cotação', v.cotacao], ['Motivo', v.motivo]]) + itensDe(v, 'Itens da cotação'), 'Cotação'),
   }),
 
   // ── Faturamento ───────────────────────────────────────────────────────
@@ -144,13 +178,13 @@ export const TEMPLATES = {
     subject: `Pedido ${v.pedidoId} faturado — ${v.nf}`,
     html: layout('Pedido faturado',
       p(`Olá! Seu pedido ${b(v.pedidoId)} foi faturado por ${b(v.fornecedorNome)}.`) +
-      linhas([['Pedido', v.pedidoId], ['Nota fiscal', v.nf], ['Fornecedor', v.fornecedorNome], ['Valor', v.valor]]), 'Faturamento'),
+      linhas([['Pedido', v.pedidoId], ['Nota fiscal', v.nf], ['Fornecedor', v.fornecedorNome], ['Valor', v.valor]]) + itensDe(v, 'Itens faturados'), 'Faturamento'),
   }),
   faturamento_loja: (v) => ({
     subject: `Faturamento registrado — ${v.nf}`,
     html: layout('Faturamento registrado',
       p(`Um faturamento foi registrado por ${b(v.fornecedorNome)}.`) +
-      linhas([['Nota fiscal', v.nf], ['Pedido', v.pedidoId], ['Fornecedor', v.fornecedorNome], ['Valor', v.valor], ['Royalty', v.royalty]]), 'Faturamento'),
+      linhas([['Nota fiscal', v.nf], ['Pedido', v.pedidoId], ['Fornecedor', v.fornecedorNome], ['Valor', v.valor], ['Royalty', v.royalty]]) + itensDe(v, 'Itens faturados'), 'Faturamento'),
   }),
 
   // ── Royalties / Cobrança ──────────────────────────────────────────────

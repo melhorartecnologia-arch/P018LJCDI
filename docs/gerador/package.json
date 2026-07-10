@@ -1,0 +1,7 @@
+{
+  "name": "cidade-imperial-docs-gerador",
+  "private": true,
+  "type": "module",
+  "description": "Scripts para (re)gerar o PDF de slides e o documento Word dos fluxos de e-mail",
+  "dependencies": { "docx": "^9.0.0" }
+}

@@ -38,6 +38,16 @@ const WF = [
     ]},
 ];
 
+// ── Itens de exemplo por evento (para que os e-mails mostrem a lista de itens) ──
+const _ped44=[{codigo:'PRD-001',descricao:'Chopp Pilsen Imperial 30L',qtd:2,unidade:'Barril',valor:'R$ 1.240,00'},{codigo:'PRD-008',descricao:'Copo Caldereta personalizado (cx 12)',qtd:3,unidade:'Caixa',valor:'R$ 288,00'}];
+const _cot08=[{codigo:'PRD-002',descricao:'Chopp Pilsen Imperial 50L',qtd:2,unidade:'Barril',valor:'R$ 1.780,00'},{codigo:'PRD-001',descricao:'Chopp Pilsen Imperial 30L',qtd:1,unidade:'Barril',valor:'R$ 620,00'}];
+const _cot07=[{codigo:'PRD-007',descricao:'Cilindro CO₂ 10kg (recarga)',qtd:8,unidade:'Unidade',valor:'R$ 1.600,00'},{codigo:'PRD-008',descricao:'Copo Caldereta personalizado (cx 12)',qtd:6,unidade:'Caixa',valor:'R$ 612,00'}];
+const _fat41=[{codigo:'PRD-001',descricao:'Chopp Pilsen Imperial 30L',qtd:4,unidade:'Barril',valor:'R$ 2.480,00'},{codigo:'PRD-003',descricao:'Chopp IPA Imperial 30L',qtd:1,unidade:'Barril',valor:'R$ 740,00'}];
+const _forn42=[{codigo:'PRD-004',descricao:'Cerveja Puro Malte 600ml (cx 12)',qtd:15,unidade:'Caixa',valor:'R$ 2.220,00'},{codigo:'PRD-006',descricao:'Growler Cerâmica 1L',qtd:5,unidade:'Unidade',valor:'R$ 445,00'}];
+const _rej46=[{codigo:'PRD-003',descricao:'Chopp IPA Imperial 30L',qtd:6,unidade:'Barril',valor:'R$ 4.440,00'}];
+const ITENS={ pedido_novo_loja:_ped44, pedido_recebido_revenda:_ped44, pedido_aprovado:_ped44, pedido_rejeitado:_rej46, pedido_fornecedor:_forn42, pedido_encaminhado_revenda:_forn42, pedido_estoque_revenda:_ped44, cotacao_convite:_cot08, cotacao_lembrete:_cot08, cotacao_proposta_loja:_cot08, cotacao_vencedor:_cot07, cotacao_cancelada:_cot08, faturamento_revenda:_fat41, faturamento_loja:_fat41 };
+for (const wf of WF) for (const ev of wf.eventos) if (ITENS[ev.id]) ev.vars.itensLista = ITENS[ev.id];
+
 // ── Renderiza cada template de e-mail para imagem (base64) ──
 const browser = await chromium.launch({ executablePath:'/opt/pw-browsers/chromium' });
 const shot = await browser.newPage({ viewport:{width:640,height:900}, deviceScaleFactor:2 });

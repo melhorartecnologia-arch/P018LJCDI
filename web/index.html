@@ -2195,6 +2195,10 @@ class Component extends DCLogic {
   _revNome(id){ const r=this.state.revendas.find(x=>x.id===id); return r?r.nome:''; }
   _fornEmail(id){ const f=this.state.fornecedores.find(x=>x.id===id); return f?f.contato:''; }
   _fornNome(id){ const f=this.state.fornecedores.find(x=>x.id===id); return f?f.nome:''; }
+  _prodInfo(pid){ return this.state.produtos.find(x=>x.id===pid)||{}; }
+  _itemView(i){ const p=this._prodInfo(i.produtoId); const sub=(i.precoNeg!=null?i.precoNeg:(i.qtd*i.preco)); return {codigo:p.codigo||'',descricao:p.descricao||('Produto '+i.produtoId),qtd:i.qtd,unidade:p.unidade||'',valor:this.fmt(sub)}; }
+  _itensPed(ped,pred){ return (ped&&ped.itens||[]).filter(pred||(()=>true)).map(i=>this._itemView(i)); }
+  _itensCot(c){ return ((c&&c.itens)||[]).map(it=>{ const p=this._prodInfo(it.produtoId); return {codigo:p.codigo||'',descricao:p.descricao||('Produto '+it.produtoId),qtd:it.qtd,unidade:p.unidade||'',valor:this.fmt(it.qtd*it.preco)}; }); }
   notificar(evento,to,vars){ const c=this.state.configEmail;
     if(!(c&&c.ativo)) return; // só notifica quando o envio de e-mail está ativo
     const tos=(Array.isArray(to)?to:[to]).map(x=>(x||'').trim()).filter(Boolean); if(!tos.length) return;
@@ -2770,7 +2774,7 @@ class Component extends DCLogic {
       c.historico.push({quando:this.ts(),usuario:this.userName(),acao:'Lembrete de proposta enviado a '+f.nome}); return c; });
     this.audit('Lembrete de cotação enviado',cid+' → '+f.nome);
     const cL=this.state.cotacoes.find(x=>x.id===cid);
-    this.notificar('cotacao_lembrete',this._fornEmail(fid),{cotacao:cid,fornecedorNome:f.nome,prazo:(cL?cL.prazo:'')}); }; return this._lc[k]; }
+    this.notificar('cotacao_lembrete',this._fornEmail(fid),{cotacao:cid,fornecedorNome:f.nome,prazo:(cL?cL.prazo:''),itensLista:this._itensCot(cL)}); }; return this._lc[k]; }
   componentDidMount(){ this._kb=e=>{
     if(this.state.modal==='ajuda'){ const n=(this.ajudaConteudo().passos||[]).length;
       if(e.key==='Escape') this.fecharAjuda();
@@ -2849,7 +2853,7 @@ class Component extends DCLogic {
     this.updPed(id,p=>{p.itens=p.itens.map(i=>(i.st||'pendente')==='pendente'?{...i,st:'aprovado'}:i);p.trilha.push(this.tr('Pedido aprovado pela Loja — todos os itens pendentes'));return p;});
     this.audit('Aprovação de pedido',id);
     const ped=this.state.pedidos.find(p=>p.id===id);
-    if(ped) this.notificar('pedido_aprovado',this._revEmail(ped.revendaId),{pedidoId:id,revendaNome:this._revNome(ped.revendaId),total:this.fmt(this.pedTotal(ped))}); }; return this._ap[id]; }
+    if(ped) this.notificar('pedido_aprovado',this._revEmail(ped.revendaId),{pedidoId:id,revendaNome:this._revNome(ped.revendaId),total:this.fmt(this.pedTotal(ped)),itensLista:this._itensPed(ped,i=>i.st!=='rejeitado')}); }; return this._ap[id]; }
   aprovarItem(pid,ix){ this._api=this._api||{}; const k=pid+'|'+ix; if(!this._api[k]) this._api[k]=()=>{
     const ped=this.state.pedidos.find(p=>p.id===pid); const prod=this.state.produtos.find(x=>x.id===ped.itens[ix].produtoId);
     this.updPed(pid,p=>{p.itens=p.itens.map((i,j)=>j===ix?{...i,st:'aprovado'}:i);p.trilha.push(this.tr('Item aprovado: '+(prod?prod.descricao:'')));return p;});
@@ -2864,7 +2868,7 @@ class Component extends DCLogic {
       this.audit('Rejeição de pedido',id+' · '+j); }
     const pedR=this.state.pedidos.find(p=>p.id===id); const revR=pedR&&pedR.revendaId;
     if(ix!=null){ const prodR=this.state.produtos.find(x=>x.id===(pedR?pedR.itens[ix].produtoId:null)); this.notificar('item_rejeitado',this._revEmail(revR),{pedidoId:id,produto:(prodR?prodR.descricao:''),justificativa:j}); }
-    else this.notificar('pedido_rejeitado',this._revEmail(revR),{pedidoId:id,revendaNome:this._revNome(revR),justificativa:j});
+    else this.notificar('pedido_rejeitado',this._revEmail(revR),{pedidoId:id,revendaNome:this._revNome(revR),justificativa:j,itensLista:this._itensPed(pedR,i=>i.st==='rejeitado')});
     this.mClose(); };
   toggleSel(ix){ this._tsl=this._tsl||{}; if(!this._tsl[ix]) this._tsl[ix]=()=>this.setState(s=>{ const sel=s.form.sel||[]; const on=sel.includes(ix);
     return {form:{...s.form,sel:on?sel.filter(x=>x!==ix):[...sel,ix],erro:null}}; }); return this._tsl[ix]; }
@@ -2879,8 +2883,9 @@ class Component extends DCLogic {
       p.trilha.push(this.tr(sel.length+' item(ns) encaminhado(s) (envio direto) a '+f.nome));return p;});
     this.audit('Envio direto de itens',id+' → '+f.nome+' · '+sel.length+' item(ns)');
     const pedD=this.state.pedidos.find(p=>p.id===id); const revD=pedD&&pedD.revendaId;
-    this.notificar('pedido_fornecedor',this._fornEmail(fid),{pedidoId:id,fornecedorNome:f.nome,revendaNome:this._revNome(revD),itens:String(sel.length)});
-    this.notificar('pedido_encaminhado_revenda',this._revEmail(revD),{pedidoId:id,fornecedorNome:f.nome});
+    const _ilD=this._itensPed(pedD,i=>i.st==='direto'&&i.fornecedorId===fid);
+    this.notificar('pedido_fornecedor',this._fornEmail(fid),{pedidoId:id,fornecedorNome:f.nome,revendaNome:this._revNome(revD),itensLista:_ilD});
+    this.notificar('pedido_encaminhado_revenda',this._revEmail(revD),{pedidoId:id,fornecedorNome:f.nome,itensLista:_ilD});
     this.mClose(); };
   confirmEstoque=()=>{ const sel=this.state.form.sel||[]; if(!sel.length) return this.err('Selecione ao menos um item.');
     const id=this.state.form.pedidoId;
@@ -2888,7 +2893,7 @@ class Component extends DCLogic {
       p.trilha.push(this.tr(sel.length+' item(ns) atendido(s) com estoque próprio da Loja — sem envio a fornecedor'));return p;});
     this.audit('Atendimento com estoque próprio',id+' · '+sel.length+' item(ns)');
     const pedE=this.state.pedidos.find(p=>p.id===id);
-    this.notificar('pedido_estoque_revenda',this._revEmail(pedE&&pedE.revendaId),{pedidoId:id,itens:String(sel.length)});
+    this.notificar('pedido_estoque_revenda',this._revEmail(pedE&&pedE.revendaId),{pedidoId:id,itensLista:this._itensPed(pedE,i=>i.st==='estoque')});
     this.mClose(); };
   toggleConv(fid){ this._tc=this._tc||{}; if(!this._tc[fid]) this._tc[fid]=()=>this.setState(s=>{ const c=s.form.convidados||[]; const on=c.includes(fid);
     return {form:{...s.form,convidados:on?c.filter(x=>x!==fid):[...c,fid],erro:null}}; }); return this._tc[fid]; }
@@ -2906,7 +2911,8 @@ class Component extends DCLogic {
     this.updPed(f.pedidoId,p=>{p.itens=p.itens.map((i,ix)=>sel.includes(ix)&&i.st==='aprovado'?{...i,st:'cotacao',cotacaoId:id}:i);
       p.trilha.push(this.tr('Cotação '+id+' aberta para '+sel.length+' item(ns) com '+conv.length+' fornecedores'));return p;});
     this.audit('Abertura de cotação',id+' · pedido '+f.pedidoId+' · '+sel.length+' item(ns)');
-    conv.forEach(cf=>this.notificar('cotacao_convite',this._fornEmail(cf),{cotacao:id,fornecedorNome:this._fornNome(cf),itens:String(itensCot.length),prazo:f.prazo})); };
+    const _ilC=itensCot.map(it=>{ const pp=this._prodInfo(it.produtoId); return {codigo:pp.codigo||'',descricao:pp.descricao||('Produto '+it.produtoId),qtd:it.qtd,unidade:pp.unidade||'',valor:this.fmt(it.qtd*it.preco)}; });
+    conv.forEach(cf=>this.notificar('cotacao_convite',this._fornEmail(cf),{cotacao:id,fornecedorNome:this._fornNome(cf),prazo:f.prazo,itensLista:_ilC})); };
   escolher(cotId,fid){ return ()=>{ const c=this.state.cotacoes.find(x=>x.id===cotId);
     const menor=Math.min(...c.propostas.map(p=>p.preco)); const pr=c.propostas.find(p=>p.fornecedorId===fid);
     if(pr.preco>menor){ this.setState({modal:'justifvenc',pendVenc:{cotId,fid},form:{}}); } else { this.finalizarVenc(cotId,fid,null); } }; }
@@ -2921,7 +2927,7 @@ class Component extends DCLogic {
     this.updPed(c.pedidoId,p=>{p.itens=p.itens.map(i=>i.st==='cotacao'&&i.cotacaoId===cotId?{...i,st:'direto',fornecedorId:fid,precoNeg:(pr.itens&&pr.itens[i.produtoId]!=null)?pr.itens[i.produtoId]*i.qtd:Math.round(pr.preco*(i.qtd*i.preco)/refTot*100)/100}:i);
       p.trilha.push(this.tr('Itens da '+cotId+' gerados automaticamente para '+f.nome+' (vencedor)'));return p;});
     this.audit('Seleção de proposta vencedora',cotId+' → '+f.nome+(justif?' · '+justif:''));
-    this.notificar('cotacao_vencedor',this._fornEmail(fid),{cotacao:cotId,fornecedorNome:f.nome,valor:this.fmt(pr.preco)});
+    this.notificar('cotacao_vencedor',this._fornEmail(fid),{cotacao:cotId,fornecedorNome:f.nome,valor:this.fmt(pr.preco),itensLista:this._itensCot(c)});
     this.mClose(); }
   escolherItem(cotId,pid,fid){ this._ei=this._ei||{}; const k=cotId+'|'+pid+'|'+fid; if(!this._ei[k]) this._ei[k]=()=>{
     const c=this.state.cotacoes.find(x=>x.id===cotId);
@@ -2952,7 +2958,8 @@ class Component extends DCLogic {
     this.updCot(id,x=>{x.status='cancelada';x.motivoCancel=m;x.historico.push({quando:this.ts(),usuario:this.userName(),acao:'Cotação cancelada — '+m});return x;});
     this.updPed(c.pedidoId,p=>{p.itens=p.itens.map(i=>i.cotacaoId===id&&i.st==='cotacao'?{...i,st:'aprovado',cotacaoId:null}:i);p.trilha.push(this.tr('Cotação '+id+' cancelada — itens retornaram para decisão de atendimento'));return p;});
     this.audit('Cancelamento de cotação',id+' · '+m);
-    (c.convidados||[]).forEach(cf=>this.notificar('cotacao_cancelada',this._fornEmail(cf),{cotacao:id,fornecedorNome:this._fornNome(cf),motivo:m}));
+    const _ilCC=this._itensCot(c);
+    (c.convidados||[]).forEach(cf=>this.notificar('cotacao_cancelada',this._fornEmail(cf),{cotacao:id,fornecedorNome:this._fornNome(cf),motivo:m,itensLista:_ilCC}));
     this.mClose(); };
 
   confirmProposta=()=>{ const f=this.state.form; const cid=f.cotId;
@@ -2967,7 +2974,8 @@ class Component extends DCLogic {
       cc.propostas.push({fornecedorId:fid,preco:total,itens,prazoEntrega:f.prazoEntrega,validade:f.validade||'—',condicoes:f.condicoes||'—',quando:this.hoje()});
       cc.historico.push({quando:this.ts(),usuario:me.nome,acao:'Proposta registrada por '+me.nome+' ('+this.fmt(total)+')'}); return cc;});
     this.audit('Registro de proposta',cid+' · '+this.fmt(total));
-    this.notificar('cotacao_proposta_loja',this._lojaEmail(),{cotacao:cid,fornecedorNome:me.nome,total:this.fmt(total)});
+    const _ilP=citens.map(it=>{ const pp=this._prodInfo(it.produtoId); const u=itens[it.produtoId]; return {codigo:pp.codigo||'',descricao:pp.descricao||('Produto '+it.produtoId),qtd:it.qtd,unidade:pp.unidade||'',valor:this.fmt((u||0)*it.qtd)}; });
+    this.notificar('cotacao_proposta_loja',this._lojaEmail(),{cotacao:cid,fornecedorNome:me.nome,total:this.fmt(total),itensLista:_ilP});
     this.mClose(); };
   confirmFaturar=()=>{ const f=this.state.form; const valor=this.num(f.valorFat); if(!valor) return this.err('Informe o valor efetivamente faturado (RF34).');
     const pid=f.pedidoId; const fid=this.state.fornAtivo; const ped=this.state.pedidos.find(p=>p.id===pid);
@@ -2979,8 +2987,9 @@ class Component extends DCLogic {
     this.updPed(pid,p=>{p.itens=p.itens.map(i=>i.st==='direto'&&i.fornecedorId===fid?{...i,st:'faturado'}:i);
       p.trilha.push(this.tr('Faturado ('+nf+') diretamente à revenda — '+this.fmt(valor)+' ('+meus.length+' item(ns))'));return p;});
     this.audit('Registro de faturamento',nf+' · '+pid+' · '+this.fmt(valor));
-    this.notificar('faturamento_revenda',this._revEmail(ped.revendaId),{pedidoId:pid,nf,fornecedorNome:this._fornNome(fid),valor:this.fmt(valor)});
-    this.notificar('faturamento_loja',this._lojaEmail(),{nf,pedidoId:pid,fornecedorNome:this._fornNome(fid),valor:this.fmt(valor),royalty:this.fmt(Math.round(valor*pct)/100)}); };
+    const _ilF=meus.map(i=>this._itemView(i));
+    this.notificar('faturamento_revenda',this._revEmail(ped.revendaId),{pedidoId:pid,nf,fornecedorNome:this._fornNome(fid),valor:this.fmt(valor),itensLista:_ilF});
+    this.notificar('faturamento_loja',this._lojaEmail(),{nf,pedidoId:pid,fornecedorNome:this._fornNome(fid),valor:this.fmt(valor),royalty:this.fmt(Math.round(valor*pct)/100),itensLista:_ilF}); };
   toggleFech(chave){ this._tfc=this._tfc||{}; if(!this._tfc[chave]) this._tfc[chave]=()=>this.setState(s=>({expFech:s.expFech===chave?null:chave})); return this._tfc[chave]; }
   emitirCobranca=()=>{ const chave=this.state.form.chave; if(!chave) return;
     const fid=+chave.split('-')[1]; const f=this.state.fornecedores.find(x=>x.id===fid);
@@ -3004,9 +3013,9 @@ class Component extends DCLogic {
     const n=this.state.seq.ped; const id='PED-00'+n;
     this.setState(s=>({pedidos:[{id,revendaId:s.revAtivo,fornecedorId:null,cotacaoId:null,itens,total,status:'pendente',justificativa:null,data:this.hoje(),trilha:[this.tr('Pedido criado pela revenda — aguardando aprovação da Loja')]},...s.pedidos],seq:{...s.seq,ped:n+1},cart:{},scr:'rped'}));
     this.audit('Novo pedido criado',id+' · '+this.fmt(total));
-    const _rev=this.state.revAtivo;
-    this.notificar('pedido_novo_loja',this._lojaEmail(),{pedidoId:id,revendaNome:this._revNome(_rev),itens:String(itens.length),total:this.fmt(total),data:this.hoje()});
-    this.notificar('pedido_recebido_revenda',this._revEmail(_rev),{pedidoId:id,total:this.fmt(total),data:this.hoje()}); };
+    const _rev=this.state.revAtivo; const _il=itens.map(i=>this._itemView(i));
+    this.notificar('pedido_novo_loja',this._lojaEmail(),{pedidoId:id,revendaNome:this._revNome(_rev),itensLista:_il,total:this.fmt(total),data:this.hoje()});
+    this.notificar('pedido_recebido_revenda',this._revEmail(_rev),{pedidoId:id,itensLista:_il,total:this.fmt(total),data:this.hoje()}); };
 
   setRole(r){ this._sr=this._sr||{}; if(!this._sr[r]) this._sr[r]=()=>this.setState({role:r,scr:null,selPed:null,selCot:null,modal:null,form:{}}); return this._sr[r]; }
   setFornAtivo=e=>this.setState({fornAtivo:+e.target.value});
