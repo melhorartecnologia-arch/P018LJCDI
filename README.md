@@ -239,6 +239,25 @@ mas é aceito sem verificação. Endpoints: `POST /api/anexos`,
 `GET /api/analise-fiscal/status`. A lógica fica em
 `server/src/analise-fiscal.js`.
 
+### Trilha de auditoria (Segurança & Auditoria)
+
+Cada operação crítica gera um evento com **quem** (usuário, e-mail e papel),
+**o quê** (operação e detalhe), **quando** (data/hora) e a classificação
+automática em **módulo** (Segurança, Pedidos, Cotações, Faturamento, Royalties,
+Cadastros, Estoque, Usuários, Configurações, Relatórios) e **severidade**
+(info, alerta, crítico). Além das ações de negócio, a trilha registra eventos
+de segurança: **logins**, **falhas de login** (com o e-mail tentado e o
+motivo), **logouts** e **tentativas de acesso negadas por permissão** (com a
+chave de permissão envolvida). São mantidos os últimos 400 eventos; entradas
+de versões anteriores são classificadas automaticamente na exibição.
+
+A tela **Gestão › Segurança & Auditoria** (papel Loja) traz KPIs (eventos
+registrados, eventos hoje, alertas e críticos, usuários no log), busca textual
+e filtros combináveis por usuário, módulo, severidade e período (hoje/7/30
+dias), paginação ("Carregar mais eventos") e **exportação XLSX** do recorte
+filtrado — controlada pela permissão `auditoria.exportar` e, ela própria,
+registrada na trilha.
+
 ## Arquitetura
 
 Monorepo com três partes:
