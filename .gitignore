@@ -4,6 +4,7 @@ dist/
 *.log
 .vite/
 server/.pgdata/
+server/.pgdata-test/
 .pgdata/
 
 # Segredos e config local — nunca versionar (.env.example fica no repo)
