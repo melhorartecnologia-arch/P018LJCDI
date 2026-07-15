@@ -84,6 +84,28 @@ aplicados sempre de forma idempotente (o seed só entra se o banco estiver vazio
 Também há suporte a Docker para quem quiser, mas **não é necessário**:
 `npm run docker` (equivale a `docker compose up --build`).
 
+## Produção em VPS Ubuntu (sem Docker, com PM2)
+
+Guia completo em **[`docs/deploy-vps-ubuntu.md`](docs/deploy-vps-ubuntu.md)** —
+passo a passo para rodar de forma integral numa VPS Ubuntu com o processo
+gerenciado pelo **PM2** (reinício automático + boot) e o **PostgreSQL no mesmo
+servidor**, além de Nginx com HTTPS, firewall, atualização e backup. Resumo:
+
+```bash
+# Node 22 LTS + PostgreSQL local + usuário/banco criados (ver guia), então:
+cd /var/www/cidadeimperial
+cp .env.example .env    # defina DATABASE_URL=postgres://...@localhost:5432/cidadeimperial
+npm --prefix server install --omit=dev
+npm --prefix web install && npm --prefix web run build
+sudo npm install -g pm2
+pm2 start ecosystem.config.cjs && pm2 save && pm2 startup systemd
+```
+
+O arquivo **`ecosystem.config.cjs`** (raiz do repositório) já traz a
+configuração do PM2 — 1 instância em modo fork (obrigatório: a persistência do
+estado é transacional e não deve rodar em cluster), reinício automático e logs
+em `logs/`.
+
 ## Configuração (variáveis de ambiente)
 
 Toda a configuração vem de **variáveis de ambiente**. Você pode defini-las no
