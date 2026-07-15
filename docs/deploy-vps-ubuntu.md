@@ -183,6 +183,10 @@ para o HTTPS (desligável com `HTTPS_REDIRECT_HTTP=false`).
 
 ### Opção A — Nginx na frente + Let's Encrypt (recomendado)
 
+> Passo a passo pronto para o ambiente de homologação
+> (`lojacidadeimperialhml.cervejariacidadeimperial.com`):
+> [`https-lets-encrypt-hml.md`](https-lets-encrypt-hml.md).
+
 ```bash
 sudo apt install -y nginx
 sudo nano /etc/nginx/sites-available/cidadeimperial
