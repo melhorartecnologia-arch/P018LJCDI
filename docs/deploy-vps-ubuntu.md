@@ -345,7 +345,13 @@ pm2 restart cidade-imperial
 O schema é aplicado de forma idempotente na subida (`CREATE TABLE IF NOT
 EXISTS`); os dados existentes são preservados (o seed só entra em banco vazio).
 
-## 12. Backup do banco
+## 12. Acessar o banco pelo DBeaver (da sua máquina)
+
+Guia próprio em [`acesso-banco-dbeaver.md`](acesso-banco-dbeaver.md): conexão
+via **túnel SSH embutido do DBeaver** (sem abrir a porta 5432), usuário
+somente-leitura recomendado e os cuidados ao consultar o banco da aplicação.
+
+## 13. Backup do banco
 
 Backup manual:
 
@@ -367,7 +373,7 @@ gunzip -c /var/backups/cidadeimperial-2026-07-15.sql.gz \
   | psql "postgres://cidadeimperial:SENHA_FORTE@localhost:5432/cidadeimperial"
 ```
 
-## 13. Problemas comuns
+## 14. Problemas comuns
 
 | Sintoma | Causa provável / solução |
 | --- | --- |
