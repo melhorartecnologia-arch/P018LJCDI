@@ -379,6 +379,7 @@ gunzip -c /var/backups/cidadeimperial-2026-07-15.sql.gz \
 | Aplicação não volta após reboot | `pm2 save` não foi executado, ou o comando impresso por `pm2 startup` não foi rodado. |
 | E-mails não são enviados | Envio desativado ou SMTP incorreto em Configurações Técnicas; alguns provedores de VPS bloqueiam a porta 25 — use 587 (STARTTLS) ou 465 (SSL). |
 | Análise fiscal usa "analisador local" | `ANTHROPIC_API_KEY` não definida no `.env` — defina e `pm2 restart cidade-imperial`. |
+| `nginx -t`: "could not build server_names_hash ... bucket_size" | Domínio longo — `echo 'server_names_hash_bucket_size 128;' \| sudo tee /etc/nginx/conf.d/server-names-hash.conf` e teste de novo. |
 | HTTPS nativo não sobe (`EACCES ... 443`) | Porta <1024 sem privilégio: rode o `setcap` da opção B (ou use portas altas, ex.: `HTTPS_PORT=8443`). |
 | HTTPS nativo não sobe (`ENOENT`/`EACCES` no certificado) | Caminho errado em `HTTPS_CERT`/`HTTPS_KEY`, ou o usuário do PM2 não tem leitura nos arquivos (ajuste de grupo da opção B). |
 | Navegador avisa "conexão não é particular" | Certificado autoassinado (opção C) — esperado; use Let's Encrypt com domínio para eliminar o aviso. |

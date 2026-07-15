@@ -70,6 +70,11 @@ server {
 }
 NGINX
 sudo ln -sf /etc/nginx/sites-available/cidadeimperial-hml /etc/nginx/sites-enabled/
+
+# O domínio é longo (50 caracteres) e estoura a tabela de nomes padrão do
+# Nginx ("could not build server_names_hash ... bucket_size: 64") — aumente:
+echo 'server_names_hash_bucket_size 128;' | sudo tee /etc/nginx/conf.d/server-names-hash.conf
+
 sudo nginx -t && sudo systemctl reload nginx
 ```
 
@@ -127,6 +132,7 @@ sudo certbot renew --dry-run           # simulação — deve terminar sem erros
 
 | Sintoma | Causa / solução |
 | --- | --- |
+| `nginx -t` falha com "could not build server_names_hash ... bucket_size: 64" | Nome de domínio longo — rode o `echo ... server-names-hash.conf` do passo 3 e teste de novo. |
 | `certbot` falha com "Challenge failed" / "unauthorized" | DNS ainda não propagou (`dig +short` deve devolver o IP da VPS) ou porta 80 bloqueada (UFW/firewall do provedor da VPS). |
 | `curl` do passo 3 responde 502 | Aplicação parada ou em outra porta: `pm2 status`, `pm2 logs cidade-imperial`; confira `PORT=3000`/`HOST=127.0.0.1` no `.env`. |
 | Erro 413 ao anexar documento fiscal | O `client_max_body_size 20m` saiu do bloco do server ao editar — confira em `/etc/nginx/sites-available/cidadeimperial-hml` (o certbot preserva a linha). |
