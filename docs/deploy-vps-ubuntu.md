@@ -166,7 +166,22 @@ sudo ufw status
 
 (Na variante sem Nginx, troque as duas regras de 80/443 por `sudo ufw allow 3000/tcp`.)
 
-## 9. Nginx na frente (recomendado) + HTTPS
+## 9. HTTPS
+
+A plataforma **funciona integralmente com HTTPS** e há três caminhos — escolha um:
+
+| Opção | Quando usar |
+| --- | --- |
+| **A. Nginx + Let's Encrypt** (recomendado) | Você tem um domínio apontando para a VPS. |
+| **B. HTTPS nativo + Let's Encrypt** (sem Nginx) | Você tem domínio, mas não quer instalar Nginx. |
+| **C. HTTPS nativo autoassinado** | Acesso só por IP, sem domínio (o navegador exibirá um aviso de certificado). |
+
+Nas opções B e C, a própria aplicação Node serve o TLS: basta definir
+`HTTPS_CERT` e `HTTPS_KEY` no `.env` — ela passa a escutar HTTPS em
+`HTTPS_PORT` (padrão 443) e **redireciona automaticamente o HTTP** da `PORT`
+para o HTTPS (desligável com `HTTPS_REDIRECT_HTTP=false`).
+
+### Opção A — Nginx na frente + Let's Encrypt (recomendado)
 
 ```bash
 sudo apt install -y nginx
@@ -214,6 +229,91 @@ O certbot ajusta o Nginx para 443 e renova o certificado automaticamente.
 
 > **Importante:** o `client_max_body_size 20m` é obrigatório — o padrão do
 > Nginx (1 MB) bloquearia o anexo do documento fiscal no faturamento.
+
+### Opção B — HTTPS nativo com Let's Encrypt (sem Nginx)
+
+Emita o certificado em modo standalone (o certbot sobe um servidor próprio na
+porta 80 durante a validação — a aplicação pode continuar rodando, desde que a
+porta 80 esteja livre; libere-a no firewall):
+
+```bash
+sudo apt install -y certbot
+sudo certbot certonly --standalone -d plataforma.seudominio.com.br
+```
+
+Deixe o Node usar a porta 443 sem rodar como root:
+
+```bash
+sudo setcap 'cap_net_bind_service=+ep' $(readlink -f $(which node))
+# e dê ao seu usuário acesso de leitura aos certificados:
+sudo groupadd -f tlscerts && sudo usermod -aG tlscerts $USER
+sudo chgrp -R tlscerts /etc/letsencrypt/live /etc/letsencrypt/archive
+sudo chmod -R g+rX /etc/letsencrypt/live /etc/letsencrypt/archive
+# saia e entre de novo no SSH para o grupo valer
+```
+
+No `.env`, aponte para o certificado (e mantenha a `PORT` para o redirecionamento):
+
+```ini
+HOST=0.0.0.0
+PORT=80
+HTTPS_PORT=443
+HTTPS_CERT=/etc/letsencrypt/live/plataforma.seudominio.com.br/fullchain.pem
+HTTPS_KEY=/etc/letsencrypt/live/plataforma.seudominio.com.br/privkey.pem
+```
+
+Reinicie e confira:
+
+```bash
+pm2 restart cidade-imperial
+curl -s https://plataforma.seudominio.com.br/api/health
+# quem acessar http:// é redirecionado (301) para https:// automaticamente
+```
+
+Faça a renovação do certificado reiniciar a aplicação:
+
+```bash
+echo '#!/bin/sh
+pm2 restart cidade-imperial' | sudo tee /etc/letsencrypt/renewal-hooks/deploy/pm2-restart.sh
+sudo chmod +x /etc/letsencrypt/renewal-hooks/deploy/pm2-restart.sh
+sudo certbot renew --dry-run   # testa a renovação
+```
+
+> Na renovação standalone o certbot precisa da porta 80 livre por alguns
+> segundos; como a aplicação a usa só para o redirecionamento, pare-a durante a
+> renovação com hooks (`--pre-hook "pm2 stop cidade-imperial" --post-hook
+> "pm2 start cidade-imperial"`) ou renove pelo modo webroot. Com Nginx (opção A)
+> nada disso é necessário.
+
+### Opção C — HTTPS nativo com certificado autoassinado (sem domínio)
+
+Para acesso apenas por IP (ambiente interno/testes), gere um certificado
+autoassinado válido por 1 ano:
+
+```bash
+sudo mkdir -p /etc/cidadeimperial/tls
+sudo openssl req -x509 -nodes -newkey rsa:2048 -days 365 \
+  -keyout /etc/cidadeimperial/tls/key.pem \
+  -out /etc/cidadeimperial/tls/cert.pem \
+  -subj "/CN=SEU_IP_DA_VPS"
+sudo chown -R $USER /etc/cidadeimperial/tls
+```
+
+No `.env`:
+
+```ini
+HOST=0.0.0.0
+PORT=80
+HTTPS_PORT=443
+HTTPS_CERT=/etc/cidadeimperial/tls/cert.pem
+HTTPS_KEY=/etc/cidadeimperial/tls/key.pem
+```
+
+Aplique o `setcap` do início da opção B, rode `pm2 restart cidade-imperial` e
+acesse `https://SEU_IP`. O navegador mostrará um aviso ("conexão não é
+particular") porque o certificado não é emitido por uma autoridade — clique em
+"Avançado → Continuar". A conexão fica criptografada mesmo assim; para
+eliminar o aviso é preciso um domínio + Let's Encrypt (opções A ou B).
 
 ## 10. Conferir tudo
 
@@ -275,3 +375,6 @@ gunzip -c /var/backups/cidadeimperial-2026-07-15.sql.gz \
 | Aplicação não volta após reboot | `pm2 save` não foi executado, ou o comando impresso por `pm2 startup` não foi rodado. |
 | E-mails não são enviados | Envio desativado ou SMTP incorreto em Configurações Técnicas; alguns provedores de VPS bloqueiam a porta 25 — use 587 (STARTTLS) ou 465 (SSL). |
 | Análise fiscal usa "analisador local" | `ANTHROPIC_API_KEY` não definida no `.env` — defina e `pm2 restart cidade-imperial`. |
+| HTTPS nativo não sobe (`EACCES ... 443`) | Porta <1024 sem privilégio: rode o `setcap` da opção B (ou use portas altas, ex.: `HTTPS_PORT=8443`). |
+| HTTPS nativo não sobe (`ENOENT`/`EACCES` no certificado) | Caminho errado em `HTTPS_CERT`/`HTTPS_KEY`, ou o usuário do PM2 não tem leitura nos arquivos (ajuste de grupo da opção B). |
+| Navegador avisa "conexão não é particular" | Certificado autoassinado (opção C) — esperado; use Let's Encrypt com domínio para eliminar o aviso. |

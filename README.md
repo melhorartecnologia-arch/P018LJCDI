@@ -126,6 +126,9 @@ embutido na porta 3000.
 | `HOST` | `0.0.0.0` | Interface de rede (`127.0.0.1` = só local). |
 | `JSON_BODY_LIMIT` | `8mb` | Tamanho máximo do corpo JSON. |
 | `PUBLIC_URL` | — | URL pública, apenas para mensagens de log. |
+| `HTTPS_CERT` `HTTPS_KEY` | — | Caminhos do certificado/chave: com ambos, a aplicação serve **HTTPS nativo** (sem precisar de Nginx). |
+| `HTTPS_PORT` | `443` | Porta do HTTPS nativo. |
+| `HTTPS_REDIRECT_HTTP` | `true` | Com HTTPS nativo ativo, redireciona o HTTP da `PORT` para o HTTPS. |
 | `WEB_DIST` | auto | Pasta do build da web servido pela API. |
 | `DB_DRIVER` | `auto` | `auto` \| `pglite` \| `postgres`. |
 | `PGLITE_DIR` | `server/.pgdata` | Pasta de dados do PostgreSQL embutido. |

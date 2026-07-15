@@ -1,5 +1,7 @@
 import express from 'express'
-import { existsSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
+import { createServer as createHttpServer } from 'node:http'
+import { createServer as createHttpsServer } from 'node:https'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { query, driver } from './db.js'
@@ -189,14 +191,39 @@ app.use((err, _req, res, _next) => {
   res.status(500).json({ error: 'Erro interno do servidor.' })
 })
 
-migrate()
-  .then(() => {
-    app.listen(config.port, config.host, () => {
-      const shown = config.publicUrl || `http://localhost:${config.port}`
-      console.log(`[server] Plataforma Cidade Imperial ouvindo em ${shown} (banco: ${driver})`)
+// HTTPS nativo (sem proxy): com HTTPS_CERT e HTTPS_KEY definidos, a aplicação
+// serve TLS diretamente em HTTPS_PORT e (opcionalmente) redireciona o HTTP da
+// PORT para o HTTPS. Sem essas variáveis, serve HTTP puro em PORT — o cenário
+// clássico atrás de um proxy (Nginx) que termina o TLS.
+function iniciarEscuta() {
+  if (config.httpsCert && config.httpsKey) {
+    const creds = { cert: readFileSync(config.httpsCert), key: readFileSync(config.httpsKey) }
+    createHttpsServer(creds, app).listen(config.httpsPort, config.host, () => {
+      const shown = config.publicUrl || `https://localhost:${config.httpsPort}`
+      console.log(`[server] Plataforma Cidade Imperial ouvindo em ${shown} (HTTPS, banco: ${driver})`)
       console.log(`[server] servindo web de ${WEB_DIST}`)
     })
+    if (config.httpsRedirect) {
+      createHttpServer((req, res) => {
+        const host = String(req.headers.host || 'localhost').replace(/:\d+$/, '')
+        const porta = config.httpsPort === 443 ? '' : `:${config.httpsPort}`
+        res.writeHead(301, { Location: `https://${host}${porta}${req.url || '/'}` })
+        res.end()
+      }).listen(config.port, config.host, () => {
+        console.log(`[server] HTTP na porta ${config.port} redirecionando para HTTPS ${config.httpsPort}`)
+      })
+    }
+    return
+  }
+  app.listen(config.port, config.host, () => {
+    const shown = config.publicUrl || `http://localhost:${config.port}`
+    console.log(`[server] Plataforma Cidade Imperial ouvindo em ${shown} (banco: ${driver})`)
+    console.log(`[server] servindo web de ${WEB_DIST}`)
   })
+}
+
+migrate()
+  .then(iniciarEscuta)
   .catch((err) => {
     console.error('[server] falha ao iniciar:', err)
     process.exit(1)

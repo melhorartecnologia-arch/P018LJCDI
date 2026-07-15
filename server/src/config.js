@@ -55,6 +55,14 @@ export const config = {
   jsonBodyLimit: str(process.env.JSON_BODY_LIMIT, '8mb'),
   publicUrl: str(process.env.PUBLIC_URL, null), // usado só para logs amigáveis
 
+  // HTTPS nativo (sem proxy): defina o par de arquivos do certificado.
+  // Com ambos definidos, a aplicação serve TLS em HTTPS_PORT e redireciona o
+  // HTTP da PORT para o HTTPS (desligável com HTTPS_REDIRECT_HTTP=false).
+  httpsCert: resolvePath(str(process.env.HTTPS_CERT, null)),
+  httpsKey: resolvePath(str(process.env.HTTPS_KEY, null)),
+  httpsPort: int(process.env.HTTPS_PORT, 443),
+  httpsRedirect: bool(process.env.HTTPS_REDIRECT_HTTP, true),
+
   // Web (build servido pela API); null = detecção automática
   webDist: resolvePath(str(process.env.WEB_DIST, null)),
 
