@@ -794,7 +794,8 @@ input::placeholder,textarea::placeholder{color:#b0a795}
               <td style="padding:11px 10px;font-size:13px;border-bottom:1px solid #f5f1e8">{{c.fornNome}}</td>
               <td style="padding:11px 10px;border-bottom:1px solid #f5f1e8"><span style="font-size:12px;font-weight:700;color:#8f682a;background:#faf5e9;border:1px solid #ecdcbc;border-radius:7px;padding:3px 9px">{{c.royaltyStr}}</span>
                 <sc-if value="{{c.diaPagTxt}}" hint-placeholder-val="{{false}}"><div style="font-size:10.5px;color:#8a8378;margin-top:3px;white-space:nowrap">{{c.diaPagTxt}}</div></sc-if>
-                <div style="font-size:10.5px;color:#8a8378;margin-top:3px">{{c.gatilhoTxt}}</div></td>
+                <div style="font-size:10.5px;color:#8a8378;margin-top:3px">{{c.gatilhoTxt}}</div>
+                <sc-if value="{{c.parcTxt}}" hint-placeholder-val="{{false}}"><div style="font-size:10.5px;font-weight:600;color:#5d3f96;margin-top:3px">{{c.parcTxt}}</div></sc-if></td>
               <td style="padding:11px 10px;font-size:12.5px;color:#8a8378;border-bottom:1px solid #f5f1e8">{{c.vig}}
                 <sc-if value="{{c.temAviso}}" hint-placeholder-val="{{false}}"><div style="margin-top:3px"><span style="font-size:10.5px;font-weight:700;border-radius:6px;padding:2px 7px;background:#fdf3e0;color:#8a5a12;white-space:nowrap">{{c.aviso}}</span></div></sc-if>
               </td>
@@ -1336,6 +1337,16 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         </div>
       </sc-for>
     </div>
+    <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:16px 18px;margin-bottom:14px">
+      <div style="font-size:14px;font-weight:700;margin-bottom:2px">Controle por parcela — previsto × recebido × pendente × em atraso</div>
+      <div style="font-size:11.5px;color:#a89f90;margin-bottom:10px">Royalties parcelados (RF64): cada parcela tem vencimento e status próprios — fechamentos à vista contam como parcela única</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+        <div style="background:#fbf6ec;border:1px solid #eadfc8;border-radius:10px;padding:12px 14px"><div style="font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#8f682a">Previsto (apurado)</div><div style="font-size:18px;font-weight:800;color:#8f682a;margin-top:3px">{{royParc.previsto}}</div><div style="font-size:11px;color:#a89f90;margin-top:1px">{{royParc.previstoSub}}</div></div>
+        <div style="background:#e9f3ea;border:1px solid #c4dfc8;border-radius:10px;padding:12px 14px"><div style="font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#2f6b39">Recebido</div><div style="font-size:18px;font-weight:800;color:#2f6b39;margin-top:3px">{{royParc.recebido}}</div><div style="font-size:11px;color:#a89f90;margin-top:1px">{{royParc.recebidoSub}}</div></div>
+        <div style="background:#fdf3e0;border:1px solid #ecd9ae;border-radius:10px;padding:12px 14px"><div style="font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#8a5a12">Pendente (a vencer)</div><div style="font-size:18px;font-weight:800;color:#8a5a12;margin-top:3px">{{royParc.pendente}}</div><div style="font-size:11px;color:#a89f90;margin-top:1px">{{royParc.pendenteSub}}</div></div>
+        <div style="background:#fbf1ef;border:1px solid #e7c4bc;border-radius:10px;padding:12px 14px"><div style="font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#a33a2b">Em atraso</div><div style="font-size:18px;font-weight:800;color:#a33a2b;margin-top:3px">{{royParc.atraso}}</div><div style="font-size:11px;color:#a89f90;margin-top:1px">{{royParc.atrasoSub}}</div></div>
+      </div>
+    </div>
     <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:13px 16px;margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
       <select value="{{royCompF}}" onChange="{{setRoyCompF}}" style="padding:9px 10px;border:1px solid #ddd5c7;border-radius:9px;font:inherit;font-size:12.5px;background:#fff;outline:none;color:#272525;cursor:pointer">
         <sc-for list="{{royCompOpts}}" as="o" hint-placeholder-count="3"><option value="{{o.v}}">{{o.label}}</option></sc-for>
@@ -1405,6 +1416,22 @@ input::placeholder,textarea::placeholder{color:#b0a795}
                         <span style="white-space:nowrap">{{n.valorFmt}} × {{n.pctStr}} = <b style="color:#8f682a">{{n.royFmt}}</b></span>
                       </div>
                     </sc-for>
+                    <sc-if value="{{r.temParcelas}}" hint-placeholder-val="{{false}}">
+                      <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#b0a795;margin:12px 0 6px">Parcelas do royalty (RF64) — {{r.pagoParcTxt}}</div>
+                      <sc-for list="{{r.parcRows}}" as="pc" hint-placeholder-count="0">
+                        <div style="display:flex;align-items:center;gap:12px;padding:7px 0;border-bottom:1px solid #f1ece2;font-size:12.5px;flex-wrap:wrap">
+                          <span style="min-width:92px"><b>{{pc.label}}</b></span>
+                          <span style="min-width:92px">{{pc.valorFmt}}</span>
+                          <span style="min-width:130px;color:#6b6459">vence {{pc.venc}}</span>
+                          <span style="font-size:11px;font-weight:600;border-radius:7px;padding:2px 8px;background:{{pc.stBg}};color:{{pc.stFg}}">{{pc.stLabel}}</span>
+                          <sc-if value="{{pc.pgTxt}}" hint-placeholder-val="{{false}}"><span style="font-size:11px;color:#8a8378">{{pc.pgTxt}}</span></sc-if>
+                          <span style="margin-left:auto;white-space:nowrap">
+                            <sc-if value="{{pc.emAtrasoP}}" hint-placeholder-val="{{false}}"><span onClick="{{pc.lembreteP}}" title="Envia e-mail de lembrete desta parcela vencida ao fornecedor" style="font-size:11.5px;font-weight:600;color:#a33a2b;border:1px solid #e7c4bc;border-radius:8px;padding:4px 10px;cursor:pointer;margin-right:8px" style-hover="background:#fbf1ef">Lembrete da parcela</span></sc-if>
+                            <sc-if value="{{pc.podePagar}}" hint-placeholder-val="{{false}}"><span onClick="{{pc.registrarP}}" style="font-size:11.5px;font-weight:600;color:#fff;background:#B38335;border-radius:8px;padding:5px 10px;cursor:pointer" style-hover="background:#9a6f2b">Registrar pagamento…</span></sc-if>
+                          </span>
+                        </div>
+                      </sc-for>
+                    </sc-if>
                   </td>
                 </tr>
               </sc-if>
@@ -2524,6 +2551,11 @@ input::placeholder,textarea::placeholder{color:#b0a795}
       </select>
       <sc-if value="{{gatOutro}}" hint-placeholder-val="{{false}}"><input value="{{form.gatilhoDesc}}" onChange="{{fxGatilhoDesc}}" placeholder="Descreva o gatilho contratual…" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13px;background:#fff;outline:none;color:#272525;margin-top:8px"></sc-if>
       <div style="font-size:11px;color:#b0a795;margin-top:6px">Dispara a obrigação de pagamento (RF63) — a previsão de vencimento é sempre o dia acordado do fornecedor no mês seguinte à data do gatilho.</div>
+      <div style="display:grid;grid-template-columns:1fr 1.4fr;gap:10px;align-items:end">
+        <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Parcelas do royalty</div>
+        <input value="{{form.parcelas}}" onChange="{{fxParcelas}}" placeholder="1 a 12 · padrão 1" title="Número de parcelas mensais do royalty apurado (RF64)" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
+        <div style="font-size:11px;color:#b0a795;padding-bottom:9px">1 = à vista · N parcelas mensais consecutivas (RF64), a 1ª no vencimento do gatilho e as demais no mesmo dia dos meses seguintes.</div>
+      </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
         <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Início da vigência</div>
         <input value="{{form.inicio}}" onChange="{{fxInicio}}" placeholder="dd/mm/aaaa" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
@@ -2560,6 +2592,11 @@ input::placeholder,textarea::placeholder{color:#b0a795}
       </select>
       <sc-if value="{{gatOutro}}" hint-placeholder-val="{{false}}"><input value="{{form.gatilhoDesc}}" onChange="{{fxGatilhoDesc}}" placeholder="Descreva o gatilho contratual…" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13px;background:#fff;outline:none;color:#272525;margin-top:8px"></sc-if>
       <div style="font-size:11px;color:#b0a795;margin-top:6px">Dispara a obrigação de pagamento (RF63) — a previsão de vencimento é sempre o dia acordado do fornecedor no mês seguinte à data do gatilho.</div>
+      <div style="display:grid;grid-template-columns:1fr 1.4fr;gap:10px;align-items:end">
+        <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Parcelas do royalty</div>
+        <input value="{{form.parcelas}}" onChange="{{fxParcelas}}" placeholder="1 a 12 · padrão 1" title="Número de parcelas mensais do royalty apurado (RF64)" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
+        <div style="font-size:11px;color:#b0a795;padding-bottom:9px">1 = à vista · N parcelas mensais consecutivas (RF64), a 1ª no vencimento do gatilho e as demais no mesmo dia dos meses seguintes.</div>
+      </div>
       <sc-if value="{{form.erro}}" hint-placeholder-val="{{false}}"><div style="color:#a33a2b;font-size:12.5px;margin-top:12px">{{form.erro}}</div></sc-if>
       <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:18px">
         <div onClick="{{mClose}}" style="border:1px solid #ddd5c7;border-radius:8px;padding:9px 15px;font-size:13px;font-weight:600;cursor:pointer;color:#6b6459" style-hover="background:#f7f3ea">Cancelar</div>
@@ -3185,6 +3222,16 @@ input::placeholder,textarea::placeholder{color:#b0a795}
           <div style="font-size:12px;color:#8a8378;align-self:center">Base faturada {{cobInfo.totFat}}</div>
           <div style="font-size:16px;font-weight:700;color:#8f682a;white-space:nowrap">Total devido: {{cobInfo.totRoy}}</div>
         </div>
+        <sc-if value="{{cobInfo.temCobParc}}" hint-placeholder-val="{{false}}">
+          <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#b0a795;margin:2px 0 6px">Parcelas do royalty (RF64)</div>
+          <sc-for list="{{cobInfo.cobParcRows}}" as="pc" hint-placeholder-count="0">
+            <div style="display:flex;justify-content:space-between;gap:10px;font-size:12.5px;padding:5px 0;border-bottom:1px solid #f5f1e8">
+              <span><b>{{pc.label}}</b> · vence {{pc.venc}}</span>
+              <span style="white-space:nowrap">{{pc.valorFmt}} <span style="font-size:10.5px;font-weight:600;border-radius:6px;padding:2px 7px;background:{{pc.stBg}};color:{{pc.stFg}};margin-left:6px">{{pc.stLabel}}</span></span>
+            </div>
+          </sc-for>
+          <div style="font-size:11px;color:#8a5a12;background:#fdf3e0;border:1px solid #ecd9ae;border-radius:8px;padding:7px 10px;margin:8px 0 12px">{{cobInfo.parcInfoTxt}}</div>
+        </sc-if>
         <div style="font-size:11px;color:#b0a795;line-height:1.5">Royalty apurado no fechamento mensal conforme percentual do contrato vigente (RF36–RF39). O não pagamento até o vencimento altera o status para "em atraso" (RF41).</div>
         <sc-if value="{{form.erro}}" hint-placeholder-val="{{false}}"><div style="color:#a33a2b;font-size:12.5px;margin-top:12px">{{form.erro}}</div></sc-if>
         <sc-if value="{{cobInfo.emitida}}" hint-placeholder-val="{{false}}"><div style="font-size:12px;font-weight:600;color:#2f6b39;margin-top:12px">Cobrança emitida{{cobInfo.emitidaEm}} — fornecedor notificado.</div></sc-if>
@@ -3228,7 +3275,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
       <div style="font-size:16px;font-weight:700">Registrar pagamento de royalty</div>
       <div style="font-size:12.5px;color:#8a8378;margin-top:2px">RF40 — {{form.fornNome}} · data, valor e comprovante</div>
       <div style="display:flex;justify-content:space-between;gap:10px;background:#faf5e9;border:1px solid #ecdcbc;border-radius:9px;padding:9px 13px;margin-top:12px;font-size:12px;color:#6b6459">
-        <span>Royalty devido: <b style="color:#8f682a">{{form.devidoFmt}}</b></span>
+        <span><sc-if value="{{form.parcelaTxt}}" hint-placeholder-val="{{false}}"><b style="color:#5d3f96">{{form.parcelaTxt}} · </b></sc-if>Royalty devido: <b style="color:#8f682a">{{form.devidoFmt}}</b></span>
         <sc-if value="{{form.vencimento}}" hint-placeholder-val="{{false}}"><span>Vencimento: <b>{{form.vencimento}}</b></span></sc-if>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
@@ -4112,6 +4159,7 @@ class Component extends DCLogic {
         "Use \"⬇ Exportar XLSX\" (canto superior direito) para baixar o fechamento filtrado em Excel, com vencimento, cobrança, lembrete, pagamento e comprovante por fornecedor (RF38)."
       ],
       "dicas": [
+        "Contratos com royalty PARCELADO (RF64): configure o número de parcelas mensais no contrato — a cobrança gera as parcelas com vencimentos individuais (1ª no vencimento do gatilho, demais no mesmo dia dos meses seguintes); abra o extrato do fechamento para registrar pagamento e enviar lembrete POR PARCELA, e acompanhe o painel \"Controle por parcela\" com previsto × recebido × pendente × em atraso.",
         "O vencimento sugerido da cobrança segue o GATILHO do contrato do fornecedor (RF63): dia acordado no mês seguinte à data do gatilho (entrada do pedido, emissão da NF ou recebimento do boleto) — a janela de cobrança mostra a base usada e o campo continua editável.",
         "O status \"Em atraso\" é automático: basta a cobrança emitida passar do vencimento sem pagamento registrado — nenhuma ação manual é necessária (RF41).",
         "Emita a cobrança sempre com um vencimento realista: é ele que dispara o controle de atraso, o botão de lembrete e a marcação \"pago com atraso\".",
@@ -4617,9 +4665,11 @@ class Component extends DCLogic {
     if(String(f.diaPag||'').trim()&&(!diaPg||diaPg<1||diaPg>30)) return this.err('Dia acordado de pagamento inválido: informe um dia de 1 a 30, sem referência de mês (RF65).');
     const gat=f.gatilho||'nf'; const gatDesc=gat==='outro'?String(f.gatilhoDesc||'').trim():'';
     if(gat==='outro'&&!gatDesc) return this.err('Descreva o gatilho contratual previsto (RF63).');
+    const nParc=String(f.parcelas||'').trim()?parseInt(String(f.parcelas).replace(/\D/g,''),10):1;
+    if(String(f.parcelas||'').trim()&&(!nParc||nParc<1||nParc>12)) return this.err('Parcelamento inválido: informe de 1 a 12 parcelas mensais (RF64).');
     const id=this.state.seq.ctr; const numero='CT-2026-00'+id;
-    this.setState(s=>({contratos:[...s.contratos,{id,fornecedorId:+f.fornecedorId,numero,royalty:pct,inicio:f.inicio,fim:f.fim,vigente:true,historico:[],diaPagamento:diaPg,gatilho:gat,gatilhoDesc:gatDesc}],seq:{...s.seq,ctr:id+1},modal:null,form:{}}));
-    this.audit('Cadastro de contrato',numero+' · royalty '+pct+'%'+(diaPg?' · dia acordado de pagamento: '+diaPg:'')+' · gatilho de pagamento: '+this._gatilhoLabel(gat)+(gatDesc?' — '+gatDesc:'')); };
+    this.setState(s=>({contratos:[...s.contratos,{id,fornecedorId:+f.fornecedorId,numero,royalty:pct,inicio:f.inicio,fim:f.fim,vigente:true,historico:[],diaPagamento:diaPg,gatilho:gat,gatilhoDesc:gatDesc,parcelas:nParc}],seq:{...s.seq,ctr:id+1},modal:null,form:{}}));
+    this.audit('Cadastro de contrato',numero+' · royalty '+pct+'%'+(diaPg?' · dia acordado de pagamento: '+diaPg:'')+' · gatilho de pagamento: '+this._gatilhoLabel(gat)+(gatDesc?' — '+gatDesc:'')+(nParc>1?' · royalty em '+nParc+' parcelas mensais':'')); };
   salvarRoyalty=()=>{ if(!this.pode('cadastros.fornecedores')) return this.negado('Você não tem permissão para alterar royalties.','cadastros.fornecedores'); const f=this.state.form; const pct=this.num(f.royalty); if(!pct) return this.err('Informe o novo percentual.');
     const c=this.state.contratos.find(x=>x.id===f.contratoId);
     const diaPg=String(f.diaPag||'').trim()?parseInt(String(f.diaPag).replace(/\D/g,''),10):null;
@@ -4628,11 +4678,15 @@ class Component extends DCLogic {
     const gat=f.gatilho||c.gatilho||'nf'; const gatDesc=gat==='outro'?String(f.gatilhoDesc||'').trim():'';
     if(gat==='outro'&&!gatDesc) return this.err('Descreva o gatilho contratual previsto (RF63).');
     const mudouGat=(c.gatilho||'nf')!==gat||(c.gatilhoDesc||'')!==gatDesc;
-    this.setState(s=>({contratos:s.contratos.map(x=>x.id===f.contratoId?{...x,royalty:pct,diaPagamento:diaPg,gatilho:gat,gatilhoDesc:gatDesc,historico:[...x.historico,
+    const nParc=String(f.parcelas||'').trim()?parseInt(String(f.parcelas).replace(/\D/g,''),10):1;
+    if(String(f.parcelas||'').trim()&&(!nParc||nParc<1||nParc>12)) return this.err('Parcelamento inválido: informe de 1 a 12 parcelas mensais (RF64).');
+    const mudouParc=(c.parcelas||1)!==nParc;
+    this.setState(s=>({contratos:s.contratos.map(x=>x.id===f.contratoId?{...x,royalty:pct,diaPagamento:diaPg,gatilho:gat,gatilhoDesc:gatDesc,parcelas:nParc,historico:[...x.historico,
       ...(pct!==x.royalty?[{data:this.hoje(),de:String(x.royalty).replace('.',',')+'%',para:String(pct).replace('.',',')+'%',usuario:this.userName()}]:[]),
       ...(mudouDia?[{data:this.hoje(),de:'dia de pagamento '+(x.diaPagamento||'—'),para:'dia '+(diaPg||'—'),usuario:this.userName()}]:[]),
-      ...(mudouGat?[{data:this.hoje(),de:'gatilho de pagamento: '+this._gatilhoLabel(x.gatilho||'nf'),para:this._gatilhoLabel(gat)+(gatDesc?' — '+gatDesc:''),usuario:this.userName()}]:[])]}:x),modal:null,form:{}}));
-    this.audit('Alteração de contrato de royalty',c.numero+' → '+pct+'%'+(mudouDia?' · dia acordado de pagamento: '+(c.diaPagamento||'—')+' → '+(diaPg||'—'):'')+(mudouGat?' · gatilho de pagamento: '+this._gatilhoLabel(c.gatilho||'nf')+' → '+this._gatilhoLabel(gat)+(gatDesc?' — '+gatDesc:''):'')); };
+      ...(mudouGat?[{data:this.hoje(),de:'gatilho de pagamento: '+this._gatilhoLabel(x.gatilho||'nf'),para:this._gatilhoLabel(gat)+(gatDesc?' — '+gatDesc:''),usuario:this.userName()}]:[]),
+      ...(mudouParc?[{data:this.hoje(),de:'parcelamento '+(x.parcelas||1)+'×',para:nParc+'× mensais',usuario:this.userName()}]:[])]}:x),modal:null,form:{}}));
+    this.audit('Alteração de contrato de royalty',c.numero+' → '+pct+'%'+(mudouDia?' · dia acordado de pagamento: '+(c.diaPagamento||'—')+' → '+(diaPg||'—'):'')+(mudouGat?' · gatilho de pagamento: '+this._gatilhoLabel(c.gatilho||'nf')+' → '+this._gatilhoLabel(gat)+(gatDesc?' — '+gatDesc:''):'')+(mudouParc?' · parcelamento: '+(c.parcelas||1)+'× → '+nParc+'× mensais':'')); };
   // Último preço registrado no histórico do produto: considera a última alteração de
   // preço (precoHist) e o último preço praticado em pedidos (precoNeg quando houver
   // negociação em cotação, senão o preço unitário do item). Em empate de data, a
@@ -5383,11 +5437,16 @@ class Component extends DCLogic {
     return {venc,gat:g,
       txt:'Gatilho do contrato (RF63): '+this._gatilhoLabel(g)+((c&&c.gatilhoDesc)?' — '+c.gatilhoDesc:'')+' · base mais recente: '+mx.i.fonte+' → dia acordado '+dia+' no mês seguinte = '+venc+' (editável).'+(infos.some(x=>x.i.prov)?' Atenção: ao anexar o boleto, a base passa a ser a data do recebimento.':'')}; }
   // Status do fechamento (RF41): a pagar → em atraso (cobrança vencida) → pago
-  _royStatus(pg){ if(pg.status==='pago') return 'pago';
+  _royStatus(pg){ if(pg.parcelas&&pg.parcelas.length){ const sts=pg.parcelas.map(p=>this._parcSt(p));
+      if(sts.every(x=>x==='pago')) return 'pago'; if(sts.some(x=>x==='em atraso')) return 'em atraso'; return 'a pagar'; }
+    if(pg.status==='pago') return 'pago';
     const v=this._parseData(pg.vencimento); if(pg.cobranca&&v){ const hj=new Date(); hj.setHours(0,0,0,0); if(v<hj) return 'em atraso'; }
     if(pg.status==='em atraso') return 'em atraso';
     return 'a pagar'; }
-  _diasAtraso(pg){ const v=this._parseData(pg.vencimento); if(!v) return 0;
+  _diasAtraso(pg){ if(pg.parcelas&&pg.parcelas.length){ const hj=new Date(); hj.setHours(0,0,0,0);
+      const vs=pg.parcelas.filter(p=>!p.pago).map(p=>this._parseData(p.vencimento)).filter(v=>v&&v<hj);
+      return vs.length?Math.max(...vs.map(v=>Math.round((hj-v)/86400000))):0; }
+    const v=this._parseData(pg.vencimento); if(!v) return 0;
     const hj=new Date(); hj.setHours(0,0,0,0); return Math.max(0,Math.round((hj-v)/86400000)); }
   setRoyCompF=e=>this.setState({royCompF:e.target.value});
   setRoyFornF=e=>this.setState({royFornF:e.target.value});
@@ -5401,6 +5460,24 @@ class Component extends DCLogic {
     this.audit('Lembrete de royalty em atraso enviado',comp+' · '+(f.nome||'')+' · '+this.fmt(roy)+' · '+dias+' dia(s) de atraso');
     this.notificar('royalty_atraso',this._fornEmail(fid),{competencia:comp,fornecedorNome:f.nome||'',valor:this.fmt(roy),vencimento:pg.vencimento||'—',diasAtraso:String(dias),documento:pg.numero||''}); };
     return this._lba[chave]; }
+  // ——— RF64: royalties parcelados — parcelas mensais com controle individual ———
+  _parcelasDe(fid){ const c=this.state.contratos.find(x=>x.fornecedorId===fid&&x.vigente); return (c&&c.parcelas&&c.parcelas>1)?c.parcelas:1; }
+  _addMesesData(dataStr,k){ const d=this._parseData(dataStr); if(!d) return dataStr;
+    const m0=d.getMonth()+1+k; const ny=d.getFullYear()+Math.floor((m0-1)/12); const m2=((m0-1)%12)+1;
+    const ult=new Date(ny,m2,0).getDate();
+    return String(Math.min(d.getDate(),ult)).padStart(2,'0')+'/'+String(m2).padStart(2,'0')+'/'+ny; }
+  _parcSt(p){ if(p.pago) return 'pago'; const v=this._parseData(p.vencimento);
+    if(v){ const hj=new Date(); hj.setHours(0,0,0,0); if(v<hj) return 'em atraso'; } return 'a pagar'; }
+  lembreteParcela(chave,n){ this._lbp=this._lbp||{}; const k=chave+'|'+n; if(!this._lbp[k]) this._lbp[k]=()=>{ if(!this.pode('royalties.cobrar')) return;
+    const comp=chave.split('-')[0]; const fid=+chave.split('-')[1]; const f=this.state.fornecedores.find(x=>x.id===fid)||{};
+    const pg=this.state.pagamentos[chave]||{}; const p=(pg.parcelas||[]).find(x=>x.n===n); if(!p) return;
+    const hj=new Date(); hj.setHours(0,0,0,0); const v=this._parseData(p.vencimento);
+    const dias=v?Math.max(0,Math.round((hj-v)/86400000)):0;
+    this.setState(s=>({pagamentos:{...s.pagamentos,[chave]:{...(s.pagamentos[chave]||{}),parcelas:((s.pagamentos[chave]||{}).parcelas||[]).map(x=>x.n===n?{...x,lembreteData:this.hoje()}:x)}}}));
+    this.audit('Lembrete de royalty em atraso enviado',comp+' · '+(f.nome||'')+' · parcela '+n+'/'+(pg.parcelas||[]).length+' · '+this.fmt(p.valor)+' · '+dias+' dia(s) de atraso');
+    this.notificar('royalty_atraso',this._fornEmail(fid),{competencia:comp+' (parcela '+n+'/'+(pg.parcelas||[]).length+')',fornecedorNome:f.nome||'',valor:this.fmt(p.valor),vencimento:p.vencimento,diasAtraso:String(dias),documento:(pg.numero||'')+'-P'+n});
+    setTimeout(()=>this._flushPersist(),0); };
+    return this._lbp[k]; }
   // Exportação XLSX do fechamento (respeita os filtros aplicados na tela)
   exportRoyalties=()=>{ if(!this.pode('royalties.exportar')) return this.negado('Você não tem permissão para exportar o fechamento de royalties.','royalties.exportar');
     const rows=this._royExportRows||[];
@@ -5418,10 +5495,14 @@ class Component extends DCLogic {
     if(!this._parseData(venc)) return this.err('Informe o vencimento da cobrança no formato dd/mm/aaaa (RF39/RF41).');
     const _comp=chave.split('-')[0]; const fid=+chave.split('-')[1]; const f=this.state.fornecedores.find(x=>x.id===fid);
     const [mm,yy]=_comp.split('/'); const numero='COB-'+yy+mm+'-'+String(fid).padStart(2,'0');
-    this.setState(s=>({pagamentos:{...s.pagamentos,[chave]:{...(s.pagamentos[chave]||{status:'a pagar'}),cobranca:true,cobrancaData:this.hoje(),vencimento:venc,numero}},modal:null,form:{}}));
-    this.audit('Documento de cobrança de royalty emitido',numero+' · '+_comp+' · '+(f?f.nome:'')+' · vencimento '+venc+' · fornecedor notificado');
     const _roy=this.state.faturamentos.filter(x=>x.competencia===_comp&&x.fornecedorId===fid).reduce((a,x)=>a+x.royaltyValor,0);
-    this.notificar('royalty_cobranca',this._fornEmail(fid),{competencia:_comp,fornecedorNome:(f?f.nome:''),valor:this.fmt(_roy),vencimento:venc,documento:numero});
+    // RF64 — contrato parcelado: gera as parcelas mensais com vencimentos individuais
+    const nP=this._parcelasDe(fid); let parcelas=null;
+    if(nP>1){ const centsT=Math.round(_roy*100); const baseC=Math.floor(centsT/nP);
+      parcelas=Array.from({length:nP},(_,i)=>({n:i+1,valor:(i===nP-1?centsT-baseC*(nP-1):baseC)/100,vencimento:this._addMesesData(venc,i)})); }
+    this.setState(s=>({pagamentos:{...s.pagamentos,[chave]:{...(s.pagamentos[chave]||{status:'a pagar'}),cobranca:true,cobrancaData:this.hoje(),vencimento:venc,numero,...(parcelas?{parcelas}:{})}},modal:null,form:{}}));
+    this.audit('Documento de cobrança de royalty emitido',numero+' · '+_comp+' · '+(f?f.nome:'')+' · vencimento '+venc+(parcelas?' · em '+nP+' parcelas mensais (RF64)':'')+' · fornecedor notificado');
+    this.notificar('royalty_cobranca',this._fornEmail(fid),{competencia:_comp,fornecedorNome:(f?f.nome:''),valor:this.fmt(_roy)+(parcelas?' em '+nP+' parcelas mensais':''),vencimento:venc+(parcelas?' (1ª parcela)':''),documento:numero});
     setTimeout(()=>this._flushPersist(),0); };
   // ——— Comprovante de pagamento de royalty (arquivo PDF/imagem) ———
   // Fluxo: o FORNECEDOR envia o arquivo (fica "aguardando confirmação"); a LOJA
@@ -5457,6 +5538,19 @@ class Component extends DCLogic {
         if(!up.ok) throw new Error(up.error||'Falha ao enviar o comprovante.'); }
       catch(e2){ this.setState(s=>({form:{...s.form,pagBusy:false,erro:e2.message||'Falha ao enviar o comprovante.'}})); return; }
       arq={comprovanteId:up.id,comprovanteNome:f.compNome,comprovanteEm:this.hoje(),comprovantePor:this.userName()}; }
+    // RF64 — registro de pagamento por parcela
+    if(f.parcela){ const parcs=pgAnt.parcelas||[]; const alvoP=parcs.find(p=>p.n===f.parcela);
+      if(!alvoP) return this.err('Parcela não encontrada neste fechamento.');
+      const vencP=this._parseData(alvoP.vencimento); const pagoP=this._parseData(f.dataPg);
+      const comAtrasoP=!!(vencP&&pagoP&&pagoP>vencP);
+      const novasP=parcs.map(p=>p.n===f.parcela?{...p,pago:true,data:f.dataPg,valor,comprovante:f.comprovante||'—',pagoComAtraso:comAtrasoP}:p);
+      const todasP=novasP.every(p=>p.pago);
+      this.setState(s=>({pagamentos:{...s.pagamentos,[chave]:{...pgAnt,...arq,parcelas:novasP,...(todasP?{status:'pago',data:f.dataPg,aguardandoConf:false,pagoComAtraso:novasP.some(p=>p.pagoComAtraso)}:{})}},modal:null,form:{}}));
+      this.audit('Pagamento de royalty registrado',chave.split('-')[0]+' · '+f.fornNome+' · parcela '+f.parcela+'/'+parcs.length+' · '+this.fmt(valor)+(comAtrasoP?' · pago com atraso (vencimento '+alvoP.vencimento+')':'')+(todasP?' · todas as parcelas quitadas — fechamento pago':''));
+      setTimeout(()=>this._flushPersist(),0);
+      const _fidPq=+chave.split('-')[1];
+      this.notificar('royalty_pagamento',this._fornEmail(_fidPq),{competencia:chave.split('-')[0],fornecedorNome:this._fornNome(_fidPq),valor:this.fmt(valor)+' (parcela '+f.parcela+'/'+parcs.length+')',data:f.dataPg,comprovante:(arq.comprovanteNome||f.comprovante||'—')});
+      return; }
     const vencD=this._parseData(pgAnt.vencimento); const pagoD=this._parseData(f.dataPg);
     const comAtraso=!!(vencD&&pagoD&&pagoD>vencD);
     this.setState(s=>({pagamentos:{...s.pagamentos,[chave]:{...pgAnt,...arq,status:'pago',aguardandoConf:false,data:f.dataPg,valor,comprovante:f.comprovante||'—',cobranca:true,pagoComAtraso:comAtraso}},modal:null,form:{}}));
@@ -5687,16 +5781,24 @@ class Component extends DCLogic {
       const totalFat=fs.reduce((a,x)=>a+x.valor,0), totalRoy=fs.reduce((a,x)=>a+x.royaltyValor,0);
       const chave=comp+'-'+fo.id; const pg=S.pagamentos[chave]||{}; const status=this._royStatus(pg);
       const dias=status==='em atraso'?this._diasAtraso(pg):0;
+      const proxParc=(pg.parcelas&&pg.parcelas.length)?pg.parcelas.filter(p=>!p.pago).slice().sort((a,b)=>(this._parseData(a.vencimento)||0)-(this._parseData(b.vencimento)||0))[0]:null;
       fechRows.push({comp,chave,fornecedorId:fo.id,fornNome:fo.nome,cnpj:fo.cnpj,pct:String(fs[0].royaltyPct).replace('.',',')+'%',qtd:fs.length,
         qtdTxt:fs.length+' nota'+(fs.length>1?'s':''),
         totalFat,totalRoy,totalFatFmt:this.fmt(totalFat),totalRoyFmt:this.fmt(totalRoy),status,
-        ...this.chip(status),pago:status==='pago',naoPago:status!=='pago'&&this.pode('royalties.pagar'),cobranca:!!pg.cobranca,semCobranca:!pg.cobranca&&status!=='pago'&&this.pode('royalties.cobrar'),
+        ...this.chip(status),pago:status==='pago',naoPago:status!=='pago'&&!(pg.parcelas&&pg.parcelas.length)&&this.pode('royalties.pagar'),cobranca:!!pg.cobranca,semCobranca:!pg.cobranca&&status!=='pago'&&this.pode('royalties.cobrar'),
+        temParcelas:!!(pg.parcelas&&pg.parcelas.length),
+        pagoParcTxt:(pg.parcelas&&pg.parcelas.length)?(pg.parcelas.filter(p=>p.pago).length+' de '+pg.parcelas.length+' parcelas pagas'):'',
+        parcRows:(pg.parcelas||[]).map(p=>{ const stP=this._parcSt(p); return {label:'Parcela '+p.n+'/'+pg.parcelas.length,valorFmt:this.fmt(p.valor),venc:p.vencimento,...this.chip(stP),
+          pgTxt:p.pago?('paga em '+p.data+(p.comprovante&&p.comprovante!=='—'?' · ref. '+p.comprovante:'')+(p.pagoComAtraso?' · com atraso':'')):(p.lembreteData?('lembrete de atraso em '+p.lembreteData):''),
+          podePagar:!p.pago&&this.pode('royalties.pagar'),
+          registrarP:this.open('pagamento',{chave,parcela:p.n,parcelaTxt:'Parcela '+p.n+'/'+pg.parcelas.length,fornNome:fo.nome,devidoFmt:this.fmt(p.valor),vencimento:p.vencimento,valorPg:p.valor.toFixed(2).replace('.',','),dataPg:this.hoje(),comprovante:''}),
+          emAtrasoP:stP==='em atraso'&&this.pode('royalties.cobrar'),lembreteP:this.lembreteParcela(chave,p.n)};}),
         cobrancaInfo:pg.cobranca?((pg.numero?pg.numero+' · ':'')+'cobrança emitida'+(pg.cobrancaData?' em '+pg.cobrancaData:'')):'',
-        vencInfo:pg.vencimento?(status==='em atraso'?('Venceu em '+pg.vencimento+' · '+dias+' dia(s) de atraso'):(status!=='pago'?('Vence em '+pg.vencimento):'')):'',
+        vencInfo:proxParc?('Parcela '+proxParc.n+'/'+pg.parcelas.length+(this._parcSt(proxParc)==='em atraso'?(' venceu em '+proxParc.vencimento+' · '+dias+' dia(s) de atraso'):(' vence em '+proxParc.vencimento))):(pg.vencimento?(status==='em atraso'?('Venceu em '+pg.vencimento+' · '+dias+' dia(s) de atraso'):(status!=='pago'?('Vence em '+pg.vencimento):'')):''),
         vencFg:status==='em atraso'?'#a33a2b':'#8a5a12',
-        vencCell:pg.vencimento?(status==='em atraso'?(pg.vencimento+' · '+dias+' dia(s) de atraso'):pg.vencimento):'—',
+        vencCell:proxParc?(proxParc.vencimento+' · parcela '+proxParc.n+'/'+pg.parcelas.length):(pg.vencimento?(status==='em atraso'?(pg.vencimento+' · '+dias+' dia(s) de atraso'):pg.vencimento):'—'),
         vencCellFg:status==='em atraso'?'#a33a2b':(pg.vencimento?'#272525':'#b0a795'),
-        emAtraso:status==='em atraso'&&this.pode('royalties.cobrar'),lembrete:this.lembreteAtraso(chave),
+        emAtraso:status==='em atraso'&&!(pg.parcelas&&pg.parcelas.length)&&this.pode('royalties.cobrar'),lembrete:this.lembreteAtraso(chave),
         lembreteInfo:pg.lembreteData?('Lembrete de atraso enviado em '+pg.lembreteData):'',
         pgInfo:pg.data?('Pago em '+pg.data+(pg.comprovante&&pg.comprovante!=='—'?' · ref. '+pg.comprovante:'')+(pg.pagoComAtraso?' · pago com atraso':'')):'',
         temArq:!!pg.comprovanteId,arqNome:pg.comprovanteNome||'comprovante',arqUrl:pg.comprovanteId?('/api/anexos/'+pg.comprovanteId):'',
@@ -5725,6 +5827,17 @@ class Component extends DCLogic {
       {label:'Recebido',val:this.fmt(fechRows.filter(r=>r.pago).reduce((a,r)=>a+r.totalRoy,0)),sub:'pagamentos confirmados'},
       {label:'Em atraso',val:this.fmt(royAtras.reduce((a,r)=>a+r.totalRoy,0)),sub:royAtras.length?(royAtras.length+' fechamento(s) vencido(s) — cobre ou envie lembrete'):'nenhum fechamento vencido'},
       {label:'Próximo vencimento',val:royProxVenc?(S.pagamentos[royProxVenc.chave]||{}).vencimento:'—',sub:royProxVenc?(royProxVenc.fornNome+' · '+royProxVenc.totalRoyFmt):'nenhuma cobrança aguardando'}];
+    // RF64 — consolidado por parcela: previsto × recebido × pendente × em atraso
+    const parcUnits=[];
+    fechRows.forEach(r=>{ const pgU=S.pagamentos[r.chave]||{};
+      if(pgU.parcelas&&pgU.parcelas.length) pgU.parcelas.forEach(p=>parcUnits.push({v:p.valor,st:this._parcSt(p)}));
+      else parcUnits.push({v:r.totalRoy,st:r.status}); });
+    const somaParc=st=>parcUnits.filter(u=>u.st===st).reduce((a,u)=>a+u.v,0);
+    const nParcSt=st=>parcUnits.filter(u=>u.st===st).length;
+    const royParc={previsto:this.fmt(parcUnits.reduce((a,u)=>a+u.v,0)),previstoSub:parcUnits.length+' parcela(s) em '+fechRows.length+' fechamento(s)',
+      recebido:this.fmt(somaParc('pago')),recebidoSub:nParcSt('pago')+' parcela(s) paga(s)',
+      pendente:this.fmt(somaParc('a pagar')),pendenteSub:nParcSt('a pagar')+' parcela(s) a vencer',
+      atraso:this.fmt(somaParc('em atraso')),atrasoSub:nParcSt('em atraso')+' parcela(s) vencida(s)'};
     const royFiltroAtivo=S.royCompF!=='todas'||S.royFornF!=='0'||S.royStF!=='todos';
     const royVals={
       royVazio:fechFilt.length===0,royFiltroAtivo,
@@ -5745,13 +5858,19 @@ class Component extends DCLogic {
       const [mm,yy]=comp.split('/');
       if(fo&&fs.length){ const stC=this._royStatus(pg);
         const giC=this._vencGatilhoInfo(fs,+fidS);
+        const nPc=this._parcelasDe(+fidS); const totRc=fs.reduce((a,x)=>a+x.royaltyValor,0);
+        const cobParcRows=(pg.parcelas&&pg.parcelas.length)?pg.parcelas.map(p=>({label:'Parcela '+p.n+'/'+pg.parcelas.length,valorFmt:this.fmt(p.valor),venc:p.vencimento,...this.chip(this._parcSt(p))})):
+          ((nPc>1&&!pg.cobranca)?(()=>{ const centsC=Math.round(totRc*100); const baseC=Math.floor(centsC/nPc); const v0=(S.form.venc||((giC||{}).venc)||this._vencPadrao(comp,+fidS));
+            return Array.from({length:nPc},(_,i)=>({label:'Parcela '+(i+1)+'/'+nPc,valorFmt:this.fmt((i===nPc-1?centsC-baseC*(nPc-1):baseC)/100),venc:this._addMesesData(v0,i),stBg:'#f1ece2',stFg:'#6b665e',stLabel:'prevista'})); })():[]);
         cobInfo={numero:pg.numero||('COB-'+yy+mm+'-'+String(fo.id).padStart(2,'0')),fornNome:fo.nome,cnpj:fo.cnpj,comp,
         venc:pg.vencimento||S.form.venc||((giC||{}).venc)||this._vencPadrao(comp,+fidS),
         vencSugTxt:giC?giC.txt:(this._diaAcordado(+fidS)?('Sugerido pelo dia acordado do contrato — todo dia '+this._diaAcordado(+fidS)+' (editável).'):'Sugerido pelo padrão — dia 10 do mês seguinte à competência (editável).'),
         rows:fs.map(x=>({id:x.id,data:x.data,pedidoId:x.pedidoId,valorFmt:this.fmt(x.valor),pctStr:String(x.royaltyPct).replace('.',',')+'%',royFmt:this.fmt(x.royaltyValor)})),
         totFat:this.fmt(fs.reduce((a,x)=>a+x.valor,0)),totRoy:this.fmt(fs.reduce((a,x)=>a+x.royaltyValor,0)),
         emitida:!!pg.cobranca,podeEmitir:!pg.cobranca&&this.pode('royalties.cobrar'),emitidaEm:pg.cobrancaData?' em '+pg.cobrancaData:'',
-        atrasada:stC==='em atraso',atrasoTxt:stC==='em atraso'?('Vencida há '+this._diasAtraso(pg)+' dia(s) — status "em atraso" (RF41).'):''}; } }
+        atrasada:stC==='em atraso',atrasoTxt:stC==='em atraso'?('Vencida há '+this._diasAtraso(pg)+' dia(s) — status "em atraso" (RF41).'):'',
+        cobParcRows,temCobParc:cobParcRows.length>0,
+        parcInfoTxt:cobParcRows.length?('Parcelamento do contrato (RF64): '+cobParcRows.length+' parcelas mensais — a 1ª no vencimento acima e as demais no mesmo dia dos meses seguintes; cada parcela tem status, cobrança de atraso e registro de pagamento próprios no fechamento.'):''}; } }
 
     // dashboard
     const compA=this.compAtual();
@@ -5988,11 +6107,12 @@ class Component extends DCLogic {
       return {numero:c.numero,fornNome:F(c.fornecedorId).nome,royaltyStr:String(c.royalty).replace('.',',')+'%',
         diaPagTxt:c.diaPagamento?('pagamento todo dia '+c.diaPagamento):'',
         gatilhoTxt:'gatilho: '+this._gatilhoLabel(c.gatilho||'nf')+(c.gatilhoDesc?' — '+c.gatilhoDesc:''),
+        parcTxt:(c.parcelas&&c.parcelas>1)?('royalty em '+c.parcelas+' parcelas mensais'):'',
         vig:c.inicio+' – '+c.fim,...this.chip(c.vigente?'vigente':'encerrado'),
         aviso,temAviso:!!aviso,
         hist:c.historico.map(h=>({data:h.data,mud:h.de+' → '+h.para,usuario:h.usuario})),temHist:c.historico.length>0,semHist:c.historico.length===0,
         histTxt:hist||'Sem alterações registradas',
-        podeAjustar:c.vigente,ajustar:this.open('royalty',{contratoId:c.id,royalty:String(c.royalty),diaPag:c.diaPagamento?String(c.diaPagamento):'',gatilho:c.gatilho||'nf',gatilhoDesc:c.gatilhoDesc||''}),
+        podeAjustar:c.vigente,ajustar:this.open('royalty',{contratoId:c.id,royalty:String(c.royalty),diaPag:c.diaPagamento?String(c.diaPagamento):'',gatilho:c.gatilho||'nf',gatilhoDesc:c.gatilhoDesc||'',parcelas:String(c.parcelas||1)}),
         encerrar:this.encerrarCtr(c.id)};};
     const ctrRows=S.contratos.map(ctrView);
     const bf=S.buscaForn.toLowerCase();
@@ -6687,7 +6807,7 @@ class Component extends DCLogic {
       busca:S.busca,setBusca:this.setBusca,filtroForn:S.filtroForn,setFiltroForn:this.setFiltroForn,
       novoForn:this.open('fornecedor',{}),novoProduto:this.open('produto',{fornecedorIds:[],buscaForn:'',unidade:'',categoria:'Outros'}),novaRevenda:this.open('revenda',{}),
       // faturamento / royalties
-      fatRows,aguardFat,temAguardFat:aguardFat.length>0,royGroups,royKpis,...royVals,
+      fatRows,aguardFat,temAguardFat:aguardFat.length>0,royGroups,royKpis,royParc,...royVals,
       mCob:M==='cobranca'&&!!cobInfo,cobInfo:cobInfo||{rows:[]},emitirCobranca:this.emitirCobranca,
       // relatórios / segurança
       relStatus,relPedRows,relCotRows,relCot,
@@ -6734,7 +6854,7 @@ class Component extends DCLogic {
       mForn:M==='fornecedor',mCtr:M==='contrato',mRoy:M==='royalty',mProd:M==='produto',mRev:M==='revenda',mFicha:M==='ficha',
       mRej:M==='rejeitar',mDir:M==='direto',mCot:M==='cotacao',mEst:M==='estoque',mJusV:M==='justifvenc',mCanC:M==='cancelarcot',
       mProp:M==='proposta',mRod:M==='rodada',mAnx:M==='anexoped',mFat:M==='faturar',mPag:M==='pagamento',mCompF:M==='compforn',
-      dirRows,convRows,dirVazio,prodFornRows,prodFornSel,prodFornVazio,propInfo,fatInfo,jvInfo,royInfo,rodInfo,confirmRodada:this.confirmRodada,formAnexos,temFormAnexos,anxInfo,addAnexosForm:this.addAnexosForm,confirmAnexosPed:this.confirmAnexosPed,fatExtras,temFatExtras,addAnexoFatExtra:this.addAnexoFatExtra,fxTipoDocExtra:this.fx('tipoDocExtra'),selItens,cotEstim,fprodRows,fprodVazio,fichaInfo,confirmFicha:this.confirmFicha,addFotoFicha:this.addFotoFicha,fxNcm:this.fxNcm,fxEan:this.fxEan,fxPesoBruto:this.fx('pesoBruto'),fxPesoLiquido:this.fx('pesoLiquido'),fxFreteMod:this.fx('freteMod'),fxFreteValor:this.fx('freteValor'),fxTransportadora:this.fx('transportadora'),fxCondEntrega:this.fx('condEntrega'),fxDiaPag:this.fx('diaPag'),fxGatilho:this.fx('gatilho'),fxGatilhoDesc:this.fx('gatilhoDesc'),gatOutro:(M==='contrato'||M==='royalty')&&S.form.gatilho==='outro',fxAltura:this.fx('altura'),fxLargura:this.fx('largura'),fxComprimento:this.fx('comprimento'),fxUnidadeMedida:this.fx('unidadeMedida'),fxObsFicha:this.fx('obs'),
+      dirRows,convRows,dirVazio,prodFornRows,prodFornSel,prodFornVazio,propInfo,fatInfo,jvInfo,royInfo,rodInfo,confirmRodada:this.confirmRodada,formAnexos,temFormAnexos,anxInfo,addAnexosForm:this.addAnexosForm,confirmAnexosPed:this.confirmAnexosPed,fatExtras,temFatExtras,addAnexoFatExtra:this.addAnexoFatExtra,fxTipoDocExtra:this.fx('tipoDocExtra'),selItens,cotEstim,fprodRows,fprodVazio,fichaInfo,confirmFicha:this.confirmFicha,addFotoFicha:this.addFotoFicha,fxNcm:this.fxNcm,fxEan:this.fxEan,fxPesoBruto:this.fx('pesoBruto'),fxPesoLiquido:this.fx('pesoLiquido'),fxFreteMod:this.fx('freteMod'),fxFreteValor:this.fx('freteValor'),fxTransportadora:this.fx('transportadora'),fxCondEntrega:this.fx('condEntrega'),fxDiaPag:this.fx('diaPag'),fxGatilho:this.fx('gatilho'),fxGatilhoDesc:this.fx('gatilhoDesc'),fxParcelas:this.fx('parcelas'),gatOutro:(M==='contrato'||M==='royalty')&&S.form.gatilho==='outro',fxAltura:this.fx('altura'),fxLargura:this.fx('largura'),fxComprimento:this.fx('comprimento'),fxUnidadeMedida:this.fx('unidadeMedida'),fxObsFicha:this.fx('obs'),
       confirmEstoque:this.confirmEstoque,setPedidoCot:this.setPedidoCot,
       prodModalFotos:(()=>{ if(M!=='produto') return [];
         const novasL=(S.form.fotosNovas||[]).map((n2,j2)=>({key:'n'+j2,src:'data:'+(n2.tipo||'image/png')+';base64,'+n2.b64,nova:true,rmH:this.rmFotoProdNova(j2)}));
