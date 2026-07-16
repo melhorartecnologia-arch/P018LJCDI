@@ -820,7 +820,10 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <div style="font-size:21px;font-weight:700;margin:2px 0 3px">Produtos homologados</div>
         <div style="font-size:13px;color:#8a8378">Catálogo de produtos sempre vinculados a um fornecedor e contrato</div>
       </div>
-      <div onClick="{{novoProduto}}" style="background:#B38335;color:#fff;border-radius:9px;padding:10px 16px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:#9a6f2b">+ Novo produto</div>
+      <div style="display:flex;gap:9px">
+        <div onClick="{{irDePara}}" style="border:1px solid #d9c193;color:#8f682a;border-radius:9px;padding:10px 14px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;background:#fff" style-hover="background:#faf5e9">⇄ De/Para Produto × Fornecedor</div>
+        <div onClick="{{novoProduto}}" style="background:#B38335;color:#fff;border-radius:9px;padding:10px 16px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:#9a6f2b">+ Novo produto</div>
+      </div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px">
       <sc-for list="{{prodKpis}}" as="k" hint-placeholder-count="4">
@@ -881,6 +884,50 @@ input::placeholder,textarea::placeholder{color:#b0a795}
   </div>
 </sc-if>
 
+<sc-if value="{{sDePara}}" hint-placeholder-val="{{false}}">
+  <div data-screen-label="De/Para Produto × Fornecedor" style="animation:fadeUp .25s ease">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-bottom:18px">
+      <div>
+        <div style="font-size:21px;font-weight:700;margin:2px 0 3px">De/Para Produto × Fornecedor</div>
+        <div style="font-size:13px;color:#8a8378">Gestão dos vínculos que controlam a visibilidade do fornecedor (RF55) e quem pode ser convidado nas cotações — responsabilidade operacional da Loja</div>
+      </div>
+      <div onClick="{{irProdutos}}" style="border:1px solid #e5ddcd;color:#8a8378;border-radius:9px;padding:10px 14px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;background:#fff" style-hover="background:#f7f3ea">← Produtos homologados</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px">
+      <sc-for list="{{deParaKpis}}" as="k" hint-placeholder-count="4">
+        <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:14px 16px">
+          <div style="font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#a89f90">{{k.label}}</div>
+          <div style="font-size:20px;font-weight:700;margin-top:4px">{{k.val}}</div>
+          <div style="font-size:11.5px;color:#a89f90;margin-top:2px">{{k.sub}}</div>
+        </div>
+      </sc-for>
+    </div>
+    <input value="{{buscaDp}}" onChange="{{setBuscaDp}}" placeholder="Buscar produto por código ou descrição…" style="width:340px;box-sizing:border-box;padding:10px 14px;border:1px solid #e5ddcd;border-radius:9px;font:inherit;font-size:13px;background:#fff;outline:none;color:#272525;margin-bottom:12px">
+    <div style="background:#fff;border:1px solid #eae3d6;border-radius:13px;overflow:hidden">
+      <div style="display:grid;grid-template-columns:{{deParaGrid}};gap:10px;padding:11px 16px;background:#272525;align-items:center">
+        <div style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#fff">Produto</div>
+        <sc-for list="{{dpFornCols}}" as="fc" hint-placeholder-count="3">
+          <div style="text-align:center"><div style="font-size:11px;font-weight:600;color:#fff">{{fc.nome}}</div>
+            <sc-if value="{{fc.semCtr}}" hint-placeholder-val="{{false}}"><div style="font-size:9.5px;color:#e8c98a;margin-top:1px">sem contrato vigente</div></sc-if>
+          </div>
+        </sc-for>
+        <div style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#fff;text-align:right">Vínculos</div>
+      </div>
+      <sc-for list="{{deParaRows}}" as="dr" hint-placeholder-count="5">
+        <div style="display:grid;grid-template-columns:{{deParaGrid}};gap:10px;padding:9px 16px;border-top:1px solid #f5f1e8;align-items:center">
+          <div><span onClick="{{dr.open}}" style="font-size:13px;font-weight:600;color:#8f682a;cursor:pointer">{{dr.codigo}}</span> <span style="font-size:12.5px;color:#55503f">{{dr.descricao}}</span><span style="font-size:10.5px;font-weight:600;border-radius:6px;padding:2px 7px;background:{{dr.stBg}};color:{{dr.stFg}};margin-left:6px">{{dr.stLabel}}</span></div>
+          <sc-for list="{{dr.cels}}" as="cl" hint-placeholder-count="3">
+            <div style="text-align:center"><span onClick="{{cl.toggle}}" title="{{cl.title}}" style="display:inline-block;min-width:46px;font-size:13px;font-weight:700;border-radius:8px;padding:5px 0;cursor:pointer;background:{{cl.bg}};color:{{cl.fg}};border:1.5px solid {{cl.bd}}">{{cl.mark}}</span></div>
+          </sc-for>
+          <div style="font-size:12px;font-weight:600;color:#8a8378;text-align:right">{{dr.nVinc}}</div>
+        </div>
+      </sc-for>
+      <sc-if value="{{deParaVazio}}" hint-placeholder-val="{{false}}"><div style="padding:16px;font-size:12.5px;color:#a89f90">Nenhum produto encontrado para a busca.</div></sc-if>
+    </div>
+    <div style="font-size:12px;color:#6d4a10;background:#fdf3e0;border:1px solid #ecd9ae;border-radius:11px;padding:12px 16px;margin-top:14px;line-height:1.6">ℹ️ O De/Para alimenta automaticamente: a <b>visibilidade do fornecedor (RF55)</b> — cada fornecedor só vê e complementa os produtos vinculados a ele; os <b>convidáveis das cotações e do envio direto</b> — apenas fornecedores vinculados aos itens do pedido aparecem para seleção; e a <b>manutenção dos vínculos</b> — toda alteração é registrada na trilha de auditoria. Cada produto precisa manter ao menos um fornecedor vinculado. Vínculos com fornecedor <b>sem contrato vigente</b> aparecem em âmbar.</div>
+  </div>
+</sc-if>
+
 <sc-if value="{{sProdDet}}" hint-placeholder-val="{{false}}">
   <div data-screen-label="Detalhe do produto" style="animation:fadeUp .25s ease">
     <div onClick="{{pdd.voltar}}" style="font-size:12.5px;font-weight:600;color:#8f682a;cursor:pointer;margin-bottom:12px">← Voltar para produtos</div>
@@ -909,7 +956,10 @@ input::placeholder,textarea::placeholder{color:#b0a795}
       </div>
       <div style="display:flex;flex-direction:column;gap:14px">
         <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:16px 18px">
-          <div style="font-size:14px;font-weight:700;margin-bottom:6px">Vínculo — fornecedores e contratos (RF05)</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px">
+            <div style="font-size:14px;font-weight:700">Vínculo — fornecedores e contratos (RF05)</div>
+            <div onClick="{{irDePara}}" style="font-size:12px;font-weight:600;color:#8f682a;border:1px solid #d9c193;border-radius:8px;padding:5px 11px;cursor:pointer" style-hover="background:#faf5e9">⇄ Gerir De/Para…</div>
+          </div>
           <sc-for list="{{pdd.vinculos}}" as="v" hint-placeholder-count="1">
             <div style="padding:8px 0;border-bottom:1px solid #f5f1e8">
               <div onClick="{{v.ver}}" style="font-size:13.5px;font-weight:600;color:#8f682a;cursor:pointer">{{v.nome}} → <span style="font-weight:400;color:#a89f90;font-size:12px">{{v.cidade}}</span></div>
@@ -4238,6 +4288,24 @@ class Component extends DCLogic {
         "A planilha carregada nunca grava direto: o lançamento só acontece depois da sua revisão e confirmação."
       ]
     },
+    "depara": {
+      "rotina": "De/Para Produto × Fornecedor",
+      "titulo": "De/Para Produto × Fornecedor (Loja)",
+      "resumo": "Tela da Loja para gerir, em um só lugar, os vínculos entre produtos e fornecedores. O De/Para controla a visibilidade do fornecedor (RF55), quem pode ser convidado nas cotações e no envio direto, e a manutenção dos vínculos — toda alteração é auditada.",
+      "passos": [
+        "Confira os indicadores do topo: Vínculos ativos, Produtos no catálogo, Fornecedores ativos e Produtos com fornecedor único (estes não têm alternativa em cotações — avalie vincular um segundo fornecedor).",
+        "Use o campo \"Buscar produto por código ou descrição…\" para filtrar as linhas da matriz.",
+        "Cada linha é um produto e cada coluna um fornecedor ativo: ✓ indica vínculo existente e — indica ausência de vínculo.",
+        "Clique em uma célula para criar ou remover o vínculo — a alteração vale na hora e é registrada na trilha de auditoria (Segurança & Auditoria).",
+        "Células em âmbar indicam vínculo com fornecedor sem contrato vigente — regularize o contrato na tela Fornecedores & Contratos.",
+        "Clique no código do produto para abrir o detalhe; de lá, o botão \"⇄ Gerir De/Para…\" traz de volta a esta tela."
+      ],
+      "dicas": [
+        "O De/Para alimenta o resto do sistema automaticamente: o fornecedor só enxerga os produtos vinculados (RF55) e as janelas de cotação e envio direto só oferecem fornecedores vinculados aos itens do pedido.",
+        "Não é possível remover o último fornecedor de um produto — vincule outro antes; assim nenhum produto fica órfão no catálogo.",
+        "Os mesmos vínculos também podem ser ajustados na janela \"Editar produto\" (seleção múltipla de fornecedores) — as duas telas gravam no mesmo cadastro."
+      ]
+    },
     "_default": {
       "rotina": "Esta tela",
       "titulo": "Como usar esta tela",
@@ -4538,6 +4606,17 @@ class Component extends DCLogic {
     this.setState(s=>({revendas:s.revendas.map(x=>{ if(x.id!==rid)return x; const on=x.visibilidade.includes(fid);
       return {...x,visibilidade:on?x.visibilidade.filter(v=>v!==fid):[...x.visibilidade,fid]}; })}));
     this.audit('Regra de visibilidade alterada',r.nome+' × '+f.nome); }; return this._tv[k]; }
+  // RF56 — De/Para Produto × Fornecedor: manutenção dos vínculos, auditada
+  toggleDePara(pid,fid){ this._tdp=this._tdp||{}; const k=pid+'|'+fid; if(!this._tdp[k]) this._tdp[k]=()=>{
+    if(!this.pode('cadastros.produtos')) return this.negado('Você não tem permissão para gerenciar vínculos de produtos.','cadastros.produtos');
+    const p=this.state.produtos.find(x=>x.id===pid); const f=this.state.fornecedores.find(x=>x.id===fid); if(!p||!f) return;
+    const cur=this._pForns(p); const on=cur.includes(fid);
+    if(on&&cur.length===1) return this.toast('O produto precisa manter ao menos um fornecedor vinculado — vincule outro antes de remover '+f.nome+'.');
+    const fids=on?cur.filter(x=>x!==fid):[...cur,fid];
+    this.setState(s=>({produtos:s.produtos.map(x=>x.id===pid?{...x,fornecedorIds:fids,fornecedorId:fids[0]}:x)}));
+    this.audit(on?'Vínculo produto × fornecedor removido':'Vínculo produto × fornecedor criado',p.codigo+' · '+p.descricao+' × '+f.nome+' — De/Para: reflete na visibilidade do fornecedor (RF55) e nos convidáveis de cotação');
+    this.toast((on?'Vínculo removido: ':'Vínculo criado: ')+p.codigo+' × '+f.nome+'.'); }; return this._tdp[k]; }
+  setBuscaDp=e=>this.setState({buscaDp:e.target.value});
 
   aprovar(id){ this._ap=this._ap||{}; if(!this._ap[id]) this._ap[id]=(e)=>{ if(e&&e.stopPropagation) e.stopPropagation(); if(!this.pode('pedidos.aprovar')) return;
     this.updPed(id,p=>{p.itens=p.itens.map(i=>(i.st||'pendente')==='pendente'?{...i,st:'aprovado'}:i);p.trilha.push(this.tr('Pedido recebido e confirmado pela Loja — todos os itens pendentes'));return p;});
@@ -5427,7 +5506,7 @@ class Component extends DCLogic {
         pode('faturamento.ver')&&mk('fat','Faturamento'),
         pode('inventario.ver')&&mk('inv','Inventário de estoque')]},
       {label:'Cadastros',items:[pode('cadastros.fornecedores')&&mk('forn','Fornecedores & Contratos'),
-        pode('cadastros.produtos')&&mk('prod','Produtos homologados'),pode('cadastros.revendas')&&mk('rev','Revendas')]},
+        pode('cadastros.produtos')&&mk('prod','Produtos homologados'),pode('cadastros.produtos')&&mk('depara','De/Para Produto × Fornecedor'),pode('cadastros.revendas')&&mk('rev','Revendas')]},
       {label:'Financeiro',items:[pode('royalties.ver')&&mk('roy','Royalties & Fechamento')]},
       {label:'Gestão',items:[pode('relatorios.ver')&&mk('rel','Relatórios'),pode('auditoria.ver')&&mk('seg','Segurança & Auditoria')]},
       {label:'Configurações Técnicas',items:[pode('config.email')&&mk('cfgemail','Configuração de e-mail'),
@@ -5842,6 +5921,26 @@ class Component extends DCLogic {
           voltar:this.go('prod')}; } }
     const prodModalTitulo=S.form.editId&&S.modal==='produto'?'Editar produto homologado':'Novo produto homologado';
     const prodModalBtn=S.form.prodBusy?'Enviando imagens…':(S.form.editId&&S.modal==='produto'?'Salvar alterações':'Homologar produto');
+
+    // RF56 — De/Para Produto × Fornecedor
+    const dpFornCols=S.fornecedores.filter(f=>f.ativo).map(f=>({id:f.id,nome:f.nome,semCtr:!ctrVig(f.id)}));
+    const deParaGrid='2.6fr '+dpFornCols.map(()=>'1.1fr').join(' ')+' .7fr';
+    const bdp=String(S.buscaDp||'').toLowerCase();
+    const deParaRows=S.produtos.filter(p=>!bdp||p.descricao.toLowerCase().includes(bdp)||p.codigo.toLowerCase().includes(bdp))
+      .map(p=>{ const fidsP=this._pForns(p);
+        return {codigo:p.codigo,descricao:p.descricao,...this.chip(p.ativo?'ativo':'inativo'),open:this.openProd(p.id),
+          nVinc:fidsP.length+' vínculo(s)',
+          cels:dpFornCols.map(c=>{ const on=fidsP.includes(c.id);
+            return {mark:on?'✓':'—',toggle:this.toggleDePara(p.id,c.id),
+              bg:on?(c.semCtr?'#fdf3e0':'#faf5e9'):'#fff',fg:on?(c.semCtr?'#8a5a12':'#8f682a'):'#c9c2b4',
+              bd:on?(c.semCtr?'#ecd9ae':'#B38335'):'#e8e1d2',
+              title:(on?'Vinculado':'Sem vínculo')+' — '+p.codigo+' × '+c.nome+(on&&c.semCtr?' (sem contrato vigente)':'')};})};});
+    const deParaKpis=[
+      {label:'Vínculos ativos',val:String(S.produtos.reduce((a,p)=>a+this._pForns(p).length,0)),sub:'pares produto × fornecedor'},
+      {label:'Produtos no catálogo',val:String(S.produtos.length),sub:'ativos e inativos'},
+      {label:'Fornecedores ativos',val:String(dpFornCols.length),sub:'colunas do De/Para'},
+      {label:'Produtos com fornecedor único',val:String(S.produtos.filter(p=>this._pForns(p).length===1).length),sub:'sem alternativa para cotação'}];
+    const deParaVazio=deParaRows.length===0;
 
     // revendas
     const brv=S.buscaRev.toLowerCase();
@@ -6378,7 +6477,7 @@ class Component extends DCLogic {
       // screens flags
       sDash:isLoja&&scr==='dash',sPed:isLoja&&scr==='ped'&&pode('pedidos.ver'),sPedDet:isLoja&&scr==='peddet'&&!!pd&&pode('pedidos.ver'),
       sCot:isLoja&&scr==='cot'&&pode('cotacoes.ver'),sCotDet:isLoja&&scr==='cotdet'&&!!cd&&pode('cotacoes.ver'),
-      sForn:isLoja&&scr==='forn'&&pode('cadastros.fornecedores'),sFornDet:isLoja&&scr==='forndet'&&!!fd&&pode('cadastros.fornecedores'),sProd:isLoja&&scr==='prod'&&pode('cadastros.produtos'),sProdDet:isLoja&&scr==='proddet'&&!!pdd&&pode('cadastros.produtos'),sRev:isLoja&&scr==='rev'&&pode('cadastros.revendas'),sRevDet:isLoja&&scr==='revdet'&&!!rd&&pode('cadastros.revendas'),
+      sForn:isLoja&&scr==='forn'&&pode('cadastros.fornecedores'),sFornDet:isLoja&&scr==='forndet'&&!!fd&&pode('cadastros.fornecedores'),sProd:isLoja&&scr==='prod'&&pode('cadastros.produtos'),sDePara:isLoja&&scr==='depara'&&pode('cadastros.produtos'),sProdDet:isLoja&&scr==='proddet'&&!!pdd&&pode('cadastros.produtos'),sRev:isLoja&&scr==='rev'&&pode('cadastros.revendas'),sRevDet:isLoja&&scr==='revdet'&&!!rd&&pode('cadastros.revendas'),
       sFat:isLoja&&scr==='fat'&&pode('faturamento.ver'),sRoy:isLoja&&scr==='roy'&&pode('royalties.ver'),sRel:isLoja&&scr==='rel'&&pode('relatorios.ver'),sSeg:isLoja&&scr==='seg'&&pode('auditoria.ver'),
       sFPed:isForn&&scr==='fped',sFCot:isForn&&scr==='fcot',sFFat:isForn&&scr==='ffat',sFRoy:isForn&&scr==='froy',sFProd:isForn&&scr==='fprod',
       sCat:isRev&&scr==='cat',sRPed:isRev&&scr==='rped',
@@ -6398,6 +6497,7 @@ class Component extends DCLogic {
       // cadastros
       fornRows,ctrRows,prodRows,revRows,fornFilterOpts,fornOptsAtivos,
       fornKpis,fd,buscaForn:S.buscaForn,setBuscaForn:this.setBuscaForn,fornModalTitulo,fornModalBtn,
+      deParaRows,dpFornCols,deParaKpis,deParaGrid,deParaVazio,buscaDp:S.buscaDp||'',setBuscaDp:this.setBuscaDp,irDePara:this.go('depara'),irProdutos:this.go('prod'),
       prodKpis,pdd,filtroStatusProd:S.filtroStatusProd,setFiltroStatusProd:this.setFiltroStatusProd,filtroCatProd:S.filtroCatProd||'todas',setFiltroCatProd:this.setFiltroCatProd,prodCatFilterOpts,prodCount,prodFiltroAtivo,prodVazio,limparProdFiltros:this.limparProdFiltros,prodModalTitulo,prodModalBtn,
       revKpis,rd,buscaRev:S.buscaRev,setBuscaRev:this.setBuscaRev,revModalTitulo,revModalBtn,fxEmail:this.fx('email'),
       busca:S.busca,setBusca:this.setBusca,filtroForn:S.filtroForn,setFiltroForn:this.setFiltroForn,
