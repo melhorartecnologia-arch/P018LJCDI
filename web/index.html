@@ -535,7 +535,9 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <table style="width:100%;border-collapse:collapse">
           <thead><tr>
             <th style="text-align:left;padding:9px 18px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Fornecedor</th>
-            <th style="text-align:right;padding:9px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Preço</th>
+            <th style="text-align:right;padding:9px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Produtos</th>
+            <th style="text-align:left;padding:9px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Frete</th>
+            <th style="text-align:right;padding:9px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Total c/ frete</th>
             <th style="text-align:left;padding:9px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Prazo de entrega</th>
             <th style="text-align:left;padding:9px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Validade</th>
             <th style="text-align:left;padding:9px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Condições</th>
@@ -555,12 +557,14 @@ input::placeholder,textarea::placeholder{color:#b0a795}
                   </sc-if>
                 </td>
                 <td style="padding:12px 10px;text-align:right;border-bottom:1px solid #f5f1e8">
-                  <div style="font-size:14px;font-weight:700">{{m.precoFmt}}</div>
+                  <div style="font-size:13.5px;font-weight:600">{{m.precoFmt}}</div>
                   <div style="font-size:10.5px;font-weight:600;margin-top:2px;color:{{m.deltaFg}}">{{m.deltaTxt}}</div>
                 </td>
+                <td style="padding:12px 10px;font-size:12px;color:#6b6459;border-bottom:1px solid #f5f1e8">{{m.freteTxt}}</td>
+                <td style="padding:12px 10px;text-align:right;font-size:14px;font-weight:700;color:#8f682a;border-bottom:1px solid #f5f1e8">{{m.totalCFFmt}}</td>
                 <td style="padding:12px 10px;font-size:13px;border-bottom:1px solid #f5f1e8">{{m.prazoEntrega}}</td>
                 <td style="padding:12px 10px;font-size:13px;color:#8a8378;border-bottom:1px solid #f5f1e8">{{m.validade}}</td>
-                <td style="padding:12px 10px;font-size:13px;color:#8a8378;border-bottom:1px solid #f5f1e8">{{m.condicoes}}</td>
+                <td style="padding:12px 10px;font-size:12.5px;color:#8a8378;border-bottom:1px solid #f5f1e8">{{m.condicoes}}<sc-if value="{{m.temCondEntrega}}" hint-placeholder-val="{{false}}"><div style="font-size:11px;color:#a89f90;margin-top:2px">entrega: {{m.condEntrega}}</div></sc-if></td>
                 <td style="padding:12px 18px;text-align:right;border-bottom:1px solid #f5f1e8">
                   <sc-if value="{{cd.podeSelecionar}}" hint-placeholder-val="{{false}}">
                     <span onClick="{{m.escolher}}" style="font-size:12px;font-weight:600;color:#8f682a;border:1px solid #d9c193;border-radius:8px;padding:6px 12px;cursor:pointer;white-space:nowrap" style-hover="background:#faf5e9">Vencedora (todos os itens)</span>
@@ -1826,7 +1830,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
               <sc-if value="{{c.temRodTag}}" hint-placeholder-val="{{false}}"><span style="font-size:10.5px;font-weight:700;border-radius:6px;padding:2px 8px;background:#efe6f5;color:#5d3f96">{{c.rodTag}}</span></sc-if>
             </div>
             <div style="font-size:12.5px;color:#6b6459;margin-top:4px">{{c.itensTxt}}</div>
-            <div style="font-size:12px;color:#a89f90;margin-top:2px">Minha proposta: <b style="color:#272525">{{c.minhaFmt}}</b></div>
+            <div style="font-size:12px;color:#a89f90;margin-top:2px">Minha proposta: <b style="color:#272525">{{c.minhaFmt}}</b><sc-if value="{{c.minhaFrete}}" hint-placeholder-val="{{false}}"><span> · frete: {{c.minhaFrete}}</span></sc-if></div>
             <sc-if value="{{c.foraRodada}}" hint-placeholder-val="{{false}}"><div style="font-size:11.5px;color:#8a5a12;margin-top:3px">Esta rodada de renegociação não inclui você — sua última proposta permanece válida.</div></sc-if>
             <sc-if value="{{c.temResultado}}" hint-placeholder-val="{{false}}">
               <div style="font-size:12.5px;font-weight:600;margin-top:3px;color:#2f6b39">{{c.resultado}}</div>
@@ -2754,17 +2758,31 @@ input::placeholder,textarea::placeholder{color:#b0a795}
           </div>
         </sc-for>
       </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;background:#faf5e9;border:1px solid #ecdcbc;border-radius:8px;padding:9px 13px;margin-top:10px">
-        <span style="font-size:12px;color:#8a8378">Total da proposta</span><b style="font-size:14px;color:#8f682a">{{propInfo.totalFmt}}</b>
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 6px">Frete <span style="font-weight:400;color:#a89f90">— modalidade, valor e transportadora</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+        <div><div style="font-size:11px;font-weight:600;color:#a89f90;margin:0 0 4px">Modalidade</div>
+        <select value="{{form.freteMod}}" onChange="{{fxFreteMod}}" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525;cursor:pointer">
+          <option value="CIF">CIF — frete do fornecedor</option><option value="FOB">FOB — frete da revenda</option><option value="Outros">Outros</option>
+        </select></div>
+        <div><div style="font-size:11px;font-weight:600;color:#a89f90;margin:0 0 4px">Valor do frete (R$)</div>
+        <input value="{{form.freteValor}}" onChange="{{fxFreteValor}}" placeholder="0,00 = incluso" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525;text-align:right"></div>
+        <div><div style="font-size:11px;font-weight:600;color:#a89f90;margin:0 0 4px">Transportadora</div>
+        <input value="{{form.transportadora}}" onChange="{{fxTransportadora}}" placeholder="Ex.: TransSerra" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;background:#faf5e9;border:1px solid #ecdcbc;border-radius:8px;padding:9px 13px;margin-top:10px;flex-wrap:wrap">
+        <span style="font-size:12px;color:#8a8378"><b>Composição da proposta</b></span>
+        <span style="font-size:12.5px;color:#6b6459">Produtos <b>{{propInfo.totalFmt}}</b> &nbsp;+&nbsp; Frete <b>{{propInfo.freteFmt}}</b> &nbsp;=&nbsp; <b style="font-size:14px;color:#8f682a">Total {{propInfo.totalCFFmt}}</b></span>
       </div>
       <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Prazo de entrega</div>
       <input value="{{form.prazoEntrega}}" onChange="{{fxPrazoEntrega}}" placeholder="Ex.: 5 dias úteis" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
         <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Validade da proposta</div>
         <input value="{{form.validade}}" onChange="{{fxValidade}}" placeholder="dd/mm/aaaa" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
-        <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Condições comerciais</div>
+        <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Condições de pagamento</div>
         <input value="{{form.condicoes}}" onChange="{{fxCondicoes}}" placeholder="Ex.: boleto 28 dias" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
       </div>
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Condições de entrega</div>
+      <input value="{{form.condEntrega}}" onChange="{{fxCondEntrega}}" placeholder="Ex.: entrega no CD da revenda em até 48h" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
       <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Anexos da proposta <span style="font-weight:400;color:#a89f90">— opcional: catálogo, planilha de frete, tabela de preço…</span></div>
       <input type="file" multiple="multiple" accept=".pdf,.xml,.xls,.xlsx,.csv,.doc,.docx,.png,.jpg,.jpeg" onChange="{{addAnexosForm}}" style="width:100%;box-sizing:border-box;padding:8px 10px;border:1px dashed #cdbf9d;border-radius:8px;font:inherit;font-size:12.5px;background:#fbf8f1;color:#6b6459;cursor:pointer">
       <sc-if value="{{temFormAnexos}}" hint-placeholder-val="{{false}}">
@@ -3587,7 +3605,7 @@ class Component extends DCLogic {
         "De volta à lista, use o seletor \"Todos os status\" (no canto direito) para filtrar por \"Aguardando propostas\", \"Encerradas\" ou \"Canceladas\".",
         "Acompanhe o andamento pelos cards do topo (Em andamento, Taxa de resposta, Economia obtida, Cotações no histórico) e pela barra de progresso da coluna \"Propostas\" de cada linha.",
         "Clique sobre a linha da cotação na tabela (colunas Cotação, Pedido de origem, Convidados, Propostas, Prazo limite e Status) para abrir o detalhe.",
-        "No detalhe, clique em \"Lembrar\" ao lado de um fornecedor ainda pendente para reenviar a notificação da cotação e compare os valores no \"Mapa comparativo de propostas\" (a etiqueta MENOR PREÇO marca a proposta mais barata).",
+        "No detalhe, clique em \"Lembrar\" ao lado de um fornecedor ainda pendente para reenviar a notificação da cotação e compare os valores no \"Mapa comparativo de propostas\" — as colunas Produtos, Frete e Total c/ frete aparecem lado a lado e a etiqueta MENOR PREÇO considera o TOTAL COM FRETE.",
         "Defina o resultado clicando em \"Vencedora (todos os itens)\" no fornecedor escolhido ou, para dividir o pedido, use \"Escolher para este item\" na seção \"Adjudicação por item\"; se precisar encerrar sem escolher, use \"Cancelar cotação…\"."
       ],
       "dicas": [
@@ -3877,7 +3895,8 @@ class Component extends DCLogic {
         "Confira o campo \"Minha proposta\": se aparecer \"— não enviada —\", você ainda não respondeu; se mostrar um valor, sua proposta já foi enviada.",
         "Para responder, clique no botão dourado à direita do cartão — \"Enviar proposta…\" (ou \"Editar proposta…\", se já tiver enviado antes; em rodadas de renegociação, \"Enviar contraproposta…\").",
         "Na janela que abre (\"Proposta —\" seguida do código da cotação), informe o valor em \"Preço unitário por item (R$)\" para cada item; o \"Total da proposta\" é calculado automaticamente.",
-        "Preencha \"Prazo de entrega\" (ex.: 5 dias úteis), \"Validade da proposta\" (data no formato dd/mm/aaaa) e \"Condições comerciais\" (ex.: boleto 28 dias).",
+        "No bloco \"Frete\", escolha a modalidade (CIF — frete do fornecedor, FOB — frete da revenda, ou Outros), informe o valor do frete (0,00 significa incluso) e a transportadora — o quadro \"Composição da proposta\" mostra produtos + frete = total em tempo real.",
+        "Preencha \"Prazo de entrega\" (ex.: 5 dias úteis), \"Validade da proposta\" (data no formato dd/mm/aaaa), as \"Condições de pagamento\" (ex.: boleto 28 dias) e as \"Condições de entrega\" (ex.: entrega no CD em até 48h).",
         "Em \"Anexos da proposta\" você pode adicionar até 5 arquivos (catálogo, planilha de frete, tabela de preço…) — formatos PDF, Excel, Word, imagem ou XML, com até 5 MB cada; os anexos ficam visíveis para a Loja no mapa comparativo.",
         "Clique no botão dourado \"Enviar proposta\" para registrar (o botão continua com esse nome mesmo quando você está editando uma proposta já enviada), ou em \"Cancelar\" para fechar sem salvar.",
         "Em cotações já encerradas, leia a mensagem de resultado no próprio cartão (ex.: \"Sua proposta venceu\" ou \"Você venceu X de Y item(ns)\")."
@@ -4514,6 +4533,11 @@ class Component extends DCLogic {
     return Object.values(by).map(p=>{ let tot=0,okAll=citens.length>0;
       citens.forEach(it=>{ const u=(p.itens||{})[it.produtoId]; if(u!=null) tot+=u*it.qtd; else okAll=false; });
       return {...p,rodada:p.rodada||1,preco:okAll?Math.round(tot*100)/100:p.preco}; }); }
+  // ——— RF59: frete e condições comerciais na proposta ———
+  _totCF(p){ return Math.round(((((p&&p.preco)||0)+((p&&p.freteValor)||0)))*100)/100; }
+  _freteTxt(p){ if(!p) return '—'; const m=p.freteMod||'CIF'; const v=p.freteValor||0;
+    return m+(v?' · '+this.fmt(v):' · frete incluso')+(p.transportadora?' · '+p.transportadora:''); }
+  _compTxt(p){ const v=(p&&p.freteValor)||0; return v?(this.fmt(p.preco)+' + frete '+this.fmt(v)+' = '+this.fmt(this._totCF(p))):this.fmt((p&&p.preco)||0); }
   // Total efetivo de um fornecedor considerando só propostas até a rodada n (evolução)
   _propAteRodada(c,fid,n){ let itens=null,preco=null;
     [...((c&&c.propostas)||[])].filter(p=>p.fornecedorId===fid&&(p.rodada||1)<=n).sort((a,b)=>((a.rodada||1)-(b.rodada||1)))
@@ -4547,8 +4571,8 @@ class Component extends DCLogic {
     this.mClose(); };
   escolher(cotId,fid){ return ()=>{ const c=this.state.cotacoes.find(x=>x.id===cotId);
     const props=this._propsEfetivas(c);
-    const menor=Math.min(...props.map(p=>p.preco)); const pr=props.find(p=>p.fornecedorId===fid);
-    if(pr.preco>menor){ this.setState({modal:'justifvenc',pendVenc:{cotId,fid},form:{}}); } else { this.finalizarVenc(cotId,fid,null); } }; }
+    const menor=Math.min(...props.map(p=>this._totCF(p))); const pr=props.find(p=>p.fornecedorId===fid);
+    if(this._totCF(pr)>menor){ this.setState({modal:'justifvenc',pendVenc:{cotId,fid},form:{}}); } else { this.finalizarVenc(cotId,fid,null); } }; }
   confirmJustifVenc=()=>{ const j=(this.state.form.justif||'').trim(); if(!j) return this.err('Justificativa obrigatória: a proposta escolhida não é a de menor preço (RF28).');
     const pv=this.state.pendVenc;
     if(pv.produtoId!=null) this.finalizarVencItem(pv.cotId,pv.produtoId,pv.fid,j); else this.finalizarVenc(pv.cotId,pv.fid,j); };
@@ -4556,11 +4580,11 @@ class Component extends DCLogic {
     const f=this.state.fornecedores.find(x=>x.id===fid); const pr=this._propsEfetivas(c).find(p=>p.fornecedorId===fid);
     const refTot=(c.itens||[]).reduce((a,x2)=>a+x2.qtd*x2.preco,0)||1;
     this.updCot(cotId,x=>{x.status='encerrada';x.vencedorId=fid;x.vencItens=(x.itens||[]).reduce((m,it)=>({...m,[it.produtoId]:fid}),{});x.justificativa=justif;
-      x.historico.push({quando:this.ts(),usuario:this.userName(),acao:'Proposta vencedora (todos os itens, rodada '+this._cotRod(c)+'): '+f.nome+' ('+this.fmt(pr.preco)+')'+(justif?' · Justificativa: '+justif:' — menor preço')});return x;});
+      x.historico.push({quando:this.ts(),usuario:this.userName(),acao:'Proposta vencedora (todos os itens, rodada '+this._cotRod(c)+'): '+f.nome+' ('+this._compTxt(pr)+')'+(justif?' · Justificativa: '+justif:' — menor preço')});return x;});
     this.updPed(c.pedidoId,p=>{p.itens=p.itens.map(i=>i.st==='cotacao'&&i.cotacaoId===cotId?{...i,st:'direto',fornecedorId:fid,precoNeg:(pr.itens&&pr.itens[i.produtoId]!=null)?pr.itens[i.produtoId]*i.qtd:Math.round(pr.preco*(i.qtd*i.preco)/refTot*100)/100}:i);
       p.trilha.push(this.tr('Itens da '+cotId+' gerados automaticamente para '+f.nome+' (vencedor)'));return p;});
     this.audit('Seleção de proposta vencedora',cotId+' → '+f.nome+(justif?' · '+justif:''));
-    this.notificar('cotacao_vencedor',this._fornEmail(fid),{cotacao:cotId,fornecedorNome:f.nome,valor:this.fmt(pr.preco),itensLista:this._itensCot(c)});
+    this.notificar('cotacao_vencedor',this._fornEmail(fid),{cotacao:cotId,fornecedorNome:f.nome,valor:this._compTxt(pr),itensLista:this._itensCot(c)});
     this.mClose(); }
   escolherItem(cotId,pid,fid){ this._ei=this._ei||{}; const k=cotId+'|'+pid+'|'+fid; if(!this._ei[k]) this._ei[k]=()=>{
     const c=this.state.cotacoes.find(x=>x.id===cotId);
@@ -4608,6 +4632,8 @@ class Component extends DCLogic {
     const itens={...((prev&&prev.itens)||{})}; let totAlvo=0;
     for(const it of alvo){ const u=this.num(f['ip'+it.produtoId]); if(!u) return this.err('Informe o preço unitário de todos os itens (RF24).'); itens[it.produtoId]=u; totAlvo+=u*it.qtd; }
     if(!f.prazoEntrega) return this.err('Informe o prazo de entrega (RF24).');
+    const freteMod=f.freteMod||'CIF'; const freteValor=Math.round((this.num(f.freteValor)||0)*100)/100;
+    if(freteValor<0) return this.err('Valor do frete inválido.');
     if(f.propBusy) return;
     let anexosUp=[];
     if((f.anexos||[]).length){ this.setState(s=>({form:{...s.form,propBusy:true,erro:null}}));
@@ -4619,11 +4645,12 @@ class Component extends DCLogic {
     citensMeus.forEach(it=>{ const u=itens[it.produtoId]; if(u!=null) total+=u*it.qtd; else okAll=false; });
     total=okAll?Math.round(total*100)/100:Math.round(totAlvo*100)/100;
     this.updCot(cid,cc=>{ cc.propostas=cc.propostas.filter(p=>!(p.fornecedorId===fid&&(p.rodada||1)===rod));
-      cc.propostas.push({fornecedorId:fid,rodada:rod,preco:total,itens,prazoEntrega:f.prazoEntrega,validade:f.validade||'—',condicoes:f.condicoes||'—',quando:this.hoje(),anexos:anexosProp});
-      cc.historico.push({quando:this.ts(),usuario:me.nome,acao:(rod>1?('Contraproposta (rodada '+rod+') registrada por '+me.nome+' ('+this.fmt(total)+')'+(antes!=null?' — antes: '+this.fmt(antes):'')):('Proposta registrada por '+me.nome+' ('+this.fmt(total)+')'))+(anexosProp.length?' · '+anexosProp.length+' anexo(s): '+anexosProp.map(a=>a.nome).join(', '):'')}); return cc;});
-    this.audit(rod>1?'Registro de contraproposta':'Registro de proposta',cid+(rod>1?' · rodada '+rod:'')+' · '+this.fmt(total)+(rod>1&&antes!=null?' (antes '+this.fmt(antes)+')':'')+(anexosProp.length?' · '+anexosProp.length+' anexo(s)':''));
+      cc.propostas.push({fornecedorId:fid,rodada:rod,preco:total,itens,freteMod,freteValor,transportadora:(f.transportadora||'').trim(),condEntrega:(f.condEntrega||'').trim(),prazoEntrega:f.prazoEntrega,validade:f.validade||'—',condicoes:f.condicoes||'—',quando:this.hoje(),anexos:anexosProp});
+      const _cmp=freteValor?(this.fmt(total)+' + frete '+this.fmt(freteValor)+' ('+freteMod+') = '+this.fmt(total+freteValor)):this.fmt(total);
+      cc.historico.push({quando:this.ts(),usuario:me.nome,acao:(rod>1?('Contraproposta (rodada '+rod+') registrada por '+me.nome+' ('+_cmp+')'+(antes!=null?' — antes: '+this.fmt(antes):'')):('Proposta registrada por '+me.nome+' ('+_cmp+')'))+(anexosProp.length?' · '+anexosProp.length+' anexo(s): '+anexosProp.map(a=>a.nome).join(', '):'')}); return cc;});
+    this.audit(rod>1?'Registro de contraproposta':'Registro de proposta',cid+(rod>1?' · rodada '+rod:'')+' · '+this.fmt(total)+(freteValor?' + frete '+this.fmt(freteValor)+' ('+freteMod+') = '+this.fmt(total+freteValor):'')+(rod>1&&antes!=null?' (antes '+this.fmt(antes)+')':'')+(anexosProp.length?' · '+anexosProp.length+' anexo(s)':''));
     const _ilP=alvo.map(it=>{ const pp=this._prodInfo(it.produtoId); const u=itens[it.produtoId]; return {codigo:pp.codigo||'',descricao:pp.descricao||('Produto '+it.produtoId),qtd:it.qtd,unidade:pp.unidade||'',valor:this.fmt((u||0)*it.qtd)}; });
-    this.notificar('cotacao_proposta_loja',this._lojaEmail(),{cotacao:cid,fornecedorNome:me.nome,total:this.fmt(total),itensLista:_ilP});
+    this.notificar('cotacao_proposta_loja',this._lojaEmail(),{cotacao:cid,fornecedorNome:me.nome,total:this.fmt(total)+(freteValor?' + frete '+this.fmt(freteValor)+' ('+freteMod+') = '+this.fmt(total+freteValor):''),itensLista:_ilP});
     this.mClose(); };
   // Como o anexo/análise de um faturamento aparece nas tabelas (📎 + selo IA)
   _anexoView(f){ const a=f.analise;
@@ -5282,6 +5309,7 @@ class Component extends DCLogic {
         const refTot=citens.reduce((a,i)=>a+i.qtd*i.preco,0);
         const props=this._propsEfetivas(c);
         const menor=props.length?Math.min(...props.map(p=>p.preco)):0;
+        const menorCF=props.length?Math.min(...props.map(p=>this._totCF(p))):0;
         const aguardando=c.status==='aguardando propostas';
         const pi=prazoInfo(c);
         const abertura=c.historico.length?c.historico[0].quando:'';
@@ -5298,7 +5326,7 @@ class Component extends DCLogic {
           prazoTxt:pi.txt,temPrazoTag:!!pi.txt,prazoBg:pi.bg,prazoFg:pi.fg,
           resumo:[
             {label:'Referência dos itens',val:this.fmt(refTot),sub:c.pedidoId+' · '+citens.length+' item(ns)'},
-            {label:'Menor proposta',val:menor?this.fmt(menor):'—',sub:menor?menorForn:'aguardando propostas'},
+            {label:'Menor proposta (c/ frete)',val:menorCF?this.fmt(menorCF):'—',sub:menorCF?(F((props.slice().sort((a,b)=>this._totCF(a)-this._totCF(b))[0]||{}).fornecedorId).nome||menorForn):'aguardando propostas'},
             {label:'Economia vs. referência',val:menor?this.fmt(Math.abs(ecoRef)):'—',sub:menor?(ecoRef>=0?'abaixo da referência':'acima da referência'):''},
             {label:'Respostas',val:props.length+' de '+c.convidados.length,sub:'prazo limite: '+c.prazo+(this._cotRod(c)>1?' · rodada '+this._cotRod(c):'')}],
           verPed:this.openPed(c.pedidoId),
@@ -5309,10 +5337,10 @@ class Component extends DCLogic {
             return {nome:F(cf).nome,tag:recebida?'proposta recebida':'aguardando',bg:recebida?'#e9f3ea':'#fdf3e0',fg:recebida?'#2f6b39':'#8a5a12',
               pendente:aguardando&&!recebida&&this.pode('cotacoes.lembrar'),lembrar:this.lembrarCot(c.id,cf),
               lembrete:(c.lembretes||{})[cf]?'lembrete '+(c.lembretes||{})[cf]:''};}),
-          mapa:props.slice().sort((a,b)=>a.preco-b.preco).map(p=>{const eMenor=p.preco===menor;
+          mapa:props.slice().sort((a,b)=>this._totCF(a)-this._totCF(b)).map(p=>{const eMenor=this._totCF(p)===menorCF;
             const d=p.preco-refTot;
             const antesR=p.rodada>1?this._propAteRodada(c,p.fornecedorId,p.rodada-1):null;
-            return {fornNome:F(p.fornecedorId).nome,precoFmt:this.fmt(p.preco),prazoEntrega:p.prazoEntrega,validade:p.validade,condicoes:p.condicoes,quando:p.quando,
+            return {fornNome:F(p.fornecedorId).nome,precoFmt:this.fmt(p.preco),freteTxt:this._freteTxt(p),totalCFFmt:this.fmt(this._totCF(p)),condEntrega:p.condEntrega||'',temCondEntrega:!!p.condEntrega,prazoEntrega:p.prazoEntrega,validade:p.validade,condicoes:p.condicoes,quando:p.quando,
               rodadaInfo:p.rodada>1?('contraproposta · rodada '+p.rodada+(antesR!=null&&antesR!==p.preco?' · antes: '+this.fmt(antesR):'')):'',temRodadaInfo:p.rodada>1,
               anexos:(p.anexos||[]).map(a=>({nome:a.nome,url:'/api/anexos/'+a.id,info:(a.quando||'')+(a.autor?' · '+a.autor:'')})),temAnexos:!!(p.anexos&&p.anexos.length),
               deltaTxt:(d<=0?'− ':'+ ')+this.fmt(Math.abs(d)).replace('R$ ','')+' vs. ref.',deltaFg:d<=0?'#2f6b39':'#a33a2b',
@@ -5709,12 +5737,13 @@ class Component extends DCLogic {
           const meusIt=Object.keys(c.vencItens).filter(k=>c.vencItens[k]===fid).length;
           resultado=meusIt?('Você venceu '+meusIt+' de '+citens.length+' item(ns)'):'Os itens foram adjudicados a outros fornecedores'; }
         else resultado=c.vencedorId===fid?'Sua proposta venceu':'Outra proposta foi selecionada'; }
-      const seedP={cotId:c.id,prazoEntrega:own?own.prazoEntrega:'',validade:own?own.validade:'',condicoes:own?own.condicoes:''};
+      const seedP={cotId:c.id,prazoEntrega:own?own.prazoEntrega:'',validade:own?own.validade:'',condicoes:own?own.condicoes:'',freteMod:own?(own.freteMod||'CIF'):'CIF',freteValor:own&&own.freteValor?String(own.freteValor).replace('.',','):'',transportadora:own?(own.transportadora||''):'',condEntrega:own?(own.condEntrega||''):''};
       if(own&&own.itens) Object.keys(own.itens).forEach(k2=>{seedP['ip'+k2]=String(own.itens[k2]).replace('.',',');});
       return {id:c.id,prazo:c.prazo,...this.chip(c.status),
         itensTxt:citens.map(i=>P(i.produtoId).descricao+' ×'+i.qtd).join(', '),
         fotos:citens.map(i=>({src:this.fotosDe(P(i.produtoId))[0],ver:this.verFoto(i.produtoId)})),
-        minhaFmt:own?this.fmt(own.preco):'— não enviada —',enviada:!!own,
+        minhaFmt:own?this._compTxt(own):'— não enviada —',enviada:!!own,
+        minhaFrete:own?this._freteTxt(own):'',
         resultado,temResultado:!!resultado,venceu:c.status==='encerrada'&&(c.vencedorId===fid||(c.vencItens&&Object.values(c.vencItens).includes(fid))),
         podeProp:c.status==='aguardando propostas'&&participaRod&&this.pode('cotacoes.proposta'),
         propLabel:rodF>1?'Enviar contraproposta':(own?'Editar proposta':'Enviar proposta'),
@@ -5782,10 +5811,12 @@ class Component extends DCLogic {
           const u=this.num(v); if(u) totP+=u*it.qtd; else okP=false;
           return {label:(pr.codigo||'')+' · '+(pr.descricao||''),qtdTxt:'×'+it.qtd+' '+(pr.unidade||''),refFmt:this.fmt(it.preco),
             val:v,fx:this.fx('ip'+it.produtoId)};});
+        const fvP=Math.round((this.num(S.form.freteValor)||0)*100)/100;
         propInfo={cotId:c.id,prazo:c.prazo,rodadaTag:rodP>1?'Contraproposta — rodada '+rodP+' · revise os preços dos itens em renegociação':'',temRodadaTag:rodP>1,itensTxt:citens.map(i=>P(i.produtoId).descricao+' ×'+i.qtd).join(', '),
           refFmt:this.fmt(citens.reduce((a,i)=>a+i.qtd*i.preco,0)),
           fotos:citens.map(i=>({src:this.fotosDe(P(i.produtoId))[0],ver:this.verFoto(i.produtoId)})),
           itens:itensP,totalFmt:okP?this.fmt(totP):'— complete os itens —',
+          freteFmt:fvP?this.fmt(fvP):(S.form.freteMod==='FOB'?'FOB (por conta da revenda)':'R$ 0,00 — incluso'),totalCFFmt:okP?this.fmt(totP+fvP):'—',
           ocultosTxt:filP.ocultos?(filP.ocultos+' item(ns) desta cotação pertence(m) a produtos de outros fornecedores e não são exibidos — você cota somente os produtos vinculados ao seu cadastro (RF55).'):''}; } }
     let fatInfo={pedidoId:'',revNome:'',pctStr:'',itensTxt:''};
     if(M==='faturar'&&S.form.pedidoId){ const p=PEDS.find(x=>x.id===S.form.pedidoId);
@@ -5798,7 +5829,8 @@ class Component extends DCLogic {
         if(S.pendVenc.produtoId!=null){ const pid2=S.pendVenc.produtoId; const it=(c.itens||[]).find(x=>x.produtoId===pid2)||{qtd:1};
           const units=c.propostas.map(pp=>pp.itens?pp.itens[pid2]:null).filter(v=>v!=null);
           jvInfo={fornNome:F(S.pendVenc.fid).nome,precoFmt:this.fmt(((pr.itens||{})[pid2]||0)*it.qtd),menorFmt:this.fmt(Math.min(...units)*it.qtd),itemTxt:' para o item '+(P(pid2).descricao||'')}; }
-        else jvInfo={fornNome:F(S.pendVenc.fid).nome,precoFmt:this.fmt(pr.preco),menorFmt:this.fmt(Math.min(...c.propostas.map(p=>p.preco))),itemTxt:''}; } }
+        else { const efJ=this._propsEfetivas(c); const prE=efJ.find(p=>p.fornecedorId===S.pendVenc.fid)||pr;
+          jvInfo={fornNome:F(S.pendVenc.fid).nome,precoFmt:this.fmt(this._totCF(prE)),menorFmt:this.fmt(Math.min(...efJ.map(p=>this._totCF(p)))),itemTxt:' (totais com frete)'}; } } }
     let selItens=[];
     if((M==='direto'||M==='cotacao'||M==='estoque')&&S.form.pedidoId){ const p=PEDS.find(x=>x.id===S.form.pedidoId);
       if(p) selItens=p.itens.map((i,ix)=>({i,ix})).filter(x=>x.i.st==='aprovado').map(x=>{ const prod=P(x.i.produtoId); const on=(S.form.sel||[]).includes(x.ix);
@@ -6028,7 +6060,7 @@ class Component extends DCLogic {
       mForn:M==='fornecedor',mCtr:M==='contrato',mRoy:M==='royalty',mProd:M==='produto',mRev:M==='revenda',mFicha:M==='ficha',
       mRej:M==='rejeitar',mDir:M==='direto',mCot:M==='cotacao',mEst:M==='estoque',mJusV:M==='justifvenc',mCanC:M==='cancelarcot',
       mProp:M==='proposta',mRod:M==='rodada',mAnx:M==='anexoped',mFat:M==='faturar',mPag:M==='pagamento',mCompF:M==='compforn',
-      dirRows,convRows,dirVazio,prodFornRows,prodFornSel,prodFornVazio,propInfo,fatInfo,jvInfo,royInfo,rodInfo,confirmRodada:this.confirmRodada,formAnexos,temFormAnexos,anxInfo,addAnexosForm:this.addAnexosForm,confirmAnexosPed:this.confirmAnexosPed,fatExtras,temFatExtras,addAnexoFatExtra:this.addAnexoFatExtra,fxTipoDocExtra:this.fx('tipoDocExtra'),selItens,cotEstim,fprodRows,fprodVazio,fichaInfo,confirmFicha:this.confirmFicha,addFotoFicha:this.addFotoFicha,fxNcm:this.fxNcm,fxEan:this.fxEan,fxPesoBruto:this.fx('pesoBruto'),fxPesoLiquido:this.fx('pesoLiquido'),fxAltura:this.fx('altura'),fxLargura:this.fx('largura'),fxComprimento:this.fx('comprimento'),fxUnidadeMedida:this.fx('unidadeMedida'),fxObsFicha:this.fx('obs'),
+      dirRows,convRows,dirVazio,prodFornRows,prodFornSel,prodFornVazio,propInfo,fatInfo,jvInfo,royInfo,rodInfo,confirmRodada:this.confirmRodada,formAnexos,temFormAnexos,anxInfo,addAnexosForm:this.addAnexosForm,confirmAnexosPed:this.confirmAnexosPed,fatExtras,temFatExtras,addAnexoFatExtra:this.addAnexoFatExtra,fxTipoDocExtra:this.fx('tipoDocExtra'),selItens,cotEstim,fprodRows,fprodVazio,fichaInfo,confirmFicha:this.confirmFicha,addFotoFicha:this.addFotoFicha,fxNcm:this.fxNcm,fxEan:this.fxEan,fxPesoBruto:this.fx('pesoBruto'),fxPesoLiquido:this.fx('pesoLiquido'),fxFreteMod:this.fx('freteMod'),fxFreteValor:this.fx('freteValor'),fxTransportadora:this.fx('transportadora'),fxCondEntrega:this.fx('condEntrega'),fxAltura:this.fx('altura'),fxLargura:this.fx('largura'),fxComprimento:this.fx('comprimento'),fxUnidadeMedida:this.fx('unidadeMedida'),fxObsFicha:this.fx('obs'),
       confirmEstoque:this.confirmEstoque,setPedidoCot:this.setPedidoCot,
       prodModalFotos:(S.form.editId&&M==='produto'?this.fotosDe(S.produtos.find(x=>x.id===S.form.editId)||{}):['img/prd-new-1.png','img/prd-new-2.png','img/prd-new-3.png']).map((src,i)=>({src,principal:i===(S.form.fotoP||0),pick:this.pickFotoP(i),bd:i===(S.form.fotoP||0)?'#B38335':'#e8e1d2'})),
       salvarForn:this.salvarForn,salvarContrato:this.salvarContrato,salvarRoyalty:this.salvarRoyalty,

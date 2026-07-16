@@ -754,7 +754,11 @@
           "prazoEntrega": "5 dias úteis",
           "validade": "25/07/2026",
           "condicoes": "Boleto 28 dias",
-          "quando": "07/07/2026"
+          "quando": "07/07/2026",
+          "freteMod": "CIF",
+          "freteValor": 0,
+          "transportadora": "TransSerra Logística",
+          "condEntrega": "Entrega no CD da revenda em até 48h"
         },
         {
           "fornecedorId": 3,
@@ -766,7 +770,11 @@
           "prazoEntrega": "3 dias úteis",
           "validade": "31/07/2026",
           "condicoes": "À vista com 2% de desconto",
-          "quando": "06/07/2026"
+          "quando": "06/07/2026",
+          "freteMod": "FOB",
+          "freteValor": 90,
+          "transportadora": "Retira Fácil Fretes",
+          "condEntrega": "Retirada no depósito do fornecedor mediante agendamento"
         }
       ],
       "historico": [
