@@ -1595,7 +1595,42 @@ input::placeholder,textarea::placeholder{color:#b0a795}
 <sc-if value="{{sFPed}}" hint-placeholder-val="{{false}}">
   <div data-screen-label="Pedidos recebidos (fornecedor)" style="animation:fadeUp .25s ease">
     <div style="font-size:21px;font-weight:700;margin:2px 0 3px">Pedidos recebidos</div>
-    <div style="font-size:13px;color:#8a8378;margin-bottom:18px">Pedidos direcionados a {{fMeNome}} por envio direto ou cotação vencida — fature diretamente à revenda</div>
+    <div style="font-size:13px;color:#8a8378;margin-bottom:14px">Pedidos direcionados a {{fMeNome}} por envio direto ou cotação vencida — fature diretamente à revenda</div>
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      <div onClick="{{fPedVisCards}}" title="Visão em cards, um por pedido" style="font-size:12px;font-weight:700;border:1px solid #ddd5c7;border-radius:8px;padding:7px 14px;cursor:pointer;background:{{fVisCardsBg}};color:{{fVisCardsFg}}">Cards</div>
+      <div onClick="{{fPedVisLista}}" title="Visualização detalhada por item — apoio à conferência, produção, separação, logística e faturamento" style="font-size:12px;font-weight:700;border:1px solid #ddd5c7;border-radius:8px;padding:7px 14px;cursor:pointer;background:{{fVisListaBg}};color:{{fVisListaFg}}">Lista detalhada</div>
+    </div>
+    <sc-if value="{{fVisLista}}" hint-placeholder-val="{{false}}">
+      <sc-if value="{{semFItens}}" hint-placeholder-val="{{false}}">
+        <div style="background:#fff;border:1px dashed #ddd5c7;border-radius:12px;padding:22px;text-align:center;font-size:13px;color:#a89f90">Nenhum item direcionado a você até o momento.</div>
+      </sc-if>
+      <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;overflow:hidden">
+        <table style="width:100%;border-collapse:collapse">
+          <thead><tr>
+            <th style="text-align:left;padding:10px 18px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Produto</th>
+            <th style="text-align:right;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Quantidade</th>
+            <th style="text-align:right;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Valor</th>
+            <th style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Situação do item</th>
+            <th style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Pedido</th>
+            <th style="text-align:left;padding:10px 18px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Revenda — entrega/contato</th>
+          </tr></thead>
+          <tbody>
+            <sc-for list="{{fItemRows}}" as="it" hint-placeholder-count="3">
+              <tr>
+                <td style="padding:11px 18px;border-bottom:1px solid #f5f1e8"><div style="display:flex;align-items:center;gap:10px"><sc-if value="{{it.foto}}" hint-placeholder-val="{{false}}"><img loading="lazy" src="{{it.foto}}" alt="{{it.codigo}}" onClick="{{it.ver}}" title="Clique para ampliar" style="width:38px;height:38px;object-fit:cover;border-radius:8px;border:1px solid #eae3d6;flex:none;cursor:zoom-in"></sc-if><div><div style="font-size:13px;font-weight:600">{{it.descricao}}</div><div style="font-size:10.5px;color:#b0a795">{{it.codigo}}</div></div></div></td>
+                <td style="padding:11px 10px;font-size:13px;font-weight:600;text-align:right;white-space:nowrap;border-bottom:1px solid #f5f1e8">{{it.qtdTxt}}</td>
+                <td style="padding:11px 10px;text-align:right;border-bottom:1px solid #f5f1e8"><div style="font-size:13px;font-weight:700">{{it.valFmt}}</div><sc-if value="{{it.temNeg}}" hint-placeholder-val="{{false}}"><div style="font-size:10px;color:#8a5a12">{{it.negTag}}</div></sc-if></td>
+                <td style="padding:11px 10px;border-bottom:1px solid #f5f1e8"><span style="font-size:11.5px;font-weight:600;border-radius:7px;padding:3px 9px;background:{{it.stBg}};color:{{it.stFg}};white-space:nowrap">{{it.stLabel}}</span></td>
+                <td style="padding:11px 10px;font-size:12.5px;border-bottom:1px solid #f5f1e8"><b>{{it.pedidoId}}</b><div style="font-size:11px;color:#a89f90">{{it.pedData}} · {{it.origem}}</div></td>
+                <td style="padding:11px 18px;font-size:12.5px;border-bottom:1px solid #f5f1e8"><b>{{it.revNome}}</b><div style="font-size:11px;color:#a89f90">{{it.revCidade}} · CNPJ {{it.revCnpj}}</div><div style="font-size:11px;color:#8f682a">{{it.revEmail}}</div></td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+        <div style="display:flex;justify-content:space-between;padding:11px 18px;background:#faf7f0;border-top:1px solid #f1ece2;font-size:12.5px"><span style="color:#8a8378">{{fItemN}} item(ns) direcionado(s) a você</span><span style="font-weight:700">Total dos seus itens: {{fItemTotFmt}}</span></div>
+      </div>
+    </sc-if>
+    <sc-if value="{{fVisCards}}" hint-placeholder-val="{{true}}">
     <div style="display:flex;flex-direction:column;gap:12px">
       <sc-for list="{{fPedRows}}" as="p" hint-placeholder-count="2">
         <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:15px 18px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap">
@@ -1627,6 +1662,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         </div>
       </sc-for>
     </div>
+    </sc-if>
   </div>
 </sc-if>
 
@@ -2810,7 +2846,7 @@ class Component extends DCLogic {
     configEmail:{host:'',porta:'587',seguranca:'starttls',usuario:'',senha:'',remetenteNome:'Cidade Imperial',remetenteEmail:'',responderPara:'',emailLoja:'',ativo:false},
     configPlataforma:{analiseFiscalIA:true}, analiseEngine:null,
     cfgTestTo:'', cfgMsg:null, cfgMsgTipo:null, cfgBusy:false,
-    selPed:null, selCot:null, selForn:null, selProd:null, selRev:null, modal:null, form:{}, pendVenc:null, filtroStatusProd:'todos', buscaRev:'', buscaPed:'', filtroRev:'0',
+    selPed:null, selCot:null, selForn:null, selProd:null, selRev:null, modal:null, form:{}, pendVenc:null, filtroStatusProd:'todos', buscaRev:'', buscaPed:'', filtroRev:'0', fPedVis:'cards',
     busca:'', buscaForn:'', filtroForn:'0', filtroStatus:'todos', buscaCat:'', cart:{}, fotoIdx:{}, lightbox:null, expFech:null, filtroCot:'todas',
     relComp:'todas', relRevF:'0', relFornF:'0', relStF:'todos',
     audBusca:'', audUsr:'todos', audMod:'todos', audSev:'todas', audPer:'todos', audLimit:30,
@@ -3448,6 +3484,7 @@ class Component extends DCLogic {
       "resumo": "Tela onde o fornecedor vê os pedidos direcionados a ele por envio direto ou por cotação vencida e registra o faturamento direto para a revenda. O royalty é calculado automaticamente sobre o valor informado.",
       "passos": [
         "Na lista \"Pedidos recebidos\", encontre o card do pedido pelo número (ex.: \"PED-0042\"), pela etiqueta de status (\"Encaminhado\" ou \"Faturado\") e pela origem (\"Envio direto\" ou \"Cotação COT-...\") com a data.",
+        "Alterne entre as visões nos botões \"Cards\" e \"Lista detalhada\" no topo: a lista mostra uma linha por item — produto, quantidade, valor, situação do item, pedido e revenda de destino (cidade, CNPJ e e-mail de contato) — para apoiar conferência, produção, separação, logística e faturamento.",
         "Confira os produtos listados no card e o valor total, exibido em destaque no lado direito.",
         "Verifique em \"Faturar diretamente para:\" o nome da revenda que receberá a nota — o faturamento é feito direto para ela.",
         "Se aparecer o aviso \"Atendimento parcial: X de Y itens do pedido são seus\", lembre-se de que você fatura apenas os itens que são seus.",
@@ -3462,7 +3499,8 @@ class Component extends DCLogic {
         "O campo \"Valor efetivamente faturado (R$)\" já vem preenchido com a soma dos seus itens pendentes; confira e edite o valor antes de confirmar.",
         "O anexo do documento fiscal é obrigatório: sem PDF ou XML da nota não é possível confirmar o faturamento. Prefira o XML da NF-e — ele é lido com mais precisão pela análise automática.",
         "O royalty é calculado automaticamente sobre o valor faturado, conforme o percentual do seu contrato — você só informa o valor.",
-        "Após confirmar, a etiqueta do card muda para \"Faturado\" e o botão \"Registrar faturamento…\" deixa de aparecer para aquele pedido."
+        "Após confirmar, a etiqueta do card muda para \"Faturado\" e o botão \"Registrar faturamento…\" deixa de aparecer para aquele pedido.",
+        "A \"Lista detalhada\" mostra apenas os SEUS itens em cada pedido (a restrição de visibilidade é a mesma dos cards) e traz no rodapé o total somado dos itens direcionados a você."
       ]
     },
     "fcot": {
@@ -3721,6 +3759,7 @@ class Component extends DCLogic {
     this.setState(s=>({revendas:s.revendas.map(x=>x.id===rid?{...x,ultimoConvite:this.hoje()}:x)}));
     this.audit('Convite de acesso reenviado',r.nome+' · '+r.email); }; return this._rc[rid]; }
   setFiltroStatusProd=e=>this.setState({filtroStatusProd:e.target.value});
+  setFPedVis(v){ this._fpv=this._fpv||{}; if(!this._fpv[v]) this._fpv[v]=()=>this.setState({fPedVis:v}); return this._fpv[v]; }
   fotoSet(id,i){ this._fs=this._fs||{}; const k=id+'|'+i; if(!this._fs[k]) this._fs[k]=()=>this.setState(s=>({fotoIdx:{...s.fotoIdx,[id]:i}})); return this._fs[k]; }
   setBuscaForn=e=>this.setState({buscaForn:e.target.value});
   fotosDe(p){ if(!p||!p.id) return ['img/prd-new-1.png','img/prd-new-2.png','img/prd-new-3.png'];
@@ -5057,6 +5096,19 @@ class Component extends DCLogic {
         temAnexos:!!(p.anexosAtend||[]).filter(a=>a.fornecedorId===fid).length,
         anexar:this.open('anexoped',{pedidoId:p.id,anexos:[]}),
         faturar:this.open('faturar',{pedidoId:p.id,valorFat:pend.reduce((a,i)=>a+this.itemTotal(i),0).toFixed(2).replace('.',','),nf:''})});});
+    // Visualização detalhada em lista (Ata 5.6): uma linha por item do fornecedor,
+    // com dados do pedido e da revenda de destino — apenas itens dele (visibilidade).
+    const fVis=(S.fPedVis==='lista')?'lista':'cards';
+    const fItemRows=[]; let fItemTot=0;
+    PEDS.forEach(p=>{ const meusI=p.itens.filter(i=>i.fornecedorId===fid&&(i.st==='direto'||i.st==='faturado'));
+      if(!meusI.length) return; const rev=R(p.revendaId);
+      meusI.forEach(i=>{ const prod=P(i.produtoId); const val=this.itemTotal(i); fItemTot+=val;
+        fItemRows.push({codigo:prod.codigo||'',descricao:prod.descricao||'',
+          foto:this.fotosDe(prod)[0],ver:this.verFoto(i.produtoId),
+          qtdTxt:i.qtd+' '+(prod.unidade||'un'),valFmt:this.fmt(val),negTag:i.precoNeg!=null?'negociado em cotação':'',temNeg:i.precoNeg!=null,
+          ...this.chip(i.st==='direto'?'encaminhado':'faturado'),
+          pedidoId:p.id,pedData:p.data,origem:i.cotacaoId?('Cotação '+i.cotacaoId):'Envio direto',
+          revNome:rev.nome||'',revCidade:rev.cidade||'—',revCnpj:rev.cnpj||'—',revEmail:rev.email||'—'}); }); });
     const fCotRows=S.cotacoes.filter(c=>c.convidados.includes(fid)).map(c=>{
       const own=this._propsEfetivas(c).find(p=>p.fornecedorId===fid);
       const rodF=this._cotRod(c); const rconvF=this._rodConv(c);
@@ -5313,6 +5365,11 @@ class Component extends DCLogic {
       exportRelPedidos:this.exportRelPedidos,exportRelFat:this.exportRelFat,
       // fornecedor
       fMeNome:fMe.nome||'',fPctStr,fPedRows,fCotRows,fFatRows,fRoyRows,
+      fVisCards:(S.fPedVis||'cards')!=='lista',fVisLista:S.fPedVis==='lista',
+      fPedVisCards:this.setFPedVis('cards'),fPedVisLista:this.setFPedVis('lista'),
+      fVisCardsBg:(S.fPedVis||'cards')!=='lista'?'#272525':'#fff',fVisCardsFg:(S.fPedVis||'cards')!=='lista'?'#fff':'#6b6459',
+      fVisListaBg:S.fPedVis==='lista'?'#272525':'#fff',fVisListaFg:S.fPedVis==='lista'?'#fff':'#6b6459',
+      fItemRows,fItemTotFmt:this.fmt(fItemTot),fItemN:String(fItemRows.length),semFItens:fItemRows.length===0,
       // revenda
       rMeNome:rMe.nome||'',catRows,buscaCat:S.buscaCat,setBuscaCat:this.setBuscaCat,
       cartCount:String(cartCount),cartTotalFmt:this.fmt(cartTotal),temCart:cartCount>0,enviarPedido:this.enviarPedido,
