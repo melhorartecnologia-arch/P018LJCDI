@@ -1150,7 +1150,10 @@ input::placeholder,textarea::placeholder{color:#b0a795}
               <td style="padding:11px 18px;font-size:13px;font-weight:600;border-bottom:1px solid #f5f1e8">{{f.id}}<div style="font-size:11px;font-weight:400;color:#a89f90">{{f.data}}</div>
                 <sc-if value="{{f.temAnexo}}" hint-placeholder-val="{{false}}"><a href="{{f.anexoUrl}}" target="_blank" title="{{f.anexoNome}}" style="font-size:11px;font-weight:600;color:#8f682a;text-decoration:none">📎 NF · documento fiscal</a></sc-if>
                 <sc-if value="{{f.temDocsExtras}}" hint-placeholder-val="{{false}}"><div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:2px"><sc-for list="{{f.docsExtras}}" as="dx" hint-placeholder-count="0"><a href="{{dx.url}}" target="_blank" title="{{dx.info}}" style="font-size:10.5px;font-weight:600;color:#8f682a;text-decoration:none;background:#faf5e9;border:1px solid #e5d9bd;border-radius:6px;padding:1px 7px">📎 {{dx.label}} · {{dx.nome}}</a></sc-for></div></sc-if>
-                <sc-if value="{{f.temAnalise}}" hint-placeholder-val="{{false}}"><div title="{{f.analiseTitulo}}" style="font-size:10.5px;font-weight:600;color:{{f.analiseFg}};cursor:help">{{f.analiseTxt}}</div></sc-if></td>
+                <sc-if value="{{f.temAnalise}}" hint-placeholder-val="{{false}}"><div title="{{f.analiseTitulo}}" style="font-size:10.5px;font-weight:600;color:{{f.analiseFg}};cursor:help">{{f.analiseTxt}}</div></sc-if>
+                <sc-if value="{{f.docRecusado}}" hint-placeholder-val="{{false}}"><div style="font-size:10.5px;font-weight:700;color:#a33a2b;margin-top:3px">⛔ Documento recusado — pendente de regularização</div><div style="font-size:10px;color:#a33a2b">{{f.recusaInfo}}</div></sc-if>
+                <sc-if value="{{f.podeRecusar}}" hint-placeholder-val="{{false}}"><div style="margin-top:4px"><span onClick="{{f.recusar}}" style="font-size:10.5px;font-weight:700;color:#a33a2b;border:1px solid #e7c4bc;border-radius:6px;padding:2px 8px;cursor:pointer" style-hover="background:#fbf1ef">Recusar documento…</span></div></sc-if>
+                <sc-if value="{{f.temDocHist}}" hint-placeholder-val="{{false}}"><sc-for list="{{f.docHistRows}}" as="dh" hint-placeholder-count="0"><div style="font-size:9.5px;color:#a89f90;margin-top:2px;max-width:280px">• {{dh.txt}}</div></sc-for></sc-if></td>
               <td style="padding:11px 10px;font-size:13px;border-bottom:1px solid #f5f1e8">{{f.pedidoId}}</td>
               <td style="padding:11px 10px;font-size:13px;border-bottom:1px solid #f5f1e8">{{f.fornNome}}</td>
               <td style="padding:11px 10px;font-size:13px;border-bottom:1px solid #f5f1e8">{{f.revNome}}</td>
@@ -1880,7 +1883,14 @@ input::placeholder,textarea::placeholder{color:#b0a795}
               <td style="padding:11px 18px;font-size:13px;font-weight:600;border-bottom:1px solid #f5f1e8">{{f.id}}<div style="font-size:11px;font-weight:400;color:#a89f90">{{f.data}}</div>
                 <sc-if value="{{f.temAnexo}}" hint-placeholder-val="{{false}}"><a href="{{f.anexoUrl}}" target="_blank" title="{{f.anexoNome}}" style="font-size:11px;font-weight:600;color:#8f682a;text-decoration:none">📎 NF · documento fiscal</a></sc-if>
                 <sc-if value="{{f.temDocsExtras}}" hint-placeholder-val="{{false}}"><div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:2px"><sc-for list="{{f.docsExtras}}" as="dx" hint-placeholder-count="0"><a href="{{dx.url}}" target="_blank" title="{{dx.info}}" style="font-size:10.5px;font-weight:600;color:#8f682a;text-decoration:none;background:#faf5e9;border:1px solid #e5d9bd;border-radius:6px;padding:1px 7px">📎 {{dx.label}} · {{dx.nome}}</a></sc-for></div></sc-if>
-                <sc-if value="{{f.temAnalise}}" hint-placeholder-val="{{false}}"><div title="{{f.analiseTitulo}}" style="font-size:10.5px;font-weight:600;color:{{f.analiseFg}};cursor:help">{{f.analiseTxt}}</div></sc-if></td>
+                <sc-if value="{{f.temAnalise}}" hint-placeholder-val="{{false}}"><div title="{{f.analiseTitulo}}" style="font-size:10.5px;font-weight:600;color:{{f.analiseFg}};cursor:help">{{f.analiseTxt}}</div></sc-if>
+                <sc-if value="{{f.docRecusado}}" hint-placeholder-val="{{false}}">
+                  <div style="background:#fbeae7;border:1px solid #e7c4bc;border-radius:8px;padding:6px 10px;margin-top:5px;max-width:300px">
+                    <div style="font-size:10.5px;font-weight:700;color:#a33a2b">⛔ Documento recusado — reenvie o documento fiscal</div>
+                    <div style="font-size:10px;color:#a33a2b;margin-top:1px">{{f.recusaInfo}}</div>
+                    <div onClick="{{f.reenviar}}" style="display:inline-block;background:#B38335;color:#fff;border-radius:7px;padding:4px 11px;font-size:11px;font-weight:700;cursor:pointer;margin-top:5px" style-hover="background:#9a6f2b">Reenviar documento…</div>
+                  </div>
+                </sc-if></td>
               <td style="padding:11px 10px;font-size:13px;border-bottom:1px solid #f5f1e8">{{f.pedidoId}}</td>
               <td style="padding:11px 10px;font-size:13px;border-bottom:1px solid #f5f1e8">{{f.revNome}}</td>
               <td style="padding:11px 10px;font-size:13px;font-weight:600;text-align:right;border-bottom:1px solid #f5f1e8">{{f.valorFmt}}</td>
@@ -2050,7 +2060,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
               <td style="padding:11px 10px;font-size:13px;border-bottom:1px solid #f5f1e8">{{p.fornNome}}
                 <sc-if value="{{p.temFatDocs}}" hint-placeholder-val="{{false}}">
                   <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px">
-                    <sc-for list="{{p.fatDocs}}" as="fd" hint-placeholder-count="0"><a href="{{fd.url}}" target="_blank" title="{{fd.nome}}" style="font-size:10.5px;font-weight:700;color:#1f6b5e;text-decoration:none;background:#e9f3f1;border:1px solid #bcd9d3;border-radius:6px;padding:2px 7px">📎 {{fd.label}} · {{fd.nome}}</a></sc-for>
+                    <sc-for list="{{p.fatDocs}}" as="fd" hint-placeholder-count="0"><span style="display:inline-flex;align-items:center;gap:3px"><a href="{{fd.url}}" target="_blank" title="{{fd.info}}" style="font-size:10.5px;font-weight:700;color:{{fd.fg}};text-decoration:none;background:{{fd.bg}};border:1px solid {{fd.bd}};border-radius:6px;padding:2px 7px">📎 {{fd.label}} · {{fd.nome}}</a><sc-if value="{{fd.podeRecusar}}" hint-placeholder-val="{{false}}"><span onClick="{{fd.recusar}}" title="Recusar este documento fiscal (RF69) — motivo obrigatório" style="font-size:10px;font-weight:700;color:#a33a2b;border:1px solid #e7c4bc;border-radius:6px;padding:2px 6px;cursor:pointer" style-hover="background:#fbf1ef">⛔ Recusar</span></sc-if></span></sc-for>
                   </div>
                 </sc-if>
                 <sc-if value="{{p.temAnexos}}" hint-placeholder-val="{{false}}">
@@ -2478,6 +2488,42 @@ input::placeholder,textarea::placeholder{color:#b0a795}
       <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:18px">
         <div onClick="{{mClose}}" style="border:1px solid #ddd5c7;border-radius:8px;padding:9px 15px;font-size:13px;font-weight:600;cursor:pointer;color:#6b6459" style-hover="background:#f7f3ea">Decidir depois</div>
         <div onClick="{{confirmAceiteRev}}" style="background:#B38335;color:#fff;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#9a6f2b">Confirmar decisão</div>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{mRecDoc}}" hint-placeholder-val="{{false}}">
+  <div style="position:fixed;inset:0;background:rgba(39,37,37,.45);display:flex;align-items:center;justify-content:center;z-index:50">
+    <div style="background:#fff;border-radius:14px;width:480px;max-width:92vw;padding:22px 24px;box-shadow:0 18px 50px rgba(39,37,37,.25)">
+      <div style="font-size:16px;font-weight:700">Recusar documento fiscal — {{recDocInfo.nf}}</div>
+      <div style="font-size:12.5px;color:#8a8378;margin-top:2px">Pedido {{recDocInfo.pedidoId}} · {{recDocInfo.fornNome}} · arquivo: <a href="{{recDocInfo.arquivoUrl}}" target="_blank" style="color:#8f682a;font-weight:600">{{recDocInfo.arquivo}}</a></div>
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:14px 0 5px">Motivo da recusa <span style="font-weight:400;color:#a33a2b">— obrigatório</span></div>
+      <textarea value="{{form.motivoDoc}}" onChange="{{fxMotivoDoc}}" rows="3" placeholder="Ex.: CNPJ do destinatário divergente; valor não confere com o pedido" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525;resize:vertical"></textarea>
+      <div style="font-size:11.5px;font-weight:600;color:#8a5a12;background:#fdf3e0;border:1px solid #ecd9ae;border-radius:8px;padding:7px 11px;margin-top:10px">A recusa marca a nota como "Recusada" para todos os envolvidos, notifica o fornecedor por e-mail e deixa o faturamento pendente de regularização (novo documento). Todo o histórico é preservado e auditado.</div>
+      <sc-if value="{{form.erro}}" hint-placeholder-val="{{false}}"><div style="color:#a33a2b;font-size:12.5px;margin-top:12px">{{form.erro}}</div></sc-if>
+      <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:18px">
+        <div onClick="{{mClose}}" style="border:1px solid #ddd5c7;border-radius:8px;padding:9px 15px;font-size:13px;font-weight:600;cursor:pointer;color:#6b6459" style-hover="background:#f7f3ea">Cancelar</div>
+        <div onClick="{{confirmRecusaDoc}}" style="background:#a33a2b;color:#fff;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#8c2f22">Recusar documento</div>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{mReenvDoc}}" hint-placeholder-val="{{false}}">
+  <div style="position:fixed;inset:0;background:rgba(39,37,37,.45);display:flex;align-items:center;justify-content:center;z-index:50">
+    <div style="background:#fff;border-radius:14px;width:480px;max-width:92vw;padding:22px 24px;box-shadow:0 18px 50px rgba(39,37,37,.25)">
+      <div style="font-size:16px;font-weight:700">Reenviar documento fiscal — {{recDocInfo.nf}}</div>
+      <div style="font-size:12.5px;color:#8a8378;margin-top:2px">Pedido {{recDocInfo.pedidoId}} · regularização do documento recusado</div>
+      <sc-if value="{{recDocInfo.motivoRec}}" hint-placeholder-val="{{false}}"><div style="font-size:11.5px;font-weight:600;color:#a33a2b;background:#fbeae7;border:1px solid #e7c4bc;border-radius:8px;padding:7px 11px;margin-top:10px">Motivo da recusa: {{recDocInfo.motivoRec}}</div></sc-if>
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:14px 0 5px">Novo documento fiscal (PDF ou XML) — obrigatório</div>
+      <input type="file" accept=".pdf,.xml" onChange="{{setAnexoFat}}" style="width:100%;box-sizing:border-box;padding:8px 10px;border:1px dashed #cdbf9d;border-radius:8px;font:inherit;font-size:12.5px;background:#fbf8f1;color:#6b6459;cursor:pointer">
+      <sc-if value="{{form.anexoNome}}" hint-placeholder-val="{{false}}"><div style="font-size:11.5px;font-weight:600;color:#2f6b39;margin-top:6px">📎 {{form.anexoNome}} anexado</div></sc-if>
+      <sc-if value="{{recDocInfo.analiseOn}}" hint-placeholder-val="{{false}}"><div style="font-size:11.5px;color:#5d3f96;background:#f3eefa;border:1px solid #ddd0ee;border-radius:8px;padding:7px 11px;margin-top:10px">O documento será analisado automaticamente por IA para confirmar que se refere a este pedido antes de a regularização ser aceita.</div></sc-if>
+      <sc-if value="{{form.erro}}" hint-placeholder-val="{{false}}"><div style="color:#a33a2b;font-size:12.5px;margin-top:12px">{{form.erro}}</div></sc-if>
+      <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:18px">
+        <div onClick="{{mClose}}" style="border:1px solid #ddd5c7;border-radius:8px;padding:9px 15px;font-size:13px;font-weight:600;cursor:pointer;color:#6b6459" style-hover="background:#f7f3ea">Cancelar</div>
+        <div onClick="{{confirmReenvioDoc}}" style="background:#B38335;color:#fff;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#9a6f2b">Enviar novo documento</div>
       </div>
     </div>
   </div>
@@ -3868,6 +3914,7 @@ class Component extends DCLogic {
         "Confira o \"Valor faturado\" da nota e, na última coluna, o \"Royalty\", que mostra o percentual e o valor em reais (ex.: 3% · R$ 96,60)."
       ],
       "dicas": [
+        "Use \"Recusar documento…\" na linha da nota para recusar um documento fiscal com motivo obrigatório (RF69): a nota fica marcada como recusada para todos, o fornecedor é notificado por e-mail e o faturamento fica pendente de regularização — o histórico completo (análise automática + decisões) aparece na própria linha.",
         "O box laranja de pendências só aparece quando há pedidos encaminhados ainda sem nota; se ele não estiver na tela, não há faturamento pendente do fornecedor.",
         "Esta tela é só de acompanhamento: a nota é emitida pelo fornecedor. Aqui a Loja apenas consulta, não há botões para editar ou lançar notas.",
         "Use a coluna \"Origem\" para separar rapidamente as notas vindas de cotação das de envio direto, e a coluna \"Royalty\" para conferir o valor devido em cada nota."
@@ -4018,6 +4065,7 @@ class Component extends DCLogic {
         "Para ver o fechamento mensal consolidado, acesse \"Financeiro\" > \"Royalties devidos\"."
       ],
       "dicas": [
+        "Se a Loja ou a revenda recusar o seu documento fiscal, a linha da nota mostra a pendência vermelha com o motivo e o botão \"Reenviar documento…\" — anexe o novo PDF/XML (analisado automaticamente quando a análise está ativa) para regularizar; tudo fica registrado no histórico.",
         "Esta tela é apenas de consulta: os lançamentos são criados em \"Pedidos recebidos\", pelo botão \"Registrar faturamento…\".",
         "O royalty é calculado automaticamente sobre o valor faturado usando o percentual do contrato mostrado no subtítulo.",
         "Some os valores da coluna \"Royalty devido\" para conferir com o total apresentado em \"Royalties devidos\"."
@@ -4801,11 +4849,16 @@ class Component extends DCLogic {
     this.mClose(); };
   // Como o anexo/análise de um faturamento aparece nas tabelas (📎 + selo IA)
   _anexoView(f){ const a=f.analise;
+    const rec=(f.docHist||[]).filter(h=>h.acao==='Documento recusado').slice(-1)[0];
     return { temAnexo:!!f.anexoId, anexoUrl:f.anexoId?('/api/anexos/'+f.anexoId):'', anexoNome:f.anexoNome||'documento fiscal',
       docsExtras:(f.anexosExtras||[]).map(x=>({nome:x.nome,url:'/api/anexos/'+x.id,label:x.tipoDoc==='boleto'?'Boleto':'Outro',info:(x.quando||'')+(x.autor?' · '+x.autor:'')})),
       temDocsExtras:!!(f.anexosExtras&&f.anexosExtras.length),
       temAnalise:!!a, analiseTxt:a?(a.aceito?('✓ validado por '+(a.engine==='claude'?'IA Claude':'análise local')):'⚠ não validado'):'',
-      analiseFg:a&&a.aceito?'#2f6b39':'#8a5a12', analiseTitulo:a?(a.motivo||''):'' }; }
+      analiseFg:a&&a.aceito?'#2f6b39':'#8a5a12', analiseTitulo:a?(a.motivo||''):'',
+      docRecusado:f.docStatus==='recusado',
+      recusaInfo:rec?('recusado por '+rec.usuario+' ('+rec.papel+') em '+rec.quando+' — motivo: '+rec.motivo):'',
+      docHistRows:(f.docHist||[]).slice().reverse().map(h=>({txt:h.quando+' · '+h.acao+' — '+h.usuario+' ('+h.papel+')'+(h.motivo?' · '+h.motivo:'')})),
+      temDocHist:!!(f.docHist&&f.docHist.length) }; }
   // ——— Anexos em propostas e no atendimento (Ata 5.7) ———
   // Formatos aceitos e limites: até 5 arquivos por envio, 5 MB cada.
   addAnexosForm=e=>{ const files=[...((e.target&&e.target.files)||[])]; if(!files.length) return;
@@ -4851,6 +4904,50 @@ class Component extends DCLogic {
       rd.readAsDataURL(file); });
     e.target.value=''; };
   rmAnexoFatExtra(ix){ this._rmfe=this._rmfe||{}; if(!this._rmfe[ix]) this._rmfe[ix]=()=>this.setState(s=>({form:{...s.form,anexosExtras:(s.form.anexosExtras||[]).filter((_,j)=>j!==ix),erro:null}})); return this._rmfe[ix]; }
+  // ——— RF69: recusa de documento fiscal com workflow de devolução ———
+  abrirRecusaDoc(fatId){ this._ard=this._ard||{}; if(!this._ard[fatId]) this._ard[fatId]=(e)=>{ if(e&&e.stopPropagation) e.stopPropagation(); this.setState({modal:'recusadoc',form:{fatId}}); }; return this._ard[fatId]; }
+  abrirReenvioDoc(fatId){ this._arv=this._arv||{}; if(!this._arv[fatId]) this._arv[fatId]=()=>this.setState({modal:'reenviodoc',form:{fatId}}); return this._arv[fatId]; }
+  confirmRecusaDoc=()=>{ const f=this.state.form; const fat=this.state.faturamentos.find(x=>x.id===f.fatId); if(!fat) return;
+    const motivo=(f.motivoDoc||'').trim(); if(!motivo) return this.err('Informe o motivo da recusa do documento — obrigatório (RF69).');
+    const papel=this.role==='revenda'?('Revenda '+this._revNome(this.state.revAtivo)):'Loja';
+    const quem=this.userName();
+    this.setState(s=>({faturamentos:s.faturamentos.map(x=>x.id!==fat.id?x:{...x,docStatus:'recusado',
+      docHist:[...(x.docHist||[]),{quando:this.ts(),usuario:quem,papel,acao:'Documento recusado',motivo}]}),modal:null,form:{}}));
+    this.updPed(fat.pedidoId,p=>{p.trilha.push(this.tr('Documento fiscal da '+fat.id+' RECUSADO por '+quem+' ('+papel+') — motivo: '+motivo+' — faturamento pendente de regularização pelo fornecedor'));return p;});
+    this.audit('Recusa de documento fiscal',fat.id+' · '+fat.pedidoId+' · motivo: '+motivo+' — por '+quem+' ('+papel+')');
+    this.notificar('nf_recusada',this._fornEmail(fat.fornecedorId),{nf:fat.id,pedidoId:fat.pedidoId,fornecedorNome:this._fornNome(fat.fornecedorId),motivo,quem:quem+' ('+papel+')',arquivo:fat.anexoNome||'documento fiscal'});
+    setTimeout(()=>this._flushPersist(),0); };
+  confirmReenvioDoc=async()=>{ const f=this.state.form; if(f.reBusy) return; const fat=this.state.faturamentos.find(x=>x.id===f.fatId); if(!fat) return;
+    if(!f.anexoB64) return this.err('Anexe o novo documento fiscal (PDF ou XML) — obrigatório para a regularização.');
+    const ped=this.state.pedidos.find(p=>p.id===fat.pedidoId)||{itens:[]};
+    const meus=ped.itens.filter(i=>i.fornecedorId===fat.fornecedorId&&(i.st==='faturado'||i.st==='direto'));
+    const forn=this.state.fornecedores.find(x=>x.id===fat.fornecedorId)||{}; const rev=this.state.revendas.find(x=>x.id===fat.revendaId)||{};
+    const analiseOn=!!(this.state.configPlataforma&&this.state.configPlataforma.analiseFiscalIA);
+    this.setState(s=>({form:{...s.form,reBusy:true,erro:null}}));
+    let anexoId=null, analise=null;
+    try{
+      const up=await fetch('/api/anexos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nome:f.anexoNome,tipo:f.anexoTipo,dados:f.anexoB64})}).then(r=>r.json());
+      if(!up.ok) throw new Error(up.error||'Falha ao enviar o anexo.');
+      anexoId=up.id;
+      if(analiseOn){
+        const ctx={pedidoId:fat.pedidoId,valor:fat.valor,fornecedorNome:forn.nome||'',fornecedorCnpj:forn.cnpj||'',revendaNome:rev.nome||'',revendaCnpj:rev.cnpj||'',
+          itens:meus.map(i=>{ const p=this._prodInfo(i.produtoId); return {descricao:p.descricao||('Produto '+i.produtoId),qtd:i.qtd}; })};
+        const an=await fetch('/api/faturamento/analisar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({anexoId,pedido:ctx})}).then(r=>r.json());
+        if(!an.ok) throw new Error(an.error||'Falha na análise do documento.');
+        analise={aceito:!!an.aceito,confianca:an.confianca||'media',motivo:an.motivo||'',engine:an.engine||'local',quando:this.ts()};
+        if(!an.aceito){
+          this.audit('Documento fiscal recusado pela análise (IA)',fat.id+' · reenvio · '+(f.anexoNome||'anexo')+' · '+(an.motivo||''));
+          this.setState(s=>({form:{...s.form,reBusy:false,erro:'Documento recusado como evidência: '+(an.motivo||'não corresponde ao pedido.')}}));
+          return; }
+      }
+    }catch(e2){ this.setState(s=>({form:{...s.form,reBusy:false,erro:e2.message||'Falha ao processar o novo documento.'}})); return; }
+    const quem=this.userName(); const anterior=fat.anexoNome||'—';
+    this.setState(s=>({faturamentos:s.faturamentos.map(x=>x.id!==fat.id?x:{...x,anexoId,anexoNome:f.anexoNome||null,analise,docStatus:null,
+      docHist:[...(x.docHist||[]),{quando:this.ts(),usuario:quem,papel:'Fornecedor '+(forn.nome||''),acao:'Novo documento enviado ('+(f.anexoNome||'')+')',motivo:'substitui '+anterior+(analise?(analise.aceito?' · validado pela análise ('+analise.engine+')':''):'')}]}),modal:null,form:{}}));
+    this.updPed(fat.pedidoId,p=>{p.trilha.push(this.tr('Documento fiscal da '+fat.id+' regularizado pelo fornecedor — novo arquivo '+(f.anexoNome||'')+(analise?' · validado pela análise ('+analise.engine+')':'')));return p;});
+    this.audit('Documento fiscal reenviado (regularização)',fat.id+' · '+fat.pedidoId+' · '+(f.anexoNome||'')+(analise?' · anexo validado ('+(analise.engine==='claude'?'IA Claude':'analisador local')+')':''));
+    this.notificar('nf_regularizada',[this._lojaEmail(),this._revEmail(fat.revendaId)],{nf:fat.id,pedidoId:fat.pedidoId,fornecedorNome:forn.nome||'',arquivo:f.anexoNome||''});
+    setTimeout(()=>this._flushPersist(),0); };
   // ——— RF53: Complementação cadastral do produto (dados fiscais e logísticos) ———
   // ——— RF55: restrição de visibilidade de produtos por fornecedor ———
   _fidForn(){ return this.role==='fornecedor'?this.state.fornAtivo:null; }
@@ -5725,6 +5822,7 @@ class Component extends DCLogic {
     const fatRows=S.faturamentos.map(f=>({id:f.id,data:f.data,pedidoId:f.pedidoId,fornNome:F(f.fornecedorId).nome,revNome:R(f.revendaId).nome,
       origem:f.cotacaoId?'Cotação '+f.cotacaoId:'Envio direto',valorFmt:this.fmt(f.valor),
       royStr:String(f.royaltyPct).replace('.',',')+'% · '+this.fmt(f.royaltyValor),
+      podeRecusar:!!f.anexoId&&f.docStatus!=='recusado',recusar:this.abrirRecusaDoc(f.id),
       ...this._anexoView(f)}));
     const aguardFat=PEDS.filter(p=>p.itens.some(i=>i.st==='direto')).map(p=>({id:p.id,fornNome:destTxt(p),revNome:R(p.revendaId).nome,totalFmt:this.fmt(p.itens.filter(i=>i.st==='direto').reduce((a,i)=>a+this.itemTotal(i),0))}));
 
@@ -5934,7 +6032,7 @@ class Component extends DCLogic {
         rodTag:rodF>1?'Rodada '+rodF:'',temRodTag:rodF>1,
         foraRodada:c.status==='aguardando propostas'&&!participaRod,
         prop:this.open('proposta',seedP)};});
-    const fFatRows=S.faturamentos.filter(f=>f.fornecedorId===fid).map(f=>({id:f.id,data:f.data,pedidoId:f.pedidoId,revNome:R(f.revendaId).nome,valorFmt:this.fmt(f.valor),royStr:String(f.royaltyPct).replace('.',',')+'% · '+this.fmt(f.royaltyValor),...this._anexoView(f)}));
+    const fFatRows=S.faturamentos.filter(f=>f.fornecedorId===fid).map(f=>({id:f.id,data:f.data,pedidoId:f.pedidoId,revNome:R(f.revendaId).nome,valorFmt:this.fmt(f.valor),royStr:String(f.royaltyPct).replace('.',',')+'% · '+this.fmt(f.royaltyValor),reenviar:this.abrirReenvioDoc(f.id),...this._anexoView(f)}));
     const fRoyRows=fechRows.filter(r=>r.fornecedorId===fid);
     const fPctStr=String(pctOf(fid)||0).replace('.',',')+'%';
 
@@ -5959,8 +6057,13 @@ class Component extends DCLogic {
       fornNome:destTxt(p),...this.chip(p.status),
       anexos:(p.anexosAtend||[]).map(a=>({nome:a.nome,url:'/api/anexos/'+a.id})),temAnexos:!!(p.anexosAtend&&p.anexosAtend.length),
       fatDocs:S.faturamentos.filter(f2=>f2.pedidoId===p.id).flatMap(f2=>{
-        const out=[]; if(f2.anexoId) out.push({label:'NF '+f2.id,nome:f2.anexoNome||'documento fiscal',url:'/api/anexos/'+f2.anexoId});
-        (f2.anexosExtras||[]).forEach(a=>out.push({label:a.tipoDoc==='boleto'?'Boleto':'Outro',nome:a.nome,url:'/api/anexos/'+a.id}));
+        const out=[]; const rec2=f2.docStatus==='recusado';
+        const recInfo=((f2.docHist||[]).filter(h=>h.acao==='Documento recusado').slice(-1)[0]||{}).motivo||'';
+        if(f2.anexoId) out.push({label:(rec2?'NF RECUSADA ':'NF ')+f2.id,nome:f2.anexoNome||'documento fiscal',url:'/api/anexos/'+f2.anexoId,
+          bg:rec2?'#fbeae7':'#e9f3f1',bd:rec2?'#e7c4bc':'#bcd9d3',fg:rec2?'#a33a2b':'#1f6b5e',
+          info:rec2?('Documento recusado — motivo: '+recInfo):(f2.anexoNome||'documento fiscal'),
+          podeRecusar:!rec2&&!rpedGrupo,recusar:this.abrirRecusaDoc(f2.id)});
+        (f2.anexosExtras||[]).forEach(a=>out.push({label:a.tipoDoc==='boleto'?'Boleto':'Outro',nome:a.nome,url:'/api/anexos/'+a.id,bg:'#e9f3f1',bd:'#bcd9d3',fg:'#1f6b5e',info:a.nome,podeRecusar:false}));
         return out; }),
       temFatDocs:S.faturamentos.some(f2=>f2.pedidoId===p.id&&(f2.anexoId||(f2.anexosExtras&&f2.anexosExtras.length))),
       justificativa:p.justificativa||'',temJustif:!!p.justificativa,
@@ -5983,6 +6086,12 @@ class Component extends DCLogic {
             rcBg:dec==='r'?'#a33a2b':'#fff',rcFg:dec==='r'?'#fff':'#6b6459',
             ac:this.decAceite(x.ix,'a'),rc:this.decAceite(x.ix,'r')};});
         aceiteInfo={pedidoId:pA.id,itens:itensA,temRecusa:nR>0,totalAceFmt:this.fmt(totA),nAce:String(nA),nRec:String(nR)}; } }
+    let recDocInfo={nf:'',pedidoId:'',fornNome:'',arquivo:'',arquivoUrl:'',motivoRec:'',analiseOn:false};
+    if((S.modal==='recusadoc'||S.modal==='reenviodoc')&&S.form.fatId){ const fR=S.faturamentos.find(x=>x.id===S.form.fatId);
+      if(fR){ const recR=((fR.docHist||[]).filter(h=>h.acao==='Documento recusado').slice(-1)[0]||{});
+        recDocInfo={nf:fR.id,pedidoId:fR.pedidoId,fornNome:F(fR.fornecedorId).nome||'',arquivo:fR.anexoNome||'documento fiscal',
+          arquivoUrl:fR.anexoId?('/api/anexos/'+fR.anexoId):'',motivoRec:recR.motivo||'',
+          analiseOn:!!(S.configPlataforma&&S.configPlataforma.analiseFiscalIA)}; } }
     const grpPeds=rpedGrupo?PEDS.filter(p=>revsCtx.includes(p.revendaId)):[];
     const grpKpis=rpedGrupo?[
       {label:'Revendas do grupo',val:String(revsCtx.length),sub:revsCtx.map(r2=>R(r2).nome||'').join(' · ')},
@@ -6174,7 +6283,7 @@ class Component extends DCLogic {
       setLoginEmail:this.setLoginEmail,setLoginSenha:this.setLoginSenha,fazerLogin:this.fazerLogin,sair:this.sair,
       // shell
       roleBtns,temRoleBtns:roleBtns.length>0,isLoja,isForn,isRev,navGroups,userIni,userNome,userPapel,
-      mostraSelForn,mostraSelRev,mostraSelGrupo,ctxGrupoVal,ctxGrupoOpts,setRevContexto:this.setRevContexto,rpedGrupo,grpKpis,catGrupo,aceiteInfo,mAceite:S.modal==='aceiterev',confirmAceiteRev:this.confirmAceiteRev,fxMotivoRec:this.fx('motivoRec'),
+      mostraSelForn,mostraSelRev,mostraSelGrupo,ctxGrupoVal,ctxGrupoOpts,setRevContexto:this.setRevContexto,rpedGrupo,grpKpis,catGrupo,aceiteInfo,mAceite:S.modal==='aceiterev',confirmAceiteRev:this.confirmAceiteRev,fxMotivoRec:this.fx('motivoRec'),recDocInfo,mRecDoc:S.modal==='recusadoc',mReenvDoc:S.modal==='reenviodoc',confirmRecusaDoc:this.confirmRecusaDoc,confirmReenvioDoc:this.confirmReenvioDoc,fxMotivoDoc:this.fx('motivoDoc'),
       // usuários e permissões
       sUsuarios:isLoja&&scr==='usuarios'&&pode('config.usuarios'),
       usrRows,papelOpts,papelFormOpts,usrRevRows,usrRevSel,buscaUsr:S.buscaUsr,setBuscaUsr:this.setBuscaUsr,

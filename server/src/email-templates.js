@@ -203,6 +203,20 @@ export const TEMPLATES = {
   }),
 
   // ── Faturamento ───────────────────────────────────────────────────────
+  nf_recusada: (v) => ({
+    subject: `Documento fiscal da ${v.nf} recusado — regularização necessária`,
+    html: layout('Documento fiscal recusado',
+      p(`Olá${v.fornecedorNome ? ', ' + esc(v.fornecedorNome) : ''}. O documento fiscal anexado ao faturamento ${b(v.nf)} (pedido ${b(v.pedidoId)}) foi ${b('RECUSADO')} por ${esc(v.quem || 'responsável')}.`) +
+      linhas([['Nota', v.nf], ['Pedido', v.pedidoId], ['Arquivo recusado', v.arquivo], ['Motivo', v.motivo]]) +
+      p('Acesse "Meus faturamentos" na plataforma e use "Reenviar documento…" para anexar o novo PDF/XML e regularizar o faturamento.'), 'Documento fiscal'),
+  }),
+  nf_regularizada: (v) => ({
+    subject: `Documento fiscal da ${v.nf} regularizado pelo fornecedor`,
+    html: layout('Documento fiscal regularizado',
+      p(`O fornecedor ${b(v.fornecedorNome)} reenviou o documento fiscal do faturamento ${b(v.nf)} (pedido ${b(v.pedidoId)}).`) +
+      linhas([['Nota', v.nf], ['Pedido', v.pedidoId], ['Novo arquivo', v.arquivo]]) +
+      p('O novo documento já está disponível para download na plataforma; o histórico de recusas e reenvios foi preservado.'), 'Documento fiscal'),
+  }),
   faturamento_revenda: (v) => ({
     subject: `Pedido ${v.pedidoId} faturado — ${v.nf}`,
     html: layout('Pedido faturado',
