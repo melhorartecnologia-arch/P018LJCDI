@@ -318,6 +318,18 @@ input::placeholder,textarea::placeholder{color:#b0a795}
             <div style="padding:10px 18px;background:#fbf6ec;border-top:1px solid #f1e6cd;font-size:12.5px;color:#6d4a10">Valor negociado em cotação: <b>{{pd.negFmt}}</b></div>
           </sc-if>
         </div>
+        <sc-if value="{{pd.temAnexosAtend}}" hint-placeholder-val="{{false}}">
+          <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:16px 18px">
+            <div style="font-size:14px;font-weight:700;margin-bottom:2px">Documentos do atendimento</div>
+            <div style="font-size:11.5px;color:#a89f90;margin-bottom:10px">Arquivos anexados pelos fornecedores durante o atendimento — clique para baixar</div>
+            <sc-for list="{{pd.anexosAtend}}" as="ax" hint-placeholder-count="0">
+              <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid #f5f1e8">
+                <a href="{{ax.url}}" target="_blank" style="font-size:13px;font-weight:600;color:#8f682a;text-decoration:none">📎 {{ax.nome}}</a>
+                <span style="font-size:11.5px;color:#a89f90;white-space:nowrap">{{ax.quando}} · {{ax.autor}}</span>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
         <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:16px 18px">
           <div style="font-size:14px;font-weight:700;margin-bottom:12px">Trilha do pedido — data, hora e usuário</div>
           <sc-for list="{{pd.trilha}}" as="t" hint-placeholder-count="3">
@@ -534,6 +546,11 @@ input::placeholder,textarea::placeholder{color:#b0a795}
                   <sc-if value="{{m.menor}}" hint-placeholder-val="{{false}}"><span style="margin-left:7px;font-size:10.5px;font-weight:700;border-radius:6px;padding:2px 7px;background:#B38335;color:#fff">MENOR PREÇO</span></sc-if>
                   <sc-if value="{{m.vencedora}}" hint-placeholder-val="{{false}}"><span style="margin-left:7px;font-size:10.5px;font-weight:700;border-radius:6px;padding:2px 7px;background:#2f6b39;color:#fff">VENCEDORA</span></sc-if>
                   <sc-if value="{{m.temRodadaInfo}}" hint-placeholder-val="{{false}}"><div style="font-size:10.5px;font-weight:600;color:#5d3f96;margin-top:3px">{{m.rodadaInfo}}</div></sc-if>
+                  <sc-if value="{{m.temAnexos}}" hint-placeholder-val="{{false}}">
+                    <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px">
+                      <sc-for list="{{m.anexos}}" as="ax" hint-placeholder-count="0"><a href="{{ax.url}}" target="_blank" title="{{ax.info}}" style="font-size:10.5px;font-weight:600;color:#8f682a;text-decoration:none;background:#faf5e9;border:1px solid #e5d9bd;border-radius:6px;padding:2px 7px">📎 {{ax.nome}}</a></sc-for>
+                    </div>
+                  </sc-if>
                 </td>
                 <td style="padding:12px 10px;text-align:right;border-bottom:1px solid #f5f1e8">
                   <div style="font-size:14px;font-weight:700">{{m.precoFmt}}</div>
@@ -1594,9 +1611,15 @@ input::placeholder,textarea::placeholder{color:#b0a795}
             <div style="font-size:12.5px;color:#6b6459;margin-top:4px">{{p.itensTxt}}</div>
             <sc-if value="{{p.parcial}}" hint-placeholder-val="{{false}}"><div style="font-size:11px;font-weight:600;color:#8a5a12;margin-top:2px">{{p.parcial}}</div></sc-if>
             <div style="font-size:12px;color:#a89f90;margin-top:2px">Faturar diretamente para: <b style="color:#272525">{{p.revNome}}</b></div>
+            <sc-if value="{{p.temAnexos}}" hint-placeholder-val="{{false}}">
+              <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:5px">
+                <sc-for list="{{p.anexos}}" as="ax" hint-placeholder-count="0"><a href="{{ax.url}}" target="_blank" title="{{ax.info}}" style="font-size:10.5px;font-weight:600;color:#8f682a;text-decoration:none;background:#faf5e9;border:1px solid #e5d9bd;border-radius:6px;padding:2px 7px">📎 {{ax.nome}}</a></sc-for>
+              </div>
+            </sc-if>
           </div>
           <div style="display:flex;align-items:center;gap:16px">
             <div style="font-size:16px;font-weight:700">{{p.totalFmt}}</div>
+            <div onClick="{{p.anexar}}" style="border:1px solid #d9c193;color:#8f682a;border-radius:9px;padding:9px 13px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:#faf5e9">📎 Anexar documentos…</div>
             <sc-if value="{{p.podeFaturar}}" hint-placeholder-val="{{false}}">
               <div onClick="{{p.faturar}}" style="background:#B38335;color:#fff;border-radius:9px;padding:9px 15px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:#9a6f2b">Registrar faturamento…</div>
             </sc-if>
@@ -1761,7 +1784,13 @@ input::placeholder,textarea::placeholder{color:#b0a795}
             <tr>
               <td style="padding:11px 18px;font-size:13px;font-weight:600;border-bottom:1px solid #f5f1e8">{{p.id}}<div style="font-size:11px;font-weight:400;color:#a89f90">{{p.data}}</div></td>
               <td style="padding:11px 10px;border-bottom:1px solid #f5f1e8"><div style="display:flex;align-items:center"><sc-for list="{{p.fotos}}" as="ft" hint-placeholder-count="0"><sc-if value="{{ft.src}}" hint-placeholder-val="{{false}}"><img loading="lazy" src="{{ft.src}}" alt="item" onClick="{{ft.ver}}" title="Clique para ampliar" style="width:32px;height:32px;object-fit:cover;border-radius:8px;border:2px solid #fff;margin-right:-8px;box-shadow:0 1px 3px rgba(39,37,37,.18);cursor:zoom-in"></sc-if></sc-for><span style="font-size:12px;color:#8a8378;margin-left:16px;white-space:nowrap">{{p.itensN}}</span></div></td>
-              <td style="padding:11px 10px;font-size:13px;border-bottom:1px solid #f5f1e8">{{p.fornNome}}</td>
+              <td style="padding:11px 10px;font-size:13px;border-bottom:1px solid #f5f1e8">{{p.fornNome}}
+                <sc-if value="{{p.temAnexos}}" hint-placeholder-val="{{false}}">
+                  <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px">
+                    <sc-for list="{{p.anexos}}" as="ax" hint-placeholder-count="0"><a href="{{ax.url}}" target="_blank" style="font-size:10.5px;font-weight:600;color:#8f682a;text-decoration:none;background:#faf5e9;border:1px solid #e5d9bd;border-radius:6px;padding:2px 7px">📎 {{ax.nome}}</a></sc-for>
+                  </div>
+                </sc-if>
+              </td>
               <td style="padding:11px 10px;font-size:13px;font-weight:600;text-align:right;border-bottom:1px solid #f5f1e8">{{p.totalFmt}}</td>
               <td style="padding:11px 18px;border-bottom:1px solid #f5f1e8">
                 <span style="font-size:11.5px;font-weight:600;border-radius:7px;padding:3px 9px;background:{{p.stBg}};color:{{p.stFg}};white-space:nowrap">{{p.stLabel}}</span>
@@ -2349,6 +2378,38 @@ input::placeholder,textarea::placeholder{color:#b0a795}
   </div>
 </sc-if>
 
+<sc-if value="{{mAnx}}" hint-placeholder-val="{{false}}">
+  <div style="position:fixed;inset:0;background:rgba(39,37,37,.45);display:flex;align-items:center;justify-content:center;z-index:50">
+    <div style="background:#fff;border-radius:14px;width:460px;max-width:92vw;max-height:86vh;overflow-y:auto;padding:22px 24px;box-shadow:0 18px 50px rgba(39,37,37,.25)">
+      <div style="font-size:16px;font-weight:700">Anexar documentos — {{anxInfo.pedidoId}}</div>
+      <div style="font-size:12.5px;color:#8a8378;margin-top:2px">Documentos do atendimento (romaneio, comprovante de coleta, ficha técnica…) ficam centralizados na plataforma, visíveis à Loja e à revenda</div>
+      <sc-if value="{{anxInfo.temLista}}" hint-placeholder-val="{{false}}">
+        <div style="font-size:12px;font-weight:600;color:#6b6459;margin:14px 0 5px">Já anexados por você</div>
+        <div style="display:flex;flex-direction:column;gap:5px">
+          <sc-for list="{{anxInfo.lista}}" as="ax" hint-placeholder-count="0">
+            <a href="{{ax.url}}" target="_blank" style="font-size:12px;font-weight:600;color:#8f682a;text-decoration:none;background:#faf5e9;border:1px solid #e5d9bd;border-radius:7px;padding:6px 10px">📎 {{ax.nome}} <span style="font-weight:400;color:#a89f90">· {{ax.info}}</span></a>
+          </sc-for>
+        </div>
+      </sc-if>
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:14px 0 5px">Adicionar arquivos</div>
+      <input type="file" multiple="multiple" accept=".pdf,.xml,.xls,.xlsx,.csv,.doc,.docx,.png,.jpg,.jpeg" onChange="{{addAnexosForm}}" style="width:100%;box-sizing:border-box;padding:8px 10px;border:1px dashed #cdbf9d;border-radius:8px;font:inherit;font-size:12.5px;background:#fbf8f1;color:#6b6459;cursor:pointer">
+      <sc-if value="{{temFormAnexos}}" hint-placeholder-val="{{false}}">
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:7px">
+          <sc-for list="{{formAnexos}}" as="ax" hint-placeholder-count="0">
+            <span style="font-size:11.5px;font-weight:600;background:#f5efe3;border:1px solid #e5d9bd;border-radius:7px;padding:4px 9px">📎 {{ax.nome}} <span onClick="{{ax.rm}}" title="Remover anexo" style="cursor:pointer;color:#a33a2b;font-weight:700;margin-left:4px">✕</span></span>
+          </sc-for>
+        </div>
+      </sc-if>
+      <div style="font-size:10.5px;color:#b0a795;margin-top:5px">Formatos: PDF, Excel (XLS/XLSX/CSV), Word (DOC/DOCX), imagem (PNG/JPG) ou XML · até 5 MB por arquivo · máximo de 5 anexos por envio.</div>
+      <sc-if value="{{form.erro}}" hint-placeholder-val="{{false}}"><div style="color:#a33a2b;font-size:12.5px;margin-top:12px">{{form.erro}}</div></sc-if>
+      <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:18px">
+        <div onClick="{{mClose}}" style="border:1px solid #ddd5c7;border-radius:8px;padding:9px 15px;font-size:13px;font-weight:600;cursor:pointer;color:#6b6459" style-hover="background:#f7f3ea">Cancelar</div>
+        <div onClick="{{confirmAnexosPed}}" style="background:#B38335;color:#fff;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#9a6f2b">Anexar à plataforma</div>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
 <sc-if value="{{mProp}}" hint-placeholder-val="{{false}}">
   <div style="position:fixed;inset:0;background:rgba(39,37,37,.45);display:flex;align-items:center;justify-content:center;z-index:50">
     <div style="background:#fff;border-radius:14px;width:460px;max-width:92vw;max-height:86vh;overflow-y:auto;padding:22px 24px;box-shadow:0 18px 50px rgba(39,37,37,.25)">
@@ -2384,6 +2445,16 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Condições comerciais</div>
         <input value="{{form.condicoes}}" onChange="{{fxCondicoes}}" placeholder="Ex.: boleto 28 dias" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
       </div>
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Anexos da proposta <span style="font-weight:400;color:#a89f90">— opcional: catálogo, planilha de frete, tabela de preço…</span></div>
+      <input type="file" multiple="multiple" accept=".pdf,.xml,.xls,.xlsx,.csv,.doc,.docx,.png,.jpg,.jpeg" onChange="{{addAnexosForm}}" style="width:100%;box-sizing:border-box;padding:8px 10px;border:1px dashed #cdbf9d;border-radius:8px;font:inherit;font-size:12.5px;background:#fbf8f1;color:#6b6459;cursor:pointer">
+      <sc-if value="{{temFormAnexos}}" hint-placeholder-val="{{false}}">
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:7px">
+          <sc-for list="{{formAnexos}}" as="ax" hint-placeholder-count="0">
+            <span style="font-size:11.5px;font-weight:600;background:#f5efe3;border:1px solid #e5d9bd;border-radius:7px;padding:4px 9px">📎 {{ax.nome}} <span onClick="{{ax.rm}}" title="Remover anexo" style="cursor:pointer;color:#a33a2b;font-weight:700;margin-left:4px">✕</span></span>
+          </sc-for>
+        </div>
+      </sc-if>
+      <div style="font-size:10.5px;color:#b0a795;margin-top:5px">Formatos: PDF, Excel (XLS/XLSX/CSV), Word (DOC/DOCX), imagem (PNG/JPG) ou XML · até 5 MB por arquivo · máximo de 5 anexos.</div>
       <sc-if value="{{form.erro}}" hint-placeholder-val="{{false}}"><div style="color:#a33a2b;font-size:12.5px;margin-top:12px">{{form.erro}}</div></sc-if>
       <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:18px">
         <div onClick="{{mClose}}" style="border:1px solid #ddd5c7;border-radius:8px;padding:9px 15px;font-size:13px;font-weight:600;cursor:pointer;color:#6b6459" style-hover="background:#f7f3ea">Cancelar</div>
@@ -3116,7 +3187,8 @@ class Component extends DCLogic {
         "Ao clicar em qualquer \"Rejeitar\" (do pedido ou de um item), abre-se uma janela para escrever a justificativa. Ela é obrigatória e fica visível para a revenda; sem o motivo, a rejeição não é concluída.",
         "Depois de receber, surge o painel \"Decisão de atendimento — por item\". Escolha \"Atender com estoque da Loja…\", \"Envio direto a um fornecedor…\" ou \"Abrir cotação (2+ fornecedores)…\"; na janela que abrir, marque os itens e confirme.",
         "No bloco \"Informações\" (à direita), confira a Revenda e o Fornecedor de destino. Se houver \"Cotação vinculada\", clique no código dela (ex.: COT-008 →) para abrir a cotação.",
-        "Acompanhe cada ação no bloco \"Trilha do pedido — data, hora e usuário\", que registra o que foi feito, por quem e quando."
+        "Acompanhe cada ação no bloco \"Trilha do pedido — data, hora e usuário\", que registra o que foi feito, por quem e quando.",
+        "Quando o fornecedor anexa arquivos durante o atendimento, eles aparecem no quadro \"Documentos do atendimento\", com nome, data e autor — clique no nome para baixar."
       ],
       "dicas": [
         "A justificativa é obrigatória ao rejeitar, seja o pedido todo ou um item, e fica visível para a revenda; tenha o motivo pronto antes de clicar em \"Rejeitar\".",
@@ -3380,6 +3452,7 @@ class Component extends DCLogic {
         "Verifique em \"Faturar diretamente para:\" o nome da revenda que receberá a nota — o faturamento é feito direto para ela.",
         "Se aparecer o aviso \"Atendimento parcial: X de Y itens do pedido são seus\", lembre-se de que você fatura apenas os itens que são seus.",
         "Se quiser, clique nas fotos dos produtos (passe o mouse e aparece \"Clique para ampliar\") para vê-las maiores.",
+        "Use \"📎 Anexar documentos…\" para enviar arquivos do atendimento (romaneio, comprovante de coleta, ficha técnica…): até 5 arquivos por envio, 5 MB cada, nos formatos PDF, Excel, Word, imagem ou XML — eles ficam visíveis à Loja e à revenda.",
         "Clique no botão dourado \"Registrar faturamento…\", no lado direito do card (ele só aparece enquanto houver itens seus pendentes de faturamento).",
         "Na janela \"Registrar faturamento\", confira o quadro \"Somente os seus itens\" e revise o campo \"Valor efetivamente faturado (R$)\", ajustando o valor se necessário.",
         "No campo \"Documento fiscal emitido à revenda (PDF ou XML) — obrigatório\", anexe o PDF ou o XML da nota fiscal que você emitiu para a revenda; o nome do arquivo aparece com um 📎 quando anexado.",
@@ -3403,6 +3476,7 @@ class Component extends DCLogic {
         "Para responder, clique no botão dourado à direita do cartão — \"Enviar proposta…\" (ou \"Editar proposta…\", se já tiver enviado antes; em rodadas de renegociação, \"Enviar contraproposta…\").",
         "Na janela que abre (\"Proposta —\" seguida do código da cotação), informe o valor em \"Preço unitário por item (R$)\" para cada item; o \"Total da proposta\" é calculado automaticamente.",
         "Preencha \"Prazo de entrega\" (ex.: 5 dias úteis), \"Validade da proposta\" (data no formato dd/mm/aaaa) e \"Condições comerciais\" (ex.: boleto 28 dias).",
+        "Em \"Anexos da proposta\" você pode adicionar até 5 arquivos (catálogo, planilha de frete, tabela de preço…) — formatos PDF, Excel, Word, imagem ou XML, com até 5 MB cada; os anexos ficam visíveis para a Loja no mapa comparativo.",
         "Clique no botão dourado \"Enviar proposta\" para registrar (o botão continua com esse nome mesmo quando você está editando uma proposta já enviada), ou em \"Cancelar\" para fechar sem salvar.",
         "Em cotações já encerradas, leia a mensagem de resultado no próprio cartão (ex.: \"Sua proposta venceu\" ou \"Você venceu X de Y item(ns)\")."
       ],
@@ -4097,7 +4171,7 @@ class Component extends DCLogic {
     (c.convidados||[]).forEach(cf=>this.notificar('cotacao_cancelada',this._fornEmail(cf),{cotacao:id,fornecedorNome:this._fornNome(cf),motivo:m,itensLista:_ilCC}));
     this.mClose(); };
 
-  confirmProposta=()=>{ if(!this.pode('cotacoes.proposta')) return this.negado('Você não tem permissão para registrar propostas.','cotacoes.proposta'); const f=this.state.form; const cid=f.cotId;
+  confirmProposta=async()=>{ if(!this.pode('cotacoes.proposta')) return this.negado('Você não tem permissão para registrar propostas.','cotacoes.proposta'); const f=this.state.form; const cid=f.cotId;
     const c=this.state.cotacoes.find(x=>x.id===cid);
     const ped=this.state.pedidos.find(p=>p.id===c.pedidoId)||{itens:[]};
     const citens=c.itens||ped.itens||[];
@@ -4109,13 +4183,19 @@ class Component extends DCLogic {
     const itens={...((prev&&prev.itens)||{})}; let totAlvo=0;
     for(const it of alvo){ const u=this.num(f['ip'+it.produtoId]); if(!u) return this.err('Informe o preço unitário de todos os itens (RF24).'); itens[it.produtoId]=u; totAlvo+=u*it.qtd; }
     if(!f.prazoEntrega) return this.err('Informe o prazo de entrega (RF24).');
+    if(f.propBusy) return;
+    let anexosUp=[];
+    if((f.anexos||[]).length){ this.setState(s=>({form:{...s.form,propBusy:true,erro:null}}));
+      try{ anexosUp=await this._subirAnexos(f.anexos); }
+      catch(e2){ this.setState(s=>({form:{...s.form,propBusy:false,erro:e2.message||'Falha ao enviar os anexos da proposta.'}})); return; } }
+    const anexosProp=anexosUp.map(a=>({...a,quando:this.ts(),autor:me.nome}));
     let total=0,okAll=citens.length>0;
     citens.forEach(it=>{ const u=itens[it.produtoId]; if(u!=null) total+=u*it.qtd; else okAll=false; });
     total=okAll?Math.round(total*100)/100:Math.round(totAlvo*100)/100;
     this.updCot(cid,cc=>{ cc.propostas=cc.propostas.filter(p=>!(p.fornecedorId===fid&&(p.rodada||1)===rod));
-      cc.propostas.push({fornecedorId:fid,rodada:rod,preco:total,itens,prazoEntrega:f.prazoEntrega,validade:f.validade||'—',condicoes:f.condicoes||'—',quando:this.hoje()});
-      cc.historico.push({quando:this.ts(),usuario:me.nome,acao:(rod>1?('Contraproposta (rodada '+rod+') registrada por '+me.nome+' ('+this.fmt(total)+')'+(antes!=null?' — antes: '+this.fmt(antes):'')):('Proposta registrada por '+me.nome+' ('+this.fmt(total)+')'))}); return cc;});
-    this.audit(rod>1?'Registro de contraproposta':'Registro de proposta',cid+(rod>1?' · rodada '+rod:'')+' · '+this.fmt(total)+(rod>1&&antes!=null?' (antes '+this.fmt(antes)+')':''));
+      cc.propostas.push({fornecedorId:fid,rodada:rod,preco:total,itens,prazoEntrega:f.prazoEntrega,validade:f.validade||'—',condicoes:f.condicoes||'—',quando:this.hoje(),anexos:anexosProp});
+      cc.historico.push({quando:this.ts(),usuario:me.nome,acao:(rod>1?('Contraproposta (rodada '+rod+') registrada por '+me.nome+' ('+this.fmt(total)+')'+(antes!=null?' — antes: '+this.fmt(antes):'')):('Proposta registrada por '+me.nome+' ('+this.fmt(total)+')'))+(anexosProp.length?' · '+anexosProp.length+' anexo(s): '+anexosProp.map(a=>a.nome).join(', '):'')}); return cc;});
+    this.audit(rod>1?'Registro de contraproposta':'Registro de proposta',cid+(rod>1?' · rodada '+rod:'')+' · '+this.fmt(total)+(rod>1&&antes!=null?' (antes '+this.fmt(antes)+')':'')+(anexosProp.length?' · '+anexosProp.length+' anexo(s)':''));
     const _ilP=alvo.map(it=>{ const pp=this._prodInfo(it.produtoId); const u=itens[it.produtoId]; return {codigo:pp.codigo||'',descricao:pp.descricao||('Produto '+it.produtoId),qtd:it.qtd,unidade:pp.unidade||'',valor:this.fmt((u||0)*it.qtd)}; });
     this.notificar('cotacao_proposta_loja',this._lojaEmail(),{cotacao:cid,fornecedorNome:me.nome,total:this.fmt(total),itensLista:_ilP});
     this.mClose(); };
@@ -4124,6 +4204,37 @@ class Component extends DCLogic {
     return { temAnexo:!!f.anexoId, anexoUrl:f.anexoId?('/api/anexos/'+f.anexoId):'', anexoNome:f.anexoNome||'documento fiscal',
       temAnalise:!!a, analiseTxt:a?(a.aceito?('✓ validado por '+(a.engine==='claude'?'IA Claude':'análise local')):'⚠ não validado'):'',
       analiseFg:a&&a.aceito?'#2f6b39':'#8a5a12', analiseTitulo:a?(a.motivo||''):'' }; }
+  // ——— Anexos em propostas e no atendimento (Ata 5.7) ———
+  // Formatos aceitos e limites: até 5 arquivos por envio, 5 MB cada.
+  addAnexosForm=e=>{ const files=[...((e.target&&e.target.files)||[])]; if(!files.length) return;
+    const EXTS=['pdf','xml','xls','xlsx','csv','doc','docx','png','jpg','jpeg'];
+    const cur=this.state.form.anexos||[];
+    if(cur.length+files.length>5) return this.err('Máximo de 5 anexos por envio — remova algum arquivo antes de adicionar outros.');
+    for(const file of files){ const ext=(file.name.split('.').pop()||'').toLowerCase();
+      if(!EXTS.includes(ext)) return this.err('Formato não permitido: '+file.name+' — use PDF, Excel (XLS/XLSX/CSV), Word (DOC/DOCX), imagem (PNG/JPG) ou XML.');
+      if(file.size>5*1024*1024) return this.err('Anexo muito grande: '+file.name+' — o limite é 5 MB por arquivo.'); }
+    files.forEach(file=>{ const rd=new FileReader();
+      rd.onload=()=>{ const b64=String(rd.result).split(',')[1]||'';
+        this.setState(s=>({form:{...s.form,anexos:[...(s.form.anexos||[]),{nome:file.name,tipo:file.type||'application/octet-stream',b64}],erro:null}})); };
+      rd.readAsDataURL(file); });
+    e.target.value=''; };
+  rmAnexoForm(ix){ this._rmax=this._rmax||{}; if(!this._rmax[ix]) this._rmax[ix]=()=>this.setState(s=>({form:{...s.form,anexos:(s.form.anexos||[]).filter((_,j)=>j!==ix),erro:null}})); return this._rmax[ix]; }
+  async _subirAnexos(lista){ const out=[];
+    for(const a of lista){ const up=await fetch('/api/anexos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nome:a.nome,tipo:a.tipo,dados:a.b64})}).then(r=>r.json());
+      if(!up.ok) throw new Error(up.error||('Falha ao enviar o anexo '+a.nome+'.')); out.push({id:up.id,nome:a.nome}); }
+    return out; }
+  confirmAnexosPed=async()=>{ const f=this.state.form; if(f.anxBusy) return;
+    const lista=f.anexos||[]; if(!lista.length) return this.err('Selecione ao menos um arquivo para anexar.');
+    const pid=f.pedidoId; const fid=this.state.fornAtivo; const me=this.state.fornecedores.find(x=>x.id===fid)||{nome:this.userName()};
+    this.setState(s=>({form:{...s.form,anxBusy:true,erro:null}}));
+    let ups=[]; try{ ups=await this._subirAnexos(lista); }
+    catch(e){ this.setState(s=>({form:{...s.form,anxBusy:false,erro:e.message||'Falha ao enviar os anexos.'}})); return; }
+    const regs=ups.map(a=>({...a,quando:this.ts(),autor:me.nome,fornecedorId:fid}));
+    this.updPed(pid,p=>{ p.anexosAtend=[...(p.anexosAtend||[]),...regs];
+      p.trilha.push(this.tr(regs.length+' documento(s) anexado(s) ao atendimento por '+me.nome+' — '+regs.map(a=>a.nome).join(', '))); return p;});
+    this.audit('Anexos no atendimento do pedido',pid+' · '+regs.length+' arquivo(s): '+regs.map(a=>a.nome).join(', '));
+    setTimeout(()=>this._flushPersist(),0);
+    this.mClose(); };
   // Seleção do documento fiscal (PDF/XML) obrigatório no registro de faturamento
   setAnexoFat=e=>{ const file=e.target&&e.target.files&&e.target.files[0]; if(!file) return;
     const ext=(file.name.split('.').pop()||'').toLowerCase();
@@ -4571,6 +4682,8 @@ class Component extends DCLogic {
           diretoFn:this.open('direto',{pedidoId:p.id,fornecedorId:'',sel:aprIdx}),
           cotarFn:this.open('cotacao',{pedidoId:p.id,convidados:[],prazo:'',sel:aprIdx}),
           estoqueFn:this.open('estoque',{pedidoId:p.id,sel:aprIdx}),
+          anexosAtend:(p.anexosAtend||[]).map(a=>({nome:a.nome,url:'/api/anexos/'+a.id,quando:a.quando,autor:a.autor})),
+          temAnexosAtend:!!(p.anexosAtend&&p.anexosAtend.length),
           voltar:this.go('ped')}; } }
 
     // cotações (loja)
@@ -4641,6 +4754,7 @@ class Component extends DCLogic {
             const antesR=p.rodada>1?this._propAteRodada(c,p.fornecedorId,p.rodada-1):null;
             return {fornNome:F(p.fornecedorId).nome,precoFmt:this.fmt(p.preco),prazoEntrega:p.prazoEntrega,validade:p.validade,condicoes:p.condicoes,quando:p.quando,
               rodadaInfo:p.rodada>1?('contraproposta · rodada '+p.rodada+(antesR!=null&&antesR!==p.preco?' · antes: '+this.fmt(antesR):'')):'',temRodadaInfo:p.rodada>1,
+              anexos:(p.anexos||[]).map(a=>({nome:a.nome,url:'/api/anexos/'+a.id,info:(a.quando||'')+(a.autor?' · '+a.autor:'')})),temAnexos:!!(p.anexos&&p.anexos.length),
               deltaTxt:(d<=0?'− ':'+ ')+this.fmt(Math.abs(d)).replace('R$ ','')+' vs. ref.',deltaFg:d<=0?'#2f6b39':'#a33a2b',
               menor:eMenor,rowBg:eMenor?'#fbf6ec':'transparent',
               vencedora:c.vencedorId===p.fornecedorId,
@@ -4668,7 +4782,7 @@ class Component extends DCLogic {
               info:(r.abertaEm?('aberta em '+r.abertaEm+' por '+r.usuario+' · '):'')+'prazo '+r.prazo,
               itensTxt:(c.itens||[]).filter(it=>(r.itens||[]).includes(it.produtoId)).map(it=>P(it.produtoId).descricao||'').join(', '),
               fornsTxt:(r.convidados||[]).map(cf=>F(cf).nome).join(', '),
-              props:rProps.map(p=>({fornNome:F(p.fornecedorId).nome,totFmt:this.fmt(p.preco),quando:p.quando,condicoes:p.condicoes||'—'})),
+              props:rProps.map(p=>({fornNome:F(p.fornecedorId).nome,totFmt:this.fmt(p.preco),quando:p.quando,condicoes:(p.condicoes||'—')+((p.anexos&&p.anexos.length)?' · '+p.anexos.length+' anexo(s)':'')})),
               semProps:rProps.length===0};}),
           temRodadas:!!(c.rodadas&&c.rodadas.length),
           encerrada:c.status==='encerrada',cancelada:c.status==='cancelada',
@@ -4939,6 +5053,9 @@ class Component extends DCLogic {
         totalFmt:this.fmt(tot),...this.chip(pend.length?'encaminhado':'faturado'),podeFaturar:pend.length>0&&this.pode('faturamento.faturar'),
         itensTxt:meus.map(i=>P(i.produtoId).descricao+' ×'+i.qtd).join(', '),
         fotos:meus.map(i=>({src:this.fotosDe(P(i.produtoId))[0],ver:this.verFoto(i.produtoId)})),
+        anexos:(p.anexosAtend||[]).filter(a=>a.fornecedorId===fid).map(a=>({nome:a.nome,url:'/api/anexos/'+a.id,info:a.quando})),
+        temAnexos:!!(p.anexosAtend||[]).filter(a=>a.fornecedorId===fid).length,
+        anexar:this.open('anexoped',{pedidoId:p.id,anexos:[]}),
         faturar:this.open('faturar',{pedidoId:p.id,valorFat:pend.reduce((a,i)=>a+this.itemTotal(i),0).toFixed(2).replace('.',','),nf:''})});});
     const fCotRows=S.cotacoes.filter(c=>c.convidados.includes(fid)).map(c=>{
       const own=this._propsEfetivas(c).find(p=>p.fornecedorId===fid);
@@ -4983,6 +5100,7 @@ class Component extends DCLogic {
       fotos:p.itens.map(i=>({src:this.fotosDe(P(i.produtoId))[0],ver:this.verFoto(i.produtoId)})),
       itensN:p.itens.length+(p.itens.length===1?' item':' itens'),totalFmt:this._revTotalFmt(p),
       fornNome:destTxt(p),...this.chip(p.status),
+      anexos:(p.anexosAtend||[]).map(a=>({nome:a.nome,url:'/api/anexos/'+a.id})),temAnexos:!!(p.anexosAtend&&p.anexosAtend.length),
       justificativa:p.justificativa||'',temJustif:!!p.justificativa}));
 
     // modal helper views
@@ -5041,6 +5159,12 @@ class Component extends DCLogic {
         return {label:(prod.codigo||'')+' · '+(prod.descricao||''),qtdTxt:'×'+x.i.qtd,valFmt:this.fmt(x.i.qtd*x.i.preco),toggle:this.toggleSel(x.ix),bg:on?'#faf5e9':'#fff',bd:on?'#B38335':'#e8e1d2',mark:on?'✓ ':'',
           sel:on,qtdVal,qtdMax:String(x.i.qtd),unid:prod.unidade||'un',setQtd:this.fx('q'+x.ix),podeDividir:x.i.qtd>1,
           temSaldo:sp.temInv,saldoTxt:sp.temInv?('saldo em estoque: '+sp.saldo):'',saldoFg:sp.saldo>=x.i.qtd?'#2f6b39':(sp.saldo>0?'#8a5a12':'#a33a2b')};}); }
+    const formAnexos=(S.form.anexos||[]).map((a,ix)=>({nome:a.nome,rm:this.rmAnexoForm(ix)}));
+    const temFormAnexos=formAnexos.length>0;
+    let anxInfo={pedidoId:'',lista:[],temLista:false};
+    if(M==='anexoped'&&S.form.pedidoId){ const pAx=PEDS.find(x=>x.id===S.form.pedidoId);
+      if(pAx) anxInfo={pedidoId:pAx.id,lista:(pAx.anexosAtend||[]).filter(a=>a.fornecedorId===S.fornAtivo).map(a=>({nome:a.nome,info:(a.quando||'')+' · '+(a.autor||''),url:'/api/anexos/'+a.id})),
+        temLista:!!(pAx.anexosAtend||[]).filter(a=>a.fornecedorId===S.fornAtivo).length}; }
     let rodInfo={cotId:'',rodadaN:'',itens:[],forns:[]};
     if(M==='rodada'&&S.form.cotId){ const c=S.cotacoes.find(x=>x.id===S.form.cotId);
       if(c){ const selI=S.form.rodItens||[]; const selF=S.form.rodConv||[]; const efP=this._propsEfetivas(c);
@@ -5215,8 +5339,8 @@ class Component extends DCLogic {
       fatAnaliseOn:!!(S.configPlataforma&&S.configPlataforma.analiseFiscalIA),
       mForn:M==='fornecedor',mCtr:M==='contrato',mRoy:M==='royalty',mProd:M==='produto',mRev:M==='revenda',
       mRej:M==='rejeitar',mDir:M==='direto',mCot:M==='cotacao',mEst:M==='estoque',mJusV:M==='justifvenc',mCanC:M==='cancelarcot',
-      mProp:M==='proposta',mRod:M==='rodada',mFat:M==='faturar',mPag:M==='pagamento',
-      dirRows,convRows,dirVazio,prodFornRows,prodFornSel,prodFornVazio,propInfo,fatInfo,jvInfo,royInfo,rodInfo,confirmRodada:this.confirmRodada,selItens,
+      mProp:M==='proposta',mRod:M==='rodada',mAnx:M==='anexoped',mFat:M==='faturar',mPag:M==='pagamento',
+      dirRows,convRows,dirVazio,prodFornRows,prodFornSel,prodFornVazio,propInfo,fatInfo,jvInfo,royInfo,rodInfo,confirmRodada:this.confirmRodada,formAnexos,temFormAnexos,anxInfo,addAnexosForm:this.addAnexosForm,confirmAnexosPed:this.confirmAnexosPed,selItens,
       confirmEstoque:this.confirmEstoque,setPedidoCot:this.setPedidoCot,
       prodModalFotos:(S.form.editId&&M==='produto'?this.fotosDe(S.produtos.find(x=>x.id===S.form.editId)||{}):['img/prd-new-1.png','img/prd-new-2.png','img/prd-new-3.png']).map((src,i)=>({src,principal:i===(S.form.fotoP||0),pick:this.pickFotoP(i),bd:i===(S.form.fotoP||0)?'#B38335':'#e8e1d2'})),
       salvarForn:this.salvarForn,salvarContrato:this.salvarContrato,salvarRoyalty:this.salvarRoyalty,

@@ -103,8 +103,10 @@ app.post('/api/anexos', async (req, res) => {
       return res.status(400).json({ ok: false, error: 'Anexo não informado.' })
     }
     const ext = String(nome || '').split('.').pop().toLowerCase()
-    if (!['pdf', 'xml'].includes(ext)) {
-      return res.status(400).json({ ok: false, error: 'O anexo deve ser um PDF ou XML do documento fiscal.' })
+    // PDF/XML para documentos fiscais; demais formatos para anexos de proposta
+    // e de atendimento (Ata 5.7). O limite de 5 MB vale para todos.
+    if (!['pdf', 'xml', 'xls', 'xlsx', 'csv', 'doc', 'docx', 'png', 'jpg', 'jpeg'].includes(ext)) {
+      return res.status(400).json({ ok: false, error: 'Formato de anexo não permitido — use PDF, XML, Excel (XLS/XLSX/CSV), Word (DOC/DOCX) ou imagem (PNG/JPG).' })
     }
     const tamanho = Math.floor(dados.length * 0.75)
     if (tamanho > 5 * 1024 * 1024) {
