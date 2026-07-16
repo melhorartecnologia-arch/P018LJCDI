@@ -347,7 +347,8 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:16px 18px">
           <div style="font-size:14px;font-weight:700;margin-bottom:10px">Informações</div>
           <div style="font-size:12px;color:#a89f90;margin-bottom:2px">Revenda</div>
-          <div style="font-size:13.5px;font-weight:600;margin-bottom:10px">{{pd.revNome}}</div>
+          <div style="font-size:13.5px;font-weight:600">{{pd.revNome}}</div>
+          <div style="font-size:11.5px;color:#8f682a;margin:2px 0 10px">{{pd.revContato}}</div>
           <div style="font-size:12px;color:#a89f90;margin-bottom:2px">Fornecedor de destino</div>
           <div style="font-size:13.5px;font-weight:600;margin-bottom:10px">{{pd.fornDest}}</div>
           <sc-if value="{{pd.temCot}}" hint-placeholder-val="{{false}}">
@@ -670,7 +671,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <tbody>
           <sc-for list="{{fornRows}}" as="f" hint-placeholder-count="4">
             <tr onClick="{{f.open}}" style="cursor:pointer" style-hover="background:#faf7f0">
-              <td style="padding:11px 18px;font-size:13px;font-weight:600;border-bottom:1px solid #f5f1e8">{{f.nome}}<div style="font-size:11px;font-weight:400;color:#a89f90">{{f.cidade}} · {{f.contato}}</div></td>
+              <td style="padding:11px 18px;font-size:13px;font-weight:600;border-bottom:1px solid #f5f1e8">{{f.nome}}<div style="font-size:11px;font-weight:400;color:#a89f90">{{f.cidade}} · {{f.contato}}{{f.telefoneTxt}}</div></td>
               <td style="padding:11px 10px;font-size:12.5px;color:#8a8378;border-bottom:1px solid #f5f1e8">{{f.cnpj}}</td>
               <td style="padding:11px 10px;font-size:13px;border-bottom:1px solid #f5f1e8">{{f.ctrNum}}</td>
               <td style="padding:11px 10px;border-bottom:1px solid #f5f1e8"><span style="font-size:12px;font-weight:700;color:#8f682a;background:#faf5e9;border:1px solid #ecdcbc;border-radius:7px;padding:3px 9px">{{f.royaltyStr}}</span></td>
@@ -733,7 +734,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <div onClick="{{fd.toggle}}" style="border:1px solid #e5ddcd;color:#8a8378;border-radius:9px;padding:9px 14px;font-size:12.5px;font-weight:600;cursor:pointer" style-hover="background:#f7f3ea">{{fd.toggleLabel}}</div>
       </div>
     </div>
-    <div style="font-size:13px;color:#8a8378;margin-bottom:18px">{{fd.cnpj}} · {{fd.cidade}} · {{fd.contato}}</div>
+    <div style="font-size:13px;color:#8a8378;margin-bottom:18px">{{fd.cnpj}} · {{fd.cidade}} · {{fd.contato}}{{fd.telefoneTxt}}{{fd.contatoNomeTxt}}</div>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px">
       <sc-for list="{{fd.stats}}" as="s" hint-placeholder-count="4">
         <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:14px 16px">
@@ -976,7 +977,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
           <sc-for list="{{revRows}}" as="r" hint-placeholder-count="4">
             <tr onClick="{{r.open}}" style="cursor:pointer" style-hover="background:#faf7f0">
               <td style="padding:11px 18px;font-size:13px;font-weight:600;border-bottom:1px solid #f5f1e8">{{r.nome}}<div style="font-size:11px;font-weight:400;color:#a89f90">{{r.cnpj}} · {{r.cidade}}</div></td>
-              <td style="padding:11px 10px;font-size:12.5px;color:#8a8378;border-bottom:1px solid #f5f1e8">{{r.email}}</td>
+              <td style="padding:11px 10px;font-size:12.5px;color:#8a8378;border-bottom:1px solid #f5f1e8">{{r.email}}<div style="font-size:11px;color:#a89f90">{{r.telefoneTxt}}</div></td>
               <td style="padding:11px 10px;font-size:12.5px;color:#8a8378;border-bottom:1px solid #f5f1e8">{{r.visResumo}}</td>
               <td style="padding:11px 10px;font-size:13px;text-align:right;border-bottom:1px solid #f5f1e8">{{r.pedN}}</td>
               <td style="padding:11px 10px;font-size:13px;font-weight:600;text-align:right;border-bottom:1px solid #f5f1e8">{{r.pedTotFmt}}</td>
@@ -1002,7 +1003,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <div onClick="{{rd.toggle}}" style="border:1px solid #e5ddcd;color:#8a8378;border-radius:9px;padding:9px 14px;font-size:12.5px;font-weight:600;cursor:pointer" style-hover="background:#f7f3ea">{{rd.toggleLabel}}</div>
       </div>
     </div>
-    <div style="font-size:13px;color:#8a8378;margin-bottom:18px">{{rd.cnpj}} · {{rd.cidade}}</div>
+    <div style="font-size:13px;color:#8a8378;margin-bottom:18px">{{rd.cnpj}} · {{rd.cidade}}{{rd.telefoneTxt}}</div>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px">
       <sc-for list="{{rd.stats}}" as="s" hint-placeholder-count="4">
         <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:14px 16px">
@@ -1017,6 +1018,8 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <div style="font-size:11.5px;color:#a89f90;margin-bottom:12px">RF10 — login e perfil próprios, controlados pela Loja</div>
         <div style="font-size:12px;color:#a89f90;margin-bottom:2px">E-mail de acesso</div>
         <div style="font-size:13.5px;font-weight:600;margin-bottom:10px">{{rd.email}}</div>
+        <div style="font-size:12px;color:#a89f90;margin-bottom:2px">Telefone</div>
+        <div style="font-size:13.5px;font-weight:600;margin-bottom:10px">{{rd.telefone}}</div>
         <div style="font-size:12px;color:#a89f90;margin-bottom:2px">Último acesso</div>
         <div style="font-size:13.5px;font-weight:600;margin-bottom:14px">{{rd.ultimoAcesso}}</div>
         <div onClick="{{rd.reenviar}}" style="text-align:center;border:1px solid #d9c193;color:#8f682a;border-radius:9px;padding:9px 0;font-size:12.5px;font-weight:600;cursor:pointer" style-hover="background:#faf5e9">Reenviar convite de acesso</div>
@@ -1622,7 +1625,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
                 <td style="padding:11px 10px;text-align:right;border-bottom:1px solid #f5f1e8"><div style="font-size:13px;font-weight:700">{{it.valFmt}}</div><sc-if value="{{it.temNeg}}" hint-placeholder-val="{{false}}"><div style="font-size:10px;color:#8a5a12">{{it.negTag}}</div></sc-if></td>
                 <td style="padding:11px 10px;border-bottom:1px solid #f5f1e8"><span style="font-size:11.5px;font-weight:600;border-radius:7px;padding:3px 9px;background:{{it.stBg}};color:{{it.stFg}};white-space:nowrap">{{it.stLabel}}</span></td>
                 <td style="padding:11px 10px;font-size:12.5px;border-bottom:1px solid #f5f1e8"><b>{{it.pedidoId}}</b><div style="font-size:11px;color:#a89f90">{{it.pedData}} · {{it.origem}}</div></td>
-                <td style="padding:11px 18px;font-size:12.5px;border-bottom:1px solid #f5f1e8"><b>{{it.revNome}}</b><div style="font-size:11px;color:#a89f90">{{it.revCidade}} · CNPJ {{it.revCnpj}}</div><div style="font-size:11px;color:#8f682a">{{it.revEmail}}</div></td>
+                <td style="padding:11px 18px;font-size:12.5px;border-bottom:1px solid #f5f1e8"><b>{{it.revNome}}</b><div style="font-size:11px;color:#a89f90">{{it.revCidade}} · CNPJ {{it.revCnpj}}</div><div style="font-size:11px;color:#8f682a">{{it.revEmail}}{{it.revTelTxt}}</div></td>
               </tr>
             </sc-for>
           </tbody>
@@ -1645,7 +1648,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
             </div>
             <div style="font-size:12.5px;color:#6b6459;margin-top:4px">{{p.itensTxt}}</div>
             <sc-if value="{{p.parcial}}" hint-placeholder-val="{{false}}"><div style="font-size:11px;font-weight:600;color:#8a5a12;margin-top:2px">{{p.parcial}}</div></sc-if>
-            <div style="font-size:12px;color:#a89f90;margin-top:2px">Faturar diretamente para: <b style="color:#272525">{{p.revNome}}</b></div>
+            <div style="font-size:12px;color:#a89f90;margin-top:2px">Faturar diretamente para: <b style="color:#272525">{{p.revNome}}</b>{{p.revContatoTxt}}</div>
             <sc-if value="{{p.temAnexos}}" hint-placeholder-val="{{false}}">
               <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:5px">
                 <sc-for list="{{p.anexos}}" as="ax" hint-placeholder-count="0"><a href="{{ax.url}}" target="_blank" title="{{ax.info}}" style="font-size:10.5px;font-weight:600;color:#8f682a;text-decoration:none;background:#faf5e9;border:1px solid #e5d9bd;border-radius:6px;padding:2px 7px">📎 {{ax.nome}}</a></sc-for>
@@ -2089,8 +2092,14 @@ input::placeholder,textarea::placeholder{color:#b0a795}
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
         <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Cidade/UF</div>
         <input value="{{form.cidade}}" onChange="{{fxCidade}}" placeholder="Petrópolis/RJ" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
-        <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Contato</div>
+        <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">E-mail de contato</div>
         <input value="{{form.contato}}" onChange="{{fxContato}}" placeholder="email@fornecedor.com" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Telefone</div>
+        <input value="{{form.telefone}}" onChange="{{fxTelefone}}" placeholder="(24) 99999-0000" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
+        <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Pessoa de contato</div>
+        <input value="{{form.contatoNome}}" onChange="{{fxContatoNome}}" placeholder="Ex.: Carlos Andrade" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
       </div>
       <sc-if value="{{form.erro}}" hint-placeholder-val="{{false}}"><div style="color:#a33a2b;font-size:12.5px;margin-top:12px">{{form.erro}}</div></sc-if>
       <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:18px">
@@ -2198,8 +2207,12 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Cidade/UF</div>
         <input value="{{form.cidade}}" onChange="{{fxCidade}}" placeholder="Petrópolis/RJ" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
       </div>
-      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">E-mail de acesso (login)</div>
-      <input value="{{form.email}}" onChange="{{fxEmail}}" placeholder="compras@revenda.com.br" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Telefone</div>
+        <input value="{{form.telefone}}" onChange="{{fxTelefone}}" placeholder="(24) 99999-0000" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
+        <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">E-mail de acesso (login)</div>
+        <input value="{{form.email}}" onChange="{{fxEmail}}" placeholder="compras@revenda.com.br" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
+      </div>
       <sc-if value="{{form.erro}}" hint-placeholder-val="{{false}}"><div style="color:#a33a2b;font-size:12.5px;margin-top:12px">{{form.erro}}</div></sc-if>
       <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:18px">
         <div onClick="{{mClose}}" style="border:1px solid #ddd5c7;border-radius:8px;padding:9px 15px;font-size:13px;font-weight:600;cursor:pointer;color:#6b6459" style-hover="background:#f7f3ea">Cancelar</div>
@@ -2853,10 +2866,10 @@ class Component extends DCLogic {
     royCompF:'todas', royFornF:'0', royStF:'todos',
     seq:{ped:47,cot:9,forn:5,prod:11,rev:5,ctr:5,nf:1210},
     fornecedores:[
-      {id:1,nome:'Distribuidora Serra Verde',cnpj:'12.345.678/0001-90',cidade:'Petrópolis/RJ',contato:'comercial@serraverde.com.br',ativo:true},
-      {id:2,nome:'Imperial Bebidas Ltda',cnpj:'98.765.432/0001-10',cidade:'Teresópolis/RJ',contato:'vendas@imperialbebidas.com.br',ativo:true},
-      {id:3,nome:'Atacadão Fluminense',cnpj:'45.678.912/0001-55',cidade:'Duque de Caxias/RJ',contato:'atendimento@atacadaoflu.com.br',ativo:true},
-      {id:4,nome:'Insumos & Barris RJ',cnpj:'33.222.111/0001-77',cidade:'Rio de Janeiro/RJ',contato:'contato@insumosbarris.com.br',ativo:false}
+      {id:1,nome:'Distribuidora Serra Verde',cnpj:'12.345.678/0001-90',cidade:'Petrópolis/RJ',contato:'comercial@serraverde.com.br',telefone:'(24) 2231-4455',contatoNome:'Carlos Andrade',ativo:true},
+      {id:2,nome:'Imperial Bebidas Ltda',cnpj:'98.765.432/0001-10',cidade:'Teresópolis/RJ',contato:'vendas@imperialbebidas.com.br',telefone:'(21) 2742-8890',contatoNome:'Marina Souza',ativo:true},
+      {id:3,nome:'Atacadão Fluminense',cnpj:'45.678.912/0001-55',cidade:'Duque de Caxias/RJ',contato:'atendimento@atacadaoflu.com.br',telefone:'(21) 3652-7711',contatoNome:'Roberto Lima',ativo:true},
+      {id:4,nome:'Insumos & Barris RJ',cnpj:'33.222.111/0001-77',cidade:'Rio de Janeiro/RJ',contato:'contato@insumosbarris.com.br',telefone:'(21) 2233-0099',contatoNome:'Paulo Neves',ativo:false}
     ],
     contratos:[
       {id:1,fornecedorId:1,numero:'CT-2026-001',royalty:3,inicio:'01/01/2026',fim:'31/12/2026',vigente:true,historico:[{data:'01/01/2026',de:'2%',para:'3%',usuario:'Ana Ribeiro (Loja)'}]},
@@ -2877,10 +2890,10 @@ class Component extends DCLogic {
       {id:10,codigo:'PRD-010',descricao:'Barril Inox 30L (comodato)',unidade:'Unidade',preco:450,fornecedorId:4,ativo:false}
     ],
     revendas:[
-      {id:1,nome:'Bar do Imperador',cnpj:'11.111.222/0001-33',cidade:'Petrópolis/RJ',ativo:true,visibilidade:[1,2,3],prodBloq:[],email:'compras@bardoimperador.com.br',ultimoAcesso:'09/07/2026 08:14'},
-      {id:2,nome:'Empório Colonial',cnpj:'22.333.444/0001-55',cidade:'Itaipava/RJ',ativo:true,visibilidade:[1,2],prodBloq:[6],email:'pedidos@emporiocolonial.com.br',ultimoAcesso:'08/07/2026 10:41'},
-      {id:3,nome:'Choperia Alto da Serra',cnpj:'44.555.666/0001-77',cidade:'Teresópolis/RJ',ativo:true,visibilidade:[1,3],prodBloq:[],email:'adm@choperiaaltodaserra.com.br',ultimoAcesso:'07/07/2026 09:10'},
-      {id:4,nome:'Adega Quitandinha',cnpj:'55.666.777/0001-88',cidade:'Petrópolis/RJ',ativo:false,visibilidade:[2],prodBloq:[],email:'contato@adegaquitandinha.com.br',ultimoAcesso:'12/05/2026 15:22'}
+      {id:1,nome:'Bar do Imperador',cnpj:'11.111.222/0001-33',cidade:'Petrópolis/RJ',telefone:'(24) 2242-1188',ativo:true,visibilidade:[1,2,3],prodBloq:[],email:'compras@bardoimperador.com.br',ultimoAcesso:'09/07/2026 08:14'},
+      {id:2,nome:'Empório Colonial',cnpj:'22.333.444/0001-55',cidade:'Itaipava/RJ',telefone:'(24) 2222-9067',ativo:true,visibilidade:[1,2],prodBloq:[6],email:'pedidos@emporiocolonial.com.br',ultimoAcesso:'08/07/2026 10:41'},
+      {id:3,nome:'Choperia Alto da Serra',cnpj:'44.555.666/0001-77',cidade:'Teresópolis/RJ',telefone:'(21) 2642-3305',ativo:true,visibilidade:[1,3],prodBloq:[],email:'adm@choperiaaltodaserra.com.br',ultimoAcesso:'07/07/2026 09:10'},
+      {id:4,nome:'Adega Quitandinha',cnpj:'55.666.777/0001-88',cidade:'Petrópolis/RJ',telefone:'(24) 2247-5521',ativo:false,visibilidade:[2],prodBloq:[],email:'contato@adegaquitandinha.com.br',ultimoAcesso:'12/05/2026 15:22'}
     ],
     pedidos:[
       {id:'PED-0044',revendaId:1,fornecedorId:null,cotacaoId:null,itens:[{produtoId:1,qtd:2,preco:620,st:'pendente'},{produtoId:8,qtd:3,preco:96,st:'pendente'}],total:1528,status:'pendente',justificativa:null,data:'09/07/2026',trilha:[
@@ -3117,6 +3130,12 @@ class Component extends DCLogic {
   err(msg){ this.setState(s=>({form:{...s.form,erro:msg}})); }
 
   fx(f){ this._fx=this._fx||{}; if(!this._fx[f]) this._fx[f]=e=>{const v=e.target.value; this.setState(s=>({form:{...s.form,[f]:v,erro:null}}));}; return this._fx[f]; }
+  // Máscara de telefone BR: (XX) XXXX-XXXX ou (XX) XXXXX-XXXX (Ata 5.8)
+  fxTelefone=e=>{ const d=String(e.target.value||'').replace(/\D/g,'').slice(0,11);
+    let v=d; if(d.length>2) v='('+d.slice(0,2)+') '+d.slice(2);
+    if(d.length>6){ const corte=d.length>10?7:6; v='('+d.slice(0,2)+') '+d.slice(2,corte)+'-'+d.slice(corte); }
+    this.setState(s=>({form:{...s.form,telefone:v,erro:null}})); };
+  _telTxt(v){ return (v&&v!=='—')?(' · 📞 '+v):''; }
   open(m,seed){ return (e)=>{ if(e&&e.stopPropagation) e.stopPropagation(); this.setState({modal:m,form:seed?{...seed}:{}}); }; }
   mClose=()=>{ this._ajudaStop(); this.setState({modal:null,form:{},pendVenc:null,ajudaPlay:false}); };
   // ── Configurações Técnicas › Configuração de e-mail (SMTP) ──────────────
@@ -3284,7 +3303,7 @@ class Component extends DCLogic {
       "passos": [
         "Confira os 4 indicadores no topo — Fornecedores ativos, Contratos vigentes, Royalty médio e Royalty gerado — para ter a visão geral antes de agir.",
         "Para localizar um fornecedor, digite nome, CNPJ ou cidade no campo \"Buscar fornecedor por nome, CNPJ ou cidade…\"; a lista é filtrada conforme você digita.",
-        "Para incluir um fornecedor, clique em \"+ Novo fornecedor\" (canto superior direito), preencha ao menos Razão social e CNPJ (Cidade/UF e Contato são opcionais) e clique em \"Salvar fornecedor\".",
+        "Para incluir um fornecedor, clique em \"+ Novo fornecedor\" (canto superior direito), preencha ao menos Razão social e CNPJ — Cidade/UF, E-mail de contato, Telefone (com máscara automática) e Pessoa de contato são opcionais — e clique em \"Salvar fornecedor\".",
         "Para ver a ficha completa, clique sobre a linha do fornecedor na tabela (a seta › na coluna Faturado indica que a linha é clicável); abre a página \"Detalhe do fornecedor\" com seus contratos e produtos.",
         "Na tabela \"Contratos e vigências\", acompanhe as colunas Royalty, Vigência, Histórico de royalty e Status; contratos próximos do fim mostram na Vigência o aviso \"Vence em X dias\" ou \"Vencido há X dias\".",
         "Para mudar o percentual de um contrato vigente, clique em \"Ajustar royalty…\", informe o \"Novo percentual (%)\" na janela \"Ajustar percentual de royalty\" e clique em \"Salvar alteração\"; a mudança fica registrada na coluna Histórico de royalty.",
@@ -3301,7 +3320,7 @@ class Component extends DCLogic {
       "titulo": "Gerenciar o fornecedor e seus contratos",
       "resumo": "Tela para consultar os dados de um fornecedor, administrar seus contratos e o percentual de royalty, e acompanhar os produtos homologados vinculados a ele.",
       "passos": [
-        "No topo aparecem o nome do fornecedor, o selo de situação (ativo/inativo) e, logo abaixo, a linha com CNPJ · cidade · contato; use o link \"← Voltar para fornecedores\" para retornar à lista.",
+        "No topo aparecem o nome do fornecedor, o selo de situação (ativo/inativo) e, logo abaixo, a linha com CNPJ · cidade · e-mail · telefone · pessoa de contato; use o link \"← Voltar para fornecedores\" para retornar à lista.",
         "Confira os 4 cartões de indicadores logo abaixo do cabeçalho para ter um resumo rápido do fornecedor.",
         "Para corrigir dados cadastrais, clique em \"Editar dados\". Para tirar o fornecedor de operação ou recolocá-lo, use o botão ao lado, que mostra \"Inativar fornecedor\" quando ele está ativo e \"Reativar fornecedor\" quando está inativo.",
         "Para registrar um contrato e o percentual de royalty, clique em \"+ Novo contrato\" (no topo da tela, ao lado de \"Editar dados\"). Enquanto não houver contrato, a seção \"Contratos e royalty\" mostra o aviso \"Nenhum contrato cadastrado…\".",
@@ -3364,7 +3383,7 @@ class Component extends DCLogic {
       "passos": [
         "No topo, confira os 4 cartões — \"Revendas ativas\", \"Pedidos das revendas\", \"Valor em pedidos\" e \"Faturado às revendas\" — para ter o panorama geral.",
         "Para achar uma revenda, digite no campo \"Buscar revenda por nome, CNPJ ou cidade…\"; a lista filtra sozinha conforme você digita.",
-        "Para cadastrar, clique em \"+ Nova revenda\" (canto superior direito), preencha Nome, CNPJ, Cidade/UF e E-mail de acesso (login) e clique em \"Salvar revenda\".",
+        "Para cadastrar, clique em \"+ Nova revenda\" (canto superior direito), preencha Nome, CNPJ, Cidade/UF, Telefone (com máscara automática) e E-mail de acesso (login) e clique em \"Salvar revenda\".",
         "Na tabela, acompanhe as colunas Revenda, Acesso (mostra o e-mail de login), Visibilidade, Pedidos, Valor em pedidos e Status de cada revenda.",
         "Clique em qualquer linha da tabela para abrir o detalhe daquela revenda.",
         "No detalhe, use \"Editar dados\" para corrigir o cadastro, ou o botão ao lado (\"Inativar revenda\" / \"Reativar revenda\") para ligar ou desligar o acesso da revenda.",
@@ -3838,10 +3857,10 @@ class Component extends DCLogic {
   updCot(id,fn){ this.setState(s=>({cotacoes:s.cotacoes.map(c=>c.id===id?fn({...c,propostas:[...c.propostas],historico:[...c.historico]}):c)})); }
 
   salvarForn=()=>{ if(!this.pode('cadastros.fornecedores')) return this.negado('Você não tem permissão para gerenciar fornecedores.','cadastros.fornecedores'); const f=this.state.form; if(!f.nome||!f.cnpj) return this.err('Informe ao menos nome e CNPJ.');
-    if(f.editId){ this.setState(s=>({fornecedores:s.fornecedores.map(x=>x.id===f.editId?{...x,nome:f.nome,cnpj:f.cnpj,cidade:f.cidade||'—',contato:f.contato||'—'}:x),modal:null,form:{}}));
+    if(f.editId){ this.setState(s=>({fornecedores:s.fornecedores.map(x=>x.id===f.editId?{...x,nome:f.nome,cnpj:f.cnpj,cidade:f.cidade||'—',contato:f.contato||'—',telefone:f.telefone||'—',contatoNome:f.contatoNome||''}:x),modal:null,form:{}}));
       this.audit('Edição de fornecedor',f.nome); return; }
     const id=this.state.seq.forn;
-    this.setState(s=>({fornecedores:[...s.fornecedores,{id,nome:f.nome,cnpj:f.cnpj,cidade:f.cidade||'—',contato:f.contato||'—',ativo:true}],seq:{...s.seq,forn:id+1},modal:null,form:{}}));
+    this.setState(s=>({fornecedores:[...s.fornecedores,{id,nome:f.nome,cnpj:f.cnpj,cidade:f.cidade||'—',contato:f.contato||'—',telefone:f.telefone||'—',contatoNome:f.contatoNome||'',ativo:true}],seq:{...s.seq,forn:id+1},modal:null,form:{}}));
     this.audit('Cadastro de fornecedor',f.nome); };
   toggleForn(id){ this._tf=this._tf||{}; if(!this._tf[id]) this._tf[id]=()=>{ const f=this.state.fornecedores.find(x=>x.id===id);
     this.setState(s=>({fornecedores:s.fornecedores.map(x=>x.id===id?{...x,ativo:!x.ativo}:x)}));
@@ -3901,10 +3920,10 @@ class Component extends DCLogic {
     this.setState(s=>({produtos:s.produtos.map(x=>x.id===id?{...x,ativo:!x.ativo}:x)}));
     this.audit(p.ativo?'Inativação de produto no catálogo':'Ativação de produto no catálogo',p.codigo+' · '+p.descricao); }; return this._tp[id]; }
   salvarRevenda=()=>{ if(!this.pode('cadastros.revendas')) return this.negado('Você não tem permissão para gerenciar revendas.','cadastros.revendas'); const f=this.state.form; if(!f.nome||!f.cnpj) return this.err('Informe ao menos nome e CNPJ.');
-    if(f.editId){ this.setState(s=>({revendas:s.revendas.map(x=>x.id===f.editId?{...x,nome:f.nome,cnpj:f.cnpj,cidade:f.cidade||'—',email:f.email||x.email}:x),modal:null,form:{}}));
+    if(f.editId){ this.setState(s=>({revendas:s.revendas.map(x=>x.id===f.editId?{...x,nome:f.nome,cnpj:f.cnpj,cidade:f.cidade||'—',email:f.email||x.email,telefone:f.telefone||'—'}:x),modal:null,form:{}}));
       this.audit('Edição de revenda',f.nome); return; }
     const id=this.state.seq.rev;
-    this.setState(s=>({revendas:[...s.revendas,{id,nome:f.nome,cnpj:f.cnpj,cidade:f.cidade||'—',ativo:true,visibilidade:this.state.fornecedores.filter(x=>x.ativo).map(x=>x.id),prodBloq:[],email:f.email||'acesso@'+f.nome.toLowerCase().replace(/[^a-z]/g,'')+'.com.br',ultimoAcesso:'— nunca acessou —'}],seq:{...s.seq,rev:id+1},modal:null,form:{}}));
+    this.setState(s=>({revendas:[...s.revendas,{id,nome:f.nome,cnpj:f.cnpj,cidade:f.cidade||'—',telefone:f.telefone||'—',ativo:true,visibilidade:this.state.fornecedores.filter(x=>x.ativo).map(x=>x.id),prodBloq:[],email:f.email||'acesso@'+f.nome.toLowerCase().replace(/[^a-z]/g,'')+'.com.br',ultimoAcesso:'— nunca acessou —'}],seq:{...s.seq,rev:id+1},modal:null,form:{}}));
     this.audit('Cadastro de revenda',f.nome); };
   toggleRev(id){ this._trv=this._trv||{}; if(!this._trv[id]) this._trv[id]=()=>{ const r=this.state.revendas.find(x=>x.id===id);
     this.setState(s=>({revendas:s.revendas.map(x=>x.id===id?{...x,ativo:!x.ativo}:x)}));
@@ -4695,7 +4714,7 @@ class Component extends DCLogic {
         steps=steps.map((s,i)=>({...s,temLinha:i>0}));
         const cotIds=[...new Set(p.itens.filter(i=>i.cotacaoId&&i.st==='cotacao').map(i=>i.cotacaoId))];
         const dt=destTxt(p);
-        pd={id:p.id,steps,data:p.data,...this.chip(p.status),revNome:R(p.revendaId).nome,revCidade:R(p.revendaId).cidade||'',
+        pd={id:p.id,steps,data:p.data,...this.chip(p.status),revNome:R(p.revendaId).nome,revCidade:R(p.revendaId).cidade||'',revContato:((R(p.revendaId).telefone&&R(p.revendaId).telefone!=='—')?('📞 '+R(p.revendaId).telefone+' · '):'')+(R(p.revendaId).email||''),
           fornDest:dt==='—'?'— ainda não definido —':dt,
           temCot:cotIds.length>0,cotId:cotIds.join(', '),verCot:cotIds.length?this.openCot(cotIds[0]):null,
           itens:p.itens.map((i,ix)=>{const pr=P(i.produtoId); const st=i.st||'pendente';
@@ -4848,7 +4867,7 @@ class Component extends DCLogic {
     const bf=S.buscaForn.toLowerCase();
     const fornRows=S.fornecedores.filter(f=>!bf||f.nome.toLowerCase().includes(bf)||f.cnpj.includes(bf)||(f.cidade||'').toLowerCase().includes(bf)).map(f=>{ const ctr=ctrVig(f.id);
       const fat=S.faturamentos.filter(x=>x.fornecedorId===f.id);
-      return {nome:f.nome,cnpj:f.cnpj,cidade:f.cidade,contato:f.contato,
+      return {nome:f.nome,cnpj:f.cnpj,cidade:f.cidade,contato:f.contato,telefoneTxt:this._telTxt(f.telefone),
         ctrNum:ctr?ctr.numero:'—',royaltyStr:ctr?String(ctr.royalty).replace('.',',')+'%':'—',temCtr:!!ctr,
         prodN:String(S.produtos.filter(p=>this._pTemForn(p,f.id)).length),
         fatFmt:this.fmt(fat.reduce((a,x)=>a+x.valor,0)),
@@ -4867,7 +4886,7 @@ class Component extends DCLogic {
       if(f){ const fat=S.faturamentos.filter(x=>x.fornecedorId===f.id);
         const peds=PEDS.filter(p=>p.fornecedorId===f.id);
         const meusProds=S.produtos.filter(p=>this._pTemForn(p,f.id));
-        fd={nome:f.nome,cnpj:f.cnpj,cidade:f.cidade,contato:f.contato,
+        fd={nome:f.nome,cnpj:f.cnpj,cidade:f.cidade,contato:f.contato,telefoneTxt:this._telTxt(f.telefone),contatoNomeTxt:f.contatoNome?(' · falar com '+f.contatoNome):'',
           ...this.chip(f.ativo?'ativo':'inativo'),
           stats:[
             {label:'Pedidos direcionados',val:String(peds.length)},
@@ -4878,7 +4897,7 @@ class Component extends DCLogic {
           semContratos:!S.contratos.some(c=>c.fornecedorId===f.id),
           produtos:meusProds.map(p=>({codigo:p.codigo,descricao:p.descricao,unidade:p.unidade,precoFmt:this.fmt(p.preco),foto:this.fotosDe(p)[0],ver:this.verFoto(p.id),...this.chip(p.ativo?'ativo':'inativo'),toggle:this.toggleProd(p.id),toggleLabel:p.ativo?'Inativar':'Ativar'})),
           semProdutos:meusProds.length===0,
-          editar:this.open('fornecedor',{editId:f.id,nome:f.nome,cnpj:f.cnpj,cidade:f.cidade,contato:f.contato}),
+          editar:this.open('fornecedor',{editId:f.id,nome:f.nome,cnpj:f.cnpj,cidade:f.cidade,contato:f.contato,telefone:(f.telefone&&f.telefone!=='—')?f.telefone:'',contatoNome:f.contatoNome||''}),
           novoCtr:this.open('contrato',{fornecedorId:String(f.id),royalty:'',inicio:'',fim:''}),
           toggle:this.toggleForn(f.id),toggleLabel:f.ativo?'Inativar fornecedor':'Reativar fornecedor',
           voltar:this.go('forn')}; } }
@@ -4939,7 +4958,7 @@ class Component extends DCLogic {
     const brv=S.buscaRev.toLowerCase();
     const revRows=S.revendas.filter(r=>!brv||r.nome.toLowerCase().includes(brv)||r.cnpj.includes(brv)||(r.cidade||'').toLowerCase().includes(brv))
       .map(r=>{ const peds=PEDS.filter(p=>p.revendaId===r.id);
-        return {nome:r.nome,cnpj:r.cnpj,cidade:r.cidade,email:r.email||'—',
+        return {nome:r.nome,cnpj:r.cnpj,cidade:r.cidade,email:r.email||'—',telefoneTxt:this._telTxt(r.telefone),
           pedN:String(peds.length),pedTotFmt:this.fmt(peds.reduce((a,p)=>a+(p.total),0)),
           visResumo:r.visibilidade.length+' fornecedores'+((r.prodBloq||[]).length?' · '+(r.prodBloq||[]).length+' produto(s) bloqueado(s)':''),
           ...this.chip(r.ativo?'ativo':'inativo'),open:this.openRev(r.id)};});
@@ -4953,7 +4972,7 @@ class Component extends DCLogic {
       if(r){ const peds=PEDS.filter(p=>p.revendaId===r.id);
         const fats=S.faturamentos.filter(f=>f.revendaId===r.id);
         const prodsVis=S.produtos.filter(p=>this._pForns(p).some(v=>r.visibilidade.includes(v)&&F(v).ativo));
-        rd={nome:r.nome,cnpj:r.cnpj,cidade:r.cidade,email:r.email||'—',ultimoAcesso:r.ultimoAcesso||'—',
+        rd={nome:r.nome,cnpj:r.cnpj,cidade:r.cidade,email:r.email||'—',telefone:(r.telefone&&r.telefone!=='—')?r.telefone:'— não informado —',telefoneTxt:this._telTxt(r.telefone),ultimoAcesso:r.ultimoAcesso||'—',
           ultimoConvite:r.ultimoConvite||'',temConvite:!!r.ultimoConvite,
           ...this.chip(r.ativo?'ativo':'inativo'),
           stats:[
@@ -4969,7 +4988,7 @@ class Component extends DCLogic {
               toggle:this.toggleProdBloq(r.id,p.id),toggleLabel:bloq?'Liberar':'Bloquear'};}),
           semProds:prodsVis.length===0,
           pedidos:peds.map(pedRow),semPedidos:peds.length===0,
-          editar:this.open('revenda',{editId:r.id,nome:r.nome,cnpj:r.cnpj,cidade:r.cidade,email:r.email}),
+          editar:this.open('revenda',{editId:r.id,nome:r.nome,cnpj:r.cnpj,cidade:r.cidade,email:r.email,telefone:(r.telefone&&r.telefone!=='—')?r.telefone:''}),
           reenviar:this.reenviarConvite(r.id),
           toggle:this.toggleRev(r.id),toggleLabel:r.ativo?'Inativar revenda':'Reativar revenda',
           voltar:this.go('rev')}; } }
@@ -5086,7 +5105,7 @@ class Component extends DCLogic {
       if(!meus.length) return;
       const pend=meus.filter(i=>i.st==='direto');
       const tot=meus.reduce((a,i)=>a+this.itemTotal(i),0);
-      fPedRows.push({id:p.id,data:p.data,revNome:R(p.revendaId).nome,
+      fPedRows.push({id:p.id,data:p.data,revNome:R(p.revendaId).nome,revContatoTxt:this._telTxt(R(p.revendaId).telefone),
         origem:meus.some(i=>i.cotacaoId)?'Cotação '+meus.find(i=>i.cotacaoId).cotacaoId:'Envio direto',
         parcial:meus.length<p.itens.length?('Atendimento parcial: '+meus.length+' de '+p.itens.length+' itens do pedido são seus'):'',
         totalFmt:this.fmt(tot),...this.chip(pend.length?'encaminhado':'faturado'),podeFaturar:pend.length>0&&this.pode('faturamento.faturar'),
@@ -5108,7 +5127,7 @@ class Component extends DCLogic {
           qtdTxt:i.qtd+' '+(prod.unidade||'un'),valFmt:this.fmt(val),negTag:i.precoNeg!=null?'negociado em cotação':'',temNeg:i.precoNeg!=null,
           ...this.chip(i.st==='direto'?'encaminhado':'faturado'),
           pedidoId:p.id,pedData:p.data,origem:i.cotacaoId?('Cotação '+i.cotacaoId):'Envio direto',
-          revNome:rev.nome||'',revCidade:rev.cidade||'—',revCnpj:rev.cnpj||'—',revEmail:rev.email||'—'}); }); });
+          revNome:rev.nome||'',revCidade:rev.cidade||'—',revCnpj:rev.cnpj||'—',revEmail:rev.email||'—',revTelTxt:this._telTxt(rev.telefone)}); }); });
     const fCotRows=S.cotacoes.filter(c=>c.convidados.includes(fid)).map(c=>{
       const own=this._propsEfetivas(c).find(p=>p.fornecedorId===fid);
       const rodF=this._cotRod(c); const rconvF=this._rodConv(c);
@@ -5387,7 +5406,7 @@ class Component extends DCLogic {
       form:S.form,mClose:this.mClose,
       fxNome:this.fx('nome'),fxCnpj:this.fx('cnpj'),fxCidade:this.fx('cidade'),fxContato:this.fx('contato'),
       fxRoyalty:this.fx('royalty'),fxInicio:this.fx('inicio'),fxFim:this.fx('fim'),fxFornecedorId:this.fx('fornecedorId'),fxRevendaId:this.fx('revendaId'),
-      fxCodigo:this.fx('codigo'),fxDescricao:this.fx('descricao'),fxUnidade:this.fx('unidade'),fxPreco:this.fx('preco'),fxBuscaForn:this.fx('buscaForn'),
+      fxCodigo:this.fx('codigo'),fxDescricao:this.fx('descricao'),fxUnidade:this.fx('unidade'),fxPreco:this.fx('preco'),fxBuscaForn:this.fx('buscaForn'),fxTelefone:this.fxTelefone,fxContatoNome:this.fx('contatoNome'),
       fxJustif:this.fx('justif'),fxPedidoId:this.fx('pedidoId'),fxPrazo:this.fx('prazo'),
       fxPrecoP:this.fx('precoP'),fxPrazoEntrega:this.fx('prazoEntrega'),fxValidade:this.fx('validade'),fxCondicoes:this.fx('condicoes'),
       fxValorFat:this.fx('valorFat'),fxDataPg:this.fx('dataPg'),fxValorPg:this.fx('valorPg'),fxComprovante:this.fx('comprovante'),fxMotivo:this.fx('motivo'),fxVenc:this.fx('venc'),

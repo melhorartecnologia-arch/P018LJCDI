@@ -15,6 +15,8 @@
       "cnpj": "12.345.678/0001-90",
       "cidade": "Petrópolis/RJ",
       "contato": "comercial@serraverde.com.br",
+      "telefone": "(24) 2231-4455",
+      "contatoNome": "Carlos Andrade",
       "ativo": true
     },
     {
@@ -23,6 +25,8 @@
       "cnpj": "98.765.432/0001-10",
       "cidade": "Teresópolis/RJ",
       "contato": "vendas@imperialbebidas.com.br",
+      "telefone": "(21) 2742-8890",
+      "contatoNome": "Marina Souza",
       "ativo": true
     },
     {
@@ -31,6 +35,8 @@
       "cnpj": "45.678.912/0001-55",
       "cidade": "Duque de Caxias/RJ",
       "contato": "atendimento@atacadaoflu.com.br",
+      "telefone": "(21) 3652-7711",
+      "contatoNome": "Roberto Lima",
       "ativo": true
     },
     {
@@ -39,6 +45,8 @@
       "cnpj": "33.222.111/0001-77",
       "cidade": "Rio de Janeiro/RJ",
       "contato": "contato@insumosbarris.com.br",
+      "telefone": "(21) 2233-0099",
+      "contatoNome": "Paulo Neves",
       "ativo": false
     }
   ],
@@ -209,6 +217,7 @@
       "nome": "Bar do Imperador",
       "cnpj": "11.111.222/0001-33",
       "cidade": "Petrópolis/RJ",
+      "telefone": "(24) 2242-1188",
       "ativo": true,
       "visibilidade": [
         1,
@@ -224,6 +233,7 @@
       "nome": "Empório Colonial",
       "cnpj": "22.333.444/0001-55",
       "cidade": "Itaipava/RJ",
+      "telefone": "(24) 2222-9067",
       "ativo": true,
       "visibilidade": [
         1,
@@ -240,6 +250,7 @@
       "nome": "Choperia Alto da Serra",
       "cnpj": "44.555.666/0001-77",
       "cidade": "Teresópolis/RJ",
+      "telefone": "(21) 2642-3305",
       "ativo": true,
       "visibilidade": [
         1,
@@ -254,6 +265,7 @@
       "nome": "Adega Quitandinha",
       "cnpj": "55.666.777/0001-88",
       "cidade": "Petrópolis/RJ",
+      "telefone": "(24) 2247-5521",
       "ativo": false,
       "visibilidade": [
         2
