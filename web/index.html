@@ -909,6 +909,28 @@ input::placeholder,textarea::placeholder{color:#b0a795}
           </sc-for>
         </div>
         <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:16px 18px">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;flex-wrap:wrap">
+            <div style="font-size:14px;font-weight:700">Ficha técnica — dados fiscais e logísticos <span style="font-size:11px;font-weight:600;border-radius:7px;padding:3px 9px;background:{{pdd.fichaStBg}};color:{{pdd.fichaStFg}}">{{pdd.fichaStTxt}}</span></div>
+            <div onClick="{{pdd.editarFicha}}" style="font-size:12px;font-weight:600;color:#8f682a;border:1px solid #d9c193;border-radius:8px;padding:6px 12px;cursor:pointer" style-hover="background:#faf5e9">Complementar ficha…</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 18px">
+            <sc-for list="{{pdd.fichaRows}}" as="fr" hint-placeholder-count="8">
+              <div style="display:flex;justify-content:space-between;gap:10px;font-size:12.5px;padding:3px 0;border-bottom:1px solid #f5f1e8"><span style="color:#a89f90">{{fr.label}}</span><span style="font-weight:600;text-align:right">{{fr.val}}</span></div>
+            </sc-for>
+          </div>
+          <div style="font-size:12.5px;font-weight:700;margin:12px 0 6px">Complementações registradas</div>
+          <sc-if value="{{pdd.semFichaHist}}" hint-placeholder-val="{{false}}"><div style="font-size:12px;color:#a89f90">Nenhuma complementação registrada — o fornecedor (ou a Loja, em nome dele) pode preencher a ficha.</div></sc-if>
+          <sc-for list="{{pdd.fichaHistRows}}" as="fh" hint-placeholder-count="0">
+            <div style="display:flex;gap:10px;padding:5px 0;border-bottom:1px solid #f5f1e8">
+              <div style="width:7px;height:7px;border-radius:50%;background:#B38335;margin-top:5px;flex:none"></div>
+              <div>
+                <div style="font-size:12px;color:#55503f">{{fh.muds}}</div>
+                <div style="font-size:11px;color:#a89f90;margin-top:1px">{{fh.quando}} · {{fh.autor}}</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:16px 18px">
           <div style="font-size:14px;font-weight:700;margin-bottom:10px">Histórico de preço</div>
           <sc-if value="{{pdd.semHistPreco}}" hint-placeholder-val="{{false}}"><div style="font-size:12.5px;color:#a89f90">Sem alterações de preço desde o cadastro.</div></sc-if>
           <sc-for list="{{pdd.precoHist}}" as="h" hint-placeholder-count="0">
@@ -1851,6 +1873,51 @@ input::placeholder,textarea::placeholder{color:#b0a795}
   </div>
 </sc-if>
 
+<sc-if value="{{sFProd}}" hint-placeholder-val="{{false}}">
+  <div data-screen-label="Meus produtos (fornecedor)" style="animation:fadeUp .25s ease">
+    <div style="font-size:21px;font-weight:700;margin:2px 0 3px">Meus produtos</div>
+    <div style="font-size:13px;color:#8a8378;margin-bottom:18px">Complementação cadastral — dados fiscais e logísticos dos produtos vinculados a {{fMeNome}} · somente os SEUS produtos aparecem aqui</div>
+    <sc-if value="{{fprodVazio}}" hint-placeholder-val="{{false}}">
+      <div style="background:#fff;border:1px dashed #ddd5c7;border-radius:12px;padding:26px;text-align:center;font-size:13px;color:#a89f90">Nenhum produto vinculado ao seu cadastro.</div>
+    </sc-if>
+    <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;overflow:hidden">
+      <table style="width:100%;border-collapse:collapse">
+        <thead><tr>
+          <th style="text-align:left;padding:10px 18px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Produto</th>
+          <th style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">NCM</th>
+          <th style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">GTIN/EAN</th>
+          <th style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Peso bruto/líq.</th>
+          <th style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Dimensões · cubagem</th>
+          <th style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Ficha</th>
+          <th style="border-bottom:1px solid #f1ece2"></th>
+        </tr></thead>
+        <tbody>
+          <sc-for list="{{fprodRows}}" as="fp" hint-placeholder-count="2">
+            <tr>
+              <td style="padding:11px 18px;border-bottom:1px solid #f5f1e8">
+                <div style="display:flex;align-items:center;gap:10px">
+                  <sc-if value="{{fp.foto}}" hint-placeholder-val="{{false}}"><img loading="lazy" src="{{fp.foto}}" alt="{{fp.descricao}}" onClick="{{fp.ver}}" title="Clique para ampliar" style="width:44px;height:34px;object-fit:cover;border-radius:7px;cursor:zoom-in;background:#f1ece2"></sc-if>
+                  <div><div style="font-size:13px;font-weight:600">{{fp.descricao}}</div>
+                  <div style="font-size:11px;color:#a89f90">{{fp.codigo}} · vendido por {{fp.unidade}} · medida: {{fp.um}}</div></div>
+                </div>
+              </td>
+              <td style="padding:11px 10px;font-size:12.5px;border-bottom:1px solid #f5f1e8">{{fp.ncm}}</td>
+              <td style="padding:11px 10px;font-size:12.5px;border-bottom:1px solid #f5f1e8">{{fp.ean}}</td>
+              <td style="padding:11px 10px;font-size:12.5px;border-bottom:1px solid #f5f1e8">{{fp.pesos}}</td>
+              <td style="padding:11px 10px;font-size:12.5px;border-bottom:1px solid #f5f1e8">{{fp.dims}}</td>
+              <td style="padding:11px 10px;border-bottom:1px solid #f5f1e8"><span style="font-size:11.5px;font-weight:600;border-radius:7px;padding:3px 9px;background:{{fp.stBg}};color:{{fp.stFg}}">{{fp.stTxt}}</span>
+                <sc-if value="{{fp.histN}}" hint-placeholder-val="{{false}}"><div style="font-size:10.5px;color:#a89f90;margin-top:3px">{{fp.histN}}</div></sc-if></td>
+              <td style="padding:11px 18px;text-align:right;border-bottom:1px solid #f5f1e8">
+                <div onClick="{{fp.abrir}}" style="display:inline-block;font-size:12px;font-weight:600;color:#8f682a;border:1px solid #d9c193;border-radius:8px;padding:6px 12px;cursor:pointer;white-space:nowrap" style-hover="background:#faf5e9">Complementar ficha…</div>
+              </td>
+            </tr>
+          </sc-for>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</sc-if>
+
 <sc-if value="{{sFRoy}}" hint-placeholder-val="{{false}}">
   <div data-screen-label="Royalties devidos (fornecedor)" style="animation:fadeUp .25s ease">
     <div style="font-size:21px;font-weight:700;margin:2px 0 3px">Royalties devidos</div>
@@ -2319,6 +2386,71 @@ input::placeholder,textarea::placeholder{color:#b0a795}
       <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:18px">
         <div onClick="{{mClose}}" style="border:1px solid #ddd5c7;border-radius:8px;padding:9px 15px;font-size:13px;font-weight:600;cursor:pointer;color:#6b6459" style-hover="background:#f7f3ea">Cancelar</div>
         <div onClick="{{salvarProduto}}" style="background:#B38335;color:#fff;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#9a6f2b">{{prodModalBtn}}</div>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{mFicha}}" hint-placeholder-val="{{false}}">
+  <div style="position:fixed;inset:0;background:rgba(39,37,37,.45);display:flex;align-items:center;justify-content:center;z-index:50">
+    <div style="background:#fff;border-radius:14px;width:560px;max-width:92vw;max-height:86vh;overflow-y:auto;padding:22px 24px;box-shadow:0 18px 50px rgba(39,37,37,.25)">
+      <div style="font-size:16px;font-weight:700">Complementação cadastral — {{fichaInfo.codigo}}</div>
+      <div style="font-size:12.5px;color:#8a8378;margin-top:2px">{{fichaInfo.descricao}} · dados fiscais e logísticos · fornecedores: {{fichaInfo.fornNomes}}</div>
+      <sc-if value="{{fichaInfo.papelTxt}}" hint-placeholder-val="{{false}}"><div style="font-size:11.5px;font-weight:600;color:#5d3f96;background:#f3eefa;border:1px solid #ddd0ee;border-radius:8px;padding:7px 11px;margin-top:10px">{{fichaInfo.papelTxt}}</div></sc-if>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+        <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:14px 0 5px">Peso bruto (kg)</div>
+        <input value="{{form.pesoBruto}}" onChange="{{fxPesoBruto}}" placeholder="Ex.: 45" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
+        <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:14px 0 5px">Peso líquido (kg)</div>
+        <input value="{{form.pesoLiquido}}" onChange="{{fxPesoLiquido}}" placeholder="Ex.: 30" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
+        <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:14px 0 5px">Unidade de medida</div>
+        <input value="{{form.unidadeMedida}}" onChange="{{fxUnidadeMedida}}" placeholder="Barril, Caixa, kg…" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+        <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Altura (cm)</div>
+        <input value="{{form.altura}}" onChange="{{fxAltura}}" placeholder="Ex.: 60" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
+        <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Largura (cm)</div>
+        <input value="{{form.largura}}" onChange="{{fxLargura}}" placeholder="Ex.: 40" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
+        <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Comprimento (cm)</div>
+        <input value="{{form.comprimento}}" onChange="{{fxComprimento}}" placeholder="Ex.: 40" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
+      </div>
+      <div style="font-size:12px;color:#6b6459;background:#faf5e9;border:1px solid #e8d9b8;border-radius:8px;padding:8px 12px;margin-top:10px"><b>Cubagem calculada automaticamente</b> (altura × largura × comprimento): <b style="color:#8f682a">{{fichaInfo.cubFmt}}</b></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">NCM</div>
+        <input value="{{form.ncm}}" onChange="{{fxNcm}}" placeholder="0000.00.00" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
+        <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">GTIN/EAN</div>
+        <input value="{{form.ean}}" onChange="{{fxEan}}" placeholder="8, 12, 13 ou 14 dígitos" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
+      </div>
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Demais informações fiscais e logísticas</div>
+      <input value="{{form.obs}}" onChange="{{fxObsFicha}}" placeholder="Ex.: transporte refrigerado; empilhamento máximo 2 volumes" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Imagens do produto <span style="font-weight:400;color:#a89f90">— PNG/JPG · até 5 MB cada · máximo 5 novas por complementação</span></div>
+      <div style="display:flex;gap:7px;margin-bottom:7px">
+        <sc-for list="{{fichaInfo.fotosAtuais}}" as="fa" hint-placeholder-count="0">
+          <sc-if value="{{fa.src}}" hint-placeholder-val="{{false}}"><img loading="lazy" src="{{fa.src}}" alt="imagem atual" style="width:56px;height:42px;object-fit:cover;border-radius:7px;border:1px solid #e8e1d2"></sc-if>
+        </sc-for>
+      </div>
+      <input type="file" multiple="multiple" accept=".png,.jpg,.jpeg" onChange="{{addFotoFicha}}" style="width:100%;box-sizing:border-box;padding:8px 10px;border:1px dashed #cdbf9d;border-radius:8px;font:inherit;font-size:12.5px;background:#fbf8f1;color:#6b6459;cursor:pointer">
+      <sc-if value="{{fichaInfo.temNovas}}" hint-placeholder-val="{{false}}">
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:7px">
+          <sc-for list="{{fichaInfo.novas}}" as="fn" hint-placeholder-count="0">
+            <span style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:#2f6b39;background:#e9f3ea;border:1px solid #c4dfc8;border-radius:7px;padding:3px 9px">🖼 {{fn.nome}} <span onClick="{{fn.rm}}" title="Remover" style="cursor:pointer;color:#a33a2b;font-weight:700">×</span></span>
+          </sc-for>
+        </div>
+      </sc-if>
+      <sc-if value="{{fichaInfo.temHist}}" hint-placeholder-val="{{false}}">
+        <div style="font-size:12px;font-weight:600;color:#6b6459;margin:14px 0 5px">Complementações registradas (quem, quando, de/para)</div>
+        <div style="max-height:130px;overflow-y:auto;border:1px solid #f1ece2;border-radius:9px;padding:8px 12px">
+          <sc-for list="{{fichaInfo.hist}}" as="fh" hint-placeholder-count="0">
+            <div style="padding:5px 0;border-bottom:1px solid #f5f1e8">
+              <div style="font-size:11px;color:#a89f90">{{fh.quando}} · {{fh.autor}}</div>
+              <div style="font-size:11.5px;color:#55503f;margin-top:1px">{{fh.muds}}</div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+      <sc-if value="{{form.erro}}" hint-placeholder-val="{{false}}"><div style="color:#a33a2b;font-size:12.5px;margin-top:12px">{{form.erro}}</div></sc-if>
+      <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:18px">
+        <div onClick="{{mClose}}" style="border:1px solid #ddd5c7;border-radius:8px;padding:9px 15px;font-size:13px;font-weight:600;cursor:pointer;color:#6b6459" style-hover="background:#f7f3ea">Cancelar</div>
+        <div onClick="{{confirmFicha}}" style="background:#B38335;color:#fff;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#9a6f2b">Salvar complementação</div>
       </div>
     </div>
   </div>
@@ -3711,6 +3843,25 @@ class Component extends DCLogic {
         "A \"Lista detalhada\" mostra apenas os SEUS itens em cada pedido (a restrição de visibilidade é a mesma dos cards) e traz no rodapé o total somado dos itens direcionados a você."
       ]
     },
+    "fprod": {
+      "rotina": "Meus produtos",
+      "titulo": "Complementar a ficha dos seus produtos (Fornecedor)",
+      "resumo": "Tela onde o fornecedor complementa o cadastro dos produtos vinculados a ele com dados fiscais e logísticos: pesos, dimensões, cubagem, NCM, GTIN/EAN, unidade de medida, imagens e observações. A Loja também pode editar os mesmos campos em nome do fornecedor, na página do produto.",
+      "passos": [
+        "Na tabela, localize o produto pelo código ou descrição — aparecem SOMENTE os produtos vinculados ao seu cadastro.",
+        "Confira a etiqueta da coluna \"Ficha\": \"Ficha completa\" (verde) ou \"Ficha incompleta\" (âmbar) — o número no menu \"Meus produtos\" indica quantas fichas ainda estão incompletas.",
+        "Clique em \"Complementar ficha…\" para abrir a janela de complementação.",
+        "Preencha os pesos bruto e líquido (kg), a unidade de medida e as dimensões (altura, largura e comprimento em cm) — a CUBAGEM é calculada automaticamente em m³ conforme você digita.",
+        "Informe o NCM (8 dígitos, com máscara 0000.00.00) e o GTIN/EAN (8, 12, 13 ou 14 dígitos) — os formatos são validados ao salvar.",
+        "Use o campo de imagens para anexar novas fotos do produto (PNG/JPG, até 5 MB cada, máximo 5 por complementação) e o campo de informações fiscais/logísticas para observações como transporte refrigerado ou empilhamento máximo.",
+        "Clique em \"Salvar complementação\" — a alteração fica registrada com quem alterou, quando e os valores de/para, visível na própria janela e na página do produto na Loja."
+      ],
+      "dicas": [
+        "Você só vê e edita os SEUS produtos — produtos de outros fornecedores não aparecem nesta tela.",
+        "Cada alteração gera um registro no histórico \"Complementações registradas\" (quem, quando, de/para) e na auditoria da plataforma.",
+        "A Loja pode complementar ou ajustar a ficha em seu nome quando necessário — nesses casos o registro aparece como \"Loja — em nome do fornecedor\"."
+      ]
+    },
     "fcot": {
       "rotina": "Cotações convidadas",
       "titulo": "Responder cotações convidadas (Fornecedor)",
@@ -4518,6 +4669,65 @@ class Component extends DCLogic {
       rd.readAsDataURL(file); });
     e.target.value=''; };
   rmAnexoFatExtra(ix){ this._rmfe=this._rmfe||{}; if(!this._rmfe[ix]) this._rmfe[ix]=()=>this.setState(s=>({form:{...s.form,anexosExtras:(s.form.anexosExtras||[]).filter((_,j)=>j!==ix),erro:null}})); return this._rmfe[ix]; }
+  // ——— RF53: Complementação cadastral do produto (dados fiscais e logísticos) ———
+  _ficha(p){ return (p&&p.ficha)||{}; }
+  _fichaCompleta(p){ const fi=this._ficha(p); return !!(fi.ncm&&fi.ean&&fi.pesoBruto&&fi.pesoLiquido&&fi.altura&&fi.largura&&fi.comprimento); }
+  fxNcm=e=>{ const d=String(e.target.value||'').replace(/\D/g,'').slice(0,8);
+    const v=d.length>6?d.slice(0,4)+'.'+d.slice(4,6)+'.'+d.slice(6):(d.length>4?d.slice(0,4)+'.'+d.slice(4):d);
+    this.setState(s=>({form:{...s.form,ncm:v,erro:null}})); };
+  fxEan=e=>{ const d=String(e.target.value||'').replace(/\D/g,'').slice(0,14);
+    this.setState(s=>({form:{...s.form,ean:d,erro:null}})); };
+  openFicha(pid){ this._ofc=this._ofc||{}; if(!this._ofc[pid]) this._ofc[pid]=(e)=>{ if(e&&e.stopPropagation) e.stopPropagation();
+    const p=this.state.produtos.find(x=>x.id===pid); if(!p) return;
+    const fid=this.role==='fornecedor'?this.state.fornAtivo:null; if(fid&&!this._pTemForn(p,fid)) return; // RF55: só os SEUS produtos
+    const fi=this._ficha(p); const tx=v=>v==null?'':(typeof v==='number'?String(v).replace('.',','):String(v));
+    this.setState({modal:'ficha',form:{fichaId:pid,pesoBruto:tx(fi.pesoBruto),pesoLiquido:tx(fi.pesoLiquido),altura:tx(fi.altura),largura:tx(fi.largura),comprimento:tx(fi.comprimento),ncm:fi.ncm||'',ean:fi.ean||'',unidadeMedida:fi.unidadeMedida||'',obs:fi.obs||'',fotosNovas:[]}}); }; return this._ofc[pid]; }
+  addFotoFicha=e=>{ const files=[...((e.target&&e.target.files)||[])]; if(!files.length) return;
+    const cur=this.state.form.fotosNovas||[];
+    if(cur.length+files.length>5) return this.err('Máximo de 5 imagens novas por complementação.');
+    for(const file of files){ const ext=(file.name.split('.').pop()||'').toLowerCase();
+      if(!['png','jpg','jpeg'].includes(ext)) return this.err('Imagem não permitida: '+file.name+' — use PNG ou JPG.');
+      if(file.size>5*1024*1024) return this.err('Imagem muito grande: '+file.name+' — o limite é 5 MB.'); }
+    files.forEach(file=>{ const rd=new FileReader();
+      rd.onload=()=>{ const b64=String(rd.result).split(',')[1]||'';
+        this.setState(s=>({form:{...s.form,fotosNovas:[...(s.form.fotosNovas||[]),{nome:file.name,tipo:file.type||'image/png',b64}],erro:null}})); };
+      rd.readAsDataURL(file); });
+    e.target.value=''; };
+  rmFotoFicha(ix){ this._rmff=this._rmff||{}; if(!this._rmff[ix]) this._rmff[ix]=()=>this.setState(s=>({form:{...s.form,fotosNovas:(s.form.fotosNovas||[]).filter((_,j)=>j!==ix),erro:null}})); return this._rmff[ix]; }
+  confirmFicha=async()=>{ const f=this.state.form; if(f.fichaBusy) return;
+    const p=this.state.produtos.find(x=>x.id===f.fichaId); if(!p) return;
+    const fid=this.role==='fornecedor'?this.state.fornAtivo:null;
+    if(fid){ if(!this._pTemForn(p,fid)) return this.err('Este produto não está vinculado ao seu cadastro (RF55).'); }
+    else if(!this.pode('cadastros.produtos')) return this.negado('Você não tem permissão para editar produtos.','cadastros.produtos');
+    const dec=v=>{ const s=String(v??'').trim(); if(s==='') return null; const x=parseFloat(s.replace(/\./g,'').replace(',','.')); return (isNaN(x)||x<=0)?NaN:x; };
+    const novo={};
+    for(const [k,label] of [['pesoBruto','Peso bruto (kg)'],['pesoLiquido','Peso líquido (kg)'],['altura','Altura (cm)'],['largura','Largura (cm)'],['comprimento','Comprimento (cm)']]){
+      const n=dec(f[k]); if(Number.isNaN(n)) return this.err(label+' inválido: informe um número maior que zero (ex.: 12,5).'); if(n!=null) novo[k]=n; }
+    const ncmD=String(f.ncm||'').replace(/\D/g,'');
+    if(ncmD&&ncmD.length!==8) return this.err('NCM inválido: informe os 8 dígitos (ex.: 2203.00.00).');
+    if(ncmD) novo.ncm=ncmD.slice(0,4)+'.'+ncmD.slice(4,6)+'.'+ncmD.slice(6);
+    const eanD=String(f.ean||'').replace(/\D/g,'');
+    if(eanD&&![8,12,13,14].includes(eanD.length)) return this.err('GTIN/EAN inválido: use 8, 12, 13 ou 14 dígitos.');
+    if(eanD) novo.ean=eanD;
+    if(String(f.unidadeMedida||'').trim()) novo.unidadeMedida=String(f.unidadeMedida).trim();
+    if(String(f.obs||'').trim()) novo.obs=String(f.obs).trim();
+    if(novo.altura&&novo.largura&&novo.comprimento) novo.cubagem=Math.round(novo.altura*novo.largura*novo.comprimento/1e6*10000)/10000;
+    const old=this._ficha(p); const vt=v=>(v==null||v==='')?'—':(typeof v==='number'?String(v).replace('.',','):String(v));
+    const labels={pesoBruto:'Peso bruto (kg)',pesoLiquido:'Peso líquido (kg)',altura:'Altura (cm)',largura:'Largura (cm)',comprimento:'Comprimento (cm)',cubagem:'Cubagem (m³)',ncm:'NCM',ean:'GTIN/EAN',unidadeMedida:'Unidade de medida',obs:'Informações fiscais/logísticas'};
+    const mud=[]; Object.keys(labels).forEach(k=>{ if(String(old[k]??'')!==String(novo[k]??'')) mud.push({campo:labels[k],de:vt(old[k]),para:vt(novo[k])}); });
+    const fNovas=f.fotosNovas||[];
+    if(!mud.length&&!fNovas.length) return this.err('Nenhuma alteração para registrar.');
+    this.setState(s=>({form:{...s.form,fichaBusy:true,erro:null}}));
+    let fotosUp=[];
+    if(fNovas.length){ try{ fotosUp=await this._subirAnexos(fNovas); }
+      catch(e2){ this.setState(s=>({form:{...s.form,fichaBusy:false,erro:e2.message||'Falha ao enviar as imagens.'}})); return; } }
+    const papel=fid?((this.state.fornecedores.find(x=>x.id===fid)||{}).nome+' (fornecedor)'):'Loja — em nome do fornecedor';
+    const reg={quando:this.ts(),usuario:this.userName(),papel,mud,fotos:fotosUp.length};
+    this.setState(s=>({produtos:s.produtos.map(x=>x.id!==p.id?x:{...x,ficha:novo,
+      fotos:fotosUp.length?[...this.fotosDe(x),...fotosUp.map(u=>'/api/anexos/'+u.id)]:x.fotos,
+      fichaHist:[...(x.fichaHist||[]),reg]}),modal:null,form:{}}));
+    this.audit('Complementação cadastral do produto',p.codigo+' · '+(mud.length?mud.length+' campo(s): '+mud.map(m=>m.campo).join(', '):'')+(fotosUp.length?((mud.length?' · ':'')+fotosUp.length+' imagem(ns) adicionada(s)'):'')+' — por '+papel);
+    setTimeout(()=>this._flushPersist(),0); };
   // Seleção do documento fiscal (PDF/XML) obrigatório no registro de faturamento
   setAnexoFat=e=>{ const file=e.target&&e.target.files&&e.target.files[0]; if(!file) return;
     const ext=(file.name.split('.').pop()||'').toLowerCase();
@@ -4844,6 +5054,7 @@ class Component extends DCLogic {
         pode('config.usuarios')&&mk('usuarios','Usuários e permissões')]}]; }
     else if(isForn) navGroups=[
       {label:'Operação',items:[mk('fped','Pedidos recebidos',fPedPend),mk('fcot','Cotações convidadas',fCotPend),mk('ffat','Meus faturamentos')]},
+      {label:'Cadastros',items:[mk('fprod','Meus produtos',S.produtos.filter(p=>this._pTemForn(p,fid)&&!this._fichaCompleta(p)).length)]},
       {label:'Financeiro',items:[mk('froy','Royalties devidos')]}];
     else navGroups=[
       {label:'Compras',items:[mk('cat','Catálogo de produtos'),mk('rped','Meus pedidos')]}];
@@ -5214,6 +5425,18 @@ class Component extends DCLogic {
             {label:'Fotos cadastradas',val:String(fotos.length)}],
           precoHist:(p.precoHist||[]).slice().reverse().map(h=>({data:h.data,mud:h.de+' → '+h.para,usuario:h.usuario})),
           semHistPreco:!(p.precoHist||[]).length,
+          fichaRows:(()=>{ const fi2=this._ficha(p); const vt2=v=>(v==null||v==='')?'—':(typeof v==='number'?String(v).replace('.',','):String(v));
+            return [{label:'NCM',val:fi2.ncm||'—'},{label:'GTIN/EAN',val:fi2.ean||'—'},
+              {label:'Peso bruto',val:fi2.pesoBruto!=null?vt2(fi2.pesoBruto)+' kg':'—'},{label:'Peso líquido',val:fi2.pesoLiquido!=null?vt2(fi2.pesoLiquido)+' kg':'—'},
+              {label:'Dimensões (A×L×C)',val:(fi2.altura&&fi2.largura&&fi2.comprimento)?vt2(fi2.altura)+'×'+vt2(fi2.largura)+'×'+vt2(fi2.comprimento)+' cm':'—'},
+              {label:'Cubagem',val:fi2.cubagem!=null?vt2(fi2.cubagem)+' m³':'—'},
+              {label:'Unidade de medida',val:fi2.unidadeMedida||'—'},{label:'Fiscais/logísticas',val:fi2.obs||'—'}]; })(),
+          fichaStTxt:this._fichaCompleta(p)?'Ficha completa':'Ficha incompleta',
+          fichaStBg:this._fichaCompleta(p)?'#e9f3ea':'#fdf3e0',fichaStFg:this._fichaCompleta(p)?'#2f6b39':'#8a5a12',
+          fichaHistRows:(p.fichaHist||[]).slice().reverse().map(h=>({quando:h.quando,autor:h.usuario+' · '+h.papel,
+            muds:(h.mud||[]).map(m=>m.campo+': '+m.de+' → '+m.para).join(' · ')+(h.fotos?(((h.mud||[]).length?' · ':'')+h.fotos+' imagem(ns) adicionada(s)'):'')})),
+          semFichaHist:!(p.fichaHist||[]).length,
+          editarFicha:this.openFicha(p.id),
           pedidos:emPeds.map(x=>({id:x.id,data:x.data,revNome:R(x.revendaId).nome,
             qtd:x.itens.filter(i=>i.produtoId===p.id).reduce((b,i)=>b+i.qtd,0)+'×',
             ...this.chip(x.status),open:this.openPed(x.id)})),
@@ -5571,6 +5794,31 @@ class Component extends DCLogic {
       cotEstim={tem:selOn.length>0,inval:selOn.some(si=>!si.qOk),
         tot:this.fmt(selOn.reduce((a,si)=>a+si.qN*si.preco,0)),
         itensN:String(selOn.length),unids:String(selOn.reduce((a,si)=>a+si.qN,0))}; }
+    // RF53 — complementação cadastral: lista do fornecedor e dados do modal de ficha
+    const _fvt=v=>(v==null||v==='')?'—':(typeof v==='number'?String(v).replace('.',','):String(v));
+    const fprodRows=isForn?S.produtos.filter(p=>this._pTemForn(p,fid)).map(p=>{ const fi=this._ficha(p); const ok53=this._fichaCompleta(p);
+      return {codigo:p.codigo,descricao:p.descricao,unidade:p.unidade,foto:this.fotosDe(p)[0],ver:this.verFoto(p.id),
+        ncm:fi.ncm||'—',ean:fi.ean||'—',
+        pesos:fi.pesoBruto!=null?(_fvt(fi.pesoBruto)+' / '+_fvt(fi.pesoLiquido)+' kg'):'—',
+        dims:(fi.altura&&fi.largura&&fi.comprimento)?(_fvt(fi.altura)+'×'+_fvt(fi.largura)+'×'+_fvt(fi.comprimento)+' cm · '+_fvt(fi.cubagem)+' m³'):'—',
+        um:fi.unidadeMedida||'—',
+        stTxt:ok53?'Ficha completa':'Ficha incompleta',stBg:ok53?'#e9f3ea':'#fdf3e0',stFg:ok53?'#2f6b39':'#8a5a12',
+        histN:(p.fichaHist||[]).length?String((p.fichaHist||[]).length)+' complementação(ões)':'',
+        abrir:this.openFicha(p.id)};}):[];
+    const fprodVazio=isForn&&!fprodRows.length;
+    let fichaInfo={codigo:'',descricao:'',fornNomes:'',cubFmt:'—',papelTxt:'',fotosAtuais:[],novas:[],temNovas:false,hist:[],temHist:false};
+    if(M==='ficha'&&S.form.fichaId){ const pF=S.produtos.find(x=>x.id===S.form.fichaId);
+      if(pF){ const decF=v=>{ const s2=String(v??'').trim(); if(s2==='') return null; const x=parseFloat(s2.replace(/\./g,'').replace(',','.')); return (isNaN(x)||x<=0)?null:x; };
+        const aF=decF(S.form.altura),lF=decF(S.form.largura),cF=decF(S.form.comprimento);
+        const cubF=(aF&&lF&&cF)?Math.round(aF*lF*cF/1e6*10000)/10000:null;
+        fichaInfo={codigo:pF.codigo,descricao:pF.descricao,fornNomes:this._pFornNomes(pF),
+          cubFmt:cubF!=null?String(cubF).replace('.',',')+' m³':'— (informe altura, largura e comprimento)',
+          papelTxt:isForn?'':'Você está complementando em nome do fornecedor — a alteração fica registrada como Loja.',
+          fotosAtuais:this.fotosDe(pF).map(src=>({src})),
+          novas:(S.form.fotosNovas||[]).map((a3,ix)=>({nome:a3.nome,rm:this.rmFotoFicha(ix)})),temNovas:!!(S.form.fotosNovas||[]).length,
+          hist:(pF.fichaHist||[]).slice().reverse().map(h=>({quando:h.quando,autor:h.usuario+' · '+h.papel,
+            muds:(h.mud||[]).map(m=>m.campo+': '+m.de+' → '+m.para).join(' · ')+(h.fotos?(((h.mud||[]).length?' · ':'')+h.fotos+' imagem(ns) adicionada(s)'):'')})),
+          temHist:!!(pF.fichaHist||[]).length}; } }
     const formAnexos=(S.form.anexos||[]).map((a,ix)=>({nome:a.nome,rm:this.rmAnexoForm(ix)}));
     const fatExtras=(S.form.anexosExtras||[]).map((a,ix)=>({nome:a.nome,label:a.tipoDoc==='boleto'?'Boleto':'Outro',rm:this.rmAnexoFatExtra(ix)}));
     const temFatExtras=fatExtras.length>0;
@@ -5689,7 +5937,7 @@ class Component extends DCLogic {
       sCot:isLoja&&scr==='cot'&&pode('cotacoes.ver'),sCotDet:isLoja&&scr==='cotdet'&&!!cd&&pode('cotacoes.ver'),
       sForn:isLoja&&scr==='forn'&&pode('cadastros.fornecedores'),sFornDet:isLoja&&scr==='forndet'&&!!fd&&pode('cadastros.fornecedores'),sProd:isLoja&&scr==='prod'&&pode('cadastros.produtos'),sProdDet:isLoja&&scr==='proddet'&&!!pdd&&pode('cadastros.produtos'),sRev:isLoja&&scr==='rev'&&pode('cadastros.revendas'),sRevDet:isLoja&&scr==='revdet'&&!!rd&&pode('cadastros.revendas'),
       sFat:isLoja&&scr==='fat'&&pode('faturamento.ver'),sRoy:isLoja&&scr==='roy'&&pode('royalties.ver'),sRel:isLoja&&scr==='rel'&&pode('relatorios.ver'),sSeg:isLoja&&scr==='seg'&&pode('auditoria.ver'),
-      sFPed:isForn&&scr==='fped',sFCot:isForn&&scr==='fcot',sFFat:isForn&&scr==='ffat',sFRoy:isForn&&scr==='froy',
+      sFPed:isForn&&scr==='fped',sFCot:isForn&&scr==='fcot',sFFat:isForn&&scr==='ffat',sFRoy:isForn&&scr==='froy',sFProd:isForn&&scr==='fprod',
       sCat:isRev&&scr==='cat',sRPed:isRev&&scr==='rped',
       // ajuda contextual (tutorial + passo a passo)
       ...this.ajudaVals(),
@@ -5756,10 +6004,10 @@ class Component extends DCLogic {
       setAnexoFat:this.setAnexoFat,fatAnexoNome:S.form.anexoNome||'',temFatAnexo:!!S.form.anexoB64,
       fatBusy:!!S.form.fatBusy,fatNaoBusy:!S.form.fatBusy,fatBtnBg:S.form.fatBusy?'#c9b78f':'#B38335',
       fatAnaliseOn:!!(S.configPlataforma&&S.configPlataforma.analiseFiscalIA),
-      mForn:M==='fornecedor',mCtr:M==='contrato',mRoy:M==='royalty',mProd:M==='produto',mRev:M==='revenda',
+      mForn:M==='fornecedor',mCtr:M==='contrato',mRoy:M==='royalty',mProd:M==='produto',mRev:M==='revenda',mFicha:M==='ficha',
       mRej:M==='rejeitar',mDir:M==='direto',mCot:M==='cotacao',mEst:M==='estoque',mJusV:M==='justifvenc',mCanC:M==='cancelarcot',
       mProp:M==='proposta',mRod:M==='rodada',mAnx:M==='anexoped',mFat:M==='faturar',mPag:M==='pagamento',mCompF:M==='compforn',
-      dirRows,convRows,dirVazio,prodFornRows,prodFornSel,prodFornVazio,propInfo,fatInfo,jvInfo,royInfo,rodInfo,confirmRodada:this.confirmRodada,formAnexos,temFormAnexos,anxInfo,addAnexosForm:this.addAnexosForm,confirmAnexosPed:this.confirmAnexosPed,fatExtras,temFatExtras,addAnexoFatExtra:this.addAnexoFatExtra,fxTipoDocExtra:this.fx('tipoDocExtra'),selItens,cotEstim,
+      dirRows,convRows,dirVazio,prodFornRows,prodFornSel,prodFornVazio,propInfo,fatInfo,jvInfo,royInfo,rodInfo,confirmRodada:this.confirmRodada,formAnexos,temFormAnexos,anxInfo,addAnexosForm:this.addAnexosForm,confirmAnexosPed:this.confirmAnexosPed,fatExtras,temFatExtras,addAnexoFatExtra:this.addAnexoFatExtra,fxTipoDocExtra:this.fx('tipoDocExtra'),selItens,cotEstim,fprodRows,fprodVazio,fichaInfo,confirmFicha:this.confirmFicha,addFotoFicha:this.addFotoFicha,fxNcm:this.fxNcm,fxEan:this.fxEan,fxPesoBruto:this.fx('pesoBruto'),fxPesoLiquido:this.fx('pesoLiquido'),fxAltura:this.fx('altura'),fxLargura:this.fx('largura'),fxComprimento:this.fx('comprimento'),fxUnidadeMedida:this.fx('unidadeMedida'),fxObsFicha:this.fx('obs'),
       confirmEstoque:this.confirmEstoque,setPedidoCot:this.setPedidoCot,
       prodModalFotos:(S.form.editId&&M==='produto'?this.fotosDe(S.produtos.find(x=>x.id===S.form.editId)||{}):['img/prd-new-1.png','img/prd-new-2.png','img/prd-new-3.png']).map((src,i)=>({src,principal:i===(S.form.fotoP||0),pick:this.pickFotoP(i),bd:i===(S.form.fotoP||0)?'#B38335':'#e8e1d2'})),
       salvarForn:this.salvarForn,salvarContrato:this.salvarContrato,salvarRoyalty:this.salvarRoyalty,

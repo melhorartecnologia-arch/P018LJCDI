@@ -115,8 +115,78 @@
       "categoria": "Chope",
       "preco": 620,
       "fornecedorId": 1,
-      "fornecedorIds": [1, 3],
-      "ativo": true
+      "fornecedorIds": [
+        1,
+        3
+      ],
+      "ativo": true,
+      "ficha": {
+        "pesoBruto": 45,
+        "pesoLiquido": 30,
+        "altura": 60,
+        "largura": 40,
+        "comprimento": 40,
+        "cubagem": 0.096,
+        "ncm": "2203.00.00",
+        "ean": "7891234500017",
+        "unidadeMedida": "Barril",
+        "obs": "Transporte refrigerado; empilhamento máximo 2 barris."
+      },
+      "fichaHist": [
+        {
+          "quando": "10/07/2026 09:12",
+          "usuario": "Distribuidora Serra Verde",
+          "papel": "Distribuidora Serra Verde (fornecedor)",
+          "mud": [
+            {
+              "campo": "NCM",
+              "de": "—",
+              "para": "2203.00.00"
+            },
+            {
+              "campo": "GTIN/EAN",
+              "de": "—",
+              "para": "7891234500017"
+            },
+            {
+              "campo": "Peso bruto (kg)",
+              "de": "—",
+              "para": "45"
+            },
+            {
+              "campo": "Peso líquido (kg)",
+              "de": "—",
+              "para": "30"
+            },
+            {
+              "campo": "Altura (cm)",
+              "de": "—",
+              "para": "60"
+            },
+            {
+              "campo": "Largura (cm)",
+              "de": "—",
+              "para": "40"
+            },
+            {
+              "campo": "Comprimento (cm)",
+              "de": "—",
+              "para": "40"
+            },
+            {
+              "campo": "Cubagem (m³)",
+              "de": "—",
+              "para": "0,096"
+            },
+            {
+              "campo": "Unidade de medida",
+              "de": "—",
+              "para": "Barril"
+            }
+          ],
+          "fotos": 0
+        }
+      ]
     },
     {
       "id": 2,
@@ -126,7 +196,10 @@
       "categoria": "Chope",
       "preco": 890,
       "fornecedorId": 1,
-      "fornecedorIds": [1, 3],
+      "fornecedorIds": [
+        1,
+        3
+      ],
       "ativo": true,
       "precoHist": [
         {
@@ -155,7 +228,10 @@
       "categoria": "Cerveja",
       "preco": 148,
       "fornecedorId": 2,
-      "fornecedorIds": [2, 3],
+      "fornecedorIds": [
+        2,
+        3
+      ],
       "ativo": true
     },
     {
@@ -186,7 +262,10 @@
       "categoria": "Insumos",
       "preco": 210,
       "fornecedorId": 3,
-      "fornecedorIds": [3, 1],
+      "fornecedorIds": [
+        3,
+        1
+      ],
       "ativo": true
     },
     {
@@ -197,7 +276,10 @@
       "categoria": "Acessórios",
       "preco": 96,
       "fornecedorId": 3,
-      "fornecedorIds": [3, 1],
+      "fornecedorIds": [
+        3,
+        1
+      ],
       "ativo": true
     },
     {
