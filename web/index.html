@@ -1186,6 +1186,8 @@ input::placeholder,textarea::placeholder{color:#b0a795}
                   <sc-if value="{{r.vencInfo}}" hint-placeholder-val="{{false}}"><div style="font-size:11px;font-weight:600;color:{{r.vencFg}}">{{r.vencInfo}}</div></sc-if>
                   <sc-if value="{{r.lembreteInfo}}" hint-placeholder-val="{{false}}"><div style="font-size:11px;font-weight:400;color:#a89f90">{{r.lembreteInfo}}</div></sc-if>
                   <sc-if value="{{r.pgInfo}}" hint-placeholder-val="{{false}}"><div style="font-size:11px;font-weight:400;color:#2f6b39">{{r.pgInfo}}</div></sc-if>
+                  <sc-if value="{{r.temArq}}" hint-placeholder-val="{{false}}"><div style="font-size:11px;margin-top:2px"><a href="{{r.arqUrl}}" target="_blank" title="{{r.arqInfo}}" style="font-weight:600;color:#8f682a;text-decoration:none">📎 {{r.arqNome}}</a></div></sc-if>
+                  <sc-if value="{{r.aguardConf}}" hint-placeholder-val="{{false}}"><div style="font-size:11px;font-weight:700;color:#5d3f96;margin-top:2px">Comprovante enviado — aguardando confirmação da Loja</div></sc-if>
                 </td>
                 <td style="padding:11px 10px;border-bottom:1px solid #f5f1e8"><span style="font-size:12px;font-weight:700;color:#8f682a;background:#faf5e9;border:1px solid #ecdcbc;border-radius:7px;padding:3px 9px">{{r.pct}}</span></td>
                 <td style="padding:11px 10px;font-size:13px;text-align:right;border-bottom:1px solid #f5f1e8">{{r.totalFatFmt}}</td>
@@ -1749,11 +1751,14 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <tbody>
           <sc-for list="{{fRoyRows}}" as="r" hint-placeholder-count="2">
             <tr>
-              <td style="padding:11px 18px;font-size:13px;font-weight:600;border-bottom:1px solid #f5f1e8">{{r.comp}}<sc-if value="{{r.cobrancaInfo}}" hint-placeholder-val="{{false}}"><div style="font-size:11px;font-weight:400;color:#a89f90">{{r.cobrancaInfo}}</div></sc-if><sc-if value="{{r.pgInfo}}" hint-placeholder-val="{{false}}"><div style="font-size:11px;font-weight:400;color:#2f6b39">{{r.pgInfo}}</div></sc-if></td>
+              <td style="padding:11px 18px;font-size:13px;font-weight:600;border-bottom:1px solid #f5f1e8">{{r.comp}}<sc-if value="{{r.cobrancaInfo}}" hint-placeholder-val="{{false}}"><div style="font-size:11px;font-weight:400;color:#a89f90">{{r.cobrancaInfo}}</div></sc-if><sc-if value="{{r.pgInfo}}" hint-placeholder-val="{{false}}"><div style="font-size:11px;font-weight:400;color:#2f6b39">{{r.pgInfo}}</div></sc-if><sc-if value="{{r.temArq}}" hint-placeholder-val="{{false}}"><div style="font-size:11px;font-weight:400;margin-top:2px"><a href="{{r.arqUrl}}" target="_blank" title="{{r.arqInfo}}" style="font-weight:600;color:#8f682a;text-decoration:none">📎 {{r.arqNome}}</a></div></sc-if></td>
               <td style="padding:11px 10px;font-size:13px;text-align:right;border-bottom:1px solid #f5f1e8">{{r.totalFatFmt}}</td>
               <td style="padding:11px 10px;font-size:13px;font-weight:700;color:#8f682a;text-align:right;border-bottom:1px solid #f5f1e8">{{r.totalRoyFmt}}</td>
               <td style="padding:11px 10px;font-size:12.5px;border-bottom:1px solid #f5f1e8"><span style="font-weight:600;color:{{r.vencCellFg}}">{{r.vencCell}}</span></td>
-              <td style="padding:11px 18px;border-bottom:1px solid #f5f1e8"><span style="font-size:11.5px;font-weight:600;border-radius:7px;padding:3px 9px;background:{{r.stBg}};color:{{r.stFg}}">{{r.stLabel}}</span></td>
+              <td style="padding:11px 18px;border-bottom:1px solid #f5f1e8"><span style="font-size:11.5px;font-weight:600;border-radius:7px;padding:3px 9px;background:{{r.stBg}};color:{{r.stFg}}">{{r.stLabel}}</span>
+                <sc-if value="{{r.aguardConf}}" hint-placeholder-val="{{false}}"><div style="font-size:10.5px;font-weight:700;color:#5d3f96;margin-top:3px">Aguardando confirmação da Loja</div></sc-if>
+                <sc-if value="{{r.podeEnviarComp}}" hint-placeholder-val="{{false}}"><div onClick="{{r.enviarComp}}" style="display:inline-block;font-size:11.5px;font-weight:600;color:#8f682a;border:1px solid #d9c193;border-radius:7px;padding:4px 10px;cursor:pointer;margin-top:5px" style-hover="background:#faf5e9">{{r.enviarCompLabel}}</div></sc-if>
+              </td>
             </tr>
           </sc-for>
         </tbody>
@@ -2590,6 +2595,28 @@ input::placeholder,textarea::placeholder{color:#b0a795}
   </div>
 </sc-if>
 
+<sc-if value="{{mCompF}}" hint-placeholder-val="{{false}}">
+  <div style="position:fixed;inset:0;background:rgba(39,37,37,.45);display:flex;align-items:center;justify-content:center;z-index:50">
+    <div style="background:#fff;border-radius:14px;width:420px;max-width:92vw;padding:22px 24px;box-shadow:0 18px 50px rgba(39,37,37,.25)">
+      <div style="font-size:16px;font-weight:700">Enviar comprovante de pagamento</div>
+      <div style="font-size:12.5px;color:#8a8378;margin-top:2px">Competência {{form.comp}} — o arquivo fica vinculado ao fechamento; a Loja confere e confirma o pagamento (só a confirmação muda o status)</div>
+      <div style="display:flex;justify-content:space-between;gap:10px;background:#faf5e9;border:1px solid #ecdcbc;border-radius:9px;padding:9px 13px;margin-top:12px;font-size:12px;color:#6b6459">
+        <span>Royalty devido: <b style="color:#8f682a">{{form.devidoFmt}}</b></span>
+        <sc-if value="{{form.vencimento}}" hint-placeholder-val="{{false}}"><span>Vencimento: <b>{{form.vencimento}}</b></span></sc-if>
+      </div>
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Arquivo do comprovante (PDF ou imagem)</div>
+      <input type="file" accept=".pdf,.png,.jpg,.jpeg" onChange="{{setCompFile}}" style="width:100%;box-sizing:border-box;padding:8px 10px;border:1px dashed #cdbf9d;border-radius:8px;font:inherit;font-size:12.5px;background:#fbf8f1;color:#6b6459;cursor:pointer">
+      <sc-if value="{{form.compNome}}" hint-placeholder-val="{{false}}"><div style="font-size:11.5px;color:#2f6b39;margin-top:5px">📎 {{form.compNome}}</div></sc-if>
+      <div style="font-size:10.5px;color:#b0a795;margin-top:4px">Formatos: PDF, PNG ou JPG · até 5 MB.</div>
+      <sc-if value="{{form.erro}}" hint-placeholder-val="{{false}}"><div style="color:#a33a2b;font-size:12.5px;margin-top:12px">{{form.erro}}</div></sc-if>
+      <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:18px">
+        <div onClick="{{mClose}}" style="border:1px solid #ddd5c7;border-radius:8px;padding:9px 15px;font-size:13px;font-weight:600;cursor:pointer;color:#6b6459" style-hover="background:#f7f3ea">Cancelar</div>
+        <div onClick="{{confirmCompForn}}" style="background:#B38335;color:#fff;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#9a6f2b">Enviar comprovante</div>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
 <sc-if value="{{mPag}}" hint-placeholder-val="{{false}}">
   <div style="position:fixed;inset:0;background:rgba(39,37,37,.45);display:flex;align-items:center;justify-content:center;z-index:50">
     <div style="background:#fff;border-radius:14px;width:420px;max-width:92vw;padding:22px 24px;box-shadow:0 18px 50px rgba(39,37,37,.25)">
@@ -2605,7 +2632,16 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:14px 0 5px">Valor pago (R$)</div>
         <input value="{{form.valorPg}}" onChange="{{fxValorPg}}" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
       </div>
-      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Comprovante</div>
+      <sc-if value="{{pagArq.tem}}" hint-placeholder-val="{{false}}">
+        <div style="background:#e9f3ea;border:1px solid #bfe0c6;border-radius:9px;padding:9px 13px;margin-top:12px;font-size:12px;color:#2f6b39">
+          Comprovante enviado pelo fornecedor: <a href="{{pagArq.url}}" target="_blank" style="font-weight:700;color:#2f6b39">📎 {{pagArq.nome}}</a> · {{pagArq.info}} — confira o arquivo e confirme o pagamento abaixo.
+        </div>
+      </sc-if>
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Comprovante (PDF ou imagem){{pagArqOpc}}</div>
+      <input type="file" accept=".pdf,.png,.jpg,.jpeg" onChange="{{setCompFile}}" style="width:100%;box-sizing:border-box;padding:8px 10px;border:1px dashed #cdbf9d;border-radius:8px;font:inherit;font-size:12.5px;background:#fbf8f1;color:#6b6459;cursor:pointer">
+      <sc-if value="{{form.compNome}}" hint-placeholder-val="{{false}}"><div style="font-size:11.5px;color:#2f6b39;margin-top:5px">📎 {{form.compNome}}</div></sc-if>
+      <div style="font-size:10.5px;color:#b0a795;margin-top:4px">Formatos: PDF, PNG ou JPG · até 5 MB. O arquivo fica disponível para a Loja e para o fornecedor na linha do fechamento.</div>
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Referência do comprovante <span style="font-weight:400;color:#a89f90">(opcional)</span></div>
       <input value="{{form.comprovante}}" onChange="{{fxComprovante}}" placeholder="Ex.: PIX-00000, TED-00000" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
       <sc-if value="{{form.erro}}" hint-placeholder-val="{{false}}"><div style="color:#a33a2b;font-size:12.5px;margin-top:12px">{{form.erro}}</div></sc-if>
       <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:18px">
@@ -3448,7 +3484,8 @@ class Component extends DCLogic {
         "Para cobrar, clique em \"Gerar cobrança…\" na coluna \"Ações\". No documento, ajuste o campo de \"Vencimento\" (vem sugerido o dia 10 do mês seguinte), confira o \"Total devido\" e clique em \"Emitir e notificar fornecedor\" (RF39).",
         "Acompanhe o vencimento na linha do fornecedor: \"Vence em …\" enquanto está no prazo; após a data, o status vira \"Em atraso\" e aparece \"Venceu em … · N dia(s) de atraso\" (RF41).",
         "Para fechamentos em atraso, use o botão vermelho \"Lembrete de atraso\" — a plataforma envia o e-mail de cobrança vencida ao fornecedor e registra \"Lembrete de atraso enviado em …\" na linha.",
-        "Ao receber o valor, clique em \"Registrar pagamento…\". O quadro mostra o \"Royalty devido\" e o \"Vencimento\"; os campos já vêm preenchidos — informe o \"Comprovante\" e confirme. Pagamentos após o vencimento ficam marcados como \"pago com atraso\" (RF40).",
+        "Quando o fornecedor envia o comprovante, a linha mostra o selo \"Comprovante enviado — aguardando confirmação da Loja\" com o link 📎 para baixar o arquivo — confira e então registre o pagamento: só a confirmação da Loja muda o status para \"Pago\".",
+        "Ao receber o valor, clique em \"Registrar pagamento…\". O quadro mostra o \"Royalty devido\", o \"Vencimento\" e o comprovante enviado pelo fornecedor (quando houver); você pode anexar o arquivo do comprovante (PDF ou imagem, até 5 MB) e informar uma referência opcional — confirme para concluir. Pagamentos após o vencimento ficam marcados como \"pago com atraso\" (RF40).",
         "Use \"⬇ Exportar XLSX\" (canto superior direito) para baixar o fechamento filtrado em Excel, com vencimento, cobrança, lembrete, pagamento e comprovante por fornecedor (RF38)."
       ],
       "dicas": [
@@ -4384,17 +4421,47 @@ class Component extends DCLogic {
     const _roy=this.state.faturamentos.filter(x=>x.competencia===_comp&&x.fornecedorId===fid).reduce((a,x)=>a+x.royaltyValor,0);
     this.notificar('royalty_cobranca',this._fornEmail(fid),{competencia:_comp,fornecedorNome:(f?f.nome:''),valor:this.fmt(_roy),vencimento:venc,documento:numero});
     setTimeout(()=>this._flushPersist(),0); };
-  confirmPagamento=()=>{ if(!this.pode('royalties.pagar')) return this.negado('Você não tem permissão para registrar pagamentos.','royalties.pagar'); const f=this.state.form; const valor=this.num(f.valorPg); if(!valor) return this.err('Informe o valor pago.');
+  // ——— Comprovante de pagamento de royalty (arquivo PDF/imagem) ———
+  // Fluxo: o FORNECEDOR envia o arquivo (fica "aguardando confirmação"); a LOJA
+  // confirma no "Registrar pagamento" — só a confirmação muda o status para pago.
+  setCompFile=e=>{ const file=e.target&&e.target.files&&e.target.files[0]; if(!file) return;
+    const ext=(file.name.split('.').pop()||'').toLowerCase();
+    if(!['pdf','png','jpg','jpeg'].includes(ext)) return this.err('O comprovante deve ser PDF ou imagem (PNG/JPG).');
+    if(file.size>5*1024*1024) return this.err('Comprovante muito grande (máximo 5 MB).');
+    const rd=new FileReader();
+    rd.onload=()=>{ const b64=String(rd.result).split(',')[1]||'';
+      this.setState(s=>({form:{...s.form,compNome:file.name,compTipo:file.type||'application/octet-stream',compB64:b64,erro:null}})); };
+    rd.readAsDataURL(file);
+    e.target.value=''; };
+  confirmCompForn=async()=>{ const f=this.state.form; if(f.compBusy) return;
+    if(!f.compB64) return this.err('Selecione o arquivo do comprovante (PDF ou imagem).');
+    const chave=f.chave; const fid=this.state.fornAtivo; const me=this.state.fornecedores.find(x=>x.id===fid)||{nome:this.userName()};
+    this.setState(s=>({form:{...s.form,compBusy:true,erro:null}}));
+    let up; try{ up=await fetch('/api/anexos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nome:f.compNome,tipo:f.compTipo,dados:f.compB64})}).then(r=>r.json());
+      if(!up.ok) throw new Error(up.error||'Falha ao enviar o comprovante.'); }
+    catch(e2){ this.setState(s=>({form:{...s.form,compBusy:false,erro:e2.message||'Falha ao enviar o comprovante.'}})); return; }
+    this.setState(s=>({pagamentos:{...s.pagamentos,[chave]:{...(s.pagamentos[chave]||{}),comprovanteId:up.id,comprovanteNome:f.compNome,comprovanteEm:this.hoje(),comprovantePor:me.nome,aguardandoConf:true}},modal:null,form:{}}));
+    this.audit('Comprovante de royalty enviado',chave.split('-')[0]+' · '+me.nome+' · '+f.compNome);
+    setTimeout(()=>this._flushPersist(),0);
+    this.notificar('royalty_comprovante',this._lojaEmail(),{competencia:chave.split('-')[0],fornecedorNome:me.nome,arquivo:f.compNome}); };
+  confirmPagamento=async()=>{ if(!this.pode('royalties.pagar')) return this.negado('Você não tem permissão para registrar pagamentos.','royalties.pagar'); const f=this.state.form; const valor=this.num(f.valorPg); if(!valor) return this.err('Informe o valor pago.');
     if(!f.dataPg) return this.err('Informe a data do pagamento (RF40).');
     if(!this._parseData(f.dataPg)) return this.err('Informe a data do pagamento no formato dd/mm/aaaa (RF40).');
+    if(f.pagBusy) return;
     const chave=f.chave; const pgAnt=this.state.pagamentos[chave]||{};
+    let arq={};
+    if(f.compB64){ this.setState(s=>({form:{...s.form,pagBusy:true,erro:null}}));
+      let up; try{ up=await fetch('/api/anexos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nome:f.compNome,tipo:f.compTipo,dados:f.compB64})}).then(r=>r.json());
+        if(!up.ok) throw new Error(up.error||'Falha ao enviar o comprovante.'); }
+      catch(e2){ this.setState(s=>({form:{...s.form,pagBusy:false,erro:e2.message||'Falha ao enviar o comprovante.'}})); return; }
+      arq={comprovanteId:up.id,comprovanteNome:f.compNome,comprovanteEm:this.hoje(),comprovantePor:this.userName()}; }
     const vencD=this._parseData(pgAnt.vencimento); const pagoD=this._parseData(f.dataPg);
     const comAtraso=!!(vencD&&pagoD&&pagoD>vencD);
-    this.setState(s=>({pagamentos:{...s.pagamentos,[chave]:{...pgAnt,status:'pago',data:f.dataPg,valor,comprovante:f.comprovante||'—',cobranca:true,pagoComAtraso:comAtraso}},modal:null,form:{}}));
-    this.audit('Pagamento de royalty registrado',chave.split('-')[0]+' · '+f.fornNome+' · '+this.fmt(valor)+(comAtraso?' · pago com atraso (vencimento '+pgAnt.vencimento+')':''));
+    this.setState(s=>({pagamentos:{...s.pagamentos,[chave]:{...pgAnt,...arq,status:'pago',aguardandoConf:false,data:f.dataPg,valor,comprovante:f.comprovante||'—',cobranca:true,pagoComAtraso:comAtraso}},modal:null,form:{}}));
+    this.audit('Pagamento de royalty registrado',chave.split('-')[0]+' · '+f.fornNome+' · '+this.fmt(valor)+(comAtraso?' · pago com atraso (vencimento '+pgAnt.vencimento+')':'')+((arq.comprovanteNome||pgAnt.comprovanteNome)?' · comprovante '+(arq.comprovanteNome||pgAnt.comprovanteNome):''));
     setTimeout(()=>this._flushPersist(),0);
     const _fidP=+chave.split('-')[1];
-    this.notificar('royalty_pagamento',this._fornEmail(_fidP),{competencia:chave.split('-')[0],fornecedorNome:this._fornNome(_fidP),valor:this.fmt(valor),data:f.dataPg,comprovante:f.comprovante||'—'}); };
+    this.notificar('royalty_pagamento',this._fornEmail(_fidP),{competencia:chave.split('-')[0],fornecedorNome:this._fornNome(_fidP),valor:this.fmt(valor),data:f.dataPg,comprovante:(arq.comprovanteNome||pgAnt.comprovanteNome||f.comprovante||'—')}); };
 
   addCart(id){ this._ac=this._ac||{}; if(!this._ac[id]) this._ac[id]=()=>this.setState(s=>({cart:{...s.cart,[id]:(s.cart[id]||0)+1}})); return this._ac[id]; }
   subCart(id){ this._sb=this._sb||{}; if(!this._sb[id]) this._sb[id]=()=>this.setState(s=>{ const q=(s.cart[id]||0)-1; const c={...s.cart}; if(q<=0)delete c[id]; else c[id]=q; return {cart:c}; }); return this._sb[id]; }
@@ -4607,7 +4674,13 @@ class Component extends DCLogic {
         vencCellFg:status==='em atraso'?'#a33a2b':(pg.vencimento?'#272525':'#b0a795'),
         emAtraso:status==='em atraso'&&this.pode('royalties.cobrar'),lembrete:this.lembreteAtraso(chave),
         lembreteInfo:pg.lembreteData?('Lembrete de atraso enviado em '+pg.lembreteData):'',
-        pgInfo:pg.data?('Pago em '+pg.data+' · comprovante '+(pg.comprovante||'—')+(pg.pagoComAtraso?' · pago com atraso':'')):'',
+        pgInfo:pg.data?('Pago em '+pg.data+(pg.comprovante&&pg.comprovante!=='—'?' · ref. '+pg.comprovante:'')+(pg.pagoComAtraso?' · pago com atraso':'')):'',
+        temArq:!!pg.comprovanteId,arqNome:pg.comprovanteNome||'comprovante',arqUrl:pg.comprovanteId?('/api/anexos/'+pg.comprovanteId):'',
+        arqInfo:pg.comprovanteId?('enviado em '+(pg.comprovanteEm||'')+' por '+(pg.comprovantePor||'')):'',
+        aguardConf:!!pg.aguardandoConf&&status!=='pago',
+        podeEnviarComp:!!pg.cobranca&&status!=='pago',
+        enviarCompLabel:pg.comprovanteId?'Substituir comprovante…':'Enviar comprovante…',
+        enviarComp:this.open('compforn',{chave,comp,devidoFmt:this.fmt(totalRoy),vencimento:pg.vencimento||''}),
         aberto:S.expFech===chave,toggleExp:this.toggleFech(chave),
         nfs:fs.map(x=>({id:x.id,data:x.data,pedidoId:x.pedidoId,revNome:(S.revendas.find(r=>r.id===x.revendaId)||{}).nome||'—',
           valorFmt:this.fmt(x.valor),pctStr:String(x.royaltyPct).replace('.',',')+'%',royFmt:this.fmt(x.royaltyValor)})),
@@ -4635,6 +4708,11 @@ class Component extends DCLogic {
       royFornF:S.royFornF,setRoyFornF:this.setRoyFornF,royFornOpts:[{v:'0',label:'Todos os fornecedores'},...[...new Set(fechRows.map(r=>r.fornecedorId))].map(id=>({v:String(id),label:(S.fornecedores.find(f=>f.id===id)||{}).nome||id}))],
       royStF:S.royStF,setRoyStF:this.setRoyStF,royStOpts:[{v:'todos',label:'Todos os status'},{v:'a pagar',label:'A pagar'},{v:'em atraso',label:'Em atraso'},{v:'pago',label:'Pago'}],
       podeExportarRoy:this.pode('royalties.exportar'),exportRoyalties:this.exportRoyalties};
+    let pagArq={tem:false,nome:'',url:'',info:''};
+    if(S.modal==='pagamento'&&S.form.chave){ const pgM=S.pagamentos[S.form.chave]||{};
+      if(pgM.comprovanteId) pagArq={tem:true,nome:pgM.comprovanteNome||'comprovante',url:'/api/anexos/'+pgM.comprovanteId,
+        info:'enviado em '+(pgM.comprovanteEm||'')+' por '+(pgM.comprovantePor||'')}; }
+    const pagArqOpc=pagArq.tem?' — opcional: o arquivo do fornecedor será mantido':'';
     let cobInfo=null;
     if(S.modal==='cobranca'&&S.form.chave){ const [comp,fidS]=[S.form.chave.split('-')[0],S.form.chave.split('-')[1]];
       const fo=S.fornecedores.find(x=>x.id===+fidS);
@@ -5415,7 +5493,7 @@ class Component extends DCLogic {
       fatAnaliseOn:!!(S.configPlataforma&&S.configPlataforma.analiseFiscalIA),
       mForn:M==='fornecedor',mCtr:M==='contrato',mRoy:M==='royalty',mProd:M==='produto',mRev:M==='revenda',
       mRej:M==='rejeitar',mDir:M==='direto',mCot:M==='cotacao',mEst:M==='estoque',mJusV:M==='justifvenc',mCanC:M==='cancelarcot',
-      mProp:M==='proposta',mRod:M==='rodada',mAnx:M==='anexoped',mFat:M==='faturar',mPag:M==='pagamento',
+      mProp:M==='proposta',mRod:M==='rodada',mAnx:M==='anexoped',mFat:M==='faturar',mPag:M==='pagamento',mCompF:M==='compforn',
       dirRows,convRows,dirVazio,prodFornRows,prodFornSel,prodFornVazio,propInfo,fatInfo,jvInfo,royInfo,rodInfo,confirmRodada:this.confirmRodada,formAnexos,temFormAnexos,anxInfo,addAnexosForm:this.addAnexosForm,confirmAnexosPed:this.confirmAnexosPed,selItens,
       confirmEstoque:this.confirmEstoque,setPedidoCot:this.setPedidoCot,
       prodModalFotos:(S.form.editId&&M==='produto'?this.fotosDe(S.produtos.find(x=>x.id===S.form.editId)||{}):['img/prd-new-1.png','img/prd-new-2.png','img/prd-new-3.png']).map((src,i)=>({src,principal:i===(S.form.fotoP||0),pick:this.pickFotoP(i),bd:i===(S.form.fotoP||0)?'#B38335':'#e8e1d2'})),
@@ -5423,7 +5501,7 @@ class Component extends DCLogic {
       salvarProduto:this.salvarProduto,salvarRevenda:this.salvarRevenda,
       confirmRejeitar:this.confirmRejeitar,confirmDireto:this.confirmDireto,confirmCotacao:this.confirmCotacao,
       confirmJustifVenc:this.confirmJustifVenc,confirmCancelarCot:this.confirmCancelarCot,
-      confirmProposta:this.confirmProposta,confirmFaturar:this.confirmFaturar,confirmPagamento:this.confirmPagamento
+      confirmProposta:this.confirmProposta,confirmFaturar:this.confirmFaturar,confirmPagamento:this.confirmPagamento,confirmCompForn:this.confirmCompForn,setCompFile:this.setCompFile,pagArq,pagArqOpc
     };
   }
 }

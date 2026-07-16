@@ -215,6 +215,13 @@ export const TEMPLATES = {
       linhas([['Competência', v.competencia], v.documento && ['Documento de cobrança', v.documento], ['Valor devido', v.valor], ['Vencimento', v.vencimento || '—'], v.diasAtraso && ['Dias de atraso', v.diasAtraso]]) +
       p('Por favor, regularize o pagamento e registre o comprovante junto à Loja. Se o pagamento já foi feito, desconsidere este aviso e informe o comprovante.'), 'Royalties'),
   }),
+  royalty_comprovante: (v) => ({
+    subject: `Comprovante de royalty recebido — ${v.competencia} · ${v.fornecedorNome}`,
+    html: layout('Comprovante de pagamento recebido',
+      p(`${b(v.fornecedorNome)} enviou o comprovante de pagamento do royalty da competência ${b(v.competencia)}.`) +
+      linhas([['Competência', v.competencia], ['Fornecedor', v.fornecedorNome], ['Arquivo', v.arquivo]]) +
+      p('Confira o arquivo na tela Royalties & Fechamento e confirme o pagamento — o status só muda para “pago” após a confirmação da Loja.'), 'Royalties'),
+  }),
   royalty_pagamento: (v) => ({
     subject: `Pagamento de royalties ${v.competencia} registrado`,
     html: layout('Pagamento de royalties registrado',
