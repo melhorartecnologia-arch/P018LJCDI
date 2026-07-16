@@ -963,6 +963,24 @@ input::placeholder,textarea::placeholder{color:#b0a795}
             </div>
           </sc-for>
         </div>
+        <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:16px 18px">
+          <div style="font-size:14px;font-weight:700;margin-bottom:10px">Histórico de imagens</div>
+          <sc-if value="{{pdd.semImgHist}}" hint-placeholder-val="{{false}}"><div style="font-size:12.5px;color:#a89f90">Nenhuma alteração de imagens registrada — imagens substituídas ficam preservadas aqui.</div></sc-if>
+          <sc-for list="{{pdd.imgHistRows}}" as="ih" hint-placeholder-count="0">
+            <div style="padding:6px 0;border-bottom:1px solid #f5f1e8">
+              <div style="font-size:12.5px"><b>{{ih.det}}</b></div>
+              <div style="font-size:11px;color:#a89f90;margin-top:1px">{{ih.quando}} · {{ih.autor}}</div>
+              <sc-if value="{{ih.temRems}}" hint-placeholder-val="{{false}}">
+                <div style="font-size:10.5px;color:#a89f90;margin-top:5px">Imagens substituídas (preservadas):</div>
+                <div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap">
+                  <sc-for list="{{ih.rems}}" as="ri" hint-placeholder-count="0">
+                    <sc-if value="{{ri.src}}" hint-placeholder-val="{{false}}"><img loading="lazy" src="{{ri.src}}" alt="imagem substituída" style="width:56px;height:42px;object-fit:cover;border-radius:7px;border:1px solid #e8e1d2;filter:grayscale(.6);opacity:.75"></sc-if>
+                  </sc-for>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
       </div>
     </div>
     <div style="font-size:15px;font-weight:700;margin:4px 0 10px">Pedidos com este produto</div>
@@ -2408,16 +2426,22 @@ input::placeholder,textarea::placeholder{color:#b0a795}
     <div style="background:#fff;border-radius:14px;width:440px;max-width:92vw;padding:22px 24px;box-shadow:0 18px 50px rgba(39,37,37,.25)">
       <div style="font-size:16px;font-weight:700">{{prodModalTitulo}}</div>
       <div style="font-size:12.5px;color:#8a8378;margin-top:2px">RF05–RF06 — vinculado a um ou mais fornecedores com contrato vigente</div>
-      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:14px 0 6px">Fotos do produto (clique para definir a principal)</div>
-      <div style="display:flex;gap:9px">
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:14px 0 6px">Imagens do produto <span style="font-weight:400;color:#a89f90">— clique para definir a PRINCIPAL do catálogo</span></div>
+      <div style="display:flex;gap:9px;flex-wrap:wrap">
         <sc-for list="{{prodModalFotos}}" as="ft" hint-placeholder-count="0">
-          <div onClick="{{ft.pick}}" style="position:relative;cursor:pointer;border:2px solid {{ft.bd}};border-radius:10px;overflow:hidden">
-            <sc-if value="{{ft.src}}" hint-placeholder-val="{{false}}"><img loading="lazy" src="{{ft.src}}" alt="foto do produto" style="width:118px;height:84px;object-fit:cover;display:block"></sc-if>
-            <sc-if value="{{ft.principal}}" hint-placeholder-val="{{false}}"><div style="position:absolute;bottom:0;left:0;right:0;background:#B38335;color:#fff;font-size:9.5px;font-weight:700;text-align:center;padding:2px 0;letter-spacing:.05em">PRINCIPAL</div></sc-if>
+          <div style="position:relative">
+            <div onClick="{{ft.pick}}" style="position:relative;cursor:pointer;border:2px solid {{ft.bd}};border-radius:10px;overflow:hidden;opacity:{{ft.op}}">
+              <sc-if value="{{ft.src}}" hint-placeholder-val="{{false}}"><img loading="lazy" src="{{ft.src}}" alt="foto do produto" style="width:118px;height:84px;object-fit:cover;display:block"></sc-if>
+              <sc-if value="{{ft.principal}}" hint-placeholder-val="{{false}}"><div style="position:absolute;bottom:0;left:0;right:0;background:#B38335;color:#fff;font-size:9.5px;font-weight:700;text-align:center;padding:2px 0;letter-spacing:.05em">PRINCIPAL</div></sc-if>
+              <sc-if value="{{ft.removida}}" hint-placeholder-val="{{false}}"><div style="position:absolute;bottom:0;left:0;right:0;background:#a33a2b;color:#fff;font-size:9.5px;font-weight:700;text-align:center;padding:2px 0;letter-spacing:.05em">REMOVIDA</div></sc-if>
+              <sc-if value="{{ft.nova}}" hint-placeholder-val="{{false}}"><div style="position:absolute;top:0;left:0;background:#2f6b39;color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:0 0 7px 0;letter-spacing:.05em">NOVA</div></sc-if>
+            </div>
+            <sc-if value="{{ft.temRm}}" hint-placeholder-val="{{false}}"><div onClick="{{ft.rm}}" title="{{ft.rmTitle}}" style="position:absolute;top:-7px;right:-7px;width:20px;height:20px;border-radius:50%;background:#fff;border:1px solid #ddd5c7;color:#a33a2b;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 1px 4px rgba(39,37,37,.18)">{{ft.rmMark}}</div></sc-if>
           </div>
         </sc-for>
       </div>
-      <div style="font-size:11px;color:#b0a795;margin-top:6px">Fotos placeholder — na implementação real, o upload substitui estas imagens.</div>
+      <input type="file" multiple="multiple" accept=".png,.jpg,.jpeg" onChange="{{addFotoProd}}" style="width:100%;box-sizing:border-box;padding:8px 10px;border:1px dashed #cdbf9d;border-radius:8px;font:inherit;font-size:12.5px;background:#fbf8f1;color:#6b6459;cursor:pointer;margin-top:9px">
+      <div style="font-size:11px;color:#b0a795;margin-top:6px">{{prodFotoNota}}</div>
       <div style="font-size:12px;font-weight:600;color:#6b6459;margin:14px 0 5px">Descrição</div>
       <input value="{{form.descricao}}" onChange="{{fxDescricao}}" placeholder="Ex.: Chopp Weiss Imperial 30L" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
       <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Fornecedores / contratos <span style="font-weight:400;color:#a89f90">— seleção múltipla · {{prodFornSel}}</span></div>
@@ -3831,6 +3855,7 @@ class Component extends DCLogic {
         "Para tirar um produto do catálogo das revendas ou colocá-lo de volta, clique no link \"Inativar\" ou \"Ativar\" à direita da linha; a coluna \"Catálogo\" mostra a situação atual de cada item."
       ],
       "dicas": [
+        "Na janela de cadastro/edição do produto, envie múltiplas imagens (PNG/JPG, até 5 MB cada) com pré-visualização imediata, clique em uma imagem para marcá-la como PRINCIPAL — é ela que aparece no catálogo das revendas — e use o × para remover: a imagem substituída não se perde, fica no painel \"Histórico de imagens\" do detalhe do produto.",
         "Combine a busca por código/descrição com os filtros de fornecedor, status (ativo/inativo) e categoria — o contador dourado mostra quantos produtos correspondem (ex.: \"3 de 10 produto(s)\") e o botão \"✕ Limpar busca e filtros\" restaura a lista completa.",
         "Na lista \"Fornecedores / contratos\" só aparecem fornecedores ativos; use o campo \"Buscar fornecedor por nome…\" para filtrar e clique nos nomes para marcar ou desmarcar — todo produto precisa de ao menos um fornecedor vinculado.",
         "Inativar não exclui o produto: ele apenas sai do catálogo das revendas e pode ser reativado a qualquer momento pelo mesmo link.",
@@ -4300,6 +4325,21 @@ class Component extends DCLogic {
   fotoNav(id,len,dir){ this._fn=this._fn||{}; const k=id+'|'+dir; if(!this._fn[k]) this._fn[k]=()=>this.setState(s=>{
     const cur=s.fotoIdx[id]||0; return {fotoIdx:{...s.fotoIdx,[id]:(cur+dir+len)%len}}; }); return this._fn[k]; }
   pickFotoP(i){ this._pfp=this._pfp||{}; if(!this._pfp[i]) this._pfp[i]=()=>this.setState(s=>({form:{...s.form,fotoP:i}})); return this._pfp[i]; }
+  // RF54 — gestão de imagens do produto: upload múltiplo, remoção com histórico
+  addFotoProd=e=>{ const files=[...((e.target&&e.target.files)||[])]; if(!files.length) return;
+    const cur=this.state.form.fotosNovas||[];
+    if(cur.length+files.length>6) return this.err('Máximo de 6 imagens novas por vez.');
+    for(const file of files){ const ext=(file.name.split('.').pop()||'').toLowerCase();
+      if(!['png','jpg','jpeg'].includes(ext)) return this.err('Imagem não permitida: '+file.name+' — use PNG ou JPG.');
+      if(file.size>5*1024*1024) return this.err('Imagem muito grande: '+file.name+' — o limite é 5 MB.'); }
+    files.forEach(file=>{ const rd=new FileReader();
+      rd.onload=()=>{ const b64=String(rd.result).split(',')[1]||'';
+        this.setState(s=>({form:{...s.form,fotosNovas:[...(s.form.fotosNovas||[]),{nome:file.name,tipo:file.type||'image/png',b64}],erro:null}})); };
+      rd.readAsDataURL(file); });
+    e.target.value=''; };
+  rmFotoProdEx(i){ this._rfpe=this._rfpe||{}; if(!(i in this._rfpe)) this._rfpe[i]=()=>this.setState(s=>{ const rem=s.form.fotosRem||[];
+    return {form:{...s.form,fotosRem:rem.includes(i)?rem.filter(x=>x!==i):[...rem,i],erro:null}}; }); return this._rfpe[i]; }
+  rmFotoProdNova(j){ this._rfpn=this._rfpn||{}; if(!(j in this._rfpn)) this._rfpn[j]=()=>this.setState(s=>({form:{...s.form,fotosNovas:(s.form.fotosNovas||[]).filter((_,k)=>k!==j),erro:null}})); return this._rfpn[j]; }
   verFoto(id){ this._vf=this._vf||{}; if(!this._vf[id]) this._vf[id]=(e)=>{ if(e&&e.stopPropagation) e.stopPropagation(); const p=this.state.produtos.find(x=>x.id===id); if(!p) return;
     const fidV=this._fidForn(); if(fidV&&!this._pTemForn(p,fidV)) return this._bloqueioTerceiro(p,'ampliar imagem do produto');
     const fotos=this.fotosDe(p);
@@ -4438,25 +4478,49 @@ class Component extends DCLogic {
   _pFornNomes(p){ return this._pForns(p).map(id=>this._fornNome(id)).join(', '); }
   toggleFornProd(fid){ this._tfp=this._tfp||{}; if(!this._tfp[fid]) this._tfp[fid]=()=>this.setState(s=>{ const cur=s.form.fornecedorIds||[]; const on=cur.includes(fid);
     return {form:{...s.form,fornecedorIds:on?cur.filter(x=>x!==fid):[...cur,fid],erro:null}}; }); return this._tfp[fid]; }
-  salvarProduto=()=>{ if(!this.pode('cadastros.produtos')) return this.negado('Você não tem permissão para gerenciar produtos.','cadastros.produtos'); const f=this.state.form;
+  salvarProduto=async()=>{ if(!this.pode('cadastros.produtos')) return this.negado('Você não tem permissão para gerenciar produtos.','cadastros.produtos'); const f=this.state.form; if(f.prodBusy) return;
     const fids=(f.fornecedorIds||[]).map(Number);
     if(!f.descricao||!fids.length) return this.err('Informe a descrição e selecione ao menos um fornecedor (RF05).');
     const preco=this.num(f.preco); if(!preco) return this.err('Informe o preço estimado (RF06).');
     const nomesF=this.state.fornecedores.filter(x=>fids.includes(x.id)).map(x=>x.nome).join(', ');
-    if(f.editId){ const old=this.state.produtos.find(x=>x.id===f.editId);
-      const fotosAtuais=this.fotosDe(old); const fp=f.fotoP||0;
-      const rot=[...fotosAtuais.slice(fp),...fotosAtuais.slice(0,fp)];
+    const novas=f.fotosNovas||[]; const rem=f.fotosRem||[];
+    const old=f.editId?this.state.produtos.find(x=>x.id===f.editId):null;
+    if(old&&(this.fotosDe(old).length-rem.length+novas.length)<1) return this.err('O produto precisa de ao menos uma imagem — restaure uma imagem removida ou envie uma nova (RF54).');
+    let novasUrls=[];
+    if(novas.length){ this.setState(s=>({form:{...s.form,prodBusy:true,erro:null}}));
+      try{ novasUrls=(await this._subirAnexos(novas)).map(u=>'/api/anexos/'+u.id); }
+      catch(e2){ this.setState(s=>({form:{...s.form,prodBusy:false,erro:e2.message||'Falha ao enviar as imagens do produto.'}})); return; } }
+    if(old){
+      const exist=this.fotosDe(old);
+      const itens=[...exist.map((src,i)=>({key:'e'+i,src,rem:rem.includes(i)})),...novasUrls.map((src,j)=>({key:'n'+j,src}))];
+      const vis=itens.filter(x=>!x.rem); const remSrcs=itens.filter(x=>x.rem).map(x=>x.src);
+      const pk=vis.some(x=>x.key===f.fotoP)?f.fotoP:vis[0].key;
+      const fotos=[vis.find(x=>x.key===pk).src,...vis.filter(x=>x.key!==pk).map(x=>x.src)];
+      const principalMudou=fotos[0]!==exist[0];
+      const imgParts=[];
+      if(novasUrls.length) imgParts.push(novasUrls.length+' imagem(ns) enviada(s)');
+      if(remSrcs.length) imgParts.push(remSrcs.length+' imagem(ns) removida(s) — preservada(s) no histórico');
+      if(principalMudou) imgParts.push('imagem principal do catálogo alterada');
+      const imgDet=imgParts.join(' · ');
+      const fotosHist=imgDet?[...(old.fotosHist||[]),{quando:this.ts(),usuario:this.userName(),det:imgDet,rems:remSrcs}]:(old.fotosHist||[]);
       const mudouPreco=old.preco!==preco;
       const mudouForn=JSON.stringify(this._pForns(old))!==JSON.stringify(fids);
       const precoHist=mudouPreco?[...(old.precoHist||[]),{data:this.hoje(),de:this.fmt(old.preco),para:this.fmt(preco),usuario:this.userName()}]:(old.precoHist||[]);
-      this.setState(s=>({produtos:s.produtos.map(x=>x.id===f.editId?{...x,descricao:f.descricao,unidade:f.unidade||x.unidade,categoria:f.categoria||x.categoria||'Outros',preco,fornecedorId:fids[0],fornecedorIds:fids,fotos:rot,precoHist}:x),modal:null,form:{}}));
-      this.audit('Edição de produto homologado',old.codigo+(mudouPreco?' · preço '+this.fmt(old.preco)+' → '+this.fmt(preco):'')+(mudouForn?' · fornecedores: '+nomesF:''));
+      this.setState(s=>({produtos:s.produtos.map(x=>x.id===f.editId?{...x,descricao:f.descricao,unidade:f.unidade||x.unidade,categoria:f.categoria||x.categoria||'Outros',preco,fornecedorId:fids[0],fornecedorIds:fids,fotos,fotosHist,precoHist}:x),modal:null,form:{}}));
+      this.audit('Edição de produto homologado',old.codigo+(mudouPreco?' · preço '+this.fmt(old.preco)+' → '+this.fmt(preco):'')+(mudouForn?' · fornecedores: '+nomesF:'')+(imgDet?' · '+imgDet:''));
+      setTimeout(()=>this._flushPersist(),0);
       return; }
     const id=this.state.seq.prod; const codigo='PRD-0'+id;
-    const base=['img/prd-new-1.png','img/prd-new-2.png','img/prd-new-3.png'];
-    const fp=f.fotoP||0; const fotos=[...base.slice(fp),...base.slice(0,fp)];
-    this.setState(s=>({produtos:[...s.produtos,{id,codigo,descricao:f.descricao,unidade:f.unidade||'Unidade',categoria:f.categoria||'Outros',preco,fornecedorId:fids[0],fornecedorIds:fids,ativo:true,fotos}],seq:{...s.seq,prod:id+1},modal:null,form:{}}));
-    this.audit('Cadastro de produto homologado',codigo+' · '+f.descricao+' · fornecedores: '+nomesF); };
+    let fotos,fotosHist=[];
+    if(novasUrls.length){ const pkn=(typeof f.fotoP==='string'&&f.fotoP[0]==='n')?Math.min(+f.fotoP.slice(1)||0,novasUrls.length-1):0;
+      fotos=[novasUrls[pkn],...novasUrls.filter((_,j)=>j!==pkn)];
+      fotosHist=[{quando:this.ts(),usuario:this.userName(),det:novasUrls.length+' imagem(ns) enviada(s) no cadastro',rems:[]}]; }
+    else{ const base=['img/prd-new-1.png','img/prd-new-2.png','img/prd-new-3.png'];
+      const fp=(typeof f.fotoP==='string'&&f.fotoP[0]==='e')?(+f.fotoP.slice(1)||0):(f.fotoP||0);
+      fotos=[...base.slice(fp),...base.slice(0,fp)]; }
+    this.setState(s=>({produtos:[...s.produtos,{id,codigo,descricao:f.descricao,unidade:f.unidade||'Unidade',categoria:f.categoria||'Outros',preco,fornecedorId:fids[0],fornecedorIds:fids,ativo:true,fotos,fotosHist}],seq:{...s.seq,prod:id+1},modal:null,form:{}}));
+    this.audit('Cadastro de produto homologado',codigo+' · '+f.descricao+' · fornecedores: '+nomesF+(novasUrls.length?' · '+novasUrls.length+' imagem(ns) enviada(s)':''));
+    setTimeout(()=>this._flushPersist(),0); };
   toggleProd(id){ this._tp=this._tp||{}; if(!this._tp[id]) this._tp[id]=(e)=>{ if(e&&e.stopPropagation) e.stopPropagation(); const p=this.state.produtos.find(x=>x.id===id);
     this.setState(s=>({produtos:s.produtos.map(x=>x.id===id?{...x,ativo:!x.ativo}:x)}));
     this.audit(p.ativo?'Inativação de produto no catálogo':'Ativação de produto no catálogo',p.codigo+' · '+p.descricao); }; return this._tp[id]; }
@@ -5752,6 +5816,8 @@ class Component extends DCLogic {
             {label:'Fotos cadastradas',val:String(fotos.length)}],
           precoHist:(p.precoHist||[]).slice().reverse().map(h=>({data:h.data,mud:h.de+' → '+h.para,usuario:h.usuario})),
           semHistPreco:!(p.precoHist||[]).length,
+          imgHistRows:(p.fotosHist||[]).slice().reverse().map(h=>({quando:h.quando,autor:h.usuario,det:h.det,rems:(h.rems||[]).map(src=>({src})),temRems:!!(h.rems||[]).length})),
+          semImgHist:!(p.fotosHist||[]).length,
           fichaRows:(()=>{ const fi2=this._ficha(p); const vt2=v=>(v==null||v==='')?'—':(typeof v==='number'?String(v).replace('.',','):String(v));
             return [{label:'NCM',val:fi2.ncm||'—'},{label:'GTIN/EAN',val:fi2.ean||'—'},
               {label:'Peso bruto',val:fi2.pesoBruto!=null?vt2(fi2.pesoBruto)+' kg':'—'},{label:'Peso líquido',val:fi2.pesoLiquido!=null?vt2(fi2.pesoLiquido)+' kg':'—'},
@@ -5775,7 +5841,7 @@ class Component extends DCLogic {
           toggle:this.toggleProd(p.id),toggleLabel:p.ativo?'Inativar no catálogo':'Ativar no catálogo',
           voltar:this.go('prod')}; } }
     const prodModalTitulo=S.form.editId&&S.modal==='produto'?'Editar produto homologado':'Novo produto homologado';
-    const prodModalBtn=S.form.editId&&S.modal==='produto'?'Salvar alterações':'Homologar produto';
+    const prodModalBtn=S.form.prodBusy?'Enviando imagens…':(S.form.editId&&S.modal==='produto'?'Salvar alterações':'Homologar produto');
 
     // revendas
     const brv=S.buscaRev.toLowerCase();
@@ -6386,7 +6452,20 @@ class Component extends DCLogic {
       mProp:M==='proposta',mRod:M==='rodada',mAnx:M==='anexoped',mFat:M==='faturar',mPag:M==='pagamento',mCompF:M==='compforn',
       dirRows,convRows,dirVazio,prodFornRows,prodFornSel,prodFornVazio,propInfo,fatInfo,jvInfo,royInfo,rodInfo,confirmRodada:this.confirmRodada,formAnexos,temFormAnexos,anxInfo,addAnexosForm:this.addAnexosForm,confirmAnexosPed:this.confirmAnexosPed,fatExtras,temFatExtras,addAnexoFatExtra:this.addAnexoFatExtra,fxTipoDocExtra:this.fx('tipoDocExtra'),selItens,cotEstim,fprodRows,fprodVazio,fichaInfo,confirmFicha:this.confirmFicha,addFotoFicha:this.addFotoFicha,fxNcm:this.fxNcm,fxEan:this.fxEan,fxPesoBruto:this.fx('pesoBruto'),fxPesoLiquido:this.fx('pesoLiquido'),fxFreteMod:this.fx('freteMod'),fxFreteValor:this.fx('freteValor'),fxTransportadora:this.fx('transportadora'),fxCondEntrega:this.fx('condEntrega'),fxDiaPag:this.fx('diaPag'),fxAltura:this.fx('altura'),fxLargura:this.fx('largura'),fxComprimento:this.fx('comprimento'),fxUnidadeMedida:this.fx('unidadeMedida'),fxObsFicha:this.fx('obs'),
       confirmEstoque:this.confirmEstoque,setPedidoCot:this.setPedidoCot,
-      prodModalFotos:(S.form.editId&&M==='produto'?this.fotosDe(S.produtos.find(x=>x.id===S.form.editId)||{}):['img/prd-new-1.png','img/prd-new-2.png','img/prd-new-3.png']).map((src,i)=>({src,principal:i===(S.form.fotoP||0),pick:this.pickFotoP(i),bd:i===(S.form.fotoP||0)?'#B38335':'#e8e1d2'})),
+      prodModalFotos:(()=>{ if(M!=='produto') return [];
+        const novasL=(S.form.fotosNovas||[]).map((n2,j2)=>({key:'n'+j2,src:'data:'+(n2.tipo||'image/png')+';base64,'+n2.b64,nova:true,rmH:this.rmFotoProdNova(j2)}));
+        let existL=[];
+        if(S.form.editId) existL=this.fotosDe(S.produtos.find(x=>x.id===S.form.editId)||{}).map((src,i2)=>({key:'e'+i2,src,removida:(S.form.fotosRem||[]).includes(i2),rmH:this.rmFotoProdEx(i2)}));
+        else if(!novasL.length) existL=['img/prd-new-1.png','img/prd-new-2.png','img/prd-new-3.png'].map((src,i2)=>({key:'e'+i2,src,ph:true}));
+        const all2=[...existL,...novasL];
+        const visK=all2.filter(x=>!x.removida).map(x=>x.key);
+        const pk2=visK.includes(S.form.fotoP)?S.form.fotoP:visK[0];
+        return all2.map(x=>({src:x.src,principal:!x.removida&&x.key===pk2,removida:!!x.removida,nova:!!x.nova,
+          temRm:!x.ph,rmMark:x.removida?'↺':'×',rmTitle:x.removida?'Restaurar imagem':'Remover imagem — fica preservada no histórico',
+          rm:x.rmH,pick:x.removida?x.rmH:this.pickFotoP(x.key),
+          op:x.removida?'0.45':'1',bd:(!x.removida&&x.key===pk2)?'#B38335':'#e8e1d2'})); })(),
+      prodFotoNota:(S.form.editId&&M==='produto')?'Upload de múltiplas imagens (PNG/JPG, até 5 MB cada) · clique na imagem para defini-la como PRINCIPAL do catálogo das revendas · × remove sem perder — a imagem vai para o histórico.':((S.form.fotosNovas||[]).length?'Clique na imagem para defini-la como PRINCIPAL do catálogo das revendas — × remove a imagem enviada.':'Fotos placeholder até o primeiro upload — envie as imagens reais do produto (PNG/JPG, até 5 MB cada).'),
+      addFotoProd:this.addFotoProd,
       salvarForn:this.salvarForn,salvarContrato:this.salvarContrato,salvarRoyalty:this.salvarRoyalty,
       salvarProduto:this.salvarProduto,salvarRevenda:this.salvarRevenda,
       confirmRejeitar:this.confirmRejeitar,confirmDireto:this.confirmDireto,confirmCotacao:this.confirmCotacao,
