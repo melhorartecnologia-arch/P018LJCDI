@@ -421,6 +421,62 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         </div>
       </sc-for>
     </div>
+    <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:16px 18px;margin-bottom:14px">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:4px">
+        <div>
+          <div style="font-size:14px;font-weight:700">Economia das cotações — escolha × negociação</div>
+          <div style="font-size:11.5px;color:#a89f90;margin-top:2px">Economia da escolha = referência dos itens − menor proposta da 1ª rodada · Economia de negociação = ganho adicional das rodadas (RF58) e da decisão por item</div>
+        </div>
+        <select value="{{filtroEcoCot}}" onChange="{{setFiltroEcoCot}}" style="padding:8px 12px;border:1px solid #e5ddcd;border-radius:9px;font:inherit;font-size:12px;font-weight:600;color:#272525;background:#fff;outline:none;cursor:pointer">
+          <sc-for list="{{ecoMesOpts}}" as="mo" hint-placeholder-count="1"><option value="{{mo.v}}">{{mo.label}}</option></sc-for>
+        </select>
+      </div>
+      <sc-if value="{{ecoCons.temDados}}" hint-placeholder-val="{{false}}">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:10px 0 12px">
+          <div style="background:#fbf6ec;border:1px solid #eadfc8;border-radius:10px;padding:12px 14px">
+            <div style="font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#8f682a">Economia da escolha</div>
+            <div style="font-size:19px;font-weight:800;color:#8f682a;margin-top:3px">{{ecoCons.escolhaFmt}}</div>
+            <div style="font-size:11px;color:#a89f90;margin-top:1px">menor proposta da 1ª rodada vs. referência</div>
+          </div>
+          <div style="background:#efe6f5;border:1px solid #ddcbee;border-radius:10px;padding:12px 14px">
+            <div style="font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#5d3f96">Economia de negociação</div>
+            <div style="font-size:19px;font-weight:800;color:#5d3f96;margin-top:3px">{{ecoCons.negFmt}}</div>
+            <div style="font-size:11px;color:#a89f90;margin-top:1px">adicional das rodadas e da decisão por item</div>
+          </div>
+          <div style="background:#e9f3ea;border:1px solid #c4dfc8;border-radius:10px;padding:12px 14px">
+            <div style="font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#2f6b39">Economia total do processo</div>
+            <div style="font-size:19px;font-weight:800;color:#2f6b39;margin-top:3px">{{ecoCons.totFmt}}</div>
+            <div style="font-size:11px;color:#a89f90;margin-top:1px">{{ecoCons.pctTxt}}</div>
+          </div>
+        </div>
+        <table style="width:100%;border-collapse:collapse">
+          <thead><tr>
+            <th style="text-align:left;padding:8px 10px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Cotação</th>
+            <th style="text-align:left;padding:8px 10px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Decisão</th>
+            <th style="text-align:right;padding:8px 10px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Referência</th>
+            <th style="text-align:right;padding:8px 10px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Menor 1ª rodada</th>
+            <th style="text-align:right;padding:8px 10px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Fechamento</th>
+            <th style="text-align:right;padding:8px 10px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#8f682a;border-bottom:1px solid #f1ece2">Escolha</th>
+            <th style="text-align:right;padding:8px 10px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#5d3f96;border-bottom:1px solid #f1ece2">Negociação</th>
+            <th style="text-align:right;padding:8px 18px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#2f6b39;border-bottom:1px solid #f1ece2">Total</th></tr></thead>
+          <tbody>
+            <sc-for list="{{ecoCons.rows}}" as="er" hint-placeholder-count="1">
+              <tr onClick="{{er.open}}" style="cursor:pointer" style-hover="background:#fbf9f4">
+                <td style="padding:8px 10px;font-size:12.5px;border-bottom:1px solid #f5f1e8"><b style="color:#8f682a">{{er.id}}</b> <span style="font-size:11px;color:#a89f90">· {{er.rodTxt}}</span></td>
+                <td style="padding:8px 10px;font-size:12px;color:#6b6459;border-bottom:1px solid #f5f1e8">{{er.data}}</td>
+                <td style="padding:8px 10px;font-size:12.5px;text-align:right;border-bottom:1px solid #f5f1e8">{{er.refFmt}}</td>
+                <td style="padding:8px 10px;font-size:12.5px;text-align:right;border-bottom:1px solid #f5f1e8">{{er.m1Fmt}}</td>
+                <td style="padding:8px 10px;font-size:12.5px;text-align:right;border-bottom:1px solid #f5f1e8">{{er.fimFmt}}</td>
+                <td style="padding:8px 10px;font-size:12.5px;font-weight:700;color:#8f682a;text-align:right;border-bottom:1px solid #f5f1e8">{{er.escolhaFmt}}</td>
+                <td style="padding:8px 10px;font-size:12.5px;font-weight:700;color:#5d3f96;text-align:right;border-bottom:1px solid #f5f1e8">{{er.negFmt}}</td>
+                <td style="padding:8px 18px;font-size:12.5px;font-weight:700;color:#2f6b39;text-align:right;border-bottom:1px solid #f5f1e8">{{er.totFmt}}</td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+      </sc-if>
+      <sc-if value="{{ecoCons.semDados}}" hint-placeholder-val="{{false}}"><div style="font-size:12.5px;color:#a89f90;margin-top:8px">Nenhuma cotação decidida no período selecionado — a economia é apurada quando a vencedora é definida.</div></sc-if>
+    </div>
     <div style="display:flex;justify-content:flex-end;margin-bottom:14px">
       <select value="{{filtroCot}}" onChange="{{setFiltroCot}}" style="padding:10px 12px;border:1px solid #e5ddcd;border-radius:9px;font:inherit;font-size:12.5px;font-weight:600;color:#272525;background:#fff;outline:none;cursor:pointer">
         <option value="todas">Todos os status</option>
@@ -610,6 +666,29 @@ input::placeholder,textarea::placeholder{color:#b0a795}
             </div>
           </div>
         </sc-for>
+      </div>
+    </sc-if>
+    <sc-if value="{{cd.temEco}}" hint-placeholder-val="{{false}}">
+      <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:16px 18px;margin-bottom:14px">
+        <div style="font-size:14px;font-weight:700;margin-bottom:2px">Economia da cotação — escolha × negociação</div>
+        <div style="font-size:11.5px;color:#a89f90;margin-bottom:10px">{{cd.eco.fluxo}}</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+          <div style="background:#fbf6ec;border:1px solid #eadfc8;border-radius:10px;padding:12px 14px">
+            <div style="font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#8f682a">Economia da escolha</div>
+            <div style="font-size:19px;font-weight:800;color:#8f682a;margin-top:3px">{{cd.eco.escolhaFmt}}</div>
+            <div style="font-size:11px;color:#a89f90;margin-top:1px">{{cd.eco.escolhaSub}}</div>
+          </div>
+          <div style="background:#efe6f5;border:1px solid #ddcbee;border-radius:10px;padding:12px 14px">
+            <div style="font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#5d3f96">Economia de negociação</div>
+            <div style="font-size:19px;font-weight:800;color:#5d3f96;margin-top:3px">{{cd.eco.negFmt}}</div>
+            <div style="font-size:11px;color:#a89f90;margin-top:1px">{{cd.eco.negSub}}</div>
+          </div>
+          <div style="background:#e9f3ea;border:1px solid #c4dfc8;border-radius:10px;padding:12px 14px">
+            <div style="font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#2f6b39">Economia total do processo</div>
+            <div style="font-size:19px;font-weight:800;color:#2f6b39;margin-top:3px">{{cd.eco.totFmt}}</div>
+            <div style="font-size:11px;color:#a89f90;margin-top:1px">{{cd.eco.totSub}}</div>
+          </div>
+        </div>
       </div>
     </sc-if>
     <sc-if value="{{cd.temRodadas}}" hint-placeholder-val="{{false}}">
@@ -3821,6 +3900,7 @@ class Component extends DCLogic {
         "Defina o resultado clicando em \"Vencedora (todos os itens)\" no fornecedor escolhido ou, para dividir o pedido, use \"Escolher para este item\" na seção \"Adjudicação por item\"; se precisar encerrar sem escolher, use \"Cancelar cotação…\"."
       ],
       "dicas": [
+        "O painel \"Economia das cotações — escolha × negociação\" separa a ECONOMIA DA ESCOLHA (referência dos itens menos a menor proposta da 1ª rodada) da ECONOMIA DE NEGOCIAÇÃO (ganho adicional das rodadas e da decisão por item), consolidadas por período de decisão — use o seletor \"Todo o período / Decididas em mm/aaaa\" e clique na linha para abrir a cotação.",
         "Ao selecionar a vencedora, os itens NÃO vão direto ao fornecedor: entram em \"Aguardando aceite da revenda\" (RF68) — o encaminhamento definitivo só acontece após o aceite comercial; recusas reabrem a cotação em nova rodada automaticamente.",
         "Só aparecem no seletor \"Pedido de origem\" pedidos que já têm itens aprovados — receba os itens antes de abrir a cotação.",
         "Se você escolher uma proposta que não seja a de MENOR PREÇO, o sistema abre a janela \"Justificar escolha fora do menor preço\" e exige um motivo, que fica registrado no histórico da cotação.",
@@ -3845,6 +3925,7 @@ class Component extends DCLogic {
         "No fim da tela, consulte o \"Histórico completo da cotação (auditoria)\" para revisar todas as ações registradas, com data e responsável."
       ],
       "dicas": [
+        "Em cotações encerradas, o painel \"Economia da cotação — escolha × negociação\" mostra as duas parcelas do ganho: a da escolha (menor proposta da 1ª rodada vs. referência) e a adicional obtida nas rodadas de negociação, com o percentual total sobre a referência.",
         "Os botões de ação — \"Lembrar\", \"Vencedora (todos os itens)\", \"Escolher para este item\" e \"Cancelar cotação…\" — só aparecem enquanto a cotação ainda está aberta; depois de encerrada ou cancelada, a tela fica apenas para consulta.",
         "Ao definir a(s) vencedora(s), os pedidos são gerados automaticamente por fornecedor, que fatura direto à revenda — você não precisa criar o pedido manualmente.",
         "O mapa comparativo é sigiloso: cada fornecedor enxerga apenas a própria proposta, nunca as dos concorrentes."
@@ -4844,6 +4925,34 @@ class Component extends DCLogic {
     const citens=(c&&c.itens)||[]; let tot=0,okAll=citens.length>0;
     citens.forEach(it=>{ const u=(itens||{})[it.produtoId]; if(u!=null) tot+=u*it.qtd; else okAll=false; });
     return okAll?Math.round(tot*100)/100:preco; }
+  // ——— RF66: economia da cotação — escolha (menor da 1ª rodada vs referência) × negociação (rodadas) ———
+  _cfAteRodada(c,fid,n){ const base=this._propAteRodada(c,fid,n); if(base==null) return null;
+    let fv=0; [...((c&&c.propostas)||[])].filter(p=>p.fornecedorId===fid&&(p.rodada||1)<=n)
+      .sort((a,b)=>((a.rodada||1)-(b.rodada||1))).forEach(p=>{ if(p.freteValor!=null) fv=p.freteValor; });
+    return Math.round((base+fv)*100)/100; }
+  _ecoCot(c){ if(!c||c.status!=='encerrada') return null;
+    const props=this._propsEfetivas(c); if(!props.length) return null;
+    const citens=c.itens||[]; if(!citens.length) return null;
+    const ref=Math.round(citens.reduce((a,i)=>a+i.qtd*i.preco,0)*100)/100;
+    const r1=props.map(p=>({fid:p.fornecedorId,cf:this._cfAteRodada(c,p.fornecedorId,1)})).filter(x=>x.cf!=null);
+    if(!r1.length) return null;
+    const m1=r1.slice().sort((a,b)=>a.cf-b.cf)[0];
+    let fim=null;
+    if(c.vencedorId){ const pv=props.find(p=>p.fornecedorId===c.vencedorId); if(pv) fim=this._totCF(pv); }
+    else if(c.vencItens&&Object.keys(c.vencItens).length){ let tot=0,okAll=true; const fids=new Set();
+      citens.forEach(it=>{ const fid=c.vencItens[it.produtoId]; if(fid==null){ okAll=false; return; } fids.add(fid);
+        const pv=props.find(p=>p.fornecedorId===fid); const u=pv&&pv.itens?pv.itens[it.produtoId]:null;
+        if(u==null){ okAll=false; return; } tot+=u*it.qtd; });
+      if(okAll&&fids.size){ fids.forEach(fid=>{ const pv=props.find(p=>p.fornecedorId===fid); tot+=(pv&&pv.freteValor)||0; }); fim=Math.round(tot*100)/100; } }
+    if(fim==null) return null;
+    return {ref,m1:m1.cf,m1Fid:m1.fid,fim,
+      escolha:Math.round((ref-m1.cf)*100)/100,
+      negocia:Math.round((m1.cf-fim)*100)/100,
+      total:Math.round((ref-fim)*100)/100,
+      rodadas:this._cotRod(c)}; }
+  _cotDecData(c){ const h=[...((c&&c.historico)||[])].reverse().find(x=>/vencedora|adjudicad/i.test(x.acao||''));
+    return ((h&&h.quando)||(((c&&c.historico)||[]).slice(-1)[0]||{}).quando||'').slice(0,10); }
+  setFiltroEcoCot=e=>this.setState({filtroEcoCot:e.target.value});
   toggleRodItem(pid){ this._tri=this._tri||{}; if(!this._tri[pid]) this._tri[pid]=()=>this.setState(s=>{ const cur=s.form.rodItens||[]; const on=cur.includes(pid);
     return {form:{...s.form,rodItens:on?cur.filter(x=>x!==pid):[...cur,pid],erro:null}}; }); return this._tri[pid]; }
   toggleRodForn(fid){ this._trf=this._trf||{}; if(!this._trf[fid]) this._trf[fid]=()=>this.setState(s=>{ const cur=s.form.rodConv||[]; const on=cur.includes(fid);
@@ -5715,6 +5824,21 @@ class Component extends DCLogic {
       {label:'Taxa de resposta',val:convTotK?Math.round(propTotK/convTotK*100)+'%':'—',sub:propTotK+' propostas de '+convTotK+' convites'},
       {label:'Economia obtida',val:this.fmt(ecoCot),sub:'vs. média das propostas (encerradas)'},
       {label:'Cotações no histórico',val:String(S.cotacoes.length),sub:S.cotacoes.filter(c=>c.status==='cancelada').length+' cancelada(s)'}];
+    // RF66 — economia consolidada por período (mês da decisão)
+    const sgnEco=v=>(v<0?'− ':'')+this.fmt(Math.abs(Math.round(v*100)/100));
+    const ecoDecs=S.cotacoes.map(c2=>({c:c2,e:this._ecoCot(c2),mes:this._cotDecData(c2).slice(3)})).filter(x=>x.e);
+    const ecoMesOpts=[{v:'todas',label:'Todo o período'},...[...new Set(ecoDecs.map(x=>x.mes))]
+      .sort((a,b)=>(a.slice(3)+a.slice(0,2)).localeCompare(b.slice(3)+b.slice(0,2))).map(m=>({v:m,label:'Decididas em '+m}))];
+    const fEco=S.filtroEcoCot||'todas';
+    const ecoSel=ecoDecs.filter(x=>fEco==='todas'||x.mes===fEco);
+    const sEsc=ecoSel.reduce((a,x)=>a+x.e.escolha,0), sNegE=ecoSel.reduce((a,x)=>a+x.e.negocia,0),
+      sTotE=ecoSel.reduce((a,x)=>a+x.e.total,0), sRefE=ecoSel.reduce((a,x)=>a+x.e.ref,0);
+    const ecoCons={temDados:ecoSel.length>0,semDados:ecoSel.length===0,
+      escolhaFmt:sgnEco(sEsc),negFmt:sgnEco(sNegE),totFmt:sgnEco(sTotE),
+      pctTxt:sRefE?((Math.round(Math.abs(sTotE)/sRefE*1000)/10+'').replace('.',',')+'% da referência · '+ecoSel.length+' cotação(ões) decidida(s)'):'',
+      rows:ecoSel.map(x=>({id:x.c.id,data:this._cotDecData(x.c),rodTxt:x.e.rodadas>1?x.e.rodadas+' rodadas':'1 rodada',
+        refFmt:this.fmt(x.e.ref),m1Fmt:this.fmt(x.e.m1),fimFmt:this.fmt(x.e.fim),
+        escolhaFmt:sgnEco(x.e.escolha),negFmt:sgnEco(x.e.negocia),totFmt:sgnEco(x.e.total),open:this.openCot(x.c.id)}))};
     const pedAprovOpts=PEDS.filter(p=>p.itens.some(i=>i.st==='aprovado')).map(p=>({id:p.id,label:p.id+' · '+R(p.revendaId).nome+' · '+this.fmt(p.itens.filter(i=>i.st==='aprovado').reduce((a,i)=>a+i.qtd*i.preco,0))+' em itens aprovados'}));
     const temPedAprov=pedAprovOpts.length>0;
 
@@ -5739,7 +5863,14 @@ class Component extends DCLogic {
         steps=steps.map((s,i)=>({...s,temLinha:i>0}));
         const ecoRef=menor?refTot-menor:0;
         const menorForn=menor?F((props.find(p=>p.preco===menor)||{}).fornecedorId).nome:'';
+        const ecoV=(()=>{ const e=this._ecoCot(c); if(!e) return null;
+          const sg=v=>(v<0?'− ':'')+this.fmt(Math.abs(v));
+          return {fluxo:'Referência dos itens '+this.fmt(e.ref)+' → menor proposta da 1ª rodada '+this.fmt(e.m1)+' ('+F(e.m1Fid).nome+') → fechamento '+this.fmt(e.fim)+(e.rodadas>1?' na rodada '+e.rodadas:''),
+            escolhaFmt:sg(e.escolha),escolhaSub:e.escolha>=0?'menor proposta da 1ª rodada vs. referência dos itens':'menor 1ª rodada acima da referência dos itens',
+            negFmt:sg(e.negocia),negSub:e.rodadas>1?'adicional obtido em '+(e.rodadas-1)+' rodada(s) de negociação (RF58)':'sem rodadas de negociação nesta cotação',
+            totFmt:sg(e.total),totSub:((Math.round(Math.abs(e.total)/e.ref*1000)/10+'').replace('.',','))+'% da referência — ganho do processo de compra'}; })();
         cd={id:c.id,steps,pedidoId:c.pedidoId,prazo:c.prazo,...this.chip(c.status),
+          eco:ecoV||{},temEco:!!ecoV,
           prazoTxt:pi.txt,temPrazoTag:!!pi.txt,prazoBg:pi.bg,prazoFg:pi.fg,
           resumo:[
             {label:'Referência dos itens',val:this.fmt(refTot),sub:c.pedidoId+' · '+citens.length+' item(ns)'},
@@ -6493,6 +6624,7 @@ class Component extends DCLogic {
       pedKpis,buscaPed:S.buscaPed,setBuscaPed:this.setBuscaPed,filtroRev:S.filtroRev,setFiltroRev:this.setFiltroRev,revFilterOpts,
       // cotações
       cotRows,cd,pedAprovOpts,temPedAprov,cotKpis,filtroCot:S.filtroCot||'todas',setFiltroCot:this.setFiltroCot,
+      ecoCons,ecoMesOpts,filtroEcoCot:S.filtroEcoCot||'todas',setFiltroEcoCot:this.setFiltroEcoCot,
       novaCotacao:this.open('cotacao',{pedidoId:'',convidados:[],prazo:''}),
       // cadastros
       fornRows,ctrRows,prodRows,revRows,fornFilterOpts,fornOptsAtivos,
