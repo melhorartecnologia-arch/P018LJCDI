@@ -1236,6 +1236,118 @@ input::placeholder,textarea::placeholder{color:#b0a795}
       </sc-if>
     </div>
 
+    <div style="display:flex;gap:4px;margin-bottom:16px;border-bottom:2px solid #eae3d6">
+      <div onClick="{{relAbaGeralFn}}" style="font-size:13.5px;font-weight:700;padding:9px 16px;cursor:pointer;color:{{relTabGFg}};border-bottom:3px solid {{relTabGBd}};margin-bottom:-2px">Visão geral</div>
+      <div onClick="{{relAbaProdFn}}" title="Relatório de venda por produtos — tabela e gráfico com drill-down" style="font-size:13.5px;font-weight:700;padding:9px 16px;cursor:pointer;color:{{relTabPFg}};border-bottom:3px solid {{relTabPBd}};margin-bottom:-2px">Venda por produtos</div>
+    </div>
+
+    <sc-if value="{{relAbaProd}}" hint-placeholder-val="{{false}}">
+      <div style="display:flex;gap:9px;margin-bottom:14px;align-items:center;flex-wrap:wrap">
+        <input value="{{rvpDe}}" onChange="{{setRvpDe}}" placeholder="De: dd/mm/aaaa" title="Início do período (data do pedido)" style="width:128px;box-sizing:border-box;padding:9px 12px;border:1px solid #e5ddcd;border-radius:9px;font:inherit;font-size:12.5px;font-weight:600;color:#272525;background:#fff;outline:none">
+        <input value="{{rvpAte}}" onChange="{{setRvpAte}}" placeholder="Até: dd/mm/aaaa" title="Fim do período (data do pedido)" style="width:128px;box-sizing:border-box;padding:9px 12px;border:1px solid #e5ddcd;border-radius:9px;font:inherit;font-size:12.5px;font-weight:600;color:#272525;background:#fff;outline:none">
+        <select value="{{rvpProd}}" onChange="{{setRvpProd}}" style="padding:9px 12px;border:1px solid #e5ddcd;border-radius:9px;font:inherit;font-size:12.5px;font-weight:600;color:#272525;background:#fff;outline:none;cursor:pointer;max-width:230px">
+          <sc-for list="{{rvpProdOpts}}" as="o" hint-placeholder-count="3"><option value="{{o.v}}">{{o.label}}</option></sc-for>
+        </select>
+        <select value="{{rvpRev}}" onChange="{{setRvpRev}}" style="padding:9px 12px;border:1px solid #e5ddcd;border-radius:9px;font:inherit;font-size:12.5px;font-weight:600;color:#272525;background:#fff;outline:none;cursor:pointer">
+          <sc-for list="{{rvpRevOpts}}" as="o" hint-placeholder-count="3"><option value="{{o.v}}">{{o.label}}</option></sc-for>
+        </select>
+        <select value="{{rvpForn}}" onChange="{{setRvpForn}}" style="padding:9px 12px;border:1px solid #e5ddcd;border-radius:9px;font:inherit;font-size:12.5px;font-weight:600;color:#272525;background:#fff;outline:none;cursor:pointer">
+          <sc-for list="{{rvpFornOpts}}" as="o" hint-placeholder-count="3"><option value="{{o.v}}">{{o.label}}</option></sc-for>
+        </select>
+        <select value="{{rvpCat}}" onChange="{{setRvpCat}}" style="padding:9px 12px;border:1px solid #e5ddcd;border-radius:9px;font:inherit;font-size:12.5px;font-weight:600;color:#272525;background:#fff;outline:none;cursor:pointer">
+          <sc-for list="{{rvpCatOpts}}" as="o" hint-placeholder-count="3"><option value="{{o.v}}">{{o.label}}</option></sc-for>
+        </select>
+        <sc-if value="{{rvpFiltroAtivo}}" hint-placeholder-val="{{false}}"><span onClick="{{limparRvp}}" style="font-size:12px;font-weight:600;color:#8f682a;cursor:pointer;text-decoration:underline">Limpar filtros</span></sc-if>
+        <div style="flex:1"></div>
+        <sc-if value="{{podeExportar}}" hint-placeholder-val="{{true}}">
+          <div onClick="{{exportVendasProduto}}" title="Baixa o recorte filtrado em Excel — abas Resumo por produto e Vendas detalhadas" style="background:#272525;color:#fff;border-radius:9px;padding:9px 14px;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="background:#3a3735">⬇ Exportar XLSX</div>
+        </sc-if>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px">
+        <sc-for list="{{rvpKpis}}" as="k" hint-placeholder-count="4">
+          <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:13px 16px">
+            <div style="font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#a89f90">{{k.label}}</div>
+            <div style="font-size:19px;font-weight:700;margin-top:4px">{{k.val}}</div>
+            <div style="font-size:11px;color:#a89f90;margin-top:2px">{{k.sub}}</div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:14px">
+        <div onClick="{{rvpVisTabelaFn}}" style="font-size:12px;font-weight:700;border:1px solid #ddd5c7;border-radius:8px;padding:7px 14px;cursor:pointer;background:{{rvpTabBg}};color:{{rvpTabFg}}">Tabela</div>
+        <div onClick="{{rvpVisGrafFn}}" title="Barras por produto — clique numa barra para abrir as vendas (drill-down)" style="font-size:12px;font-weight:700;border:1px solid #ddd5c7;border-radius:8px;padding:7px 14px;cursor:pointer;background:{{rvpGrafBg}};color:{{rvpGrafFg}}">Gráfico</div>
+      </div>
+      <sc-if value="{{rvpVazio}}" hint-placeholder-val="{{false}}">
+        <div style="background:#fff;border:1px dashed #ddd5c7;border-radius:12px;padding:24px;text-align:center;font-size:13px;color:#a89f90">Nenhuma venda encontrada com os filtros atuais — ajuste o período ou clique em "Limpar filtros".</div>
+      </sc-if>
+
+      <sc-if value="{{rvpVisTabela}}" hint-placeholder-val="{{true}}">
+        <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;overflow:hidden">
+          <div style="display:grid;grid-template-columns:2.4fr 1fr 1fr 1.1fr 1.1fr 1.5fr .9fr;gap:8px;padding:10px 18px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">
+            <span>Produto</span><span>Categoria</span><span style="text-align:right">Quantidade</span><span style="text-align:right">Valor total</span><span style="text-align:right">Preço médio</span><span>Vendas</span><span></span>
+          </div>
+          <sc-for list="{{rvpRows}}" as="r" hint-placeholder-count="3">
+            <div style="border-bottom:1px solid #f5f1e8">
+              <div onClick="{{r.toggle}}" style="display:grid;grid-template-columns:2.4fr 1fr 1fr 1.1fr 1.1fr 1.5fr .9fr;gap:8px;padding:10px 18px;align-items:center;cursor:pointer" style-hover="background:#faf7f0">
+                <div style="display:flex;align-items:center;gap:10px;min-width:0"><sc-if value="{{r.foto}}" hint-placeholder-val="{{false}}"><img loading="lazy" src="{{r.foto}}" alt="{{r.codigo}}" style="width:34px;height:34px;object-fit:cover;border-radius:7px;border:1px solid #eae3d6;flex:none"></sc-if><div style="min-width:0"><div style="font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{r.descricao}}</div><div style="font-size:10.5px;color:#b0a795">{{r.codigo}}</div></div></div>
+                <span style="font-size:12px;color:#6b6459">{{r.categoria}}</span>
+                <span style="font-size:12.5px;font-weight:600;text-align:right;white-space:nowrap">{{r.qtdTxt}}</span>
+                <span style="font-size:12.5px;font-weight:700;text-align:right">{{r.valorFmt}}</span>
+                <span style="font-size:12.5px;text-align:right;color:#8f682a;font-weight:600">{{r.medioFmt}}</span>
+                <span style="font-size:11.5px;color:#a89f90">{{r.vendasTxt}}</span>
+                <span style="font-size:11.5px;font-weight:600;color:#8f682a;text-align:right;white-space:nowrap">{{r.drillLabel}}</span>
+              </div>
+          <sc-if value="{{r.aberto}}" hint-placeholder-val="{{false}}">
+            <div style="background:#faf7f0;border-top:1px solid #f1ece2;padding:10px 18px 14px">
+              <div style="font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#a89f90;margin-bottom:7px">Vendas do produto — {{r.codigo}}</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr 1.6fr 1.6fr 1fr 1fr 1fr;gap:8px;font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#a89f90;padding:4px 0;border-bottom:1px solid #eee7d8">
+                <span>Data</span><span>Pedido</span><span>Revenda</span><span>Fornecedor</span><span style="text-align:right">Qtd</span><span style="text-align:right">Preço unit.</span><span style="text-align:right">Valor</span>
+              </div>
+              <sc-for list="{{r.detalhes}}" as="d" hint-placeholder-count="1">
+                <div style="display:grid;grid-template-columns:1fr 1fr 1.6fr 1.6fr 1fr 1fr 1fr;gap:8px;font-size:12px;padding:6px 0;border-bottom:1px dashed #f1ece2">
+                  <span>{{d.data}}</span><span style="font-weight:600">{{d.pedidoId}}</span><span>{{d.revNome}}</span><span style="color:#6b6459">{{d.fornNome}}</span><span style="text-align:right;font-weight:600">{{d.qtdTxt}}</span><span style="text-align:right">{{d.unitFmt}}</span><span style="text-align:right;font-weight:700">{{d.valorFmt}}</span>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+            </div>
+          </sc-for>
+          <div style="display:flex;justify-content:space-between;padding:11px 18px;background:#faf7f0;font-size:12.5px"><span style="color:#8a8378">{{rvpRowsN}} produto(s) no recorte · quantidade total {{rvpTotQtdTxt}}</span><span style="font-weight:700">Valor total: {{rvpTotValFmt}}</span></div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{rvpVisGraf}}" hint-placeholder-val="{{false}}">
+        <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:16px 18px">
+          <div style="font-size:14px;font-weight:700;margin-bottom:2px">Valor vendido por produto</div>
+          <div style="font-size:11.5px;color:#a89f90;margin-bottom:12px">Clique numa barra para abrir o drill-down com as vendas do produto (pedido, revenda, fornecedor e data)</div>
+          <sc-for list="{{rvpRows}}" as="r" hint-placeholder-count="3">
+            <div style="margin-bottom:4px">
+              <div onClick="{{r.toggle}}" style="display:flex;align-items:center;gap:10px;padding:6px 0;cursor:pointer" title="Clique para ver as vendas do produto">
+                <div style="width:230px;flex:none;min-width:0"><div style="font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{r.descricao}}</div><div style="font-size:10px;color:#b0a795">{{r.codigo}} · {{r.categoria}}</div></div>
+                <div style="flex:1;background:#f4f0e6;border-radius:7px;height:26px;position:relative;overflow:hidden">
+                  <div style="width:{{r.barW}};height:100%;background:linear-gradient(90deg,#B38335,#c9a05a);border-radius:7px"></div>
+                </div>
+                <div style="width:180px;flex:none;text-align:right"><span style="font-size:12.5px;font-weight:700">{{r.valorFmt}}</span> <span style="font-size:10.5px;color:#a89f90">· {{r.qtdTxt}} · méd. {{r.medioFmt}}</span></div>
+              </div>
+          <sc-if value="{{r.aberto}}" hint-placeholder-val="{{false}}">
+            <div style="background:#faf7f0;border-top:1px solid #f1ece2;padding:10px 18px 14px">
+              <div style="font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#a89f90;margin-bottom:7px">Vendas do produto — {{r.codigo}}</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr 1.6fr 1.6fr 1fr 1fr 1fr;gap:8px;font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#a89f90;padding:4px 0;border-bottom:1px solid #eee7d8">
+                <span>Data</span><span>Pedido</span><span>Revenda</span><span>Fornecedor</span><span style="text-align:right">Qtd</span><span style="text-align:right">Preço unit.</span><span style="text-align:right">Valor</span>
+              </div>
+              <sc-for list="{{r.detalhes}}" as="d" hint-placeholder-count="1">
+                <div style="display:grid;grid-template-columns:1fr 1fr 1.6fr 1.6fr 1fr 1fr 1fr;gap:8px;font-size:12px;padding:6px 0;border-bottom:1px dashed #f1ece2">
+                  <span>{{d.data}}</span><span style="font-weight:600">{{d.pedidoId}}</span><span>{{d.revNome}}</span><span style="color:#6b6459">{{d.fornNome}}</span><span style="text-align:right;font-weight:600">{{d.qtdTxt}}</span><span style="text-align:right">{{d.unitFmt}}</span><span style="text-align:right;font-weight:700">{{d.valorFmt}}</span>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+    </sc-if>
+
+    <sc-if value="{{relAbaGeral}}" hint-placeholder-val="{{true}}">
     <div style="display:flex;gap:10px;margin-bottom:14px;align-items:center;flex-wrap:wrap">
       <select value="{{relComp}}" onChange="{{setRelComp}}" style="padding:9px 12px;border:1px solid #e5ddcd;border-radius:9px;font:inherit;font-size:12.5px;font-weight:600;color:#272525;background:#fff;outline:none;cursor:pointer">
         <sc-for list="{{relCompOpts}}" as="o" hint-placeholder-count="3"><option value="{{o.v}}">{{o.label}}</option></sc-for>
@@ -1496,6 +1608,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <div style="padding:22px 18px;text-align:center;font-size:13px;color:#a89f90">Nenhum pedido encontrado com os filtros atuais — ajuste os filtros acima ou clique em "Limpar filtros".</div>
       </sc-if>
     </div>
+    </sc-if>
   </div>
 </sc-if>
 
@@ -2183,9 +2296,13 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         </sc-for>
       </div>
       <sc-if value="{{prodFornVazio}}" hint-placeholder-val="{{false}}"><div style="font-size:11.5px;color:#a89f90;margin-top:5px">Nenhum fornecedor ativo encontrado para esta busca.</div></sc-if>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
         <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Unidade</div>
         <input value="{{form.unidade}}" onChange="{{fxUnidade}}" placeholder="Barril, Caixa…" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
+        <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Categoria</div>
+        <select value="{{form.categoria}}" onChange="{{fxCategoria}}" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525;cursor:pointer">
+          <option value="Chope">Chope</option><option value="Cerveja">Cerveja</option><option value="Acessórios">Acessórios</option><option value="Insumos">Insumos</option><option value="Outros">Outros</option>
+        </select></div>
         <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Preço estimado (R$)</div>
         <input value="{{form.preco}}" onChange="{{fxPreco}}" placeholder="0,00" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
       </div>
@@ -2897,7 +3014,8 @@ class Component extends DCLogic {
     cfgTestTo:'', cfgMsg:null, cfgMsgTipo:null, cfgBusy:false,
     selPed:null, selCot:null, selForn:null, selProd:null, selRev:null, modal:null, form:{}, pendVenc:null, filtroStatusProd:'todos', buscaRev:'', buscaPed:'', filtroRev:'0', fPedVis:'cards',
     busca:'', buscaForn:'', filtroForn:'0', filtroStatus:'todos', buscaCat:'', cart:{}, fotoIdx:{}, lightbox:null, expFech:null, filtroCot:'todas',
-    relComp:'todas', relRevF:'0', relFornF:'0', relStF:'todos',
+    relComp:'todas', relRevF:'0', relFornF:'0', relStF:'todos', relAba:'geral',
+    rvpDe:'', rvpAte:'', rvpProd:'0', rvpRev:'0', rvpForn:'0', rvpCat:'todas', rvpVis:'tabela', rvpDrill:null,
     audBusca:'', audUsr:'todos', audMod:'todos', audSev:'todas', audPer:'todos', audLimit:30,
     royCompF:'todas', royFornF:'0', royStF:'todos',
     seq:{ped:47,cot:9,forn:5,prod:11,rev:5,ctr:5,nf:1210},
@@ -2914,16 +3032,16 @@ class Component extends DCLogic {
       {id:4,fornecedorId:4,numero:'CT-2025-009',royalty:3,inicio:'01/03/2025',fim:'28/02/2026',vigente:false,historico:[]}
     ],
     produtos:[
-      {id:1,codigo:'PRD-001',descricao:'Chopp Pilsen Imperial 30L',unidade:'Barril',preco:620,fornecedorId:1,fornecedorIds:[1,3],ativo:true},
-      {id:2,codigo:'PRD-002',descricao:'Chopp Pilsen Imperial 50L',unidade:'Barril',preco:890,fornecedorId:1,fornecedorIds:[1,3],ativo:true,precoHist:[{data:'01/05/2026',de:'R$ 850,00',para:'R$ 890,00',usuario:'Ana Ribeiro (Loja)'}]},
-      {id:3,codigo:'PRD-003',descricao:'Chopp IPA Imperial 30L',unidade:'Barril',preco:740,fornecedorId:1,ativo:true},
-      {id:4,codigo:'PRD-004',descricao:'Cerveja Puro Malte 600ml (cx 12)',unidade:'Caixa',preco:148,fornecedorId:2,fornecedorIds:[2,3],ativo:true},
-      {id:5,codigo:'PRD-005',descricao:'Long Neck Premium 355ml (cx 24)',unidade:'Caixa',preco:132,fornecedorId:2,ativo:true},
-      {id:6,codigo:'PRD-006',descricao:'Growler Cerâmica 1L',unidade:'Unidade',preco:89,fornecedorId:2,ativo:true},
-      {id:7,codigo:'PRD-007',descricao:'Cilindro CO₂ 10kg (recarga)',unidade:'Unidade',preco:210,fornecedorId:3,fornecedorIds:[3,1],ativo:true},
-      {id:8,codigo:'PRD-008',descricao:'Copo Caldereta personalizado (cx 12)',unidade:'Caixa',preco:96,fornecedorId:3,fornecedorIds:[3,1],ativo:true},
-      {id:9,codigo:'PRD-009',descricao:'Bolacha de chopp (pct 500)',unidade:'Pacote',preco:75,fornecedorId:3,ativo:false},
-      {id:10,codigo:'PRD-010',descricao:'Barril Inox 30L (comodato)',unidade:'Unidade',preco:450,fornecedorId:4,ativo:false}
+      {id:1,codigo:'PRD-001',descricao:'Chopp Pilsen Imperial 30L',unidade:'Barril',categoria:'Chope',preco:620,fornecedorId:1,fornecedorIds:[1,3],ativo:true},
+      {id:2,codigo:'PRD-002',descricao:'Chopp Pilsen Imperial 50L',unidade:'Barril',categoria:'Chope',preco:890,fornecedorId:1,fornecedorIds:[1,3],ativo:true,precoHist:[{data:'01/05/2026',de:'R$ 850,00',para:'R$ 890,00',usuario:'Ana Ribeiro (Loja)'}]},
+      {id:3,codigo:'PRD-003',descricao:'Chopp IPA Imperial 30L',unidade:'Barril',categoria:'Chope',preco:740,fornecedorId:1,ativo:true},
+      {id:4,codigo:'PRD-004',descricao:'Cerveja Puro Malte 600ml (cx 12)',unidade:'Caixa',categoria:'Cerveja',preco:148,fornecedorId:2,fornecedorIds:[2,3],ativo:true},
+      {id:5,codigo:'PRD-005',descricao:'Long Neck Premium 355ml (cx 24)',unidade:'Caixa',categoria:'Cerveja',preco:132,fornecedorId:2,ativo:true},
+      {id:6,codigo:'PRD-006',descricao:'Growler Cerâmica 1L',unidade:'Unidade',categoria:'Acessórios',preco:89,fornecedorId:2,ativo:true},
+      {id:7,codigo:'PRD-007',descricao:'Cilindro CO₂ 10kg (recarga)',unidade:'Unidade',categoria:'Insumos',preco:210,fornecedorId:3,fornecedorIds:[3,1],ativo:true},
+      {id:8,codigo:'PRD-008',descricao:'Copo Caldereta personalizado (cx 12)',unidade:'Caixa',categoria:'Acessórios',preco:96,fornecedorId:3,fornecedorIds:[3,1],ativo:true},
+      {id:9,codigo:'PRD-009',descricao:'Bolacha de chopp (pct 500)',unidade:'Pacote',categoria:'Insumos',preco:75,fornecedorId:3,ativo:false},
+      {id:10,codigo:'PRD-010',descricao:'Barril Inox 30L (comodato)',unidade:'Unidade',categoria:'Acessórios',preco:450,fornecedorId:4,ativo:false}
     ],
     revendas:[
       {id:1,nome:'Bar do Imperador',cnpj:'11.111.222/0001-33',cidade:'Petrópolis/RJ',telefone:'(24) 2242-1188',ativo:true,visibilidade:[1,2,3],prodBloq:[],email:'compras@bardoimperador.com.br',ultimoAcesso:'09/07/2026 08:14'},
@@ -3500,6 +3618,7 @@ class Component extends DCLogic {
       "resumo": "Painel gerencial da Loja com indicadores, gráficos, rankings, funil e tabelas de desempenho — tudo recalculado pelos filtros — além de exportação em CSV.",
       "passos": [
         "Use os filtros no topo — \"Todas as competências\", \"Todas as revendas\", \"Todos os fornecedores\" e \"Todos os status\" — para delimitar o período e os parceiros; todo o painel recalcula na hora.",
+        "Use as abas do topo para alternar entre a \"Visão geral\" e o relatório \"Venda por produtos\" — este mostra código, quantidade, valor total, preço unitário e médio, revenda, fornecedor e data de cada venda, com filtros por período, produto, revenda, fornecedor e categoria, visão em tabela ou gráfico (com drill-down ao clicar) e exportação XLSX do recorte.",
         "Confira os seis indicadores: \"Pedidos\", \"Valor em pedidos\", \"Ticket médio\", \"Taxa de aprovação\", \"Faturado\" e \"Royalties\".",
         "No gráfico \"Evolução mensal do faturamento\", acompanhe as competências; passe o mouse sobre uma barra para ver o faturado e o royalty do mês.",
         "Em \"Pedidos por status\", veja a distribuição na barra colorida e a lista com quantidade e percentual de cada status.",
@@ -3839,6 +3958,25 @@ class Component extends DCLogic {
   setRelFornF=e=>this.setState({relFornF:e.target.value});
   setRelStF=e=>this.setState({relStF:e.target.value});
   limparRelFiltros=()=>this.setState({relComp:'todas',relRevF:'0',relFornF:'0',relStF:'todos'});
+  // ——— Relatório de venda por produtos (Ata 5.13) ———
+  _pCat(p){ return (p&&p.categoria)||'Outros'; }
+  setRelAba(v){ this._sra=this._sra||{}; if(!this._sra[v]) this._sra[v]=()=>this.setState({relAba:v}); return this._sra[v]; }
+  setRvpK(k){ this._srv=this._srv||{}; if(!this._srv[k]) this._srv[k]=e=>this.setState({[k]:e.target.value,rvpDrill:null}); return this._srv[k]; }
+  setRvpVis(v){ this._srvv=this._srvv||{}; if(!this._srvv[v]) this._srvv[v]=()=>this.setState({rvpVis:v}); return this._srvv[v]; }
+  rvpDrillT(pid){ this._rvd=this._rvd||{}; if(!this._rvd[pid]) this._rvd[pid]=()=>this.setState(s=>({rvpDrill:s.rvpDrill===pid?null:pid})); return this._rvd[pid]; }
+  limparRvp=()=>this.setState({rvpDe:'',rvpAte:'',rvpProd:'0',rvpRev:'0',rvpForn:'0',rvpCat:'todas',rvpDrill:null});
+  exportVendasProduto=()=>{ if(!this.pode('relatorios.exportar')) return this.negado('Você não tem permissão para exportar relatórios.','relatorios.exportar');
+    const ex=this._rvpExport||{linhas:[],resumo:[]};
+    const l1=[['Código','Produto','Categoria','Data','Pedido','Revenda','Fornecedor','Quantidade','Preço unitário (R$)','Valor total (R$)']];
+    ex.linhas.forEach(l=>l1.push([l.codigo,l.descricao,l.categoria,l.data,l.pedidoId,l.revNome,l.fornNome,l.qtd,Number(l.unit.toFixed(2)),Number(l.valor.toFixed(2))]));
+    const l2=[['Código','Produto','Categoria','Quantidade','Valor total (R$)','Preço médio (R$)','Pedidos','Revendas']];
+    ex.resumo.forEach(g=>l2.push([g.codigo,g.descricao,g.categoria,g.qtd,Number(g.valor.toFixed(2)),Number((g.valor/(g.qtd||1)).toFixed(2)),g.nPed,g.nRev]));
+    const ws2=XLSX.utils.aoa_to_sheet(l2); ws2['!cols']=[{wch:9},{wch:36},{wch:12},{wch:11},{wch:15},{wch:16},{wch:9},{wch:9}];
+    const ws1=XLSX.utils.aoa_to_sheet(l1); ws1['!cols']=[{wch:9},{wch:36},{wch:12},{wch:11},{wch:10},{wch:24},{wch:26},{wch:11},{wch:17},{wch:15}];
+    const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws2,'Resumo por produto'); XLSX.utils.book_append_sheet(wb,ws1,'Vendas detalhadas');
+    const d=new Date(); const nome='vendas-por-produto-'+d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')+'.xlsx';
+    XLSX.writeFile(wb,nome);
+    this.audit('Exportação de vendas por produto',nome+' · '+ex.linhas.length+' venda(s), filtros aplicados'); };
   parseData(d){ if(!d) return null; const m=String(d).match(/(\d{2})\/(\d{2})\/(\d{4})/); return m?new Date(+m[3],+m[2]-1,+m[1]):null; }
   _relPedsFiltrados(){ const S=this.state;
     return S.pedidos.map(p=>({...p,status:this.pedStatus(p),total:this.pedTotal(p)}))
@@ -3945,13 +4083,13 @@ class Component extends DCLogic {
       const mudouPreco=old.preco!==preco;
       const mudouForn=JSON.stringify(this._pForns(old))!==JSON.stringify(fids);
       const precoHist=mudouPreco?[...(old.precoHist||[]),{data:this.hoje(),de:this.fmt(old.preco),para:this.fmt(preco),usuario:this.userName()}]:(old.precoHist||[]);
-      this.setState(s=>({produtos:s.produtos.map(x=>x.id===f.editId?{...x,descricao:f.descricao,unidade:f.unidade||x.unidade,preco,fornecedorId:fids[0],fornecedorIds:fids,fotos:rot,precoHist}:x),modal:null,form:{}}));
+      this.setState(s=>({produtos:s.produtos.map(x=>x.id===f.editId?{...x,descricao:f.descricao,unidade:f.unidade||x.unidade,categoria:f.categoria||x.categoria||'Outros',preco,fornecedorId:fids[0],fornecedorIds:fids,fotos:rot,precoHist}:x),modal:null,form:{}}));
       this.audit('Edição de produto homologado',old.codigo+(mudouPreco?' · preço '+this.fmt(old.preco)+' → '+this.fmt(preco):'')+(mudouForn?' · fornecedores: '+nomesF:''));
       return; }
     const id=this.state.seq.prod; const codigo='PRD-0'+id;
     const base=['img/prd-new-1.png','img/prd-new-2.png','img/prd-new-3.png'];
     const fp=f.fotoP||0; const fotos=[...base.slice(fp),...base.slice(0,fp)];
-    this.setState(s=>({produtos:[...s.produtos,{id,codigo,descricao:f.descricao,unidade:f.unidade||'Unidade',preco,fornecedorId:fids[0],fornecedorIds:fids,ativo:true,fotos}],seq:{...s.seq,prod:id+1},modal:null,form:{}}));
+    this.setState(s=>({produtos:[...s.produtos,{id,codigo,descricao:f.descricao,unidade:f.unidade||'Unidade',categoria:f.categoria||'Outros',preco,fornecedorId:fids[0],fornecedorIds:fids,ativo:true,fotos}],seq:{...s.seq,prod:id+1},modal:null,form:{}}));
     this.audit('Cadastro de produto homologado',codigo+' · '+f.descricao+' · fornecedores: '+nomesF); };
   toggleProd(id){ this._tp=this._tp||{}; if(!this._tp[id]) this._tp[id]=(e)=>{ if(e&&e.stopPropagation) e.stopPropagation(); const p=this.state.produtos.find(x=>x.id===id);
     this.setState(s=>({produtos:s.produtos.map(x=>x.id===id?{...x,ativo:!x.ativo}:x)}));
@@ -5024,7 +5162,7 @@ class Component extends DCLogic {
             ...this.chip(x.status),open:this.openPed(x.id)})),
           semPedidos:emPeds.length===0,
           editar:(()=>{ const h=this._ultimoPrecoHist(p); const val=h?h.valor:p.preco;
-            return this.open('produto',{editId:p.id,descricao:p.descricao,unidade:p.unidade,preco:String(val).replace('.',','),
+            return this.open('produto',{editId:p.id,descricao:p.descricao,unidade:p.unidade,categoria:p.categoria||'Outros',preco:String(val).replace('.',','),
               precoInfo:h?('Preenchido automaticamente com o último valor do histórico: '+this.fmt(h.valor)+' — '+h.origem+'. Você pode ajustar; a alteração manual alimenta o histórico de preços.'):null,
               fornecedorIds:this._pForns(p).slice(),buscaForn:'',fotoP:0}); })(),
           toggle:this.toggleProd(p.id),toggleLabel:p.ativo?'Inativar no catálogo':'Ativar no catálogo',
@@ -5086,6 +5224,61 @@ class Component extends DCLogic {
     const relTemFiltro=S.relComp!=='todas'||S.relRevF!=='0'||S.relFornF!=='0'||S.relStF!=='todos';
     const compKey=c=>{ const [m,y]=c.split('/'); return y+m; };
     const relComps=[...new Set([...S.pedidos.map(p=>(p.data||'').slice(3)),...S.faturamentos.map(f=>f.competencia)])].filter(c=>/^\d{2}\/\d{4}$/.test(c)).sort((a,b)=>compKey(b).localeCompare(compKey(a)));
+    // ——— Venda por produtos: uma linha por item vendido (pedido não rejeitado) ———
+    const rvpLinhas=[];
+    const rvpDe=S.rvpDe?this._parseData(S.rvpDe):null, rvpAte=S.rvpAte?this._parseData(S.rvpAte):null;
+    S.pedidos.forEach(p=>{ if(p.status==='rejeitado') return;
+      const d=this._parseData(p.data);
+      if(rvpDe&&d&&d<rvpDe) return; if(rvpAte&&d&&d>rvpAte) return;
+      (p.itens||[]).forEach(i=>{ if(i.st==='rejeitado') return;
+        if(S.rvpProd!=='0'&&i.produtoId!==+S.rvpProd) return;
+        if(S.rvpRev!=='0'&&p.revendaId!==+S.rvpRev) return;
+        if(S.rvpForn!=='0'&&i.fornecedorId!==+S.rvpForn) return;
+        const prod=P(i.produtoId);
+        if(S.rvpCat!=='todas'&&this._pCat(prod)!==S.rvpCat) return;
+        const val=this.itemTotal(i);
+        rvpLinhas.push({produtoId:i.produtoId,codigo:prod.codigo||'',descricao:prod.descricao||'',categoria:this._pCat(prod),unidade:prod.unidade||'un',
+          qtd:i.qtd,valor:val,unit:val/(i.qtd||1),pedidoId:p.id,data:p.data,dataD:d?d.getTime():0,
+          revNome:R(p.revendaId).nome||'',fornNome:i.fornecedorId?F(i.fornecedorId).nome:(i.st==='estoque'?'Estoque da Loja':'— a definir —')}); }); });
+    const rvpBy={};
+    rvpLinhas.forEach(l=>{ const g=rvpBy[l.produtoId]||(rvpBy[l.produtoId]={produtoId:l.produtoId,codigo:l.codigo,descricao:l.descricao,categoria:l.categoria,unidade:l.unidade,qtd:0,valor:0,peds:new Set(),revs:new Set()});
+      g.qtd+=l.qtd; g.valor+=l.valor; g.peds.add(l.pedidoId); g.revs.add(l.revNome); });
+    const rvpAgg=Object.values(rvpBy).sort((a,b)=>b.valor-a.valor);
+    const rvpMax=Math.max(1,...rvpAgg.map(g=>g.valor),1);
+    const rvpRows=rvpAgg.map(g=>({codigo:g.codigo,descricao:g.descricao,categoria:g.categoria,
+      foto:this.fotosDe(P(g.produtoId))[0],ver:this.verFoto(g.produtoId),
+      qtdTxt:g.qtd+' '+g.unidade,valorFmt:this.fmt(g.valor),medioFmt:this.fmt(g.valor/(g.qtd||1)),
+      vendasTxt:g.peds.size+' pedido(s) · '+g.revs.size+' revenda(s)',
+      barW:String(Math.max(3,Math.round(g.valor/rvpMax*100)))+'%',
+      aberto:S.rvpDrill===g.produtoId,toggle:this.rvpDrillT(g.produtoId),
+      drillLabel:S.rvpDrill===g.produtoId?'ocultar vendas ▴':'ver vendas ▾',
+      detalhes:rvpLinhas.filter(l=>l.produtoId===g.produtoId).sort((a,b)=>b.dataD-a.dataD)
+        .map(l=>({data:l.data,pedidoId:l.pedidoId,revNome:l.revNome,fornNome:l.fornNome,qtdTxt:l.qtd+' '+l.unidade,unitFmt:this.fmt(l.unit),valorFmt:this.fmt(l.valor)}))}));
+    this._rvpExport={linhas:[...rvpLinhas].sort((a,b)=>b.dataD-a.dataD),resumo:rvpAgg.map(g=>({...g,nPed:g.peds.size,nRev:g.revs.size}))};
+    const rvpTotQtd=rvpLinhas.reduce((a,l)=>a+l.qtd,0), rvpTotVal=rvpLinhas.reduce((a,l)=>a+l.valor,0);
+    const rvpKpis=[
+      {label:'Produtos com venda',val:String(rvpAgg.length),sub:rvpLinhas.length+' venda(s) no recorte'},
+      {label:'Quantidade vendida',val:String(rvpTotQtd),sub:'unidades somadas do recorte'},
+      {label:'Valor total',val:this.fmt(rvpTotVal),sub:'itens de pedidos não rejeitados'},
+      {label:'Preço médio geral',val:rvpTotQtd?this.fmt(rvpTotVal/rvpTotQtd):'—',sub:'valor total ÷ quantidade'}];
+    const rvpFiltroAtivo=!!(S.rvpDe||S.rvpAte||S.rvpProd!=='0'||S.rvpRev!=='0'||S.rvpForn!=='0'||S.rvpCat!=='todas');
+    const rvpVals={
+      relAbaGeral:(S.relAba||'geral')!=='produtos',relAbaProd:S.relAba==='produtos',
+      relAbaGeralFn:this.setRelAba('geral'),relAbaProdFn:this.setRelAba('produtos'),
+      relTabGFg:(S.relAba||'geral')!=='produtos'?'#8f682a':'#8a8378',relTabGBd:(S.relAba||'geral')!=='produtos'?'#B38335':'transparent',
+      relTabPFg:S.relAba==='produtos'?'#8f682a':'#8a8378',relTabPBd:S.relAba==='produtos'?'#B38335':'transparent',
+      rvpDe:S.rvpDe,rvpAte:S.rvpAte,setRvpDe:this.setRvpK('rvpDe'),setRvpAte:this.setRvpK('rvpAte'),
+      rvpProd:S.rvpProd,setRvpProd:this.setRvpK('rvpProd'),rvpProdOpts:[{v:'0',label:'Todos os produtos'},...S.produtos.map(p=>({v:String(p.id),label:p.codigo+' · '+p.descricao}))],
+      rvpRev:S.rvpRev,setRvpRev:this.setRvpK('rvpRev'),rvpRevOpts:[{v:'0',label:'Todas as revendas'},...S.revendas.map(r2=>({v:String(r2.id),label:r2.nome}))],
+      rvpForn:S.rvpForn,setRvpForn:this.setRvpK('rvpForn'),rvpFornOpts:[{v:'0',label:'Todos os fornecedores'},...S.fornecedores.map(f2=>({v:String(f2.id),label:f2.nome}))],
+      rvpCat:S.rvpCat,setRvpCat:this.setRvpK('rvpCat'),rvpCatOpts:[{v:'todas',label:'Todas as categorias'},...[...new Set(S.produtos.map(p=>this._pCat(p)))].map(c=>({v:c,label:c}))],
+      rvpFiltroAtivo,limparRvp:this.limparRvp,exportVendasProduto:this.exportVendasProduto,
+      rvpVisTabela:(S.rvpVis||'tabela')!=='grafico',rvpVisGraf:S.rvpVis==='grafico',
+      rvpVisTabelaFn:this.setRvpVis('tabela'),rvpVisGrafFn:this.setRvpVis('grafico'),
+      rvpTabBg:(S.rvpVis||'tabela')!=='grafico'?'#272525':'#fff',rvpTabFg:(S.rvpVis||'tabela')!=='grafico'?'#fff':'#6b6459',
+      rvpGrafBg:S.rvpVis==='grafico'?'#272525':'#fff',rvpGrafFg:S.rvpVis==='grafico'?'#fff':'#6b6459',
+      rvpRows,rvpKpis,rvpVazio:rvpRows.length===0,
+      rvpTotValFmt:this.fmt(rvpTotVal),rvpTotQtdTxt:String(rvpTotQtd),rvpRowsN:String(rvpRows.length)};
     const relCompOpts=[{v:'todas',label:'Todas as competências'},...relComps.map(c=>({v:c,label:'Competência '+c}))];
     const relRevOpts=[{v:'0',label:'Todas as revendas'},...S.revendas.map(r=>({v:String(r.id),label:r.nome}))];
     const relFornOpts=[{v:'0',label:'Todos os fornecedores'},...S.fornecedores.map(f=>({v:String(f.id),label:f.nome}))];
@@ -5445,7 +5638,7 @@ class Component extends DCLogic {
       prodKpis,pdd,filtroStatusProd:S.filtroStatusProd,setFiltroStatusProd:this.setFiltroStatusProd,prodModalTitulo,prodModalBtn,
       revKpis,rd,buscaRev:S.buscaRev,setBuscaRev:this.setBuscaRev,revModalTitulo,revModalBtn,fxEmail:this.fx('email'),
       busca:S.busca,setBusca:this.setBusca,filtroForn:S.filtroForn,setFiltroForn:this.setFiltroForn,
-      novoForn:this.open('fornecedor',{}),novoProduto:this.open('produto',{fornecedorIds:[],buscaForn:'',unidade:''}),novaRevenda:this.open('revenda',{}),
+      novoForn:this.open('fornecedor',{}),novoProduto:this.open('produto',{fornecedorIds:[],buscaForn:'',unidade:'',categoria:'Outros'}),novaRevenda:this.open('revenda',{}),
       // faturamento / royalties
       fatRows,aguardFat,temAguardFat:aguardFat.length>0,royGroups,royKpis,...royVals,
       mCob:M==='cobranca'&&!!cobInfo,cobInfo:cobInfo||{rows:[]},emitirCobranca:this.emitirCobranca,
@@ -5456,7 +5649,7 @@ class Component extends DCLogic {
       relComp:S.relComp,relRevF:S.relRevF,relFornF:S.relFornF,relStF:S.relStF,
       setRelComp:this.setRelComp,setRelRevF:this.setRelRevF,setRelFornF:this.setRelFornF,setRelStF:this.setRelStF,
       relTemFiltro,limparRelFiltros:this.limparRelFiltros,
-      relKpis,relMeses,temSerie,relTopProds,relTopRevs,relFunil,relFornRows,relRevRows,relRoyRows,
+      relKpis,relMeses,temSerie,relTopProds,relTopRevs,relFunil,relFornRows,relRevRows,relRoyRows,...rvpVals,
       temRoyRows:relRoyRows.length>0,semPedRows:relPedRows.length===0,
       relPedsN:String(relPedRows.length),relFatsN:String(relFats.length),
       exportRelPedidos:this.exportRelPedidos,exportRelFat:this.exportRelFat,
@@ -5484,7 +5677,7 @@ class Component extends DCLogic {
       form:S.form,mClose:this.mClose,
       fxNome:this.fx('nome'),fxCnpj:this.fx('cnpj'),fxCidade:this.fx('cidade'),fxContato:this.fx('contato'),
       fxRoyalty:this.fx('royalty'),fxInicio:this.fx('inicio'),fxFim:this.fx('fim'),fxFornecedorId:this.fx('fornecedorId'),fxRevendaId:this.fx('revendaId'),
-      fxCodigo:this.fx('codigo'),fxDescricao:this.fx('descricao'),fxUnidade:this.fx('unidade'),fxPreco:this.fx('preco'),fxBuscaForn:this.fx('buscaForn'),fxTelefone:this.fxTelefone,fxContatoNome:this.fx('contatoNome'),
+      fxCodigo:this.fx('codigo'),fxDescricao:this.fx('descricao'),fxUnidade:this.fx('unidade'),fxPreco:this.fx('preco'),fxBuscaForn:this.fx('buscaForn'),fxTelefone:this.fxTelefone,fxContatoNome:this.fx('contatoNome'),fxCategoria:this.fx('categoria'),
       fxJustif:this.fx('justif'),fxPedidoId:this.fx('pedidoId'),fxPrazo:this.fx('prazo'),
       fxPrecoP:this.fx('precoP'),fxPrazoEntrega:this.fx('prazoEntrega'),fxValidade:this.fx('validade'),fxCondicoes:this.fx('condicoes'),
       fxValorFat:this.fx('valorFat'),fxDataPg:this.fx('dataPg'),fxValorPg:this.fx('valorPg'),fxComprovante:this.fx('comprovante'),fxMotivo:this.fx('motivo'),fxVenc:this.fx('venc'),
