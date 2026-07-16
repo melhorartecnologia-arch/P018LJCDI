@@ -1105,7 +1105,8 @@ input::placeholder,textarea::placeholder{color:#b0a795}
           <sc-for list="{{fatRows}}" as="f" hint-placeholder-count="4">
             <tr>
               <td style="padding:11px 18px;font-size:13px;font-weight:600;border-bottom:1px solid #f5f1e8">{{f.id}}<div style="font-size:11px;font-weight:400;color:#a89f90">{{f.data}}</div>
-                <sc-if value="{{f.temAnexo}}" hint-placeholder-val="{{false}}"><a href="{{f.anexoUrl}}" target="_blank" title="{{f.anexoNome}}" style="font-size:11px;font-weight:600;color:#8f682a;text-decoration:none">📎 documento fiscal</a></sc-if>
+                <sc-if value="{{f.temAnexo}}" hint-placeholder-val="{{false}}"><a href="{{f.anexoUrl}}" target="_blank" title="{{f.anexoNome}}" style="font-size:11px;font-weight:600;color:#8f682a;text-decoration:none">📎 NF · documento fiscal</a></sc-if>
+                <sc-if value="{{f.temDocsExtras}}" hint-placeholder-val="{{false}}"><div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:2px"><sc-for list="{{f.docsExtras}}" as="dx" hint-placeholder-count="0"><a href="{{dx.url}}" target="_blank" title="{{dx.info}}" style="font-size:10.5px;font-weight:600;color:#8f682a;text-decoration:none;background:#faf5e9;border:1px solid #e5d9bd;border-radius:6px;padding:1px 7px">📎 {{dx.label}} · {{dx.nome}}</a></sc-for></div></sc-if>
                 <sc-if value="{{f.temAnalise}}" hint-placeholder-val="{{false}}"><div title="{{f.analiseTitulo}}" style="font-size:10.5px;font-weight:600;color:{{f.analiseFg}};cursor:help">{{f.analiseTxt}}</div></sc-if></td>
               <td style="padding:11px 10px;font-size:13px;border-bottom:1px solid #f5f1e8">{{f.pedidoId}}</td>
               <td style="padding:11px 10px;font-size:13px;border-bottom:1px solid #f5f1e8">{{f.fornNome}}</td>
@@ -1834,7 +1835,8 @@ input::placeholder,textarea::placeholder{color:#b0a795}
           <sc-for list="{{fFatRows}}" as="f" hint-placeholder-count="2">
             <tr>
               <td style="padding:11px 18px;font-size:13px;font-weight:600;border-bottom:1px solid #f5f1e8">{{f.id}}<div style="font-size:11px;font-weight:400;color:#a89f90">{{f.data}}</div>
-                <sc-if value="{{f.temAnexo}}" hint-placeholder-val="{{false}}"><a href="{{f.anexoUrl}}" target="_blank" title="{{f.anexoNome}}" style="font-size:11px;font-weight:600;color:#8f682a;text-decoration:none">📎 documento fiscal</a></sc-if>
+                <sc-if value="{{f.temAnexo}}" hint-placeholder-val="{{false}}"><a href="{{f.anexoUrl}}" target="_blank" title="{{f.anexoNome}}" style="font-size:11px;font-weight:600;color:#8f682a;text-decoration:none">📎 NF · documento fiscal</a></sc-if>
+                <sc-if value="{{f.temDocsExtras}}" hint-placeholder-val="{{false}}"><div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:2px"><sc-for list="{{f.docsExtras}}" as="dx" hint-placeholder-count="0"><a href="{{dx.url}}" target="_blank" title="{{dx.info}}" style="font-size:10.5px;font-weight:600;color:#8f682a;text-decoration:none;background:#faf5e9;border:1px solid #e5d9bd;border-radius:6px;padding:1px 7px">📎 {{dx.label}} · {{dx.nome}}</a></sc-for></div></sc-if>
                 <sc-if value="{{f.temAnalise}}" hint-placeholder-val="{{false}}"><div title="{{f.analiseTitulo}}" style="font-size:10.5px;font-weight:600;color:{{f.analiseFg}};cursor:help">{{f.analiseTxt}}</div></sc-if></td>
               <td style="padding:11px 10px;font-size:13px;border-bottom:1px solid #f5f1e8">{{f.pedidoId}}</td>
               <td style="padding:11px 10px;font-size:13px;border-bottom:1px solid #f5f1e8">{{f.revNome}}</td>
@@ -1942,6 +1944,11 @@ input::placeholder,textarea::placeholder{color:#b0a795}
               <td style="padding:11px 18px;font-size:13px;font-weight:600;border-bottom:1px solid #f5f1e8">{{p.id}}<div style="font-size:11px;font-weight:400;color:#a89f90">{{p.data}}</div></td>
               <td style="padding:11px 10px;border-bottom:1px solid #f5f1e8"><div style="display:flex;align-items:center"><sc-for list="{{p.fotos}}" as="ft" hint-placeholder-count="0"><sc-if value="{{ft.src}}" hint-placeholder-val="{{false}}"><img loading="lazy" src="{{ft.src}}" alt="item" onClick="{{ft.ver}}" title="Clique para ampliar" style="width:32px;height:32px;object-fit:cover;border-radius:8px;border:2px solid #fff;margin-right:-8px;box-shadow:0 1px 3px rgba(39,37,37,.18);cursor:zoom-in"></sc-if></sc-for><span style="font-size:12px;color:#8a8378;margin-left:16px;white-space:nowrap">{{p.itensN}}</span></div></td>
               <td style="padding:11px 10px;font-size:13px;border-bottom:1px solid #f5f1e8">{{p.fornNome}}
+                <sc-if value="{{p.temFatDocs}}" hint-placeholder-val="{{false}}">
+                  <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px">
+                    <sc-for list="{{p.fatDocs}}" as="fd" hint-placeholder-count="0"><a href="{{fd.url}}" target="_blank" title="{{fd.nome}}" style="font-size:10.5px;font-weight:700;color:#1f6b5e;text-decoration:none;background:#e9f3f1;border:1px solid #bcd9d3;border-radius:6px;padding:2px 7px">📎 {{fd.label}} · {{fd.nome}}</a></sc-for>
+                  </div>
+                </sc-if>
                 <sc-if value="{{p.temAnexos}}" hint-placeholder-val="{{false}}">
                   <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px">
                     <sc-for list="{{p.anexos}}" as="ax" hint-placeholder-count="0"><a href="{{ax.url}}" target="_blank" style="font-size:10.5px;font-weight:600;color:#8f682a;text-decoration:none;background:#faf5e9;border:1px solid #e5d9bd;border-radius:6px;padding:2px 7px">📎 {{ax.nome}}</a></sc-for>
@@ -2646,6 +2653,21 @@ input::placeholder,textarea::placeholder{color:#b0a795}
       <div style="font-size:12px;font-weight:600;color:#6b6459;margin:14px 0 5px">Documento fiscal emitido à revenda (PDF ou XML) — obrigatório</div>
       <input type="file" accept=".pdf,.xml" onChange="{{setAnexoFat}}" style="width:100%;box-sizing:border-box;padding:8px 10px;border:1px dashed #cdbf9d;border-radius:8px;font:inherit;font-size:12.5px;background:#fbf8f1;color:#6b6459;cursor:pointer">
       <sc-if value="{{temFatAnexo}}" hint-placeholder-val="{{false}}"><div style="font-size:12px;color:#2f6b39;margin-top:6px">📎 {{fatAnexoNome}} anexado</div></sc-if>
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Anexos adicionais <span style="font-weight:400;color:#a89f90">— boleto e outros documentos, visíveis também à revenda (opcional)</span></div>
+      <div style="display:flex;gap:8px;align-items:stretch">
+        <select value="{{form.tipoDocExtra}}" onChange="{{fxTipoDocExtra}}" title="Tipo do documento que será adicionado" style="width:104px;flex:none;box-sizing:border-box;padding:8px 10px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:12.5px;background:#fff;outline:none;color:#272525;cursor:pointer">
+          <option value="boleto">Boleto</option><option value="outro">Outro</option>
+        </select>
+        <input type="file" multiple="multiple" accept=".pdf,.png,.jpg,.jpeg" onChange="{{addAnexoFatExtra}}" style="flex:1;box-sizing:border-box;padding:8px 10px;border:1px dashed #cdbf9d;border-radius:8px;font:inherit;font-size:12.5px;background:#fbf8f1;color:#6b6459;cursor:pointer">
+      </div>
+      <sc-if value="{{temFatExtras}}" hint-placeholder-val="{{false}}">
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:7px">
+          <sc-for list="{{fatExtras}}" as="ax" hint-placeholder-count="0">
+            <span style="font-size:11.5px;font-weight:600;background:#f5efe3;border:1px solid #e5d9bd;border-radius:7px;padding:4px 9px">📎 {{ax.label}} · {{ax.nome}} <span onClick="{{ax.rm}}" title="Remover anexo" style="cursor:pointer;color:#a33a2b;font-weight:700;margin-left:4px">✕</span></span>
+          </sc-for>
+        </div>
+      </sc-if>
+      <div style="font-size:10.5px;color:#b0a795;margin-top:5px">Escolha o tipo (Boleto/Outro) antes de selecionar os arquivos · PDF ou imagem (PNG/JPG) · até 5 MB cada · máximo de 5 anexos adicionais.</div>
       <sc-if value="{{fatAnaliseOn}}" hint-placeholder-val="{{false}}"><div style="background:#f2f0fa;border:1px solid #ddd8ee;border-radius:9px;padding:9px 13px;margin-top:10px;font-size:11.5px;color:#5d3f96">O documento será analisado automaticamente por IA para confirmar que se refere a este pedido antes de o faturamento ser aceito.</div></sc-if>
       <sc-if value="{{fatBusy}}" hint-placeholder-val="{{false}}"><div style="display:flex;align-items:center;gap:8px;margin-top:12px;font-size:12.5px;color:#8a5a12"><span style="display:inline-block;width:12px;height:12px;border:2px solid #e6cf9e;border-top-color:#8a5a12;border-radius:50%;animation:ajSpin .8s linear infinite"></span>Enviando e analisando o documento fiscal…</div></sc-if>
       <sc-if value="{{form.erro}}" hint-placeholder-val="{{false}}"><div style="color:#a33a2b;font-size:12.5px;margin-top:12px">{{form.erro}}</div></sc-if>
@@ -3668,6 +3690,7 @@ class Component extends DCLogic {
         "Clique no botão dourado \"Registrar faturamento…\", no lado direito do card (ele só aparece enquanto houver itens seus pendentes de faturamento).",
         "Na janela \"Registrar faturamento\", confira o quadro \"Somente os seus itens\" e revise o campo \"Valor efetivamente faturado (R$)\", ajustando o valor se necessário.",
         "No campo \"Documento fiscal emitido à revenda (PDF ou XML) — obrigatório\", anexe o PDF ou o XML da nota fiscal que você emitiu para a revenda; o nome do arquivo aparece com um 📎 quando anexado.",
+        "Em \"Anexos adicionais\" você pode juntar o BOLETO e outros documentos ao faturamento: escolha o tipo (Boleto/Outro), selecione os arquivos (PDF ou imagem, até 5 MB cada, máximo 5) — eles ficam identificados por tipo e visíveis para a Loja e para a revenda.",
         "Clique em \"Confirmar faturamento\" para concluir, ou em \"Cancelar\" para fechar sem registrar. Se a análise automática estiver habilitada, o documento é verificado na hora: se não corresponder ao pedido, o registro é recusado e o motivo aparece em vermelho na janela."
       ],
       "dicas": [
@@ -3770,6 +3793,7 @@ class Component extends DCLogic {
         "Na coluna \"Fornecedor (faturamento)\" confira quem vai faturar o pedido; enquanto a Loja ainda não definir o fornecedor, o campo mostra apenas um traço (\"—\").",
         "Veja o valor total do pedido na coluna \"Total\".",
         "Acompanhe a etiqueta colorida na coluna \"Status\", que indica a situação do pedido (pendente, em cotação, aprovado, rejeitado ou faturado, como explica o texto logo abaixo do título da tela).",
+        "Quando o fornecedor fatura, os documentos do faturamento aparecem na coluna \"Fornecedor (faturamento)\" como etiquetas verdes — \"📎 NF …\" para a nota fiscal e \"📎 Boleto …\" para o boleto — clique para baixar cada arquivo.",
         "Quando um pedido é rejeitado, aparece um texto em vermelho logo abaixo da etiqueta de status, com a justificativa informada pela Loja."
       ],
       "dicas": [
@@ -4435,6 +4459,8 @@ class Component extends DCLogic {
   // Como o anexo/análise de um faturamento aparece nas tabelas (📎 + selo IA)
   _anexoView(f){ const a=f.analise;
     return { temAnexo:!!f.anexoId, anexoUrl:f.anexoId?('/api/anexos/'+f.anexoId):'', anexoNome:f.anexoNome||'documento fiscal',
+      docsExtras:(f.anexosExtras||[]).map(x=>({nome:x.nome,url:'/api/anexos/'+x.id,label:x.tipoDoc==='boleto'?'Boleto':'Outro',info:(x.quando||'')+(x.autor?' · '+x.autor:'')})),
+      temDocsExtras:!!(f.anexosExtras&&f.anexosExtras.length),
       temAnalise:!!a, analiseTxt:a?(a.aceito?('✓ validado por '+(a.engine==='claude'?'IA Claude':'análise local')):'⚠ não validado'):'',
       analiseFg:a&&a.aceito?'#2f6b39':'#8a5a12', analiseTitulo:a?(a.motivo||''):'' }; }
   // ——— Anexos em propostas e no atendimento (Ata 5.7) ———
@@ -4468,6 +4494,20 @@ class Component extends DCLogic {
     this.audit('Anexos no atendimento do pedido',pid+' · '+regs.length+' arquivo(s): '+regs.map(a=>a.nome).join(', '));
     setTimeout(()=>this._flushPersist(),0);
     this.mClose(); };
+  // ——— Anexos adicionais do faturamento (Ata 5.12): boleto e outros, visíveis à revenda ———
+  addAnexoFatExtra=e=>{ const files=[...((e.target&&e.target.files)||[])]; if(!files.length) return;
+    const tipoDoc=(this.state.form.tipoDocExtra==='outro')?'outro':'boleto';
+    const cur=this.state.form.anexosExtras||[];
+    if(cur.length+files.length>5) return this.err('Máximo de 5 anexos adicionais por faturamento.');
+    for(const file of files){ const ext=(file.name.split('.').pop()||'').toLowerCase();
+      if(!['pdf','png','jpg','jpeg'].includes(ext)) return this.err('Anexo adicional não permitido: '+file.name+' — use PDF ou imagem (PNG/JPG).');
+      if(file.size>5*1024*1024) return this.err('Anexo muito grande: '+file.name+' — o limite é 5 MB por arquivo.'); }
+    files.forEach(file=>{ const rd=new FileReader();
+      rd.onload=()=>{ const b64=String(rd.result).split(',')[1]||'';
+        this.setState(s=>({form:{...s.form,anexosExtras:[...(s.form.anexosExtras||[]),{nome:file.name,tipo:file.type||'application/octet-stream',b64,tipoDoc}],erro:null}})); };
+      rd.readAsDataURL(file); });
+    e.target.value=''; };
+  rmAnexoFatExtra(ix){ this._rmfe=this._rmfe||{}; if(!this._rmfe[ix]) this._rmfe[ix]=()=>this.setState(s=>({form:{...s.form,anexosExtras:(s.form.anexosExtras||[]).filter((_,j)=>j!==ix),erro:null}})); return this._rmfe[ix]; }
   // Seleção do documento fiscal (PDF/XML) obrigatório no registro de faturamento
   setAnexoFat=e=>{ const file=e.target&&e.target.files&&e.target.files[0]; if(!file) return;
     const ext=(file.name.split('.').pop()||'').toLowerCase();
@@ -4503,11 +4543,17 @@ class Component extends DCLogic {
           return; }
       }
     }catch(e){ this.setState(s=>({form:{...s.form,fatBusy:false,erro:e.message||'Falha ao processar o anexo do documento fiscal.'}})); return; }
+    let anexosExtras=[];
+    if((f.anexosExtras||[]).length){
+      try{ for(const a of f.anexosExtras){ const up2=await fetch('/api/anexos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nome:a.nome,tipo:a.tipo,dados:a.b64})}).then(r=>r.json());
+        if(!up2.ok) throw new Error(up2.error||('Falha ao enviar o anexo '+a.nome+'.'));
+        anexosExtras.push({id:up2.id,nome:a.nome,tipoDoc:a.tipoDoc,quando:this.ts(),autor:this.userName()}); } }
+      catch(e3){ this.setState(s=>({form:{...s.form,fatBusy:false,erro:e3.message||'Falha ao enviar os anexos adicionais.'}})); return; } }
     const n=this.state.seq.nf; const nf='NF-'+n; const comp=this.compAtual();
-    this.setState(s=>({faturamentos:[{id:nf,pedidoId:pid,fornecedorId:fid,revendaId:ped.revendaId,cotacaoId:cotRef,valor,data:this.hoje(),competencia:comp,royaltyPct:pct,royaltyValor:Math.round(valor*pct)/100,anexoId,anexoNome:f.anexoNome||null,analise},...s.faturamentos],seq:{...s.seq,nf:n+1},modal:null,form:{}}));
+    this.setState(s=>({faturamentos:[{id:nf,pedidoId:pid,fornecedorId:fid,revendaId:ped.revendaId,cotacaoId:cotRef,valor,data:this.hoje(),competencia:comp,royaltyPct:pct,royaltyValor:Math.round(valor*pct)/100,anexoId,anexoNome:f.anexoNome||null,anexosExtras,analise},...s.faturamentos],seq:{...s.seq,nf:n+1},modal:null,form:{}}));
     this.updPed(pid,p=>{p.itens=p.itens.map(i=>i.st==='direto'&&i.fornecedorId===fid?{...i,st:'faturado'}:i);
       p.trilha.push(this.tr('Faturado ('+nf+') diretamente à revenda — '+this.fmt(valor)+' ('+meus.length+' item(ns))'+(analise?' · documento fiscal validado pela análise ('+analise.engine+')':' · documento fiscal anexado')));return p;});
-    this.audit('Registro de faturamento',nf+' · '+pid+' · '+this.fmt(valor)+(analise?' · anexo validado ('+(analise.engine==='claude'?'IA Claude':'analisador local')+')':' · anexo: '+(f.anexoNome||'—')));
+    this.audit('Registro de faturamento',nf+' · '+pid+' · '+this.fmt(valor)+(analise?' · anexo validado ('+(analise.engine==='claude'?'IA Claude':'analisador local')+')':' · anexo: '+(f.anexoNome||'—'))+(anexosExtras.length?' · '+anexosExtras.length+' anexo(s) adicional(is): '+anexosExtras.map(a=>(a.tipoDoc==='boleto'?'boleto ':'')+a.nome).join(', '):''));
     const _ilF=meus.map(i=>this._itemView(i));
     this.notificar('faturamento_revenda',this._revEmail(ped.revendaId),{pedidoId:pid,nf,fornecedorNome:this._fornNome(fid),valor:this.fmt(valor),itensLista:_ilF});
     this.notificar('faturamento_loja',this._lojaEmail(),{nf,pedidoId:pid,fornecedorNome:this._fornNome(fid),valor:this.fmt(valor),royalty:this.fmt(Math.round(valor*pct)/100),itensLista:_ilF});
@@ -5385,7 +5431,7 @@ class Component extends DCLogic {
         anexos:(p.anexosAtend||[]).filter(a=>a.fornecedorId===fid).map(a=>({nome:a.nome,url:'/api/anexos/'+a.id,info:a.quando})),
         temAnexos:!!(p.anexosAtend||[]).filter(a=>a.fornecedorId===fid).length,
         anexar:this.open('anexoped',{pedidoId:p.id,anexos:[]}),
-        faturar:this.open('faturar',{pedidoId:p.id,valorFat:pend.reduce((a,i)=>a+this.itemTotal(i),0).toFixed(2).replace('.',','),nf:''})});});
+        faturar:this.open('faturar',{pedidoId:p.id,valorFat:pend.reduce((a,i)=>a+this.itemTotal(i),0).toFixed(2).replace('.',','),nf:'',anexosExtras:[],tipoDocExtra:'boleto'})});});
     // Visualização detalhada em lista (Ata 5.6): uma linha por item do fornecedor,
     // com dados do pedido e da revenda de destino — apenas itens dele (visibilidade).
     const fVis=(S.fPedVis==='lista')?'lista':'cards';
@@ -5443,6 +5489,11 @@ class Component extends DCLogic {
       itensN:p.itens.length+(p.itens.length===1?' item':' itens'),totalFmt:this._revTotalFmt(p),
       fornNome:destTxt(p),...this.chip(p.status),
       anexos:(p.anexosAtend||[]).map(a=>({nome:a.nome,url:'/api/anexos/'+a.id})),temAnexos:!!(p.anexosAtend&&p.anexosAtend.length),
+      fatDocs:S.faturamentos.filter(f2=>f2.pedidoId===p.id).flatMap(f2=>{
+        const out=[]; if(f2.anexoId) out.push({label:'NF '+f2.id,nome:f2.anexoNome||'documento fiscal',url:'/api/anexos/'+f2.anexoId});
+        (f2.anexosExtras||[]).forEach(a=>out.push({label:a.tipoDoc==='boleto'?'Boleto':'Outro',nome:a.nome,url:'/api/anexos/'+a.id}));
+        return out; }),
+      temFatDocs:S.faturamentos.some(f2=>f2.pedidoId===p.id&&(f2.anexoId||(f2.anexosExtras&&f2.anexosExtras.length))),
       justificativa:p.justificativa||'',temJustif:!!p.justificativa}));
 
     // modal helper views
@@ -5502,6 +5553,8 @@ class Component extends DCLogic {
           sel:on,qtdVal,qtdMax:String(x.i.qtd),unid:prod.unidade||'un',setQtd:this.fx('q'+x.ix),podeDividir:x.i.qtd>1,
           temSaldo:sp.temInv,saldoTxt:sp.temInv?('saldo em estoque: '+sp.saldo):'',saldoFg:sp.saldo>=x.i.qtd?'#2f6b39':(sp.saldo>0?'#8a5a12':'#a33a2b')};}); }
     const formAnexos=(S.form.anexos||[]).map((a,ix)=>({nome:a.nome,rm:this.rmAnexoForm(ix)}));
+    const fatExtras=(S.form.anexosExtras||[]).map((a,ix)=>({nome:a.nome,label:a.tipoDoc==='boleto'?'Boleto':'Outro',rm:this.rmAnexoFatExtra(ix)}));
+    const temFatExtras=fatExtras.length>0;
     const temFormAnexos=formAnexos.length>0;
     let anxInfo={pedidoId:'',lista:[],temLista:false};
     if(M==='anexoped'&&S.form.pedidoId){ const pAx=PEDS.find(x=>x.id===S.form.pedidoId);
@@ -5687,7 +5740,7 @@ class Component extends DCLogic {
       mForn:M==='fornecedor',mCtr:M==='contrato',mRoy:M==='royalty',mProd:M==='produto',mRev:M==='revenda',
       mRej:M==='rejeitar',mDir:M==='direto',mCot:M==='cotacao',mEst:M==='estoque',mJusV:M==='justifvenc',mCanC:M==='cancelarcot',
       mProp:M==='proposta',mRod:M==='rodada',mAnx:M==='anexoped',mFat:M==='faturar',mPag:M==='pagamento',mCompF:M==='compforn',
-      dirRows,convRows,dirVazio,prodFornRows,prodFornSel,prodFornVazio,propInfo,fatInfo,jvInfo,royInfo,rodInfo,confirmRodada:this.confirmRodada,formAnexos,temFormAnexos,anxInfo,addAnexosForm:this.addAnexosForm,confirmAnexosPed:this.confirmAnexosPed,selItens,
+      dirRows,convRows,dirVazio,prodFornRows,prodFornSel,prodFornVazio,propInfo,fatInfo,jvInfo,royInfo,rodInfo,confirmRodada:this.confirmRodada,formAnexos,temFormAnexos,anxInfo,addAnexosForm:this.addAnexosForm,confirmAnexosPed:this.confirmAnexosPed,fatExtras,temFatExtras,addAnexoFatExtra:this.addAnexoFatExtra,fxTipoDocExtra:this.fx('tipoDocExtra'),selItens,
       confirmEstoque:this.confirmEstoque,setPedidoCot:this.setPedidoCot,
       prodModalFotos:(S.form.editId&&M==='produto'?this.fotosDe(S.produtos.find(x=>x.id===S.form.editId)||{}):['img/prd-new-1.png','img/prd-new-2.png','img/prd-new-3.png']).map((src,i)=>({src,principal:i===(S.form.fotoP||0),pick:this.pickFotoP(i),bd:i===(S.form.fotoP||0)?'#B38335':'#e8e1d2'})),
       salvarForn:this.salvarForn,salvarContrato:this.salvarContrato,salvarRoyalty:this.salvarRoyalty,
