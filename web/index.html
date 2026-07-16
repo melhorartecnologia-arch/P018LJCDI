@@ -450,6 +450,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
       <div style="font-size:21px;font-weight:700">{{cd.id}}</div>
       <span style="font-size:12px;font-weight:600;border-radius:7px;padding:4px 10px;background:{{cd.stBg}};color:{{cd.stFg}}">{{cd.stLabel}}</span>
       <sc-if value="{{cd.temPrazoTag}}" hint-placeholder-val="{{false}}"><span style="font-size:11.5px;font-weight:700;border-radius:7px;padding:4px 10px;background:{{cd.prazoBg}};color:{{cd.prazoFg}}">{{cd.prazoTxt}}</span></sc-if>
+      <sc-if value="{{cd.temRodTag}}" hint-placeholder-val="{{false}}"><span style="font-size:11.5px;font-weight:700;border-radius:7px;padding:4px 10px;background:#efe6f5;color:#5d3f96">{{cd.rodAtualTag}}</span></sc-if>
     </div>
     <div style="font-size:13px;color:#8a8378;margin-bottom:12px">Pedido de origem <span onClick="{{cd.verPed}}" style="color:#8f682a;font-weight:600;cursor:pointer">{{cd.pedidoId}} ↗</span> — valor de referência {{cd.refFmt}} · prazo para propostas: {{cd.prazo}}</div>
     <div style="display:flex;gap:8px;margin-bottom:14px">
@@ -504,9 +505,14 @@ input::placeholder,textarea::placeholder{color:#b0a795}
           <div style="font-size:14px;font-weight:700">Mapa comparativo de propostas</div>
           <div style="font-size:11.5px;color:#a89f90;margin-top:2px">Sigilo garantido: cada fornecedor vê apenas a própria proposta (RF25)</div>
         </div>
-        <sc-if value="{{cd.podeCancelar}}" hint-placeholder-val="{{false}}">
-          <div onClick="{{cd.cancelarFn}}" style="font-size:12px;font-weight:600;color:#a33a2b;border:1px solid #e7c4bc;border-radius:8px;padding:7px 12px;cursor:pointer" style-hover="background:#fbf1ef">Cancelar cotação…</div>
-        </sc-if>
+        <div style="display:flex;gap:8px">
+          <sc-if value="{{cd.podeRodada}}" hint-placeholder-val="{{false}}">
+            <div onClick="{{cd.novaRodadaFn}}" style="font-size:12px;font-weight:700;color:#fff;background:#B38335;border-radius:8px;padding:7px 13px;cursor:pointer" style-hover="background:#9a6f2b">Nova rodada…</div>
+          </sc-if>
+          <sc-if value="{{cd.podeCancelar}}" hint-placeholder-val="{{false}}">
+            <div onClick="{{cd.cancelarFn}}" style="font-size:12px;font-weight:600;color:#a33a2b;border:1px solid #e7c4bc;border-radius:8px;padding:7px 12px;cursor:pointer" style-hover="background:#fbf1ef">Cancelar cotação…</div>
+          </sc-if>
+        </div>
       </div>
       <sc-if value="{{cd.semPropostas}}" hint-placeholder-val="{{false}}">
         <div style="padding:26px 18px;text-align:center;font-size:13px;color:#a89f90">Nenhuma proposta recebida até o momento.</div>
@@ -527,6 +533,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
                 <td style="padding:12px 18px;font-size:13px;font-weight:600;border-bottom:1px solid #f5f1e8">{{m.fornNome}}
                   <sc-if value="{{m.menor}}" hint-placeholder-val="{{false}}"><span style="margin-left:7px;font-size:10.5px;font-weight:700;border-radius:6px;padding:2px 7px;background:#B38335;color:#fff">MENOR PREÇO</span></sc-if>
                   <sc-if value="{{m.vencedora}}" hint-placeholder-val="{{false}}"><span style="margin-left:7px;font-size:10.5px;font-weight:700;border-radius:6px;padding:2px 7px;background:#2f6b39;color:#fff">VENCEDORA</span></sc-if>
+                  <sc-if value="{{m.temRodadaInfo}}" hint-placeholder-val="{{false}}"><div style="font-size:10.5px;font-weight:600;color:#5d3f96;margin-top:3px">{{m.rodadaInfo}}</div></sc-if>
                 </td>
                 <td style="padding:12px 10px;text-align:right;border-bottom:1px solid #f5f1e8">
                   <div style="font-size:14px;font-weight:700">{{m.precoFmt}}</div>
@@ -555,7 +562,9 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <sc-for list="{{cd.adj}}" as="ai" hint-placeholder-count="2">
           <div style="padding:12px 18px;border-bottom:1px solid #f5f1e8">
             <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:9px;flex-wrap:wrap">
-              <div style="font-size:13px;font-weight:700">{{ai.codigo}} · {{ai.descricao}} <span style="color:#a89f90;font-weight:400">{{ai.qtdTxt}} · ref. {{ai.refFmt}}</span></div>
+              <div style="font-size:13px;font-weight:700">{{ai.codigo}} · {{ai.descricao}} <span style="color:#a89f90;font-weight:400">{{ai.qtdTxt}} · ref. {{ai.refFmt}}</span>
+                <sc-if value="{{ai.emRodada}}" hint-placeholder-val="{{false}}"><span style="margin-left:7px;font-size:10.5px;font-weight:700;border-radius:6px;padding:2px 7px;background:#efe6f5;color:#5d3f96">EM RENEGOCIAÇÃO · RODADA {{ai.rodadaN}}</span></sc-if>
+              </div>
               <sc-if value="{{ai.adjudicado}}" hint-placeholder-val="{{false}}"><span style="font-size:11px;font-weight:700;border-radius:6px;padding:3px 9px;background:#e9f3ea;color:#2f6b39;white-space:nowrap">Adjudicado a {{ai.vencNome}}</span></sc-if>
             </div>
             <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -571,6 +580,27 @@ input::placeholder,textarea::placeholder{color:#b0a795}
                 </div>
               </sc-for>
             </div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+    <sc-if value="{{cd.temRodadas}}" hint-placeholder-val="{{false}}">
+      <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:16px 18px;margin-bottom:14px">
+        <div style="font-size:14px;font-weight:700;margin-bottom:2px">Rodadas de negociação</div>
+        <div style="font-size:11.5px;color:#a89f90;margin-bottom:10px">Evolução das propostas e contrapropostas — convites, itens e condições preservados por rodada</div>
+        <sc-for list="{{cd.rodadasView}}" as="rv" hint-placeholder-count="0">
+          <div style="border:1px solid #eee7d8;border-radius:10px;padding:11px 14px;margin-bottom:9px">
+            <div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap">
+              <span style="font-size:12.5px;font-weight:700;color:#5d3f96">{{rv.titulo}}</span>
+              <span style="font-size:11.5px;color:#a89f90">{{rv.info}}</span>
+            </div>
+            <div style="font-size:12px;color:#6b6459;margin-top:4px"><b>Itens:</b> {{rv.itensTxt}} · <b>Fornecedores convidados:</b> {{rv.fornsTxt}}</div>
+            <sc-if value="{{rv.semProps}}" hint-placeholder-val="{{false}}"><div style="font-size:11.5px;color:#a89f90;margin-top:5px">Nenhuma proposta registrada nesta rodada até o momento.</div></sc-if>
+            <sc-for list="{{rv.props}}" as="rp" hint-placeholder-count="0">
+              <div style="display:flex;justify-content:space-between;gap:10px;font-size:12.5px;padding:5px 0;border-top:1px dashed #f1ece2;margin-top:5px">
+                <span>{{rp.fornNome}} <span style="color:#a89f90">· {{rp.quando}} · {{rp.condicoes}}</span></span><b>{{rp.totFmt}}</b>
+              </div>
+            </sc-for>
           </div>
         </sc-for>
       </div>
@@ -1592,9 +1622,11 @@ input::placeholder,textarea::placeholder{color:#b0a795}
               <span style="font-size:14.5px;font-weight:700">{{c.id}}</span>
               <span style="font-size:11.5px;font-weight:600;border-radius:7px;padding:3px 9px;background:{{c.stBg}};color:{{c.stFg}}">{{c.stLabel}}</span>
               <span style="font-size:11.5px;color:#a89f90">prazo: {{c.prazo}}</span>
+              <sc-if value="{{c.temRodTag}}" hint-placeholder-val="{{false}}"><span style="font-size:10.5px;font-weight:700;border-radius:6px;padding:2px 8px;background:#efe6f5;color:#5d3f96">{{c.rodTag}}</span></sc-if>
             </div>
             <div style="font-size:12.5px;color:#6b6459;margin-top:4px">{{c.itensTxt}}</div>
             <div style="font-size:12px;color:#a89f90;margin-top:2px">Minha proposta: <b style="color:#272525">{{c.minhaFmt}}</b></div>
+            <sc-if value="{{c.foraRodada}}" hint-placeholder-val="{{false}}"><div style="font-size:11.5px;color:#8a5a12;margin-top:3px">Esta rodada de renegociação não inclui você — sua última proposta permanece válida.</div></sc-if>
             <sc-if value="{{c.temResultado}}" hint-placeholder-val="{{false}}">
               <div style="font-size:12.5px;font-weight:600;margin-top:3px;color:#2f6b39">{{c.resultado}}</div>
             </sc-if>
@@ -2285,11 +2317,44 @@ input::placeholder,textarea::placeholder{color:#b0a795}
   </div>
 </sc-if>
 
+<sc-if value="{{mRod}}" hint-placeholder-val="{{false}}">
+  <div style="position:fixed;inset:0;background:rgba(39,37,37,.45);display:flex;align-items:center;justify-content:center;z-index:50">
+    <div style="background:#fff;border-radius:14px;width:480px;max-width:92vw;max-height:86vh;overflow-y:auto;padding:22px 24px;box-shadow:0 18px 50px rgba(39,37,37,.25)">
+      <div style="font-size:16px;font-weight:700">Nova rodada de negociação — {{rodInfo.cotId}}</div>
+      <div style="font-size:12.5px;color:#8a8378;margin-top:2px">Rodada {{rodInfo.rodadaN}} — os fornecedores selecionados serão notificados para revisar preços e condições dos itens escolhidos; as propostas anteriores ficam preservadas no histórico</div>
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:14px 0 6px">Itens em renegociação</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <sc-for list="{{rodInfo.itens}}" as="ri" hint-placeholder-count="1">
+          <div onClick="{{ri.toggle}}" style="border:1px solid {{ri.bd}};background:{{ri.bg}};border-radius:9px;padding:8px 12px;font-size:12.5px;cursor:pointer;display:flex;justify-content:space-between;gap:10px">
+            <span style="font-weight:600;color:{{ri.fg}}">{{ri.mark}}{{ri.label}}</span><span style="color:#a89f90">{{ri.qtdTxt}}</span>
+          </div>
+        </sc-for>
+      </div>
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 6px">Fornecedores participantes da rodada</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <sc-for list="{{rodInfo.forns}}" as="rf" hint-placeholder-count="2">
+          <div onClick="{{rf.toggle}}" style="border:1px solid {{rf.bd}};background:{{rf.bg}};border-radius:9px;padding:8px 12px;font-size:12.5px;cursor:pointer;display:flex;justify-content:space-between;gap:10px">
+            <span style="font-weight:600;color:{{rf.fg}}">{{rf.mark}}{{rf.nome}}</span><span style="color:#a89f90">{{rf.sub}}</span>
+          </div>
+        </sc-for>
+      </div>
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Data limite para as contrapropostas</div>
+      <input value="{{form.prazo}}" onChange="{{fxPrazo}}" placeholder="dd/mm/aaaa" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
+      <sc-if value="{{form.erro}}" hint-placeholder-val="{{false}}"><div style="color:#a33a2b;font-size:12.5px;margin-top:12px">{{form.erro}}</div></sc-if>
+      <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:18px">
+        <div onClick="{{mClose}}" style="border:1px solid #ddd5c7;border-radius:8px;padding:9px 15px;font-size:13px;font-weight:600;cursor:pointer;color:#6b6459" style-hover="background:#f7f3ea">Cancelar</div>
+        <div onClick="{{confirmRodada}}" style="background:#B38335;color:#fff;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#9a6f2b">Abrir rodada e notificar</div>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
 <sc-if value="{{mProp}}" hint-placeholder-val="{{false}}">
   <div style="position:fixed;inset:0;background:rgba(39,37,37,.45);display:flex;align-items:center;justify-content:center;z-index:50">
     <div style="background:#fff;border-radius:14px;width:460px;max-width:92vw;max-height:86vh;overflow-y:auto;padding:22px 24px;box-shadow:0 18px 50px rgba(39,37,37,.25)">
       <div style="font-size:16px;font-weight:700">Proposta — {{propInfo.cotId}}</div>
       <div style="font-size:12.5px;color:#8a8378;margin-top:2px">RF24–RF25 — sua proposta é sigilosa; prazo limite: {{propInfo.prazo}}</div>
+      <sc-if value="{{propInfo.temRodadaTag}}" hint-placeholder-val="{{false}}"><div style="font-size:12px;font-weight:700;color:#5d3f96;background:#efe6f5;border:1px solid #ddcbee;border-radius:8px;padding:7px 11px;margin-top:10px">{{propInfo.rodadaTag}}</div></sc-if>
       <div style="background:#faf7f0;border:1px solid #eee7d8;border-radius:9px;padding:10px 13px;margin-top:12px">
         <div style="display:flex;gap:7px;margin-bottom:8px">
           <sc-for list="{{propInfo.fotos}}" as="ft" hint-placeholder-count="0"><sc-if value="{{ft.src}}" hint-placeholder-val="{{false}}"><img loading="lazy" src="{{ft.src}}" alt="item" onClick="{{ft.ver}}" title="Clique para ampliar" style="width:44px;height:44px;object-fit:cover;border-radius:8px;border:1px solid #eae3d6;cursor:zoom-in"></sc-if></sc-for>
@@ -3094,6 +3159,7 @@ class Component extends DCLogic {
         "Para dar toda a cotação a um único fornecedor, clique em \"Vencedora (todos os itens)\" na linha dele.",
         "Para dividir a compra por produto, use o bloco \"Adjudicação por item\" e clique em \"Escolher para este item\" no fornecedor desejado de cada item.",
         "Se a proposta escolhida não for a de menor preço, o sistema pede uma justificativa obrigatória; informe o motivo e confirme.",
+        "Para renegociar, clique no botão dourado \"Nova rodada…\" (aparece quando há propostas recebidas): escolha os itens em renegociação, os fornecedores participantes e a nova data limite — os convidados são notificados e podem enviar contrapropostas; o comparativo passa a mostrar a evolução entre rodadas e a decisão pode ser tomada em qualquer rodada.",
         "Para encerrar sem escolher vencedor, clique em \"Cancelar cotação…\", no topo do mapa comparativo, e informe o motivo do cancelamento.",
         "No fim da tela, consulte o \"Histórico completo da cotação (auditoria)\" para revisar todas as ações registradas, com data e responsável."
       ],
@@ -3334,7 +3400,7 @@ class Component extends DCLogic {
         "Localize na lista o cartão da cotação desejada: cada um mostra o código da cotação, a etiqueta de status, o texto \"prazo:\" e os itens solicitados.",
         "Clique nas miniaturas das fotos dos itens (passe o mouse e aparece \"Clique para ampliar\") para ver ampliada a imagem do que está sendo cotado.",
         "Confira o campo \"Minha proposta\": se aparecer \"— não enviada —\", você ainda não respondeu; se mostrar um valor, sua proposta já foi enviada.",
-        "Para responder, clique no botão dourado à direita do cartão — \"Enviar proposta…\" (ou \"Editar proposta…\", se já tiver enviado antes).",
+        "Para responder, clique no botão dourado à direita do cartão — \"Enviar proposta…\" (ou \"Editar proposta…\", se já tiver enviado antes; em rodadas de renegociação, \"Enviar contraproposta…\").",
         "Na janela que abre (\"Proposta —\" seguida do código da cotação), informe o valor em \"Preço unitário por item (R$)\" para cada item; o \"Total da proposta\" é calculado automaticamente.",
         "Preencha \"Prazo de entrega\" (ex.: 5 dias úteis), \"Validade da proposta\" (data no formato dd/mm/aaaa) e \"Condições comerciais\" (ex.: boleto 28 dias).",
         "Clique no botão dourado \"Enviar proposta\" para registrar (o botão continua com esse nome mesmo quando você está editando uma proposta já enviada), ou em \"Cancelar\" para fechar sem salvar.",
@@ -3935,17 +4001,63 @@ class Component extends DCLogic {
     this.audit('Abertura de cotação',id+' · pedido '+f.pedidoId+' · '+alocados.length+' item(ns) · '+totQ+' un'+(parcial?' (parcial)':''));
     const _ilC=itensCot.map(it=>{ const pp=this._prodInfo(it.produtoId); return {codigo:pp.codigo||'',descricao:pp.descricao||('Produto '+it.produtoId),qtd:it.qtd,unidade:pp.unidade||'',valor:this.fmt(it.qtd*it.preco)}; });
     conv.forEach(cf=>this.notificar('cotacao_convite',this._fornEmail(cf),{cotacao:id,fornecedorNome:this._fornNome(cf),prazo:f.prazo,itensLista:_ilC})); };
+  // ——— Rodadas de negociação (Ata 5.4) ———
+  _cotRod(c){ return (c&&c.rodada)?c.rodada:1; }
+  _rodInfo(c,n){ return ((c&&c.rodadas)||[]).find(r=>r.n===n)||null; }
+  _rodItens(c){ const r=this._rodInfo(c,this._cotRod(c)); return (r&&r.itens&&r.itens.length)?r.itens:null; }
+  _rodConv(c){ const r=this._rodInfo(c,this._cotRod(c)); return (r&&r.convidados&&r.convidados.length)?r.convidados:null; }
+  // Propostas efetivas: funde, por fornecedor, as propostas de todas as rodadas
+  // (o preço mais recente de cada item prevalece) e recalcula o total.
+  _propsEfetivas(c){ const by={};
+    [...((c&&c.propostas)||[])].sort((a,b)=>((a.rodada||1)-(b.rodada||1))).forEach(p=>{
+      const cur=by[p.fornecedorId]; by[p.fornecedorId]={...(cur||{}),...p,itens:{...((cur||{}).itens||{}),...(p.itens||{})}}; });
+    const citens=(c&&c.itens)||[];
+    return Object.values(by).map(p=>{ let tot=0,okAll=citens.length>0;
+      citens.forEach(it=>{ const u=(p.itens||{})[it.produtoId]; if(u!=null) tot+=u*it.qtd; else okAll=false; });
+      return {...p,rodada:p.rodada||1,preco:okAll?Math.round(tot*100)/100:p.preco}; }); }
+  // Total efetivo de um fornecedor considerando só propostas até a rodada n (evolução)
+  _propAteRodada(c,fid,n){ let itens=null,preco=null;
+    [...((c&&c.propostas)||[])].filter(p=>p.fornecedorId===fid&&(p.rodada||1)<=n).sort((a,b)=>((a.rodada||1)-(b.rodada||1)))
+      .forEach(p=>{ itens={...(itens||{}),...(p.itens||{})}; preco=p.preco; });
+    if(preco==null) return null;
+    const citens=(c&&c.itens)||[]; let tot=0,okAll=citens.length>0;
+    citens.forEach(it=>{ const u=(itens||{})[it.produtoId]; if(u!=null) tot+=u*it.qtd; else okAll=false; });
+    return okAll?Math.round(tot*100)/100:preco; }
+  toggleRodItem(pid){ this._tri=this._tri||{}; if(!this._tri[pid]) this._tri[pid]=()=>this.setState(s=>{ const cur=s.form.rodItens||[]; const on=cur.includes(pid);
+    return {form:{...s.form,rodItens:on?cur.filter(x=>x!==pid):[...cur,pid],erro:null}}; }); return this._tri[pid]; }
+  toggleRodForn(fid){ this._trf=this._trf||{}; if(!this._trf[fid]) this._trf[fid]=()=>this.setState(s=>{ const cur=s.form.rodConv||[]; const on=cur.includes(fid);
+    return {form:{...s.form,rodConv:on?cur.filter(x=>x!==fid):[...cur,fid],erro:null}}; }); return this._trf[fid]; }
+  confirmRodada=()=>{ if(!this.pode('cotacoes.abrir')) return this.negado('Você não tem permissão para abrir rodadas de negociação.','cotacoes.abrir'); const f=this.state.form;
+    const c=this.state.cotacoes.find(x=>x.id===f.cotId); if(!c) return;
+    const itensSel=f.rodItens||[]; const convSel=f.rodConv||[];
+    if(!itensSel.length) return this.err('Selecione ao menos um item para renegociar.');
+    if(!convSel.length) return this.err('Selecione ao menos um fornecedor participante da rodada.');
+    if(!f.prazo) return this.err('Defina a data limite para as contrapropostas.');
+    const n=this._cotRod(c)+1;
+    const nomes=this.state.fornecedores.filter(x=>convSel.includes(x.id)).map(x=>x.nome).join(', ');
+    const nomesIt=(c.itens||[]).filter(it=>itensSel.includes(it.produtoId)).map(it=>(this._prodInfo(it.produtoId).descricao||('Produto '+it.produtoId))).join(', ');
+    this.updCot(f.cotId,x=>{
+      if(!(x.rodadas||[]).some(r=>r.n===1)) x.rodadas=[...(x.rodadas||[]),{n:1,itens:(x.itens||[]).map(i=>i.produtoId),convidados:[...x.convidados],prazo:x.prazo,abertaEm:(x.historico[0]||{}).quando||'',usuario:(x.historico[0]||{}).usuario||''}];
+      x.rodada=n; x.prazo=f.prazo;
+      x.rodadas=[...(x.rodadas||[]),{n,itens:[...itensSel],convidados:[...convSel],prazo:f.prazo,abertaEm:this.ts(),usuario:this.userName()}];
+      x.historico.push({quando:this.ts(),usuario:this.userName(),acao:'Rodada '+n+' aberta — renegociação de '+itensSel.length+' item(ns) ('+nomesIt+') · fornecedores: '+nomes+' · prazo '+f.prazo});
+      return x;});
+    this.audit('Nova rodada de cotação',f.cotId+' · rodada '+n+' · '+itensSel.length+' item(ns) · '+convSel.length+' fornecedor(es)');
+    const _ilR=(c.itens||[]).filter(it=>itensSel.includes(it.produtoId)).map(it=>{ const pp=this._prodInfo(it.produtoId); return {codigo:pp.codigo||'',descricao:pp.descricao||('Produto '+it.produtoId),qtd:it.qtd,unidade:pp.unidade||'',valor:this.fmt(it.qtd*it.preco)}; });
+    convSel.forEach(cf=>this.notificar('cotacao_rodada',this._fornEmail(cf),{cotacao:f.cotId,fornecedorNome:this._fornNome(cf),rodada:String(n),prazo:f.prazo,itensLista:_ilR}));
+    this.mClose(); };
   escolher(cotId,fid){ return ()=>{ const c=this.state.cotacoes.find(x=>x.id===cotId);
-    const menor=Math.min(...c.propostas.map(p=>p.preco)); const pr=c.propostas.find(p=>p.fornecedorId===fid);
+    const props=this._propsEfetivas(c);
+    const menor=Math.min(...props.map(p=>p.preco)); const pr=props.find(p=>p.fornecedorId===fid);
     if(pr.preco>menor){ this.setState({modal:'justifvenc',pendVenc:{cotId,fid},form:{}}); } else { this.finalizarVenc(cotId,fid,null); } }; }
   confirmJustifVenc=()=>{ const j=(this.state.form.justif||'').trim(); if(!j) return this.err('Justificativa obrigatória: a proposta escolhida não é a de menor preço (RF28).');
     const pv=this.state.pendVenc;
     if(pv.produtoId!=null) this.finalizarVencItem(pv.cotId,pv.produtoId,pv.fid,j); else this.finalizarVenc(pv.cotId,pv.fid,j); };
   finalizarVenc(cotId,fid,justif){ if(!this.pode('cotacoes.decidir')) return; const c=this.state.cotacoes.find(x=>x.id===cotId);
-    const f=this.state.fornecedores.find(x=>x.id===fid); const pr=c.propostas.find(p=>p.fornecedorId===fid);
+    const f=this.state.fornecedores.find(x=>x.id===fid); const pr=this._propsEfetivas(c).find(p=>p.fornecedorId===fid);
     const refTot=(c.itens||[]).reduce((a,x2)=>a+x2.qtd*x2.preco,0)||1;
     this.updCot(cotId,x=>{x.status='encerrada';x.vencedorId=fid;x.vencItens=(x.itens||[]).reduce((m,it)=>({...m,[it.produtoId]:fid}),{});x.justificativa=justif;
-      x.historico.push({quando:this.ts(),usuario:this.userName(),acao:'Proposta vencedora (todos os itens): '+f.nome+' ('+this.fmt(pr.preco)+')'+(justif?' · Justificativa: '+justif:' — menor preço')});return x;});
+      x.historico.push({quando:this.ts(),usuario:this.userName(),acao:'Proposta vencedora (todos os itens, rodada '+this._cotRod(c)+'): '+f.nome+' ('+this.fmt(pr.preco)+')'+(justif?' · Justificativa: '+justif:' — menor preço')});return x;});
     this.updPed(c.pedidoId,p=>{p.itens=p.itens.map(i=>i.st==='cotacao'&&i.cotacaoId===cotId?{...i,st:'direto',fornecedorId:fid,precoNeg:(pr.itens&&pr.itens[i.produtoId]!=null)?pr.itens[i.produtoId]*i.qtd:Math.round(pr.preco*(i.qtd*i.preco)/refTot*100)/100}:i);
       p.trilha.push(this.tr('Itens da '+cotId+' gerados automaticamente para '+f.nome+' (vencedor)'));return p;});
     this.audit('Seleção de proposta vencedora',cotId+' → '+f.nome+(justif?' · '+justif:''));
@@ -3953,14 +4065,15 @@ class Component extends DCLogic {
     this.mClose(); }
   escolherItem(cotId,pid,fid){ this._ei=this._ei||{}; const k=cotId+'|'+pid+'|'+fid; if(!this._ei[k]) this._ei[k]=()=>{
     const c=this.state.cotacoes.find(x=>x.id===cotId);
-    const units=c.propostas.map(pp=>pp.itens?pp.itens[pid]:null).filter(v=>v!=null);
-    const pr=c.propostas.find(x=>x.fornecedorId===fid); const u=pr.itens?pr.itens[pid]:null;
+    const props=this._propsEfetivas(c);
+    const units=props.map(pp=>pp.itens?pp.itens[pid]:null).filter(v=>v!=null);
+    const pr=props.find(x=>x.fornecedorId===fid); const u=pr.itens?pr.itens[pid]:null;
     const menor=units.length?Math.min(...units):null;
     if(menor!=null&&u!=null&&u>menor){ this.setState({modal:'justifvenc',pendVenc:{cotId,fid,produtoId:pid},form:{}}); }
     else this.finalizarVencItem(cotId,pid,fid,null); }; return this._ei[k]; }
   finalizarVencItem(cotId,pid,fid,justif){ if(!this.pode('cotacoes.decidir')) return; const c=this.state.cotacoes.find(x=>x.id===cotId);
     const f=this.state.fornecedores.find(x=>x.id===fid); const prod=this.state.produtos.find(x=>x.id===pid);
-    const pr=c.propostas.find(x=>x.fornecedorId===fid); const it=(c.itens||[]).find(x=>x.produtoId===pid)||{qtd:1,preco:0};
+    const pr=this._propsEfetivas(c).find(x=>x.fornecedorId===fid); const it=(c.itens||[]).find(x=>x.produtoId===pid)||{qtd:1,preco:0};
     const u=pr.itens?pr.itens[pid]:null; const precoNeg=u!=null?u*it.qtd:null;
     const venc={...(c.vencItens||{}),[pid]:fid};
     const completo=(c.itens||[]).every(x=>venc[x.produtoId]!=null);
@@ -3988,15 +4101,22 @@ class Component extends DCLogic {
     const c=this.state.cotacoes.find(x=>x.id===cid);
     const ped=this.state.pedidos.find(p=>p.id===c.pedidoId)||{itens:[]};
     const citens=c.itens||ped.itens||[];
-    const itens={}; let total=0;
-    for(const it of citens){ const u=this.num(f['ip'+it.produtoId]); if(!u) return this.err('Informe o preço unitário de todos os itens (RF24).'); itens[it.produtoId]=u; total+=u*it.qtd; }
-    if(!f.prazoEntrega) return this.err('Informe o prazo de entrega (RF24).');
+    const rod=this._cotRod(c); const rodItens=rod>1?this._rodItens(c):null;
+    const alvo=rodItens?citens.filter(it=>rodItens.includes(it.produtoId)):citens;
     const fid=this.state.fornAtivo; const me=this.state.fornecedores.find(x=>x.id===fid);
-    this.updCot(cid,cc=>{ cc.propostas=cc.propostas.filter(p=>p.fornecedorId!==fid);
-      cc.propostas.push({fornecedorId:fid,preco:total,itens,prazoEntrega:f.prazoEntrega,validade:f.validade||'—',condicoes:f.condicoes||'—',quando:this.hoje()});
-      cc.historico.push({quando:this.ts(),usuario:me.nome,acao:'Proposta registrada por '+me.nome+' ('+this.fmt(total)+')'}); return cc;});
-    this.audit('Registro de proposta',cid+' · '+this.fmt(total));
-    const _ilP=citens.map(it=>{ const pp=this._prodInfo(it.produtoId); const u=itens[it.produtoId]; return {codigo:pp.codigo||'',descricao:pp.descricao||('Produto '+it.produtoId),qtd:it.qtd,unidade:pp.unidade||'',valor:this.fmt((u||0)*it.qtd)}; });
+    const antes=rod>1?this._propAteRodada(c,fid,rod-1):null;
+    const prev=this._propsEfetivas(c).find(p=>p.fornecedorId===fid);
+    const itens={...((prev&&prev.itens)||{})}; let totAlvo=0;
+    for(const it of alvo){ const u=this.num(f['ip'+it.produtoId]); if(!u) return this.err('Informe o preço unitário de todos os itens (RF24).'); itens[it.produtoId]=u; totAlvo+=u*it.qtd; }
+    if(!f.prazoEntrega) return this.err('Informe o prazo de entrega (RF24).');
+    let total=0,okAll=citens.length>0;
+    citens.forEach(it=>{ const u=itens[it.produtoId]; if(u!=null) total+=u*it.qtd; else okAll=false; });
+    total=okAll?Math.round(total*100)/100:Math.round(totAlvo*100)/100;
+    this.updCot(cid,cc=>{ cc.propostas=cc.propostas.filter(p=>!(p.fornecedorId===fid&&(p.rodada||1)===rod));
+      cc.propostas.push({fornecedorId:fid,rodada:rod,preco:total,itens,prazoEntrega:f.prazoEntrega,validade:f.validade||'—',condicoes:f.condicoes||'—',quando:this.hoje()});
+      cc.historico.push({quando:this.ts(),usuario:me.nome,acao:(rod>1?('Contraproposta (rodada '+rod+') registrada por '+me.nome+' ('+this.fmt(total)+')'+(antes!=null?' — antes: '+this.fmt(antes):'')):('Proposta registrada por '+me.nome+' ('+this.fmt(total)+')'))}); return cc;});
+    this.audit(rod>1?'Registro de contraproposta':'Registro de proposta',cid+(rod>1?' · rodada '+rod:'')+' · '+this.fmt(total)+(rod>1&&antes!=null?' (antes '+this.fmt(antes)+')':''));
+    const _ilP=alvo.map(it=>{ const pp=this._prodInfo(it.produtoId); const u=itens[it.produtoId]; return {codigo:pp.codigo||'',descricao:pp.descricao||('Produto '+it.produtoId),qtd:it.qtd,unidade:pp.unidade||'',valor:this.fmt((u||0)*it.qtd)}; });
     this.notificar('cotacao_proposta_loja',this._lojaEmail(),{cotacao:cid,fornecedorNome:me.nome,total:this.fmt(total),itensLista:_ilP});
     this.mClose(); };
   // Como o anexo/análise de um faturamento aparece nas tabelas (📎 + selo IA)
@@ -4465,15 +4585,15 @@ class Component extends DCLogic {
     const cotRows=S.cotacoes.filter(c=>(S.filtroCot||'todas')==='todas'||c.status===S.filtroCot)
       .map(c=>{ const pi=prazoInfo(c);
         return {id:c.id,pedidoId:c.pedidoId,prazo:c.prazo,
-          convidadosN:String(c.convidados.length),propostasN:c.propostas.length+' de '+c.convidados.length,
-          progW:Math.round(c.propostas.length/Math.max(1,c.convidados.length)*100),
+          convidadosN:String(c.convidados.length),propostasN:this._propsEfetivas(c).length+' de '+c.convidados.length+(this._cotRod(c)>1?' · rodada '+this._cotRod(c):''),
+          progW:Math.round(this._propsEfetivas(c).length/Math.max(1,c.convidados.length)*100),
           prazoTxt:pi.txt,temPrazoTag:!!pi.txt,prazoBg:pi.bg,prazoFg:pi.fg,
           ...this.chip(c.status),open:this.openCot(c.id)};});
     let ecoCot=0, convTotK=0, propTotK=0, aguardProp=0;
-    S.cotacoes.forEach(c=>{ convTotK+=c.convidados.length; propTotK+=c.propostas.length;
-      if(c.status==='aguardando propostas') aguardProp+=c.convidados.length-c.propostas.length;
-      if(c.status==='encerrada'&&c.vencedorId){ const venc=c.propostas.find(p=>p.fornecedorId===c.vencedorId);
-        if(venc&&c.propostas.length){ ecoCot+=c.propostas.reduce((a,p)=>a+p.preco,0)/c.propostas.length-venc.preco; } } });
+    S.cotacoes.forEach(c=>{ const efProps=this._propsEfetivas(c); convTotK+=c.convidados.length; propTotK+=efProps.length;
+      if(c.status==='aguardando propostas') aguardProp+=c.convidados.length-efProps.length;
+      if(c.status==='encerrada'&&c.vencedorId){ const venc=efProps.find(p=>p.fornecedorId===c.vencedorId);
+        if(venc&&efProps.length){ ecoCot+=efProps.reduce((a,p)=>a+p.preco,0)/efProps.length-venc.preco; } } });
     const cotKpis=[
       {label:'Em andamento',val:String(S.cotacoes.filter(c=>c.status==='aguardando propostas').length),sub:aguardProp+' proposta(s) ainda aguardadas'},
       {label:'Taxa de resposta',val:convTotK?Math.round(propTotK/convTotK*100)+'%':'—',sub:propTotK+' propostas de '+convTotK+' convites'},
@@ -4488,52 +4608,69 @@ class Component extends DCLogic {
       if(c){ const ped=PEDS.find(p=>p.id===c.pedidoId)||{itens:[],total:0};
         const citens=c.itens||ped.itens||[];
         const refTot=citens.reduce((a,i)=>a+i.qtd*i.preco,0);
-        const menor=c.propostas.length?Math.min(...c.propostas.map(p=>p.preco)):0;
+        const props=this._propsEfetivas(c);
+        const menor=props.length?Math.min(...props.map(p=>p.preco)):0;
         const aguardando=c.status==='aguardando propostas';
         const pi=prazoInfo(c);
         const abertura=c.historico.length?c.historico[0].quando:'';
         let steps;
         if(c.status==='cancelada'){ steps=[this.mkStep('Aberta',abertura,'done'),this.mkStep('Cancelada',c.motivoCancel||'','rejected'),this.mkStep('Seleção','não se aplica','skipped'),this.mkStep('Pedido ao vencedor','não se aplica','skipped')]; }
-        else { const s2=aguardando?this.mkStep('Propostas',c.propostas.length+' de '+c.convidados.length+' recebidas','current'):this.mkStep('Propostas',c.propostas.length+' recebidas','done');
-          const s3=c.status==='encerrada'?this.mkStep('Vencedora selecionada',F(c.vencedorId).nome,'done'):this.mkStep('Seleção da vencedora',c.propostas.length?'já é possível comparar':'comparar no mapa','pending');
+        else { const s2=aguardando?this.mkStep('Propostas',props.length+' de '+c.convidados.length+' recebidas'+(this._cotRod(c)>1?' · rodada '+this._cotRod(c):''),'current'):this.mkStep('Propostas',props.length+' recebidas','done');
+          const s3=c.status==='encerrada'?this.mkStep('Vencedora selecionada',F(c.vencedorId).nome,'done'):this.mkStep('Seleção da vencedora',props.length?'já é possível comparar':'comparar no mapa','pending');
           const s4=c.status==='encerrada'?this.mkStep('Pedido gerado','automaticamente ao vencedor','done'):this.mkStep('Pedido ao vencedor','geração automática (RF29)','pending');
           steps=[this.mkStep('Aberta',abertura,'done'),s2,s3,s4]; }
         steps=steps.map((s,i)=>({...s,temLinha:i>0}));
         const ecoRef=menor?refTot-menor:0;
-        const menorForn=menor?F((c.propostas.find(p=>p.preco===menor)||{}).fornecedorId).nome:'';
+        const menorForn=menor?F((props.find(p=>p.preco===menor)||{}).fornecedorId).nome:'';
         cd={id:c.id,steps,pedidoId:c.pedidoId,prazo:c.prazo,...this.chip(c.status),
           prazoTxt:pi.txt,temPrazoTag:!!pi.txt,prazoBg:pi.bg,prazoFg:pi.fg,
           resumo:[
             {label:'Referência dos itens',val:this.fmt(refTot),sub:c.pedidoId+' · '+citens.length+' item(ns)'},
             {label:'Menor proposta',val:menor?this.fmt(menor):'—',sub:menor?menorForn:'aguardando propostas'},
             {label:'Economia vs. referência',val:menor?this.fmt(Math.abs(ecoRef)):'—',sub:menor?(ecoRef>=0?'abaixo da referência':'acima da referência'):''},
-            {label:'Respostas',val:c.propostas.length+' de '+c.convidados.length,sub:'prazo limite: '+c.prazo}],
+            {label:'Respostas',val:props.length+' de '+c.convidados.length,sub:'prazo limite: '+c.prazo+(this._cotRod(c)>1?' · rodada '+this._cotRod(c):'')}],
           verPed:this.openPed(c.pedidoId),
           refFmt:this.fmt(refTot),
           demandaFotos:citens.map(i=>({src:this.fotosDe(P(i.produtoId))[0],nome:P(i.produtoId).descricao||'',ver:this.verFoto(i.produtoId)})),
-          convChips:c.convidados.map(cf=>{const recebida=c.propostas.some(p=>p.fornecedorId===cf);
+          convChips:c.convidados.map(cf=>{const recebida=props.some(p=>p.fornecedorId===cf);
             return {nome:F(cf).nome,tag:recebida?'proposta recebida':'aguardando',bg:recebida?'#e9f3ea':'#fdf3e0',fg:recebida?'#2f6b39':'#8a5a12',
               pendente:aguardando&&!recebida&&this.pode('cotacoes.lembrar'),lembrar:this.lembrarCot(c.id,cf),
               lembrete:(c.lembretes||{})[cf]?'lembrete '+(c.lembretes||{})[cf]:''};}),
-          mapa:c.propostas.slice().sort((a,b)=>a.preco-b.preco).map(p=>{const eMenor=p.preco===menor;
+          mapa:props.slice().sort((a,b)=>a.preco-b.preco).map(p=>{const eMenor=p.preco===menor;
             const d=p.preco-refTot;
+            const antesR=p.rodada>1?this._propAteRodada(c,p.fornecedorId,p.rodada-1):null;
             return {fornNome:F(p.fornecedorId).nome,precoFmt:this.fmt(p.preco),prazoEntrega:p.prazoEntrega,validade:p.validade,condicoes:p.condicoes,quando:p.quando,
+              rodadaInfo:p.rodada>1?('contraproposta · rodada '+p.rodada+(antesR!=null&&antesR!==p.preco?' · antes: '+this.fmt(antesR):'')):'',temRodadaInfo:p.rodada>1,
               deltaTxt:(d<=0?'− ':'+ ')+this.fmt(Math.abs(d)).replace('R$ ','')+' vs. ref.',deltaFg:d<=0?'#2f6b39':'#a33a2b',
               menor:eMenor,rowBg:eMenor?'#fbf6ec':'transparent',
               vencedora:c.vencedorId===p.fornecedorId,
               escolher:this.escolher(c.id,p.fornecedorId)};}),
           adj:citens.map(it=>{ const prod=P(it.produtoId); const venc=(c.vencItens||{})[it.produtoId];
-            const units=c.propostas.map(pp=>pp.itens?pp.itens[it.produtoId]:null).filter(v=>v!=null);
+            const units=props.map(pp=>pp.itens?pp.itens[it.produtoId]:null).filter(v=>v!=null);
             const menorU=units.length?Math.min(...units):null;
+            const emRod=(this._rodItens(c)||citens.map(x2=>x2.produtoId)).includes(it.produtoId)&&this._cotRod(c)>1;
             return {codigo:prod.codigo||'',descricao:prod.descricao||'',qtdTxt:'×'+it.qtd,refFmt:this.fmt(it.qtd*it.preco),
+              emRodada:emRod&&aguardando,rodadaN:String(this._cotRod(c)),
               adjudicado:venc!=null,vencNome:venc!=null?F(venc).nome:'',
-              cells:c.propostas.map(pp=>{ const u=pp.itens?pp.itens[it.produtoId]:null;
+              cells:props.map(pp=>{ const u=pp.itens?pp.itens[it.produtoId]:null;
                 return {fornNome:F(pp.fornecedorId).nome,totFmt:u!=null?this.fmt(u*it.qtd):'—',
                   menor:u!=null&&u===menorU,vencedora:venc===pp.fornecedorId,
                   pode:aguardando&&u!=null&&venc==null&&this.pode('cotacoes.decidir'),escolher:this.escolherItem(c.id,it.produtoId,pp.fornecedorId)};})};}),
-          temAdj:citens.length>0&&c.propostas.some(pp=>pp.itens),
-          temPropostas:c.propostas.length>0,semPropostas:c.propostas.length===0,
-          podeSelecionar:aguardando&&c.propostas.length>0&&this.pode('cotacoes.decidir'),podeCancelar:aguardando&&this.pode('cotacoes.abrir'),
+          temAdj:citens.length>0&&props.some(pp=>pp.itens),
+          temPropostas:props.length>0,semPropostas:props.length===0,
+          podeSelecionar:aguardando&&props.length>0&&this.pode('cotacoes.decidir'),podeCancelar:aguardando&&this.pode('cotacoes.abrir'),
+          podeRodada:aguardando&&props.length>0&&this.pode('cotacoes.abrir'),
+          novaRodadaFn:this.open('rodada',{cotId:c.id,rodItens:citens.map(i=>i.produtoId),rodConv:[...c.convidados],prazo:''}),
+          rodAtualTag:this._cotRod(c)>1?'Rodada '+this._cotRod(c):'',temRodTag:this._cotRod(c)>1,
+          rodadasView:(c.rodadas&&c.rodadas.length?[...c.rodadas].sort((a,b)=>b.n-a.n):[]).map(r=>{
+            const rProps=(c.propostas||[]).filter(p=>(p.rodada||1)===r.n);
+            return {titulo:'Rodada '+r.n+(r.n===this._cotRod(c)?' (atual)':''),
+              info:(r.abertaEm?('aberta em '+r.abertaEm+' por '+r.usuario+' · '):'')+'prazo '+r.prazo,
+              itensTxt:(c.itens||[]).filter(it=>(r.itens||[]).includes(it.produtoId)).map(it=>P(it.produtoId).descricao||'').join(', '),
+              fornsTxt:(r.convidados||[]).map(cf=>F(cf).nome).join(', '),
+              props:rProps.map(p=>({fornNome:F(p.fornecedorId).nome,totFmt:this.fmt(p.preco),quando:p.quando,condicoes:p.condicoes||'—'})),
+              semProps:rProps.length===0};}),
+          temRodadas:!!(c.rodadas&&c.rodadas.length),
           encerrada:c.status==='encerrada',cancelada:c.status==='cancelada',
           vencNome:c.vencedorId?F(c.vencedorId).nome:(Object.keys(c.vencItens||{}).length?'itens divididos entre fornecedores':''),temJust:!!c.justificativa,justificativa:c.justificativa||'',
           motivoCancel:c.motivoCancel||'',
@@ -4804,7 +4941,9 @@ class Component extends DCLogic {
         fotos:meus.map(i=>({src:this.fotosDe(P(i.produtoId))[0],ver:this.verFoto(i.produtoId)})),
         faturar:this.open('faturar',{pedidoId:p.id,valorFat:pend.reduce((a,i)=>a+this.itemTotal(i),0).toFixed(2).replace('.',','),nf:''})});});
     const fCotRows=S.cotacoes.filter(c=>c.convidados.includes(fid)).map(c=>{
-      const own=c.propostas.find(p=>p.fornecedorId===fid);
+      const own=this._propsEfetivas(c).find(p=>p.fornecedorId===fid);
+      const rodF=this._cotRod(c); const rconvF=this._rodConv(c);
+      const participaRod=rodF===1||!rconvF||rconvF.includes(fid);
       const ped=PEDS.find(p=>p.id===c.pedidoId)||{itens:[]};
       const citens=c.itens||ped.itens||[];
       let resultado='';
@@ -4819,8 +4958,10 @@ class Component extends DCLogic {
         fotos:citens.map(i=>({src:this.fotosDe(P(i.produtoId))[0],ver:this.verFoto(i.produtoId)})),
         minhaFmt:own?this.fmt(own.preco):'— não enviada —',enviada:!!own,
         resultado,temResultado:!!resultado,venceu:c.status==='encerrada'&&(c.vencedorId===fid||(c.vencItens&&Object.values(c.vencItens).includes(fid))),
-        podeProp:c.status==='aguardando propostas'&&this.pode('cotacoes.proposta'),
-        propLabel:own?'Editar proposta':'Enviar proposta',
+        podeProp:c.status==='aguardando propostas'&&participaRod&&this.pode('cotacoes.proposta'),
+        propLabel:rodF>1?'Enviar contraproposta':(own?'Editar proposta':'Enviar proposta'),
+        rodTag:rodF>1?'Rodada '+rodF:'',temRodTag:rodF>1,
+        foraRodada:c.status==='aguardando propostas'&&!participaRod,
         prop:this.open('proposta',seedP)};});
     const fFatRows=S.faturamentos.filter(f=>f.fornecedorId===fid).map(f=>({id:f.id,data:f.data,pedidoId:f.pedidoId,revNome:R(f.revendaId).nome,valorFmt:this.fmt(f.valor),royStr:String(f.royaltyPct).replace('.',',')+'% · '+this.fmt(f.royaltyValor),...this._anexoView(f)}));
     const fRoyRows=fechRows.filter(r=>r.fornecedorId===fid);
@@ -4868,13 +5009,15 @@ class Component extends DCLogic {
     let propInfo={cotId:'',prazo:'',itensTxt:'',refFmt:'',fotos:[],itens:[],totalFmt:'—'};
     if(M==='proposta'&&S.form.cotId){ const c=S.cotacoes.find(x=>x.id===S.form.cotId);
       if(c){ const ped=PEDS.find(p=>p.id===c.pedidoId)||{itens:[],total:0};
-        const citens=c.itens||ped.itens||[];
+        const rodP=this._cotRod(c); const rodItensP=rodP>1?this._rodItens(c):null;
+        const citensAll=c.itens||ped.itens||[];
+        const citens=rodItensP?citensAll.filter(it=>rodItensP.includes(it.produtoId)):citensAll;
         let totP=0,okP=true;
         const itensP=citens.map(it=>{ const pr=P(it.produtoId); const v=S.form['ip'+it.produtoId]||'';
           const u=this.num(v); if(u) totP+=u*it.qtd; else okP=false;
           return {label:(pr.codigo||'')+' · '+(pr.descricao||''),qtdTxt:'×'+it.qtd+' '+(pr.unidade||''),refFmt:this.fmt(it.preco),
             val:v,fx:this.fx('ip'+it.produtoId)};});
-        propInfo={cotId:c.id,prazo:c.prazo,itensTxt:citens.map(i=>P(i.produtoId).descricao+' ×'+i.qtd).join(', '),
+        propInfo={cotId:c.id,prazo:c.prazo,rodadaTag:rodP>1?'Contraproposta — rodada '+rodP+' · revise os preços dos itens em renegociação':'',temRodadaTag:rodP>1,itensTxt:citens.map(i=>P(i.produtoId).descricao+' ×'+i.qtd).join(', '),
           refFmt:this.fmt(citens.reduce((a,i)=>a+i.qtd*i.preco,0)),
           fotos:citens.map(i=>({src:this.fotosDe(P(i.produtoId))[0],ver:this.verFoto(i.produtoId)})),
           itens:itensP,totalFmt:okP?this.fmt(totP):'— complete os itens —'}; } }
@@ -4898,6 +5041,14 @@ class Component extends DCLogic {
         return {label:(prod.codigo||'')+' · '+(prod.descricao||''),qtdTxt:'×'+x.i.qtd,valFmt:this.fmt(x.i.qtd*x.i.preco),toggle:this.toggleSel(x.ix),bg:on?'#faf5e9':'#fff',bd:on?'#B38335':'#e8e1d2',mark:on?'✓ ':'',
           sel:on,qtdVal,qtdMax:String(x.i.qtd),unid:prod.unidade||'un',setQtd:this.fx('q'+x.ix),podeDividir:x.i.qtd>1,
           temSaldo:sp.temInv,saldoTxt:sp.temInv?('saldo em estoque: '+sp.saldo):'',saldoFg:sp.saldo>=x.i.qtd?'#2f6b39':(sp.saldo>0?'#8a5a12':'#a33a2b')};}); }
+    let rodInfo={cotId:'',rodadaN:'',itens:[],forns:[]};
+    if(M==='rodada'&&S.form.cotId){ const c=S.cotacoes.find(x=>x.id===S.form.cotId);
+      if(c){ const selI=S.form.rodItens||[]; const selF=S.form.rodConv||[]; const efP=this._propsEfetivas(c);
+        rodInfo={cotId:c.id,rodadaN:String(this._cotRod(c)+1),
+          itens:(c.itens||[]).map(it=>{ const pr=P(it.produtoId); const on=selI.includes(it.produtoId);
+            return {label:(pr.codigo||'')+' · '+(pr.descricao||''),qtdTxt:'×'+it.qtd,toggle:this.toggleRodItem(it.produtoId),bg:on?'#faf5e9':'#fff',bd:on?'#B38335':'#e8e1d2',fg:on?'#8f682a':'#6b6459',mark:on?'✓ ':''};}),
+          forns:c.convidados.map(cf=>{ const on=selF.includes(cf); const pp=efP.find(p2=>p2.fornecedorId===cf);
+            return {nome:F(cf).nome,sub:pp?('última proposta: '+this.fmt(pp.preco)):'sem proposta até agora',toggle:this.toggleRodForn(cf),bg:on?'#faf5e9':'#fff',bd:on?'#B38335':'#e8e1d2',fg:on?'#8f682a':'#6b6459',mark:on?'✓ ':''};})}; } }
     let royInfo={ctrNum:'',fornNome:'',atual:''};
     if(M==='royalty'&&S.form.contratoId){ const c=S.contratos.find(x=>x.id===S.form.contratoId);
       if(c) royInfo={ctrNum:c.numero,fornNome:F(c.fornecedorId).nome,atual:String(c.royalty).replace('.',',')+'%'}; }
@@ -5064,8 +5215,8 @@ class Component extends DCLogic {
       fatAnaliseOn:!!(S.configPlataforma&&S.configPlataforma.analiseFiscalIA),
       mForn:M==='fornecedor',mCtr:M==='contrato',mRoy:M==='royalty',mProd:M==='produto',mRev:M==='revenda',
       mRej:M==='rejeitar',mDir:M==='direto',mCot:M==='cotacao',mEst:M==='estoque',mJusV:M==='justifvenc',mCanC:M==='cancelarcot',
-      mProp:M==='proposta',mFat:M==='faturar',mPag:M==='pagamento',
-      dirRows,convRows,dirVazio,prodFornRows,prodFornSel,prodFornVazio,propInfo,fatInfo,jvInfo,royInfo,selItens,
+      mProp:M==='proposta',mRod:M==='rodada',mFat:M==='faturar',mPag:M==='pagamento',
+      dirRows,convRows,dirVazio,prodFornRows,prodFornSel,prodFornVazio,propInfo,fatInfo,jvInfo,royInfo,rodInfo,confirmRodada:this.confirmRodada,selItens,
       confirmEstoque:this.confirmEstoque,setPedidoCot:this.setPedidoCot,
       prodModalFotos:(S.form.editId&&M==='produto'?this.fotosDe(S.produtos.find(x=>x.id===S.form.editId)||{}):['img/prd-new-1.png','img/prd-new-2.png','img/prd-new-3.png']).map((src,i)=>({src,principal:i===(S.form.fotoP||0),pick:this.pickFotoP(i),bd:i===(S.form.fotoP||0)?'#B38335':'#e8e1d2'})),
       salvarForn:this.salvarForn,salvarContrato:this.salvarContrato,salvarRoyalty:this.salvarRoyalty,

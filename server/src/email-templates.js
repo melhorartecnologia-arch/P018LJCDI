@@ -140,6 +140,14 @@ export const TEMPLATES = {
   }),
 
   // ── Cotações ──────────────────────────────────────────────────────────
+  cotacao_rodada: (v) => ({
+    subject: `Nova rodada de negociação na cotação ${v.cotacao}`,
+    html: layout(`Rodada ${esc(v.rodada || '2')} — contraproposta solicitada`,
+      p(`Olá, ${b(v.fornecedorNome)}! A Loja Cidade Imperial abriu uma nova rodada de negociação na cotação ${b(v.cotacao)} e convida você a revisar seus preços e condições para os itens abaixo.`) +
+      (v.itensLista ? tabelaItens(v.itensLista) : '') +
+      linhas([['Cotação', v.cotacao], ['Rodada', v.rodada || '2'], ['Prazo para contrapropostas', v.prazo]]) +
+      p('Sua proposta anterior permanece registrada no histórico; a contraproposta substitui os valores apenas para os itens em renegociação.'), 'Cotação'),
+  }),
   cotacao_convite: (v) => ({
     subject: `Convite para cotação ${v.cotacao}`,
     html: layout('Convite para cotação',
