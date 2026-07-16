@@ -840,13 +840,16 @@ input::placeholder,textarea::placeholder{color:#b0a795}
       </div>
       <div style="display:flex;flex-direction:column;gap:14px">
         <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:16px 18px">
-          <div style="font-size:14px;font-weight:700;margin-bottom:10px">Vínculo — fornecedor e contrato (RF05)</div>
-          <div style="font-size:12px;color:#a89f90;margin-bottom:2px">Fornecedor</div>
-          <div onClick="{{pdd.verForn}}" style="font-size:13.5px;font-weight:600;color:#8f682a;cursor:pointer;margin-bottom:10px">{{pdd.fornNome}} → <span style="font-weight:400;color:#a89f90;font-size:12px">{{pdd.fornCidade}}</span></div>
-          <div style="display:flex;gap:22px">
-            <div><div style="font-size:12px;color:#a89f90;margin-bottom:2px">Contrato</div><div style="font-size:13.5px;font-weight:600">{{pdd.ctrNum}}</div></div>
-            <div><div style="font-size:12px;color:#a89f90;margin-bottom:2px">Royalty do contrato</div><div style="font-size:13.5px;font-weight:700;color:#8f682a">{{pdd.royaltyStr}}</div></div>
-          </div>
+          <div style="font-size:14px;font-weight:700;margin-bottom:6px">Vínculo — fornecedores e contratos (RF05)</div>
+          <sc-for list="{{pdd.vinculos}}" as="v" hint-placeholder-count="1">
+            <div style="padding:8px 0;border-bottom:1px solid #f5f1e8">
+              <div onClick="{{v.ver}}" style="font-size:13.5px;font-weight:600;color:#8f682a;cursor:pointer">{{v.nome}} → <span style="font-weight:400;color:#a89f90;font-size:12px">{{v.cidade}}</span></div>
+              <div style="display:flex;gap:22px;margin-top:3px">
+                <div><span style="font-size:12px;color:#a89f90">Contrato </span><span style="font-size:12.5px;font-weight:600">{{v.ctrNum}}</span></div>
+                <div><span style="font-size:12px;color:#a89f90">Royalty </span><span style="font-size:12.5px;font-weight:700;color:#8f682a">{{v.royaltyStr}}</span></div>
+              </div>
+            </div>
+          </sc-for>
         </div>
         <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px">
           <sc-for list="{{pdd.stats}}" as="s" hint-placeholder-count="4">
@@ -2048,7 +2051,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
   <div style="position:fixed;inset:0;background:rgba(39,37,37,.45);display:flex;align-items:center;justify-content:center;z-index:50">
     <div style="background:#fff;border-radius:14px;width:440px;max-width:92vw;padding:22px 24px;box-shadow:0 18px 50px rgba(39,37,37,.25)">
       <div style="font-size:16px;font-weight:700">{{prodModalTitulo}}</div>
-      <div style="font-size:12.5px;color:#8a8378;margin-top:2px">RF05–RF06 — sempre vinculado a fornecedor e contrato vigente</div>
+      <div style="font-size:12.5px;color:#8a8378;margin-top:2px">RF05–RF06 — vinculado a um ou mais fornecedores com contrato vigente</div>
       <div style="font-size:12px;font-weight:600;color:#6b6459;margin:14px 0 6px">Fotos do produto (clique para definir a principal)</div>
       <div style="display:flex;gap:9px">
         <sc-for list="{{prodModalFotos}}" as="ft" hint-placeholder-count="0">
@@ -2061,11 +2064,14 @@ input::placeholder,textarea::placeholder{color:#b0a795}
       <div style="font-size:11px;color:#b0a795;margin-top:6px">Fotos placeholder — na implementação real, o upload substitui estas imagens.</div>
       <div style="font-size:12px;font-weight:600;color:#6b6459;margin:14px 0 5px">Descrição</div>
       <input value="{{form.descricao}}" onChange="{{fxDescricao}}" placeholder="Ex.: Chopp Weiss Imperial 30L" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
-      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Fornecedor / contrato</div>
-      <select value="{{form.fornecedorId}}" onChange="{{fxFornecedorId}}" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
-        <option value="">Selecione…</option>
-        <sc-for list="{{fornOptsAtivos}}" as="o" hint-placeholder-count="3"><option value="{{o.id}}">{{o.nome}}</option></sc-for>
-      </select>
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Fornecedores / contratos <span style="font-weight:400;color:#a89f90">— seleção múltipla · {{prodFornSel}}</span></div>
+      <input value="{{form.buscaForn}}" onChange="{{fxBuscaForn}}" placeholder="Buscar fornecedor por nome…" style="width:100%;box-sizing:border-box;padding:8px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:12.5px;background:#fff;outline:none;color:#272525;margin-bottom:8px">
+      <div style="display:flex;flex-wrap:wrap;gap:7px;max-height:108px;overflow-y:auto">
+        <sc-for list="{{prodFornRows}}" as="pf" hint-placeholder-count="3">
+          <div onClick="{{pf.toggle}}" style="font-size:12px;font-weight:600;border-radius:8px;padding:7px 11px;cursor:pointer;background:{{pf.bg}};color:{{pf.fg}};border:1px solid {{pf.bd}}">{{pf.mark}}{{pf.nome}}</div>
+        </sc-for>
+      </div>
+      <sc-if value="{{prodFornVazio}}" hint-placeholder-val="{{false}}"><div style="font-size:11.5px;color:#a89f90;margin-top:5px">Nenhum fornecedor ativo encontrado para esta busca.</div></sc-if>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
         <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Unidade</div>
         <input value="{{form.unidade}}" onChange="{{fxUnidade}}" placeholder="Barril, Caixa…" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
@@ -2147,7 +2153,8 @@ input::placeholder,textarea::placeholder{color:#b0a795}
           </div>
         </sc-for>
       </div>
-      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 6px">Fornecedor de destino</div>
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 6px">Fornecedor de destino <span style="font-weight:400;color:#a89f90">— somente fornecedores vinculados a todos os itens selecionados</span></div>
+      <sc-if value="{{dirVazio}}" hint-placeholder-val="{{false}}"><div style="font-size:12px;color:#a33a2b;background:#fbeae7;border:1px solid #f0cdc5;border-radius:8px;padding:8px 11px;margin-bottom:8px">Nenhum fornecedor está vinculado a todos os itens selecionados — encaminhe em caminhos separados ou ajuste o vínculo dos produtos.</div></sc-if>
       <div style="display:flex;flex-direction:column;gap:8px">
         <sc-for list="{{dirRows}}" as="d" hint-placeholder-count="3">
           <div onClick="{{d.pick}}" style="display:flex;align-items:center;gap:11px;border:1px solid {{d.bd}};background:{{d.bg}};border-radius:10px;padding:11px 13px;cursor:pointer">
@@ -2195,7 +2202,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
           </div>
         </sc-for>
       </div>
-      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 6px">Fornecedores convidados (mínimo 2)</div>
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 6px">Fornecedores convidados (mínimo 2) <span style="font-weight:400;color:#a89f90">— vinculados aos produtos cotados</span></div>
       <div style="display:flex;flex-wrap:wrap;gap:8px">
         <sc-for list="{{convRows}}" as="cv" hint-placeholder-count="3">
           <div onClick="{{cv.toggle}}" style="font-size:12.5px;font-weight:600;border-radius:8px;padding:8px 12px;cursor:pointer;background:{{cv.bg}};color:{{cv.fg}};border:1px solid {{cv.bd}}">{{cv.mark}}{{cv.nome}}</div>
@@ -2686,14 +2693,14 @@ class Component extends DCLogic {
       {id:4,fornecedorId:4,numero:'CT-2025-009',royalty:3,inicio:'01/03/2025',fim:'28/02/2026',vigente:false,historico:[]}
     ],
     produtos:[
-      {id:1,codigo:'PRD-001',descricao:'Chopp Pilsen Imperial 30L',unidade:'Barril',preco:620,fornecedorId:1,ativo:true},
-      {id:2,codigo:'PRD-002',descricao:'Chopp Pilsen Imperial 50L',unidade:'Barril',preco:890,fornecedorId:1,ativo:true,precoHist:[{data:'01/05/2026',de:'R$ 850,00',para:'R$ 890,00',usuario:'Ana Ribeiro (Loja)'}]},
+      {id:1,codigo:'PRD-001',descricao:'Chopp Pilsen Imperial 30L',unidade:'Barril',preco:620,fornecedorId:1,fornecedorIds:[1,3],ativo:true},
+      {id:2,codigo:'PRD-002',descricao:'Chopp Pilsen Imperial 50L',unidade:'Barril',preco:890,fornecedorId:1,fornecedorIds:[1,3],ativo:true,precoHist:[{data:'01/05/2026',de:'R$ 850,00',para:'R$ 890,00',usuario:'Ana Ribeiro (Loja)'}]},
       {id:3,codigo:'PRD-003',descricao:'Chopp IPA Imperial 30L',unidade:'Barril',preco:740,fornecedorId:1,ativo:true},
-      {id:4,codigo:'PRD-004',descricao:'Cerveja Puro Malte 600ml (cx 12)',unidade:'Caixa',preco:148,fornecedorId:2,ativo:true},
+      {id:4,codigo:'PRD-004',descricao:'Cerveja Puro Malte 600ml (cx 12)',unidade:'Caixa',preco:148,fornecedorId:2,fornecedorIds:[2,3],ativo:true},
       {id:5,codigo:'PRD-005',descricao:'Long Neck Premium 355ml (cx 24)',unidade:'Caixa',preco:132,fornecedorId:2,ativo:true},
       {id:6,codigo:'PRD-006',descricao:'Growler Cerâmica 1L',unidade:'Unidade',preco:89,fornecedorId:2,ativo:true},
-      {id:7,codigo:'PRD-007',descricao:'Cilindro CO₂ 10kg (recarga)',unidade:'Unidade',preco:210,fornecedorId:3,ativo:true},
-      {id:8,codigo:'PRD-008',descricao:'Copo Caldereta personalizado (cx 12)',unidade:'Caixa',preco:96,fornecedorId:3,ativo:true},
+      {id:7,codigo:'PRD-007',descricao:'Cilindro CO₂ 10kg (recarga)',unidade:'Unidade',preco:210,fornecedorId:3,fornecedorIds:[3,1],ativo:true},
+      {id:8,codigo:'PRD-008',descricao:'Copo Caldereta personalizado (cx 12)',unidade:'Caixa',preco:96,fornecedorId:3,fornecedorIds:[3,1],ativo:true},
       {id:9,codigo:'PRD-009',descricao:'Bolacha de chopp (pct 500)',unidade:'Pacote',preco:75,fornecedorId:3,ativo:false},
       {id:10,codigo:'PRD-010',descricao:'Barril Inox 30L (comodato)',unidade:'Unidade',preco:450,fornecedorId:4,ativo:false}
     ],
@@ -3049,6 +3056,7 @@ class Component extends DCLogic {
       "dicas": [
         "A justificativa é obrigatória ao rejeitar, seja o pedido todo ou um item, e fica visível para a revenda; tenha o motivo pronto antes de clicar em \"Rejeitar\".",
         "Um mesmo pedido pode combinar os três caminhos de atendimento (estoque, envio direto e cotação); cada ação vale só para os itens que você marcar na janela — e você pode informar uma quantidade parcial por item: o saldo continua aprovado para outro caminho.",
+        "No 'Envio direto a um fornecedor…' só aparecem como destino os fornecedores vinculados a todos os itens selecionados; na cotação, os convidáveis são os fornecedores vinculados aos produtos cotados.",
         "\"Abrir cotação\" exige convidar 2 ou mais fornecedores homologados e definir a data limite para o envio das propostas.",
         "Os painéis \"Análise da Loja\" e \"Decisão de atendimento\" só aparecem na fase certa: o primeiro enquanto o pedido aguarda decisão; o segundo depois que ele é aprovado."
       ]
@@ -3060,7 +3068,7 @@ class Component extends DCLogic {
       "passos": [
         "Clique em \"+ Nova cotação\" (botão dourado no canto superior direito) para abrir a janela \"Abrir cotação\".",
         "No campo \"Pedido de origem\", escolha um pedido da lista (só aparecem pedidos com itens aprovados) e, em \"Itens a cotar\", clique nos itens que quer incluir (não precisa ser o pedido inteiro).",
-        "Em \"Fornecedores convidados (mínimo 2)\", clique para marcar pelo menos dois fornecedores, preencha a \"Data limite para propostas\" (formato dd/mm/aaaa) e clique em \"Abrir cotação e notificar\".",
+        "Em \"Fornecedores convidados (mínimo 2)\", clique para marcar pelo menos dois fornecedores — a lista mostra apenas os fornecedores vinculados aos produtos cotados —, preencha a \"Data limite para propostas\" (formato dd/mm/aaaa) e clique em \"Abrir cotação e notificar\".",
         "De volta à lista, use o seletor \"Todos os status\" (no canto direito) para filtrar por \"Aguardando propostas\", \"Encerradas\" ou \"Canceladas\".",
         "Acompanhe o andamento pelos cards do topo (Em andamento, Taxa de resposta, Economia obtida, Cotações no histórico) e pela barra de progresso da coluna \"Propostas\" de cada linha.",
         "Clique sobre a linha da cotação na tabela (colunas Cotação, Pedido de origem, Convidados, Propostas, Prazo limite e Status) para abrir o detalhe.",
@@ -3143,13 +3151,13 @@ class Component extends DCLogic {
         "No topo da tela, confira os quatro indicadores (Ativos no catálogo, Inativos, Fornecedores representados e Movimentado em pedidos) para ter uma visão geral do catálogo.",
         "Para encontrar um produto, digite no campo \"Buscar por código ou descrição…\" e/ou use os seletores \"Todos os fornecedores\" e \"Todos os status\" (que filtra por Ativos no catálogo ou Inativos).",
         "Para cadastrar um novo produto, clique no botão \"+ Novo produto\", no canto superior direito.",
-        "Na janela que abrir, preencha a \"Descrição\", escolha o \"Fornecedor / contrato\" e informe a \"Unidade\" e o \"Preço estimado (R$)\" — descrição, fornecedor e preço estimado são obrigatórios.",
+        "Na janela que abrir, preencha a \"Descrição\", busque e selecione um ou mais fornecedores em \"Fornecedores / contratos\" (o mesmo produto pode ficar vinculado a vários) e informe a \"Unidade\" e o \"Preço estimado (R$)\" — descrição, ao menos um fornecedor e preço estimado são obrigatórios.",
         "Clique em \"Homologar produto\" para salvar o cadastro (ou em \"Cancelar\" para desistir).",
         "Para ver os detalhes de um produto, clique sobre a linha dele na tabela: abre a tela \"Detalhe do produto\", com fornecedor, contrato, royalty do contrato, histórico de preço e pedidos, além do botão \"Editar produto\".",
         "Para tirar um produto do catálogo das revendas ou colocá-lo de volta, clique no link \"Inativar\" ou \"Ativar\" à direita da linha; a coluna \"Catálogo\" mostra a situação atual de cada item."
       ],
       "dicas": [
-        "No seletor \"Fornecedor / contrato\" só aparecem fornecedores ativos, pois todo produto precisa estar ligado a um fornecedor com contrato vigente.",
+        "Na lista \"Fornecedores / contratos\" só aparecem fornecedores ativos; use o campo \"Buscar fornecedor por nome…\" para filtrar e clique nos nomes para marcar ou desmarcar — todo produto precisa de ao menos um fornecedor vinculado.",
         "Inativar não exclui o produto: ele apenas sai do catálogo das revendas e pode ser reativado a qualquer momento pelo mesmo link.",
         "Na coluna \"Código\", clique na miniatura da foto do produto para ampliar a imagem.",
         "Ao editar um produto, o campo \"Preço estimado (R$)\" já vem preenchido automaticamente com o último valor do histórico (última alteração de preço ou último preço praticado em pedido); o valor continua editável e a alteração manual entra no histórico de preços."
@@ -3162,9 +3170,9 @@ class Component extends DCLogic {
       "passos": [
         "No topo, confira o nome do produto e, ao lado dele, o selo de status (Ativo ou Inativo); logo abaixo do título aparecem o código, a unidade em que o produto é vendido e o preço estimado atual.",
         "Clique na foto principal (ela mostra o aviso 'Clique para ampliar') para vê-la em tamanho grande; as miniaturas logo abaixo trocam a foto exibida em destaque.",
-        "No quadro 'Vínculo — fornecedor e contrato (RF05)', clique no nome do fornecedor para abrir o cadastro dele e confira os campos 'Contrato' e 'Royalty do contrato'.",
+        "No quadro 'Vínculo — fornecedores e contratos (RF05)', veja todos os fornecedores vinculados ao produto; clique no nome de um deles para abrir o cadastro e confira o contrato e o royalty de cada vínculo.",
         "Acompanhe os quatro indicadores ('Pedidos com o produto', 'Quantidade pedida', 'Movimentado' e 'Fotos cadastradas') e o quadro 'Histórico de preço', que lista as mudanças de valor.",
-        "Para corrigir dados, clique em 'Editar produto': abre um formulário onde você ajusta descrição, unidade, fornecedor, fotos e o preço estimado — que já vem preenchido com o último valor do histórico de preços e continua editável.",
+        "Para corrigir dados, clique em 'Editar produto': abre um formulário onde você ajusta descrição, unidade, fornecedores (seleção múltipla com busca), fotos e o preço estimado — que já vem preenchido com o último valor do histórico de preços e continua editável.",
         "Use o botão 'Inativar no catálogo' (ou 'Ativar no catálogo', quando o produto já estiver inativo) para tirar ou disponibilizar o produto para as revendas.",
         "Na seção 'Pedidos com este produto', clique em uma linha da tabela para abrir o pedido correspondente.",
         "Clique em '← Voltar para produtos', no topo da tela, para retornar à lista de produtos."
@@ -3683,21 +3691,33 @@ class Component extends DCLogic {
         const v=i.precoNeg?Math.round(i.precoNeg/(i.qtd||1)*100)/100:i.preco;
         cand(v,x.data,'último preço praticado no pedido '+x.id+' de '+x.data,1); }); });
     return best; }
-  salvarProduto=()=>{ if(!this.pode('cadastros.produtos')) return this.negado('Você não tem permissão para gerenciar produtos.','cadastros.produtos'); const f=this.state.form; if(!f.descricao||!f.fornecedorId) return this.err('Informe descrição e fornecedor (RF05).');
+  // Vínculo N:M produto–fornecedor: fornecedorIds é a lista de vínculos; o campo
+  // legado fornecedorId permanece como o primeiro vínculo, para compatibilidade
+  // com dados gravados antes desta versão.
+  _pForns(p){ return (p&&p.fornecedorIds&&p.fornecedorIds.length)?p.fornecedorIds:((p&&p.fornecedorId)?[p.fornecedorId]:[]); }
+  _pTemForn(p,fid){ return this._pForns(p).includes(fid); }
+  _pFornNomes(p){ return this._pForns(p).map(id=>this._fornNome(id)).join(', '); }
+  toggleFornProd(fid){ this._tfp=this._tfp||{}; if(!this._tfp[fid]) this._tfp[fid]=()=>this.setState(s=>{ const cur=s.form.fornecedorIds||[]; const on=cur.includes(fid);
+    return {form:{...s.form,fornecedorIds:on?cur.filter(x=>x!==fid):[...cur,fid],erro:null}}; }); return this._tfp[fid]; }
+  salvarProduto=()=>{ if(!this.pode('cadastros.produtos')) return this.negado('Você não tem permissão para gerenciar produtos.','cadastros.produtos'); const f=this.state.form;
+    const fids=(f.fornecedorIds||[]).map(Number);
+    if(!f.descricao||!fids.length) return this.err('Informe a descrição e selecione ao menos um fornecedor (RF05).');
     const preco=this.num(f.preco); if(!preco) return this.err('Informe o preço estimado (RF06).');
+    const nomesF=this.state.fornecedores.filter(x=>fids.includes(x.id)).map(x=>x.nome).join(', ');
     if(f.editId){ const old=this.state.produtos.find(x=>x.id===f.editId);
       const fotosAtuais=this.fotosDe(old); const fp=f.fotoP||0;
       const rot=[...fotosAtuais.slice(fp),...fotosAtuais.slice(0,fp)];
       const mudouPreco=old.preco!==preco;
+      const mudouForn=JSON.stringify(this._pForns(old))!==JSON.stringify(fids);
       const precoHist=mudouPreco?[...(old.precoHist||[]),{data:this.hoje(),de:this.fmt(old.preco),para:this.fmt(preco),usuario:this.userName()}]:(old.precoHist||[]);
-      this.setState(s=>({produtos:s.produtos.map(x=>x.id===f.editId?{...x,descricao:f.descricao,unidade:f.unidade||x.unidade,preco,fornecedorId:+f.fornecedorId,fotos:rot,precoHist}:x),modal:null,form:{}}));
-      this.audit('Edição de produto homologado',old.codigo+(mudouPreco?' · preço '+this.fmt(old.preco)+' → '+this.fmt(preco):''));
+      this.setState(s=>({produtos:s.produtos.map(x=>x.id===f.editId?{...x,descricao:f.descricao,unidade:f.unidade||x.unidade,preco,fornecedorId:fids[0],fornecedorIds:fids,fotos:rot,precoHist}:x),modal:null,form:{}}));
+      this.audit('Edição de produto homologado',old.codigo+(mudouPreco?' · preço '+this.fmt(old.preco)+' → '+this.fmt(preco):'')+(mudouForn?' · fornecedores: '+nomesF:''));
       return; }
     const id=this.state.seq.prod; const codigo='PRD-0'+id;
     const base=['img/prd-new-1.png','img/prd-new-2.png','img/prd-new-3.png'];
     const fp=f.fotoP||0; const fotos=[...base.slice(fp),...base.slice(0,fp)];
-    this.setState(s=>({produtos:[...s.produtos,{id,codigo,descricao:f.descricao,unidade:f.unidade||'Unidade',preco,fornecedorId:+f.fornecedorId,ativo:true,fotos}],seq:{...s.seq,prod:id+1},modal:null,form:{}}));
-    this.audit('Cadastro de produto homologado',codigo+' · '+f.descricao); };
+    this.setState(s=>({produtos:[...s.produtos,{id,codigo,descricao:f.descricao,unidade:f.unidade||'Unidade',preco,fornecedorId:fids[0],fornecedorIds:fids,ativo:true,fotos}],seq:{...s.seq,prod:id+1},modal:null,form:{}}));
+    this.audit('Cadastro de produto homologado',codigo+' · '+f.descricao+' · fornecedores: '+nomesF); };
   toggleProd(id){ this._tp=this._tp||{}; if(!this._tp[id]) this._tp[id]=(e)=>{ if(e&&e.stopPropagation) e.stopPropagation(); const p=this.state.produtos.find(x=>x.id===id);
     this.setState(s=>({produtos:s.produtos.map(x=>x.id===id?{...x,ativo:!x.ativo}:x)}));
     this.audit(p.ativo?'Inativação de produto no catálogo':'Ativação de produto no catálogo',p.codigo+' · '+p.descricao); }; return this._tp[id]; }
@@ -3868,6 +3888,8 @@ class Component extends DCLogic {
     const sel=this.state.form.sel||[]; if(!sel.length) return this.err('Selecione ao menos um item para encaminhar.');
     const id=this.state.form.pedidoId; const f=this.state.fornecedores.find(x=>x.id===fid);
     const ped0=this.state.pedidos.find(p=>p.id===id); if(!ped0) return;
+    const naoVinc=sel.map(ix=>ped0.itens[ix]).filter(i=>i&&!this._pTemForn(this.state.produtos.find(x=>x.id===i.produtoId)||{},fid));
+    if(naoVinc.length) return this.err('O fornecedor escolhido não está vinculado a todos os itens selecionados — escolha um fornecedor vinculado aos produtos.');
     const lq=this._lerQtds(ped0,sel); if(lq.erro) return this.err(lq.erro);
     const {novo,alocados,parcial}=this._splitAlocar(ped0.itens,sel,lq.qtds,{st:'direto',fornecedorId:fid});
     const totQ=alocados.reduce((a,i)=>a+i.qtd,0);
@@ -3898,6 +3920,9 @@ class Component extends DCLogic {
     const ped=this.state.pedidos.find(p=>p.id===f.pedidoId);
     const sel=(f.sel&&f.sel.length?f.sel:ped.itens.map((i,ix)=>i.st==='aprovado'?ix:-1).filter(ix=>ix>=0));
     if(!sel.length) return this.err('Selecione ao menos um item aprovado para cotar.');
+    const vincSet=new Set(); sel.forEach(ix=>this._pForns(this.state.produtos.find(x=>x.id===ped.itens[ix].produtoId)||{}).forEach(v=>vincSet.add(v)));
+    const foraVinc=conv.filter(cf=>!vincSet.has(cf));
+    if(foraVinc.length) return this.err('Só é possível convidar fornecedores vinculados aos produtos cotados: remova '+this.state.fornecedores.filter(x=>foraVinc.includes(x.id)).map(x=>x.nome).join(', ')+'.');
     const lq=this._lerQtds(ped,sel); if(lq.erro) return this.err(lq.erro);
     const n=this.state.seq.cot; const id='COT-00'+n;
     const {novo,alocados,parcial}=this._splitAlocar(ped.itens,sel,lq.qtds,{st:'cotacao',cotacaoId:id});
@@ -4535,7 +4560,7 @@ class Component extends DCLogic {
       const fat=S.faturamentos.filter(x=>x.fornecedorId===f.id);
       return {nome:f.nome,cnpj:f.cnpj,cidade:f.cidade,contato:f.contato,
         ctrNum:ctr?ctr.numero:'—',royaltyStr:ctr?String(ctr.royalty).replace('.',',')+'%':'—',temCtr:!!ctr,
-        prodN:String(S.produtos.filter(p=>p.fornecedorId===f.id).length),
+        prodN:String(S.produtos.filter(p=>this._pTemForn(p,f.id)).length),
         fatFmt:this.fmt(fat.reduce((a,x)=>a+x.valor,0)),
         ...this.chip(f.ativo?'ativo':'inativo'),
         open:this.openForn(f.id)};});
@@ -4551,7 +4576,7 @@ class Component extends DCLogic {
     if(S.selForn){ const f=S.fornecedores.find(x=>x.id===S.selForn);
       if(f){ const fat=S.faturamentos.filter(x=>x.fornecedorId===f.id);
         const peds=PEDS.filter(p=>p.fornecedorId===f.id);
-        const meusProds=S.produtos.filter(p=>p.fornecedorId===f.id);
+        const meusProds=S.produtos.filter(p=>this._pTemForn(p,f.id));
         fd={nome:f.nome,cnpj:f.cnpj,cidade:f.cidade,contato:f.contato,
           ...this.chip(f.ativo?'ativo':'inativo'),
           stats:[
@@ -4573,10 +4598,10 @@ class Component extends DCLogic {
 
     // produtos
     const b=S.busca.toLowerCase();
-    const prodRows=S.produtos.filter(p=>(S.filtroForn==='0'||p.fornecedorId===+S.filtroForn)
+    const prodRows=S.produtos.filter(p=>(S.filtroForn==='0'||this._pTemForn(p,+S.filtroForn))
         &&(S.filtroStatusProd==='todos'||(S.filtroStatusProd==='ativos'?p.ativo:!p.ativo))
         &&(!b||p.descricao.toLowerCase().includes(b)||p.codigo.toLowerCase().includes(b)))
-      .map(p=>({codigo:p.codigo,descricao:p.descricao,fornNome:F(p.fornecedorId).nome,unidade:p.unidade,precoFmt:this.fmt(p.preco),
+      .map(p=>({codigo:p.codigo,descricao:p.descricao,fornNome:this._pFornNomes(p),unidade:p.unidade,precoFmt:this.fmt(p.preco),
         foto:this.fotosDe(p)[0],fotoN:this.fotosDe(p).length+' fotos',ver:this.verFoto(p.id),
         open:this.openProd(p.id),
         ...this.chip(p.ativo?'ativo':'inativo'),toggle:this.toggleProd(p.id),toggleLabel:p.ativo?'Inativar':'Ativar'}));
@@ -4586,20 +4611,20 @@ class Component extends DCLogic {
     const prodKpis=[
       {label:'Ativos no catálogo',val:String(S.produtos.filter(p=>p.ativo).length),sub:'disponíveis para pedidos das revendas'},
       {label:'Inativos',val:String(S.produtos.filter(p=>!p.ativo).length),sub:'fora do catálogo'},
-      {label:'Fornecedores representados',val:String([...new Set(S.produtos.map(p=>p.fornecedorId))].length),sub:'com produtos homologados'},
+      {label:'Fornecedores representados',val:String([...new Set(S.produtos.flatMap(p=>this._pForns(p)))].length),sub:'com produtos homologados'},
       {label:'Movimentado em pedidos',val:this.fmt(receitaTotal),sub:'soma de todos os pedidos'}];
     let pdd=null;
     if(S.selProd){ const p=S.produtos.find(x=>x.id===S.selProd);
       if(p){ const fotos=this.fotosDe(p); const idx=(S.fotoIdx[p.id]||0)%fotos.length;
-        const forn=F(p.fornecedorId); const ctr=ctrVig(p.fornecedorId);
         const emPeds=PEDS.filter(x=>x.itens.some(i=>i.produtoId===p.id));
         const receita=emPeds.reduce((a,x)=>a+x.itens.filter(i=>i.produtoId===p.id).reduce((b,i)=>b+i.qtd*i.preco,0),0);
         pdd={codigo:p.codigo,descricao:p.descricao,unidade:p.unidade,precoFmt:this.fmt(p.preco),
           ...this.chip(p.ativo?'ativo':'inativo'),
           foto:fotos[idx],verGrande:this.verFoto(p.id),
           thumbs:fotos.map((src,i)=>({src,pick:this.fotoSet(p.id,i),bd:i===idx?'#B38335':'#e8e1d2'})),
-          fornNome:forn.nome,fornCidade:forn.cidade||'',verForn:this.openForn(p.fornecedorId),
-          ctrNum:ctr?ctr.numero:'— sem contrato vigente —',royaltyStr:ctr?String(ctr.royalty).replace('.',',')+'%':'—',
+          vinculos:this._pForns(p).map(fid2=>{ const fo2=F(fid2); const c2=ctrVig(fid2);
+            return {nome:fo2.nome,cidade:fo2.cidade||'',ver:this.openForn(fid2),
+              ctrNum:c2?c2.numero:'— sem contrato vigente —',royaltyStr:c2?String(c2.royalty).replace('.',',')+'%':'—'};}),
           stats:[
             {label:'Pedidos com o produto',val:String(emPeds.length)},
             {label:'Quantidade pedida',val:qtdProduto(p.id)+' '+p.unidade.toLowerCase()+'(s)'},
@@ -4614,7 +4639,7 @@ class Component extends DCLogic {
           editar:(()=>{ const h=this._ultimoPrecoHist(p); const val=h?h.valor:p.preco;
             return this.open('produto',{editId:p.id,descricao:p.descricao,unidade:p.unidade,preco:String(val).replace('.',','),
               precoInfo:h?('Preenchido automaticamente com o último valor do histórico: '+this.fmt(h.valor)+' — '+h.origem+'. Você pode ajustar; a alteração manual alimenta o histórico de preços.'):null,
-              fornecedorId:String(p.fornecedorId),fotoP:0}); })(),
+              fornecedorIds:this._pForns(p).slice(),buscaForn:'',fotoP:0}); })(),
           toggle:this.toggleProd(p.id),toggleLabel:p.ativo?'Inativar no catálogo':'Ativar no catálogo',
           voltar:this.go('prod')}; } }
     const prodModalTitulo=S.form.editId&&S.modal==='produto'?'Editar produto homologado':'Novo produto homologado';
@@ -4637,7 +4662,7 @@ class Component extends DCLogic {
     if(S.selRev){ const r=S.revendas.find(x=>x.id===S.selRev);
       if(r){ const peds=PEDS.filter(p=>p.revendaId===r.id);
         const fats=S.faturamentos.filter(f=>f.revendaId===r.id);
-        const prodsVis=S.produtos.filter(p=>r.visibilidade.includes(p.fornecedorId)&&F(p.fornecedorId).ativo);
+        const prodsVis=S.produtos.filter(p=>this._pForns(p).some(v=>r.visibilidade.includes(v)&&F(v).ativo));
         rd={nome:r.nome,cnpj:r.cnpj,cidade:r.cidade,email:r.email||'—',ultimoAcesso:r.ultimoAcesso||'—',
           ultimoConvite:r.ultimoConvite||'',temConvite:!!r.ultimoConvite,
           ...this.chip(r.ativo?'ativo':'inativo'),
@@ -4649,7 +4674,7 @@ class Component extends DCLogic {
           vis:S.fornecedores.filter(f=>f.ativo).map(f=>{const on=r.visibilidade.includes(f.id);
             return {nome:f.nome,toggle:this.toggleVisib(r.id,f.id),bg:on?'#f5efe3':'#fff',fg:on?'#8f682a':'#b0a795',bd:on?'#d9c193':'#e8e1d2',mark:on?'✓ ':''};}),
           prods:prodsVis.map(p=>{ const bloq=(r.prodBloq||[]).includes(p.id);
-            return {codigo:p.codigo,descricao:p.descricao,fornNome:F(p.fornecedorId).nome,foto:this.fotosDe(p)[0],ver:this.verFoto(p.id),
+            return {codigo:p.codigo,descricao:p.descricao,fornNome:this._pForns(p).filter(v=>r.visibilidade.includes(v)&&F(v).ativo).map(v=>F(v).nome).join(', '),foto:this.fotosDe(p)[0],ver:this.verFoto(p.id),
               op:bloq?'.5':'1',tagBg:bloq?'#fbeae7':'#e9f3ea',tagFg:bloq?'#a33a2b':'#2f6b39',tagLabel:bloq?'Bloqueado':'Visível',
               toggle:this.toggleProdBloq(r.id,p.id),toggleLabel:bloq?'Liberar':'Bloquear'};}),
           semProds:prodsVis.length===0,
@@ -4803,9 +4828,9 @@ class Component extends DCLogic {
 
     // revenda
     const bc=S.buscaCat.toLowerCase();
-    const catRows=S.produtos.filter(p=>p.ativo&&F(p.fornecedorId).ativo&&(rMe.visibilidade||[]).includes(p.fornecedorId)&&!(rMe.prodBloq||[]).includes(p.id)&&(!bc||p.descricao.toLowerCase().includes(bc)||p.codigo.toLowerCase().includes(bc)))
+    const catRows=S.produtos.filter(p=>p.ativo&&this._pForns(p).some(v=>F(v).ativo&&(rMe.visibilidade||[]).includes(v))&&!(rMe.prodBloq||[]).includes(p.id)&&(!bc||p.descricao.toLowerCase().includes(bc)||p.codigo.toLowerCase().includes(bc)))
       .map(p=>{ const fotos=this.fotosDe(p); const idx=(S.fotoIdx[p.id]||0)%fotos.length;
-        return {id:p.id,codigo:p.codigo,descricao:p.descricao,fornNome:F(p.fornecedorId).nome,unidade:p.unidade,precoFmt:this.fmt(p.preco),
+        return {id:p.id,codigo:p.codigo,descricao:p.descricao,fornNome:this._pForns(p).filter(v=>F(v).ativo&&(rMe.visibilidade||[]).includes(v)).map(v=>F(v).nome).join(', '),unidade:p.unidade,precoFmt:this.fmt(p.preco),
         foto:fotos[idx],temVarias:fotos.length>1,verGrande:this.verFoto(p.id),
         dots:fotos.map((_,i)=>({bg:i===idx?'#B38335':'rgba(255,255,255,.85)'})),
         next:this.fotoNav(p.id,fotos.length,1),prev:this.fotoNav(p.id,fotos.length,-1),
@@ -4821,11 +4846,25 @@ class Component extends DCLogic {
 
     // modal helper views
     const M=S.modal;
-    const dirRows=S.fornecedores.filter(f=>f.ativo).map(f=>{const sel=S.form.fornecedorId===String(f.id);
+    // Vínculo N:M — envio direto: interseção dos fornecedores dos itens selecionados;
+    // cotação: união (a adjudicação pode ser por item).
+    let dirFids=null,convFids=null;
+    if((M==='direto'||M==='cotacao')&&S.form.pedidoId){ const p0=PEDS.find(x=>x.id===S.form.pedidoId);
+      if(p0){ const idxs=(S.form.sel&&S.form.sel.length)?S.form.sel:p0.itens.map((i,ix)=>i.st==='aprovado'?ix:-1).filter(ix=>ix>=0);
+        const prods0=idxs.map(ix=>P(p0.itens[ix].produtoId)).filter(Boolean);
+        if(prods0.length){ if(M==='direto') dirFids=prods0.map(pp=>this._pForns(pp)).reduce((a,b)=>a.filter(x=>b.includes(x)));
+          else { const u=new Set(); prods0.forEach(pp=>this._pForns(pp).forEach(v=>u.add(v))); convFids=[...u]; } } } }
+    const dirRows=S.fornecedores.filter(f=>f.ativo&&(dirFids==null||dirFids.includes(f.id))).map(f=>{const sel=S.form.fornecedorId===String(f.id);
       return {nome:f.nome,royaltyStr:'royalty '+String(pctOf(f.id)).replace('.',',')+'%',pick:this.pickForn(f.id),
         bg:sel?'#faf5e9':'#fff',bd:sel?'#B38335':'#e8e1d2',dot:sel?'#B38335':'#e8e1d2'};});
-    const convRows=S.fornecedores.filter(f=>f.ativo).map(f=>{const on=(S.form.convidados||[]).includes(f.id);
+    const dirVazio=M==='direto'&&dirRows.length===0;
+    const convRows=S.fornecedores.filter(f=>f.ativo&&(convFids==null||convFids.includes(f.id))).map(f=>{const on=(S.form.convidados||[]).includes(f.id);
       return {nome:f.nome,toggle:this.toggleConv(f.id),bg:on?'#faf5e9':'#fff',bd:on?'#B38335':'#e8e1d2',fg:on?'#8f682a':'#6b6459',mark:on?'✓ ':''};});
+    const _bf2=String(S.form.buscaForn||'').toLowerCase();
+    const prodFornRows=M==='produto'?S.fornecedores.filter(f=>f.ativo&&(!_bf2||f.nome.toLowerCase().includes(_bf2))).map(f=>{ const on=(S.form.fornecedorIds||[]).includes(f.id);
+      return {nome:f.nome,toggle:this.toggleFornProd(f.id),bg:on?'#faf5e9':'#fff',bd:on?'#B38335':'#e8e1d2',fg:on?'#8f682a':'#6b6459',mark:on?'✓ ':''};}):[];
+    const prodFornSel=String((S.form.fornecedorIds||[]).length)+' selecionado(s)';
+    const prodFornVazio=M==='produto'&&prodFornRows.length===0;
     let propInfo={cotId:'',prazo:'',itensTxt:'',refFmt:'',fotos:[],itens:[],totalFmt:'—'};
     if(M==='proposta'&&S.form.cotId){ const c=S.cotacoes.find(x=>x.id===S.form.cotId);
       if(c){ const ped=PEDS.find(p=>p.id===c.pedidoId)||{itens:[],total:0};
@@ -4982,7 +5021,7 @@ class Component extends DCLogic {
       prodKpis,pdd,filtroStatusProd:S.filtroStatusProd,setFiltroStatusProd:this.setFiltroStatusProd,prodModalTitulo,prodModalBtn,
       revKpis,rd,buscaRev:S.buscaRev,setBuscaRev:this.setBuscaRev,revModalTitulo,revModalBtn,fxEmail:this.fx('email'),
       busca:S.busca,setBusca:this.setBusca,filtroForn:S.filtroForn,setFiltroForn:this.setFiltroForn,
-      novoForn:this.open('fornecedor',{}),novoProduto:this.open('produto',{fornecedorId:'',unidade:''}),novaRevenda:this.open('revenda',{}),
+      novoForn:this.open('fornecedor',{}),novoProduto:this.open('produto',{fornecedorIds:[],buscaForn:'',unidade:''}),novaRevenda:this.open('revenda',{}),
       // faturamento / royalties
       fatRows,aguardFat,temAguardFat:aguardFat.length>0,royGroups,royKpis,...royVals,
       mCob:M==='cobranca'&&!!cobInfo,cobInfo:cobInfo||{rows:[]},emitirCobranca:this.emitirCobranca,
@@ -5016,7 +5055,7 @@ class Component extends DCLogic {
       form:S.form,mClose:this.mClose,
       fxNome:this.fx('nome'),fxCnpj:this.fx('cnpj'),fxCidade:this.fx('cidade'),fxContato:this.fx('contato'),
       fxRoyalty:this.fx('royalty'),fxInicio:this.fx('inicio'),fxFim:this.fx('fim'),fxFornecedorId:this.fx('fornecedorId'),fxRevendaId:this.fx('revendaId'),
-      fxCodigo:this.fx('codigo'),fxDescricao:this.fx('descricao'),fxUnidade:this.fx('unidade'),fxPreco:this.fx('preco'),
+      fxCodigo:this.fx('codigo'),fxDescricao:this.fx('descricao'),fxUnidade:this.fx('unidade'),fxPreco:this.fx('preco'),fxBuscaForn:this.fx('buscaForn'),
       fxJustif:this.fx('justif'),fxPedidoId:this.fx('pedidoId'),fxPrazo:this.fx('prazo'),
       fxPrecoP:this.fx('precoP'),fxPrazoEntrega:this.fx('prazoEntrega'),fxValidade:this.fx('validade'),fxCondicoes:this.fx('condicoes'),
       fxValorFat:this.fx('valorFat'),fxDataPg:this.fx('dataPg'),fxValorPg:this.fx('valorPg'),fxComprovante:this.fx('comprovante'),fxMotivo:this.fx('motivo'),fxVenc:this.fx('venc'),
@@ -5026,7 +5065,7 @@ class Component extends DCLogic {
       mForn:M==='fornecedor',mCtr:M==='contrato',mRoy:M==='royalty',mProd:M==='produto',mRev:M==='revenda',
       mRej:M==='rejeitar',mDir:M==='direto',mCot:M==='cotacao',mEst:M==='estoque',mJusV:M==='justifvenc',mCanC:M==='cancelarcot',
       mProp:M==='proposta',mFat:M==='faturar',mPag:M==='pagamento',
-      dirRows,convRows,propInfo,fatInfo,jvInfo,royInfo,selItens,
+      dirRows,convRows,dirVazio,prodFornRows,prodFornSel,prodFornVazio,propInfo,fatInfo,jvInfo,royInfo,selItens,
       confirmEstoque:this.confirmEstoque,setPedidoCot:this.setPedidoCot,
       prodModalFotos:(S.form.editId&&M==='produto'?this.fotosDe(S.produtos.find(x=>x.id===S.form.editId)||{}):['img/prd-new-1.png','img/prd-new-2.png','img/prd-new-3.png']).map((src,i)=>({src,principal:i===(S.form.fotoP||0),pick:this.pickFotoP(i),bd:i===(S.form.fotoP||0)?'#B38335':'#e8e1d2'})),
       salvarForn:this.salvarForn,salvarContrato:this.salvarContrato,salvarRoyalty:this.salvarRoyalty,
