@@ -841,7 +841,17 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <option value="ativos">Ativos no catálogo</option>
         <option value="inativos">Inativos</option>
       </select>
+      <select value="{{filtroCatProd}}" onChange="{{setFiltroCatProd}}" style="padding:10px 12px;border:1px solid #e5ddcd;border-radius:9px;font:inherit;font-size:12.5px;font-weight:600;color:#272525;background:#fff;outline:none;cursor:pointer">
+        <sc-for list="{{prodCatFilterOpts}}" as="o" hint-placeholder-count="3"><option value="{{o.v}}">{{o.label}}</option></sc-for>
+      </select>
     </div>
+    <div style="display:flex;align-items:center;gap:12px;margin:-4px 0 12px">
+      <span style="font-size:12.5px;font-weight:700;color:#8f682a">{{prodCount}}</span>
+      <sc-if value="{{prodFiltroAtivo}}" hint-placeholder-val="{{false}}"><span onClick="{{limparProdFiltros}}" style="font-size:12px;font-weight:600;color:#8a8378;border:1px solid #e5ddcd;border-radius:7px;padding:3px 10px;cursor:pointer;background:#fff" style-hover="background:#f7f3ea">✕ Limpar busca e filtros</span></sc-if>
+    </div>
+    <sc-if value="{{prodVazio}}" hint-placeholder-val="{{false}}">
+      <div style="background:#fff;border:1px dashed #ddd5c7;border-radius:12px;padding:24px;text-align:center;font-size:13px;color:#a89f90;margin-bottom:14px">Nenhum produto encontrado para a busca e os filtros aplicados.</div>
+    </sc-if>
     <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;overflow:hidden">
       <table style="width:100%;border-collapse:collapse">
         <thead><tr>
@@ -3278,7 +3288,7 @@ class Component extends DCLogic {
     configEmail:{host:'',porta:'587',seguranca:'starttls',usuario:'',senha:'',remetenteNome:'Cidade Imperial',remetenteEmail:'',responderPara:'',emailLoja:'',ativo:false},
     configPlataforma:{analiseFiscalIA:true}, analiseEngine:null,
     cfgTestTo:'', cfgMsg:null, cfgMsgTipo:null, cfgBusy:false,
-    selPed:null, selCot:null, selForn:null, selProd:null, selRev:null, modal:null, form:{}, pendVenc:null, filtroStatusProd:'todos', buscaRev:'', buscaPed:'', filtroRev:'0', fPedVis:'cards',
+    selPed:null, selCot:null, selForn:null, selProd:null, selRev:null, modal:null, form:{}, pendVenc:null, filtroStatusProd:'todos', filtroCatProd:'todas', buscaRev:'', buscaPed:'', filtroRev:'0', fPedVis:'cards',
     busca:'', buscaForn:'', filtroForn:'0', filtroStatus:'todos', buscaCat:'', cart:{}, fotoIdx:{}, lightbox:null, expFech:null, filtroCot:'todas',
     relComp:'todas', relRevF:'0', relFornF:'0', relStF:'todos', relAba:'geral',
     rvpDe:'', rvpAte:'', rvpProd:'0', rvpRev:'0', rvpForn:'0', rvpCat:'todas', rvpVis:'tabela', rvpDrill:null,
@@ -3775,6 +3785,7 @@ class Component extends DCLogic {
         "Para tirar um produto do catálogo das revendas ou colocá-lo de volta, clique no link \"Inativar\" ou \"Ativar\" à direita da linha; a coluna \"Catálogo\" mostra a situação atual de cada item."
       ],
       "dicas": [
+        "Combine a busca por código/descrição com os filtros de fornecedor, status (ativo/inativo) e categoria — o contador dourado mostra quantos produtos correspondem (ex.: \"3 de 10 produto(s)\") e o botão \"✕ Limpar busca e filtros\" restaura a lista completa.",
         "Na lista \"Fornecedores / contratos\" só aparecem fornecedores ativos; use o campo \"Buscar fornecedor por nome…\" para filtrar e clique nos nomes para marcar ou desmarcar — todo produto precisa de ao menos um fornecedor vinculado.",
         "Inativar não exclui o produto: ele apenas sai do catálogo das revendas e pode ser reativado a qualquer momento pelo mesmo link.",
         "Na coluna \"Código\", clique na miniatura da foto do produto para ampliar a imagem.",
@@ -4231,6 +4242,8 @@ class Component extends DCLogic {
     this.setState(s=>({revendas:s.revendas.map(x=>x.id===rid?{...x,ultimoConvite:this.hoje()}:x)}));
     this.audit('Convite de acesso reenviado',r.nome+' · '+r.email); }; return this._rc[rid]; }
   setFiltroStatusProd=e=>this.setState({filtroStatusProd:e.target.value});
+  setFiltroCatProd=e=>this.setState({filtroCatProd:e.target.value});
+  limparProdFiltros=()=>this.setState({busca:'',filtroForn:'0',filtroStatusProd:'todos',filtroCatProd:'todas'});
   setFPedVis(v){ this._fpv=this._fpv||{}; if(!this._fpv[v]) this._fpv[v]=()=>this.setState({fPedVis:v}); return this._fpv[v]; }
   fotoSet(id,i){ this._fs=this._fs||{}; const k=id+'|'+i; if(!this._fs[k]) this._fs[k]=()=>this.setState(s=>({fotoIdx:{...s.fotoIdx,[id]:i}})); return this._fs[k]; }
   setBuscaForn=e=>this.setState({buscaForn:e.target.value});
@@ -5604,12 +5617,18 @@ class Component extends DCLogic {
     const b=S.busca.toLowerCase();
     const prodRows=S.produtos.filter(p=>(S.filtroForn==='0'||this._pTemForn(p,+S.filtroForn))
         &&(S.filtroStatusProd==='todos'||(S.filtroStatusProd==='ativos'?p.ativo:!p.ativo))
+        &&((S.filtroCatProd||'todas')==='todas'||this._pCat(p)===S.filtroCatProd)
         &&(!b||p.descricao.toLowerCase().includes(b)||p.codigo.toLowerCase().includes(b)))
       .map(p=>({codigo:p.codigo,descricao:p.descricao,fornNome:this._pFornNomes(p),unidade:p.unidade,precoFmt:this.fmt(p.preco),
         foto:this.fotosDe(p)[0],fotoN:this.fotosDe(p).length+' fotos',ver:this.verFoto(p.id),
         open:this.openProd(p.id),
         ...this.chip(p.ativo?'ativo':'inativo'),toggle:this.toggleProd(p.id),toggleLabel:p.ativo?'Inativar':'Ativar'}));
     const fornFilterOpts=[{id:'0',nome:'Todos os fornecedores'},...S.fornecedores.map(f=>({id:String(f.id),nome:f.nome}))];
+    // RF52 — contador de resultados, filtro de categoria e limpar filtros
+    const prodCatFilterOpts=[{v:'todas',label:'Todas as categorias'},...[...new Set(S.produtos.map(p=>this._pCat(p)))].sort().map(c=>({v:c,label:c}))];
+    const prodFiltroAtivo=!!(b||S.filtroForn!=='0'||S.filtroStatusProd!=='todos'||(S.filtroCatProd||'todas')!=='todas');
+    const prodCount=prodRows.length+' de '+S.produtos.length+' produto(s)'+(prodFiltroAtivo?' — busca/filtros aplicados':'');
+    const prodVazio=prodRows.length===0;
     const qtdProduto=pid=>PEDS.reduce((a,x)=>a+x.itens.filter(i=>i.produtoId===pid).reduce((b,i)=>b+i.qtd,0),0);
     const receitaTotal=PEDS.reduce((a,x)=>a+x.itens.reduce((b,i)=>b+i.qtd*i.preco,0),0);
     const prodKpis=[
@@ -6204,7 +6223,7 @@ class Component extends DCLogic {
       // cadastros
       fornRows,ctrRows,prodRows,revRows,fornFilterOpts,fornOptsAtivos,
       fornKpis,fd,buscaForn:S.buscaForn,setBuscaForn:this.setBuscaForn,fornModalTitulo,fornModalBtn,
-      prodKpis,pdd,filtroStatusProd:S.filtroStatusProd,setFiltroStatusProd:this.setFiltroStatusProd,prodModalTitulo,prodModalBtn,
+      prodKpis,pdd,filtroStatusProd:S.filtroStatusProd,setFiltroStatusProd:this.setFiltroStatusProd,filtroCatProd:S.filtroCatProd||'todas',setFiltroCatProd:this.setFiltroCatProd,prodCatFilterOpts,prodCount,prodFiltroAtivo,prodVazio,limparProdFiltros:this.limparProdFiltros,prodModalTitulo,prodModalBtn,
       revKpis,rd,buscaRev:S.buscaRev,setBuscaRev:this.setBuscaRev,revModalTitulo,revModalBtn,fxEmail:this.fx('email'),
       busca:S.busca,setBusca:this.setBusca,filtroForn:S.filtroForn,setFiltroForn:this.setFiltroForn,
       novoForn:this.open('fornecedor',{}),novoProduto:this.open('produto',{fornecedorIds:[],buscaForn:'',unidade:'',categoria:'Outros'}),novaRevenda:this.open('revenda',{}),
