@@ -81,6 +81,11 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <sc-for list="{{fornOpts}}" as="o" hint-placeholder-count="2"><option value="{{o.id}}">{{o.nome}}</option></sc-for>
       </select>
     </sc-if>
+    <sc-if value="{{mostraSelGrupo}}" hint-placeholder-val="{{false}}">
+      <select value="{{ctxGrupoVal}}" onChange="{{setRevContexto}}" title="Revenda ativa — troca rápida de contexto do grupo econômico, sem novo login" style="padding:8px 10px;border:2px solid #B38335;border-radius:9px;font:inherit;font-size:12.5px;font-weight:700;color:#8f682a;background:#fdf9f0;outline:none;cursor:pointer;max-width:240px">
+        <sc-for list="{{ctxGrupoOpts}}" as="o" hint-placeholder-count="3"><option value="{{o.id}}">{{o.nome}}</option></sc-for>
+      </select>
+    </sc-if>
     <sc-if value="{{mostraSelRev}}" hint-placeholder-val="{{false}}">
       <select value="{{revAtivoStr}}" onChange="{{setRevAtivo}}" style="padding:8px 10px;border:1px solid #e5ddcd;border-radius:9px;font:inherit;font-size:12.5px;font-weight:600;color:#272525;background:#fff;outline:none;cursor:pointer;max-width:210px">
         <sc-for list="{{revOpts}}" as="o" hint-placeholder-count="2"><option value="{{o.id}}">{{o.nome}}</option></sc-for>
@@ -1958,6 +1963,9 @@ input::placeholder,textarea::placeholder{color:#b0a795}
 <sc-if value="{{sCat}}" hint-placeholder-val="{{false}}">
   <div data-screen-label="Catálogo (revenda)" style="animation:fadeUp .25s ease">
     <div style="font-size:21px;font-weight:700;margin:2px 0 3px">Catálogo de produtos homologados</div>
+    <sc-if value="{{catGrupo}}" hint-placeholder-val="{{false}}">
+      <div style="font-size:12.5px;font-weight:600;color:#5d3f96;background:#f3eefa;border:1px solid #ddd0ee;border-radius:10px;padding:10px 14px;margin:6px 0 14px">📊 Você está na visão consolidada do grupo. O catálogo e a visibilidade de fornecedores são individuais por revenda — selecione uma revenda no seletor de contexto (no topo) para consultar o catálogo e criar pedidos em nome dela.</div>
+    </sc-if>
     <div style="font-size:13px;color:#8a8378;margin-bottom:16px">Produtos disponíveis para {{rMeNome}} · selecione quantidades e envie o pedido para análise da Loja</div>
     <input value="{{buscaCat}}" onChange="{{setBuscaCat}}" placeholder="Buscar produto…" style="width:100%;box-sizing:border-box;padding:11px 14px;border:1px solid #e5ddcd;border-radius:9px;font:inherit;font-size:13px;background:#fff;outline:none;color:#272525;margin-bottom:16px">
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:13px;padding-bottom:80px">
@@ -2002,6 +2010,18 @@ input::placeholder,textarea::placeholder{color:#b0a795}
   <div data-screen-label="Meus pedidos (revenda)" style="animation:fadeUp .25s ease">
     <div style="font-size:21px;font-weight:700;margin:2px 0 3px">Meus pedidos</div>
     <div style="font-size:13px;color:#8a8378;margin-bottom:18px">Acompanhe o status: pendente, em cotação, aprovado, rejeitado ou faturado</div>
+    <sc-if value="{{rpedGrupo}}" hint-placeholder-val="{{false}}">
+      <div style="font-size:12.5px;font-weight:600;color:#5d3f96;background:#f3eefa;border:1px solid #ddd0ee;border-radius:10px;padding:10px 14px;margin:-8px 0 14px">📊 Visão consolidada do grupo econômico — pedidos de todas as revendas vinculadas, com a revenda identificada em cada linha. Para criar pedidos ou consultar o catálogo, selecione uma revenda no seletor de contexto (a consulta individual continua a um clique).</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px">
+        <sc-for list="{{grpKpis}}" as="k" hint-placeholder-count="4">
+          <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:13px 16px">
+            <div style="font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#a89f90">{{k.label}}</div>
+            <div style="font-size:17px;font-weight:700;margin:5px 0 2px;white-space:nowrap">{{k.val}}</div>
+            <div style="font-size:11px;color:#8a8378">{{k.sub}}</div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
     <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;overflow:hidden">
       <table style="width:100%;border-collapse:collapse">
         <thead><tr>
@@ -2014,7 +2034,8 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <tbody>
           <sc-for list="{{rPedRows}}" as="p" hint-placeholder-count="3">
             <tr>
-              <td style="padding:11px 18px;font-size:13px;font-weight:600;border-bottom:1px solid #f5f1e8">{{p.id}}<div style="font-size:11px;font-weight:400;color:#a89f90">{{p.data}}</div></td>
+              <td style="padding:11px 18px;font-size:13px;font-weight:600;border-bottom:1px solid #f5f1e8">{{p.id}}<div style="font-size:11px;font-weight:400;color:#a89f90">{{p.data}}</div>
+                <sc-if value="{{p.revTag}}" hint-placeholder-val="{{false}}"><div style="margin-top:3px"><span style="font-size:10px;font-weight:700;color:#5d3f96;background:#f3eefa;border:1px solid #ddd0ee;border-radius:6px;padding:1px 7px;white-space:nowrap">🏪 {{p.revTag}}</span></div></sc-if></td>
               <td style="padding:11px 10px;border-bottom:1px solid #f5f1e8"><div style="display:flex;align-items:center"><sc-for list="{{p.fotos}}" as="ft" hint-placeholder-count="0"><sc-if value="{{ft.src}}" hint-placeholder-val="{{false}}"><img loading="lazy" src="{{ft.src}}" alt="item" onClick="{{ft.ver}}" title="Clique para ampliar" style="width:32px;height:32px;object-fit:cover;border-radius:8px;border:2px solid #fff;margin-right:-8px;box-shadow:0 1px 3px rgba(39,37,37,.18);cursor:zoom-in"></sc-if></sc-for><span style="font-size:12px;color:#8a8378;margin-left:16px;white-space:nowrap">{{p.itensN}}</span></div></td>
               <td style="padding:11px 10px;font-size:13px;border-bottom:1px solid #f5f1e8">{{p.fornNome}}
                 <sc-if value="{{p.temFatDocs}}" hint-placeholder-val="{{false}}">
@@ -3019,11 +3040,13 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         </select>
       </sc-if>
       <sc-if value="{{formPapelRev}}" hint-placeholder-val="{{false}}">
-        <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Revenda vinculada</div>
-        <select value="{{form.revendaId}}" onChange="{{fxRevendaId}}" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid #ddd5c7;border-radius:9px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525;cursor:pointer">
-          <option value="">Selecione…</option>
-          <sc-for list="{{revOpts}}" as="o" hint-placeholder-count="3"><option value="{{o.id}}">{{o.nome}}</option></sc-for>
-        </select>
+        <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Revendas vinculadas <span style="font-weight:400;color:#a89f90">— seleção múltipla · grupo econômico · {{usrRevSel}}</span></div>
+        <div style="display:flex;flex-wrap:wrap;gap:7px">
+          <sc-for list="{{usrRevRows}}" as="ur" hint-placeholder-count="3">
+            <div onClick="{{ur.toggle}}" style="font-size:12px;font-weight:600;border-radius:8px;padding:7px 11px;cursor:pointer;background:{{ur.bg}};color:{{ur.fg}};border:1px solid {{ur.bd}}">{{ur.mark}}{{ur.nome}}</div>
+          </sc-for>
+        </div>
+        <div style="font-size:11px;color:#b0a795;margin-top:6px">Com 2 ou mais revendas, o usuário ganha o seletor de contexto no topo — opera em nome de cada revenda e vê a visão consolidada do grupo.</div>
       </sc-if>
       <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px"><sc-if value="{{usrEditando}}" hint-placeholder-val="{{false}}">Nova senha (deixe em branco para manter)</sc-if><sc-if value="{{usrNovo}}" hint-placeholder-val="{{true}}">Senha inicial</sc-if></div>
       <input type="password" value="{{form.senha}}" onChange="{{fxSenhaU}}" placeholder="••••••••" style="width:100%;box-sizing:border-box;padding:10px 13px;border:1px solid #ddd5c7;border-radius:9px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
@@ -3194,7 +3217,7 @@ class Component extends DCLogic {
 
   state = {
     logado:false, loginRole:'loja', loginEmail:'', loginSenha:'', loginErro:null,
-    role:null, scr:null, fornAtivo:1, revAtivo:1, ajudaStep:0, ajudaPlay:false, ajudaMax:false, toast:null,
+    role:null, scr:null, fornAtivo:1, revAtivo:1, revGrupo:false, ajudaStep:0, ajudaPlay:false, ajudaMax:false, toast:null,
     usuario:null, buscaUsr:'', filtroPapel:'todos', invTplData:'',
     usuarios:[
       {id:1,nome:'Administrador Técnico',email:'admin@cidadeimperial.com.br',senhaHash:'108bf99ab7e362',papel:'admin',fornecedorId:null,revendaId:null,ativo:true,permissoes:{},ultimoAcesso:null,criadoEm:'01/01/2026'},
@@ -3995,6 +4018,7 @@ class Component extends DCLogic {
         "Quando um pedido é rejeitado, aparece um texto em vermelho logo abaixo da etiqueta de status, com a justificativa informada pela Loja."
       ],
       "dicas": [
+        "Usuário de grupo econômico (vinculado a 2+ revendas): o seletor dourado no topo troca a revenda ativa SEM novo login e a opção \"Grupo — visão consolidada\" mostra os pedidos de todas as revendas juntos, com indicadores agregados e a revenda identificada em cada linha.",
         "Esta tela serve apenas para acompanhar; para criar um novo pedido, abra a tela \"Catálogo de produtos\" (menu \"Compras\"), adicione os produtos e clique em \"Enviar pedido para análise\".",
         "Todo pedido novo começa como \"pendente\" e só muda depois que a Loja o analisa; a coluna \"Fornecedor (faturamento)\" só é preenchida quando a Loja encaminha o pedido a um fornecedor ou encerra a cotação.",
         "A coluna \"Fornecedor (faturamento)\" pode mostrar \"Estoque da Loja\" quando o pedido é atendido pelo próprio estoque da Loja."
@@ -4052,6 +4076,7 @@ class Component extends DCLogic {
         "Use \"Inativar\"/\"Reativar\" para bloquear ou devolver o acesso — um usuário inativo não consegue entrar na plataforma."
       ],
       "dicas": [
+        "Usuários do perfil Revenda podem ser vinculados a VÁRIAS revendas do mesmo grupo econômico — basta marcar mais de uma revenda no cadastro; o usuário ganha o seletor de contexto e a visão consolidada do grupo.",
         "O sistema exige ao menos um Administrador Técnico ativo — o último admin não pode ser inativado nem rebaixado.",
         "As permissões personalizadas sobrepõem o padrão do perfil apenas para aquele usuário; os demais continuam no padrão.",
         "Cada alteração de permissão fica registrada na trilha de auditoria (Segurança & Auditoria)."
@@ -4940,7 +4965,9 @@ class Component extends DCLogic {
 
   addCart(id){ this._ac=this._ac||{}; if(!this._ac[id]) this._ac[id]=()=>this.setState(s=>({cart:{...s.cart,[id]:(s.cart[id]||0)+1}})); return this._ac[id]; }
   subCart(id){ this._sb=this._sb||{}; if(!this._sb[id]) this._sb[id]=()=>this.setState(s=>{ const q=(s.cart[id]||0)-1; const c={...s.cart}; if(q<=0)delete c[id]; else c[id]=q; return {cart:c}; }); return this._sb[id]; }
-  enviarPedido=()=>{ if(!this.pode('pedidos.criar')) return; const cart=this.state.cart; const ids=Object.keys(cart); if(!ids.length)return;
+  enviarPedido=()=>{ if(!this.pode('pedidos.criar')) return;
+    if(this.role==='revenda'&&this.state.revGrupo) return this.toast('A visão consolidada do grupo é somente consulta — selecione uma revenda no seletor de contexto para criar pedidos.');
+    const cart=this.state.cart; const ids=Object.keys(cart); if(!ids.length)return;
     const itens=ids.map(k=>{ const p=this.state.produtos.find(x=>x.id===+k); return {produtoId:p.id,qtd:cart[k],preco:p.preco,st:'pendente'}; });
     const total=itens.reduce((a,i)=>a+i.qtd*i.preco,0);
     const n=this.state.seq.ped; const id='PED-00'+n;
@@ -4954,6 +4981,18 @@ class Component extends DCLogic {
 
   setRole(r){ this._sr=this._sr||{}; if(!this._sr[r]) this._sr[r]=()=>this.setState({role:r,scr:null,selPed:null,selCot:null,modal:null,form:{}}); return this._sr[r]; }
   setFornAtivo=e=>this.setState({fornAtivo:+e.target.value});
+  // ——— RF67: acesso a múltiplas revendas (grupo econômico) ———
+  _minhasRevs(u){ u=u||this.usuarioAtual(); if(!u) return [];
+    return (u.revendaIds&&u.revendaIds.length)?u.revendaIds:(u.revendaId?[u.revendaId]:[]); }
+  setRevContexto=e=>{ const v=e.target.value;
+    if(v==='g'){ this.setState({revGrupo:true,cart:{},lightbox:null});
+      this.audit('Troca de contexto de revenda','visão consolidada do grupo — sem novo login'); }
+    else { const r=this.state.revendas.find(x=>x.id===+v);
+      this.setState({revGrupo:false,revAtivo:+v,cart:{},lightbox:null});
+      this.audit('Troca de contexto de revenda',(r?r.nome:v)+' — sem novo login'); }
+    setTimeout(()=>this._flushPersist(),0); };
+  toggleRevUsr(rid){ this._trv=this._trv||{}; if(!this._trv[rid]) this._trv[rid]=()=>this.setState(s=>{ const c=s.form.revendaIds||[]; const on=c.includes(rid);
+    return {form:{...s.form,revendaIds:on?c.filter(x=>x!==rid):[...c,rid],erro:null}}; }); return this._trv[rid]; }
   setRevAtivo=e=>this.setState({revAtivo:+e.target.value});
   setBusca=e=>this.setState({busca:e.target.value});
   setFiltroForn=e=>this.setState({filtroForn:e.target.value});
@@ -5025,7 +5064,7 @@ class Component extends DCLogic {
     if(this.hashSenha(loginSenha)!==u.senhaHash) return falha('senha incorreta','Senha incorreta.');
     const view=u.papel==='admin'?'loja':u.papel;
     this.setState(s=>({logado:true,usuario:u.id,role:view,scr:null,selPed:null,selCot:null,loginSenha:'',
-      fornAtivo:u.fornecedorId||s.fornAtivo,revAtivo:u.revendaId||s.revAtivo,
+      fornAtivo:u.fornecedorId||s.fornAtivo,revAtivo:(u.revendaIds&&u.revendaIds[0])||u.revendaId||s.revAtivo,revGrupo:false,
       usuarios:s.usuarios.map(x=>x.id===u.id?{...x,ultimoAcesso:this.ts()}:x)}),
       ()=>this.audit('Login realizado',u.email+' · perfil '+(this.PAPEIS[u.papel]||u.papel)));
   };
@@ -5042,20 +5081,21 @@ class Component extends DCLogic {
     if(!email||!email.includes('@')) return this.err('Informe um e-mail válido.');
     const papel=f.papel||'loja';
     if(papel==='fornecedor'&&!f.fornecedorId) return this.err('Selecione o fornecedor vinculado.');
-    if(papel==='revenda'&&!f.revendaId) return this.err('Selecione a revenda vinculada.');
+    const revIds=(f.revendaIds||[]).map(Number);
+    if(papel==='revenda'&&!revIds.length) return this.err('Selecione ao menos uma revenda vinculada — usuários de grupo econômico podem ter várias (RF67).');
     const dup=this.state.usuarios.find(u=>u.email===email&&u.id!==f.editId);
     if(dup) return this.err('Já existe um usuário com este e-mail.');
     if(f.editId){ const old=this.state.usuarios.find(u=>u.id===f.editId);
       if(old.papel==='admin'&&papel!=='admin'&&this.state.usuarios.filter(u=>u.papel==='admin'&&u.ativo&&u.id!==old.id).length===0)
         return this.err('É preciso manter ao menos um Administrador Técnico ativo.');
       this.setState(s=>({usuarios:s.usuarios.map(u=>u.id===f.editId?{...u,nome,email,papel,
-        fornecedorId:papel==='fornecedor'?+f.fornecedorId:null,revendaId:papel==='revenda'?+f.revendaId:null,
+        fornecedorId:papel==='fornecedor'?+f.fornecedorId:null,revendaId:papel==='revenda'?revIds[0]:null,revendaIds:papel==='revenda'?revIds:null,
         senhaHash:(f.senha||'').trim()?this.hashSenha(f.senha.trim()):u.senhaHash}:u),modal:null,form:{}}));
-      this.audit('Edição de usuário',nome+' · '+(this.PAPEIS[papel]||papel)+((f.senha||'').trim()?' · senha redefinida':'')); return; }
+      this.audit('Edição de usuário',nome+' · '+(this.PAPEIS[papel]||papel)+(papel==='revenda'?' · '+revIds.length+' revenda(s) vinculada(s)':'')+((f.senha||'').trim()?' · senha redefinida':'')); return; }
     if(!(f.senha||'').trim()) return this.err('Defina a senha inicial do usuário.');
     const id=Math.max(0,...this.state.usuarios.map(u=>u.id))+1;
     this.setState(s=>({usuarios:[...s.usuarios,{id,nome,email,papel,senhaHash:this.hashSenha(f.senha.trim()),
-      fornecedorId:papel==='fornecedor'?+f.fornecedorId:null,revendaId:papel==='revenda'?+f.revendaId:null,
+      fornecedorId:papel==='fornecedor'?+f.fornecedorId:null,revendaId:papel==='revenda'?revIds[0]:null,revendaIds:papel==='revenda'?revIds:null,
       ativo:true,permissoes:{},ultimoAcesso:null,criadoEm:this.hoje()}],modal:null,form:{}}));
     this.audit('Cadastro de usuário',nome+' · '+email+' · '+(this.PAPEIS[papel]||papel)); };
   toggleUsuario(id){ this._tu=this._tu||{}; if(!this._tu[id]) this._tu[id]=()=>{ if(!this.pode('config.usuarios')) return;
@@ -5097,9 +5137,15 @@ class Component extends DCLogic {
     const pode=k=>this.pode(k);
     const roleBtns=(ehAdmin?[['loja','Loja Cidade Imperial'],['fornecedor','Fornecedor'],['revenda','Revenda']]:[]).map(([k,label])=>({
       label,pick:this.setRole(k),bg:role===k?'#fff':'transparent',fg:role===k?'#272525':'#8a8378',sh:role===k?'0 1px 3px rgba(39,37,37,.12)':'none'}));
+    // RF67 — seletor de contexto do grupo econômico (sempre visível para usuário multi-revenda)
+    const minhasRevs=isRev&&uAtual&&uAtual.papel==='revenda'?this._minhasRevs(uAtual):[];
+    const mostraSelGrupo=minhasRevs.length>1;
+    const ctxGrupoVal=S.revGrupo?'g':String(rid);
+    const ctxGrupoOpts=[...minhasRevs.map(r2=>({id:String(r2),nome:'🏪 '+(R(r2).nome||r2)})),{id:'g',nome:'📊 Grupo — visão consolidada'}];
     const un=this.userName(); const userNome=un.replace(/\s*\(.*\)$/,'');
     const userIni=userNome.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
-    const userPapel=uAtual?(this.PAPEIS[uAtual.papel]||uAtual.papel):(isLoja?'Dona da plataforma':(isForn?'Fornecedor homologado':'Revenda'));
+    let userPapel=uAtual?(this.PAPEIS[uAtual.papel]||uAtual.papel):(isLoja?'Dona da plataforma':(isForn?'Fornecedor homologado':'Revenda'));
+    if(mostraSelGrupo) userPapel='Grupo econômico · '+(S.revGrupo?'visão consolidada':(R(rid).nome||''));
     const mostraSelForn=isForn&&(!uAtual||ehAdmin);
     const mostraSelRev=isRev&&(!uAtual||ehAdmin);
 
@@ -5784,7 +5830,8 @@ class Component extends DCLogic {
 
     // revenda
     const bc=S.buscaCat.toLowerCase();
-    const catRows=S.produtos.filter(p=>p.ativo&&this._pForns(p).some(v=>F(v).ativo&&(rMe.visibilidade||[]).includes(v))&&!(rMe.prodBloq||[]).includes(p.id)&&(!bc||p.descricao.toLowerCase().includes(bc)||p.codigo.toLowerCase().includes(bc)))
+    const catGrupo=isRev&&S.revGrupo;
+    const catRows=catGrupo?[]:S.produtos.filter(p=>p.ativo&&this._pForns(p).some(v=>F(v).ativo&&(rMe.visibilidade||[]).includes(v))&&!(rMe.prodBloq||[]).includes(p.id)&&(!bc||p.descricao.toLowerCase().includes(bc)||p.codigo.toLowerCase().includes(bc)))
       .map(p=>{ const fotos=this.fotosDe(p); const idx=(S.fotoIdx[p.id]||0)%fotos.length;
         return {id:p.id,codigo:p.codigo,descricao:p.descricao,fornNome:this._pForns(p).filter(v=>F(v).ativo&&(rMe.visibilidade||[]).includes(v)).map(v=>F(v).nome).join(', '),unidade:p.unidade,precoFmt:this.fmt(p.preco),
         foto:fotos[idx],temVarias:fotos.length>1,verGrande:this.verFoto(p.id),
@@ -5794,7 +5841,9 @@ class Component extends DCLogic {
     const cartIds=Object.keys(S.cart);
     const cartCount=cartIds.reduce((a,k)=>a+S.cart[k],0);
     const cartTotal=cartIds.reduce((a,k)=>a+S.cart[k]*(P(+k).preco||0),0);
-    const rPedRows=PEDS.filter(p=>p.revendaId===rid).map(p=>({id:p.id,data:p.data,
+    const revsCtx=(isRev&&S.revGrupo&&uAtual)?this._minhasRevs(uAtual):[rid];
+    const rpedGrupo=isRev&&S.revGrupo&&revsCtx.length>1;
+    const rPedRows=PEDS.filter(p=>revsCtx.includes(p.revendaId)).map(p=>({id:p.id,data:p.data,revTag:rpedGrupo?(R(p.revendaId).nome||''):'',
       fotos:p.itens.map(i=>({src:this.fotosDe(P(i.produtoId))[0],ver:this.verFoto(i.produtoId)})),
       itensN:p.itens.length+(p.itens.length===1?' item':' itens'),totalFmt:this._revTotalFmt(p),
       fornNome:destTxt(p),...this.chip(p.status),
@@ -5805,6 +5854,12 @@ class Component extends DCLogic {
         return out; }),
       temFatDocs:S.faturamentos.some(f2=>f2.pedidoId===p.id&&(f2.anexoId||(f2.anexosExtras&&f2.anexosExtras.length))),
       justificativa:p.justificativa||'',temJustif:!!p.justificativa}));
+    const grpPeds=rpedGrupo?PEDS.filter(p=>revsCtx.includes(p.revendaId)):[];
+    const grpKpis=rpedGrupo?[
+      {label:'Revendas do grupo',val:String(revsCtx.length),sub:revsCtx.map(r2=>R(r2).nome||'').join(' · ')},
+      {label:'Pedidos do grupo',val:String(grpPeds.length),sub:grpPeds.filter(p=>p.status==='pendente').length+' pendente(s) de recebimento'},
+      {label:'Em andamento',val:String(grpPeds.filter(p=>!['faturado','rejeitado'].includes(p.status)).length),sub:'pendentes, em cotação ou encaminhados'},
+      {label:'Total movimentado',val:this.fmt(grpPeds.reduce((a,p)=>a+p.total,0)),sub:'soma dos pedidos de todas as revendas'}]:[];
 
     // modal helper views
     const M=S.modal;
@@ -5933,15 +5988,18 @@ class Component extends DCLogic {
     const usrRows=S.usuarios
       .filter(u=>(S.filtroPapel==='todos'||u.papel===S.filtroPapel)&&(!busU||u.nome.toLowerCase().includes(busU)||u.email.toLowerCase().includes(busU)))
       .map(u=>{ const nOver=Object.keys(u.permissoes||{}).length;
-        const vinculo=u.papel==='fornecedor'?(F(u.fornecedorId).nome||'—'):(u.papel==='revenda'?(R(u.revendaId).nome||'—'):'—');
+        const vinculo=u.papel==='fornecedor'?(F(u.fornecedorId).nome||'—'):(u.papel==='revenda'?(this._minhasRevs(u).map(r2=>R(r2).nome).join(' · ')||'—'):'—');
         return {id:u.id,nome:u.nome,email:u.email,papelLabel:this.PAPEIS[u.papel]||u.papel,vinculo,
           ...this.chip(u.ativo?'ativo':'inativo'),ultimo:u.ultimoAcesso||'— nunca acessou —',
           overTxt:nOver?nOver+' personalizada(s)':'padrão do perfil',temOver:nOver>0,
           souEu:u.id===S.usuario,
           editar:this.open('usuario',{editId:u.id,nome:u.nome,email:u.email,papel:u.papel,
-            fornecedorId:u.fornecedorId?String(u.fornecedorId):'',revendaId:u.revendaId?String(u.revendaId):'',senha:''}),
+            fornecedorId:u.fornecedorId?String(u.fornecedorId):'',revendaId:u.revendaId?String(u.revendaId):'',revendaIds:this._minhasRevs(u).slice(),senha:''}),
           permissoes:this.abrirPermissoes(u.id),toggle:this.toggleUsuario(u.id),toggleLabel:u.ativo?'Inativar':'Reativar'};});
     const papelOpts=[{v:'todos',label:'Todos os perfis'},...Object.entries(this.PAPEIS).map(([v,label])=>({v,label}))];
+    const usrRevRows=S.modal==='usuario'?S.revendas.map(r2=>{ const on=(S.form.revendaIds||[]).includes(r2.id);
+      return {nome:r2.nome,toggle:this.toggleRevUsr(r2.id),bg:on?'#faf5e9':'#fff',bd:on?'#B38335':'#e8e1d2',fg:on?'#8f682a':'#6b6459',mark:on?'✓ ':''};}):[];
+    const usrRevSel=String((S.form.revendaIds||[]).length)+' selecionada(s)';
     const papelFormOpts=Object.entries(this.PAPEIS).map(([v,label])=>({v,label}));
     // editor de permissões (modal)
     let permGrupos=[],permUsr={nome:'',papelLabel:'',temOver:false,restaurar:null};
@@ -5987,10 +6045,10 @@ class Component extends DCLogic {
       setLoginEmail:this.setLoginEmail,setLoginSenha:this.setLoginSenha,fazerLogin:this.fazerLogin,sair:this.sair,
       // shell
       roleBtns,temRoleBtns:roleBtns.length>0,isLoja,isForn,isRev,navGroups,userIni,userNome,userPapel,
-      mostraSelForn,mostraSelRev,
+      mostraSelForn,mostraSelRev,mostraSelGrupo,ctxGrupoVal,ctxGrupoOpts,setRevContexto:this.setRevContexto,rpedGrupo,grpKpis,catGrupo,
       // usuários e permissões
       sUsuarios:isLoja&&scr==='usuarios'&&pode('config.usuarios'),
-      usrRows,papelOpts,papelFormOpts,buscaUsr:S.buscaUsr,setBuscaUsr:this.setBuscaUsr,
+      usrRows,papelOpts,papelFormOpts,usrRevRows,usrRevSel,buscaUsr:S.buscaUsr,setBuscaUsr:this.setBuscaUsr,
       filtroPapel:S.filtroPapel,setFiltroPapel:this.setFiltroPapel,
       novoUsuario:this.open('usuario',{papel:'loja'}),salvarUsuario:this.salvarUsuario,
       mUsr:M==='usuario',usrEditando:!!S.form.editId,usrNovo:M==='usuario'&&!S.form.editId,mPerms:M==='permissoes',permGrupos,permUsr,

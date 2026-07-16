@@ -1060,6 +1060,23 @@
       "permissoes": {},
       "ultimoAcesso": "09/07/2026 08:14",
       "criadoEm": "01/02/2026"
+    },
+    {
+      "id": 6,
+      "nome": "Milena Duarte",
+      "email": "milena@grupoimperial.com.br",
+      "senhaHash": "11717ff2d26463",
+      "papel": "revenda",
+      "fornecedorId": null,
+      "revendaId": 1,
+      "revendaIds": [
+        1,
+        3
+      ],
+      "ativo": true,
+      "permissoes": {},
+      "ultimoAcesso": null,
+      "criadoEm": "15/07/2026"
     }
   ],
   "inventarios": [
