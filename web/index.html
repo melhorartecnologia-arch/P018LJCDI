@@ -708,7 +708,8 @@ input::placeholder,textarea::placeholder{color:#b0a795}
             <tr>
               <td style="padding:11px 18px;font-size:13px;font-weight:600;border-bottom:1px solid #f5f1e8">{{c.numero}}</td>
               <td style="padding:11px 10px;font-size:13px;border-bottom:1px solid #f5f1e8">{{c.fornNome}}</td>
-              <td style="padding:11px 10px;border-bottom:1px solid #f5f1e8"><span style="font-size:12px;font-weight:700;color:#8f682a;background:#faf5e9;border:1px solid #ecdcbc;border-radius:7px;padding:3px 9px">{{c.royaltyStr}}</span></td>
+              <td style="padding:11px 10px;border-bottom:1px solid #f5f1e8"><span style="font-size:12px;font-weight:700;color:#8f682a;background:#faf5e9;border:1px solid #ecdcbc;border-radius:7px;padding:3px 9px">{{c.royaltyStr}}</span>
+                <sc-if value="{{c.diaPagTxt}}" hint-placeholder-val="{{false}}"><div style="font-size:10.5px;color:#8a8378;margin-top:3px;white-space:nowrap">{{c.diaPagTxt}}</div></sc-if></td>
               <td style="padding:11px 10px;font-size:12.5px;color:#8a8378;border-bottom:1px solid #f5f1e8">{{c.vig}}
                 <sc-if value="{{c.temAviso}}" hint-placeholder-val="{{false}}"><div style="margin-top:3px"><span style="font-size:10.5px;font-weight:700;border-radius:6px;padding:2px 7px;background:#fdf3e0;color:#8a5a12;white-space:nowrap">{{c.aviso}}</span></div></sc-if>
               </td>
@@ -2317,8 +2318,13 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <option value="">Selecione…</option>
         <sc-for list="{{fornOptsAtivos}}" as="o" hint-placeholder-count="3"><option value="{{o.id}}">{{o.nome}}</option></sc-for>
       </select>
-      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Percentual de royalty (%)</div>
-      <input value="{{form.royalty}}" onChange="{{fxRoyalty}}" placeholder="Ex.: 3" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Percentual de royalty (%)</div>
+        <input value="{{form.royalty}}" onChange="{{fxRoyalty}}" placeholder="Ex.: 3" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
+        <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Dia acordado de pagamento</div>
+        <input value="{{form.diaPag}}" onChange="{{fxDiaPag}}" placeholder="1 a 30 · opcional" title="Dia acordado de pagamento dos royalties (1 a 30, sem referência de mês)" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
+      </div>
+      <div style="font-size:11px;color:#b0a795;margin-top:6px">Dia de 1 a 30, sem referência de mês (ex.: todo dia 15) — o vencimento sugerido das cobranças passa a usar esse dia no mês seguinte à competência; sem preencher, vale o padrão (dia 10).</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
         <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Início da vigência</div>
         <input value="{{form.inicio}}" onChange="{{fxInicio}}" placeholder="dd/mm/aaaa" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
@@ -2337,10 +2343,15 @@ input::placeholder,textarea::placeholder{color:#b0a795}
 <sc-if value="{{mRoy}}" hint-placeholder-val="{{false}}">
   <div style="position:fixed;inset:0;background:rgba(39,37,37,.45);display:flex;align-items:center;justify-content:center;z-index:50">
     <div style="background:#fff;border-radius:14px;width:400px;max-width:92vw;padding:22px 24px;box-shadow:0 18px 50px rgba(39,37,37,.25)">
-      <div style="font-size:16px;font-weight:700">Ajustar percentual de royalty</div>
-      <div style="font-size:12.5px;color:#8a8378;margin-top:2px">{{royInfo.ctrNum}} · {{royInfo.fornNome}} · atual: {{royInfo.atual}}. A alteração fica registrada no histórico (RF04).</div>
-      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:14px 0 5px">Novo percentual (%)</div>
-      <input value="{{form.royalty}}" onChange="{{fxRoyalty}}" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
+      <div style="font-size:16px;font-weight:700">Ajustar contrato de royalty</div>
+      <div style="font-size:12.5px;color:#8a8378;margin-top:2px">{{royInfo.ctrNum}} · {{royInfo.fornNome}} · atual: {{royInfo.atual}}{{royInfo.diaTxt}}. As alterações ficam registradas no histórico (RF04/RF65).</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:14px 0 5px">Novo percentual (%)</div>
+        <input value="{{form.royalty}}" onChange="{{fxRoyalty}}" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
+        <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:14px 0 5px">Dia acordado de pagamento</div>
+        <input value="{{form.diaPag}}" onChange="{{fxDiaPag}}" placeholder="1 a 30 · opcional" title="Dia acordado de pagamento dos royalties (1 a 30, sem referência de mês)" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
+      </div>
+      <div style="font-size:11px;color:#b0a795;margin-top:6px">Dia de 1 a 30, sem referência de mês — usado para sugerir o vencimento das cobranças; vazio volta ao padrão (dia 10).</div>
       <sc-if value="{{form.erro}}" hint-placeholder-val="{{false}}"><div style="color:#a33a2b;font-size:12.5px;margin-top:12px">{{form.erro}}</div></sc-if>
       <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:18px">
         <div onClick="{{mClose}}" style="border:1px solid #ddd5c7;border-radius:8px;padding:9px 15px;font-size:13px;font-weight:600;cursor:pointer;color:#6b6459" style-hover="background:#f7f3ea">Cancelar</div>
@@ -2853,7 +2864,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
           <div><div style="font-size:11px;color:#a89f90;margin-bottom:2px">Fornecedor</div><div style="font-size:13.5px;font-weight:700">{{cobInfo.fornNome}}</div><div style="font-size:11.5px;color:#8a8378">{{cobInfo.cnpj}}</div></div>
           <div style="text-align:right"><div style="font-size:11px;color:#a89f90;margin-bottom:2px">Competência · Vencimento</div><div style="font-size:13.5px;font-weight:700">{{cobInfo.comp}}</div>
-            <sc-if value="{{cobInfo.podeEmitir}}" hint-placeholder-val="{{false}}"><input value="{{form.venc}}" onChange="{{fxVenc}}" placeholder="dd/mm/aaaa" title="Vencimento da cobrança" style="width:110px;box-sizing:border-box;margin-top:3px;padding:5px 8px;border:1px solid #ddd5c7;border-radius:7px;font:inherit;font-size:12px;text-align:right;background:#fff;outline:none;color:#a33a2b;font-weight:600"></sc-if>
+            <sc-if value="{{cobInfo.podeEmitir}}" hint-placeholder-val="{{false}}"><input value="{{form.venc}}" onChange="{{fxVenc}}" placeholder="dd/mm/aaaa" title="Vencimento da cobrança" style="width:110px;box-sizing:border-box;margin-top:3px;padding:5px 8px;border:1px solid #ddd5c7;border-radius:7px;font:inherit;font-size:12px;text-align:right;background:#fff;outline:none;color:#a33a2b;font-weight:600"><div style="font-size:10px;color:#a89f90;margin-top:3px;max-width:200px">{{cobInfo.vencSugTxt}}</div></sc-if>
             <sc-if value="{{cobInfo.emitida}}" hint-placeholder-val="{{false}}"><div style="font-size:11.5px;color:#a33a2b;font-weight:600">vence em {{cobInfo.venc}}</div></sc-if>
           </div>
         </div>
@@ -3647,7 +3658,8 @@ class Component extends DCLogic {
         "Para incluir um fornecedor, clique em \"+ Novo fornecedor\" (canto superior direito), preencha ao menos Razão social e CNPJ — Cidade/UF, E-mail de contato, Telefone (com máscara automática) e Pessoa de contato são opcionais — e clique em \"Salvar fornecedor\".",
         "Para ver a ficha completa, clique sobre a linha do fornecedor na tabela (a seta › na coluna Faturado indica que a linha é clicável); abre a página \"Detalhe do fornecedor\" com seus contratos e produtos.",
         "Na tabela \"Contratos e vigências\", acompanhe as colunas Royalty, Vigência, Histórico de royalty e Status; contratos próximos do fim mostram na Vigência o aviso \"Vence em X dias\" ou \"Vencido há X dias\".",
-        "Para mudar o percentual de um contrato vigente, clique em \"Ajustar royalty…\", informe o \"Novo percentual (%)\" na janela \"Ajustar percentual de royalty\" e clique em \"Salvar alteração\"; a mudança fica registrada na coluna Histórico de royalty.",
+        "Para mudar o percentual ou o dia acordado de pagamento de um contrato vigente, clique em \"Ajustar royalty…\", preencha a janela \"Ajustar contrato de royalty\" e clique em \"Salvar alteração\"; as mudanças ficam registradas na coluna Histórico de royalty.",
+        "O \"Dia acordado de pagamento\" é um dia de 1 a 30, sem referência de mês (ex.: todo dia 15) — quando preenchido, o vencimento sugerido das cobranças de royalty passa a cair nesse dia no mês seguinte à competência (continua editável na emissão).",
         "Para finalizar um contrato vigente, clique em \"Encerrar\" na mesma linha; o Status passa para \"encerrado\"."
       ],
       "dicas": [
@@ -4255,13 +4267,20 @@ class Component extends DCLogic {
     if(!f.fornecedorId) return this.err('Selecione o fornecedor.');
     if(!pct) return this.err('Informe o percentual de royalty (RF03).');
     if(!f.inicio||!f.fim) return this.err('Informe início e fim de vigência (RF03).');
+    const diaPg=String(f.diaPag||'').trim()?parseInt(String(f.diaPag).replace(/\D/g,''),10):null;
+    if(String(f.diaPag||'').trim()&&(!diaPg||diaPg<1||diaPg>30)) return this.err('Dia acordado de pagamento inválido: informe um dia de 1 a 30, sem referência de mês (RF65).');
     const id=this.state.seq.ctr; const numero='CT-2026-00'+id;
-    this.setState(s=>({contratos:[...s.contratos,{id,fornecedorId:+f.fornecedorId,numero,royalty:pct,inicio:f.inicio,fim:f.fim,vigente:true,historico:[]}],seq:{...s.seq,ctr:id+1},modal:null,form:{}}));
-    this.audit('Cadastro de contrato',numero+' · royalty '+pct+'%'); };
+    this.setState(s=>({contratos:[...s.contratos,{id,fornecedorId:+f.fornecedorId,numero,royalty:pct,inicio:f.inicio,fim:f.fim,vigente:true,historico:[],diaPagamento:diaPg}],seq:{...s.seq,ctr:id+1},modal:null,form:{}}));
+    this.audit('Cadastro de contrato',numero+' · royalty '+pct+'%'+(diaPg?' · dia acordado de pagamento: '+diaPg:'')); };
   salvarRoyalty=()=>{ if(!this.pode('cadastros.fornecedores')) return this.negado('Você não tem permissão para alterar royalties.','cadastros.fornecedores'); const f=this.state.form; const pct=this.num(f.royalty); if(!pct) return this.err('Informe o novo percentual.');
     const c=this.state.contratos.find(x=>x.id===f.contratoId);
-    this.setState(s=>({contratos:s.contratos.map(x=>x.id===f.contratoId?{...x,royalty:pct,historico:[...x.historico,{data:this.hoje(),de:String(x.royalty).replace('.',',')+'%',para:String(pct).replace('.',',')+'%',usuario:this.userName()}]}:x),modal:null,form:{}}));
-    this.audit('Alteração de royalty',c.numero+' → '+pct+'%'); };
+    const diaPg=String(f.diaPag||'').trim()?parseInt(String(f.diaPag).replace(/\D/g,''),10):null;
+    if(String(f.diaPag||'').trim()&&(!diaPg||diaPg<1||diaPg>30)) return this.err('Dia acordado de pagamento inválido: informe um dia de 1 a 30, sem referência de mês (RF65).');
+    const mudouDia=(c.diaPagamento||null)!==diaPg;
+    this.setState(s=>({contratos:s.contratos.map(x=>x.id===f.contratoId?{...x,royalty:pct,diaPagamento:diaPg,historico:[...x.historico,
+      ...(pct!==x.royalty?[{data:this.hoje(),de:String(x.royalty).replace('.',',')+'%',para:String(pct).replace('.',',')+'%',usuario:this.userName()}]:[]),
+      ...(mudouDia?[{data:this.hoje(),de:'dia de pagamento '+(x.diaPagamento||'—'),para:'dia '+(diaPg||'—'),usuario:this.userName()}]:[])]}:x),modal:null,form:{}}));
+    this.audit('Alteração de contrato de royalty',c.numero+' → '+pct+'%'+(mudouDia?' · dia acordado de pagamento: '+(c.diaPagamento||'—')+' → '+(diaPg||'—'):'')); };
   // Último preço registrado no histórico do produto: considera a última alteração de
   // preço (precoHist) e o último preço praticado em pedidos (precoNeg quando houver
   // negociação em cotação, senão o preço unitário do item). Em empate de data, a
@@ -4827,8 +4846,15 @@ class Component extends DCLogic {
   // ── Royalties & Fechamento mensal (RF36–RF41) ────────────────────────────
   _parseData(str){ const m=String(str||'').match(/^(\d{2})\/(\d{2})\/(\d{4})$/); return m?new Date(+m[3],+m[2]-1,+m[1]):null; }
   // Vencimento padrão da cobrança: dia 10 do mês seguinte à competência
-  _vencPadrao(comp){ const [mm,yy]=comp.split('/'); const nm=+mm===12?1:+mm+1; const ny=+mm===12?+yy+1:+yy;
-    return '10/'+String(nm).padStart(2,'0')+'/'+ny; }
+  // RF65: dia acordado de pagamento por fornecedor/contrato (1–30, sem referência de mês).
+  // O vencimento sugerido cai no dia acordado do mês seguinte à competência (padrão: dia 10);
+  // meses mais curtos usam o último dia do mês. Sempre editável na emissão.
+  _diaAcordado(fid){ const c=this.state.contratos.find(x=>x.fornecedorId===fid&&x.vigente);
+    return (c&&c.diaPagamento)?c.diaPagamento:null; }
+  _vencPadrao(comp,fid){ const [mm,yy]=comp.split('/'); const nm=+mm===12?1:+mm+1; const ny=+mm===12?+yy+1:+yy;
+    let d=(fid&&this._diaAcordado(fid))||10;
+    const ult=new Date(ny,nm,0).getDate(); if(d>ult) d=ult;
+    return String(d).padStart(2,'0')+'/'+String(nm).padStart(2,'0')+'/'+ny; }
   // Status do fechamento (RF41): a pagar → em atraso (cobrança vencida) → pago
   _royStatus(pg){ if(pg.status==='pago') return 'pago';
     const v=this._parseData(pg.vencimento); if(pg.cobranca&&v){ const hj=new Date(); hj.setHours(0,0,0,0); if(v<hj) return 'em atraso'; }
@@ -5134,7 +5160,7 @@ class Component extends DCLogic {
         aberto:S.expFech===chave,toggleExp:this.toggleFech(chave),
         nfs:fs.map(x=>({id:x.id,data:x.data,pedidoId:x.pedidoId,revNome:(S.revendas.find(r=>r.id===x.revendaId)||{}).nome||'—',
           valorFmt:this.fmt(x.valor),pctStr:String(x.royaltyPct).replace('.',',')+'%',royFmt:this.fmt(x.royaltyValor)})),
-        gerar:this.open('cobranca',{chave,venc:pg.vencimento||this._vencPadrao(comp)}),
+        gerar:this.open('cobranca',{chave,venc:pg.vencimento||this._vencPadrao(comp,fo.id)}),
         registrar:this.open('pagamento',{chave,fornNome:fo.nome,devidoFmt:this.fmt(totalRoy),vencimento:pg.vencimento||'',valorPg:totalRoy.toFixed(2).replace('.',','),dataPg:this.hoje(),comprovante:''})});
     });});
     // filtros da tela de royalties (competência, fornecedor, status)
@@ -5171,7 +5197,8 @@ class Component extends DCLogic {
       const [mm,yy]=comp.split('/');
       if(fo&&fs.length){ const stC=this._royStatus(pg);
         cobInfo={numero:pg.numero||('COB-'+yy+mm+'-'+String(fo.id).padStart(2,'0')),fornNome:fo.nome,cnpj:fo.cnpj,comp,
-        venc:pg.vencimento||S.form.venc||this._vencPadrao(comp),
+        venc:pg.vencimento||S.form.venc||this._vencPadrao(comp,+fidS),
+        vencSugTxt:this._diaAcordado(+fidS)?('Sugerido pelo dia acordado do contrato — todo dia '+this._diaAcordado(+fidS)+' (editável).'):'Sugerido pelo padrão — dia 10 do mês seguinte à competência (editável).',
         rows:fs.map(x=>({id:x.id,data:x.data,pedidoId:x.pedidoId,valorFmt:this.fmt(x.valor),pctStr:String(x.royaltyPct).replace('.',',')+'%',royFmt:this.fmt(x.royaltyValor)})),
         totFat:this.fmt(fs.reduce((a,x)=>a+x.valor,0)),totRoy:this.fmt(fs.reduce((a,x)=>a+x.royaltyValor,0)),
         emitida:!!pg.cobranca,podeEmitir:!pg.cobranca&&this.pode('royalties.cobrar'),emitidaEm:pg.cobrancaData?' em '+pg.cobrancaData:'',
@@ -5387,11 +5414,12 @@ class Component extends DCLogic {
       const aviso=c.vigente&&dias!==null&&dias<=180?(dias<0?'Vencido há '+(-dias)+' dias':'Vence em '+dias+' dias'):'';
       const hist=c.historico.map(h=>h.data+': '+h.de+' → '+h.para+' ('+h.usuario+')').join('  ·  ');
       return {numero:c.numero,fornNome:F(c.fornecedorId).nome,royaltyStr:String(c.royalty).replace('.',',')+'%',
+        diaPagTxt:c.diaPagamento?('pagamento todo dia '+c.diaPagamento):'',
         vig:c.inicio+' – '+c.fim,...this.chip(c.vigente?'vigente':'encerrado'),
         aviso,temAviso:!!aviso,
         hist:c.historico.map(h=>({data:h.data,mud:h.de+' → '+h.para,usuario:h.usuario})),temHist:c.historico.length>0,semHist:c.historico.length===0,
         histTxt:hist||'Sem alterações registradas',
-        podeAjustar:c.vigente,ajustar:this.open('royalty',{contratoId:c.id,royalty:String(c.royalty)}),
+        podeAjustar:c.vigente,ajustar:this.open('royalty',{contratoId:c.id,royalty:String(c.royalty),diaPag:c.diaPagamento?String(c.diaPagamento):''}),
         encerrar:this.encerrarCtr(c.id)};};
     const ctrRows=S.contratos.map(ctrView);
     const bf=S.buscaForn.toLowerCase();
@@ -5890,7 +5918,7 @@ class Component extends DCLogic {
             return {nome:F(cf).nome,sub:pp?('última proposta: '+this.fmt(pp.preco)):'sem proposta até agora',toggle:this.toggleRodForn(cf),bg:on?'#faf5e9':'#fff',bd:on?'#B38335':'#e8e1d2',fg:on?'#8f682a':'#6b6459',mark:on?'✓ ':''};})}; } }
     let royInfo={ctrNum:'',fornNome:'',atual:''};
     if(M==='royalty'&&S.form.contratoId){ const c=S.contratos.find(x=>x.id===S.form.contratoId);
-      if(c) royInfo={ctrNum:c.numero,fornNome:F(c.fornecedorId).nome,atual:String(c.royalty).replace('.',',')+'%'}; }
+      if(c) royInfo={ctrNum:c.numero,fornNome:F(c.fornecedorId).nome,atual:String(c.royalty).replace('.',',')+'%',diaTxt:c.diaPagamento?(' · dia acordado: '+c.diaPagamento):''}; }
 
     const loginDemo=[
       {label:'Administrador Técnico',email:'admin@cidadeimperial.com.br',senha:'admin123'},
@@ -6060,7 +6088,7 @@ class Component extends DCLogic {
       mForn:M==='fornecedor',mCtr:M==='contrato',mRoy:M==='royalty',mProd:M==='produto',mRev:M==='revenda',mFicha:M==='ficha',
       mRej:M==='rejeitar',mDir:M==='direto',mCot:M==='cotacao',mEst:M==='estoque',mJusV:M==='justifvenc',mCanC:M==='cancelarcot',
       mProp:M==='proposta',mRod:M==='rodada',mAnx:M==='anexoped',mFat:M==='faturar',mPag:M==='pagamento',mCompF:M==='compforn',
-      dirRows,convRows,dirVazio,prodFornRows,prodFornSel,prodFornVazio,propInfo,fatInfo,jvInfo,royInfo,rodInfo,confirmRodada:this.confirmRodada,formAnexos,temFormAnexos,anxInfo,addAnexosForm:this.addAnexosForm,confirmAnexosPed:this.confirmAnexosPed,fatExtras,temFatExtras,addAnexoFatExtra:this.addAnexoFatExtra,fxTipoDocExtra:this.fx('tipoDocExtra'),selItens,cotEstim,fprodRows,fprodVazio,fichaInfo,confirmFicha:this.confirmFicha,addFotoFicha:this.addFotoFicha,fxNcm:this.fxNcm,fxEan:this.fxEan,fxPesoBruto:this.fx('pesoBruto'),fxPesoLiquido:this.fx('pesoLiquido'),fxFreteMod:this.fx('freteMod'),fxFreteValor:this.fx('freteValor'),fxTransportadora:this.fx('transportadora'),fxCondEntrega:this.fx('condEntrega'),fxAltura:this.fx('altura'),fxLargura:this.fx('largura'),fxComprimento:this.fx('comprimento'),fxUnidadeMedida:this.fx('unidadeMedida'),fxObsFicha:this.fx('obs'),
+      dirRows,convRows,dirVazio,prodFornRows,prodFornSel,prodFornVazio,propInfo,fatInfo,jvInfo,royInfo,rodInfo,confirmRodada:this.confirmRodada,formAnexos,temFormAnexos,anxInfo,addAnexosForm:this.addAnexosForm,confirmAnexosPed:this.confirmAnexosPed,fatExtras,temFatExtras,addAnexoFatExtra:this.addAnexoFatExtra,fxTipoDocExtra:this.fx('tipoDocExtra'),selItens,cotEstim,fprodRows,fprodVazio,fichaInfo,confirmFicha:this.confirmFicha,addFotoFicha:this.addFotoFicha,fxNcm:this.fxNcm,fxEan:this.fxEan,fxPesoBruto:this.fx('pesoBruto'),fxPesoLiquido:this.fx('pesoLiquido'),fxFreteMod:this.fx('freteMod'),fxFreteValor:this.fx('freteValor'),fxTransportadora:this.fx('transportadora'),fxCondEntrega:this.fx('condEntrega'),fxDiaPag:this.fx('diaPag'),fxAltura:this.fx('altura'),fxLargura:this.fx('largura'),fxComprimento:this.fx('comprimento'),fxUnidadeMedida:this.fx('unidadeMedida'),fxObsFicha:this.fx('obs'),
       confirmEstoque:this.confirmEstoque,setPedidoCot:this.setPedidoCot,
       prodModalFotos:(S.form.editId&&M==='produto'?this.fotosDe(S.produtos.find(x=>x.id===S.form.editId)||{}):['img/prd-new-1.png','img/prd-new-2.png','img/prd-new-3.png']).map((src,i)=>({src,principal:i===(S.form.fotoP||0),pick:this.pickFotoP(i),bd:i===(S.form.fotoP||0)?'#B38335':'#e8e1d2'})),
       salvarForn:this.salvarForn,salvarContrato:this.salvarContrato,salvarRoyalty:this.salvarRoyalty,
