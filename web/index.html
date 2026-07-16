@@ -1494,6 +1494,48 @@ input::placeholder,textarea::placeholder{color:#b0a795}
           </div>
         </sc-for>
       </div>
+      <sc-if value="{{rvpTemInd}}" hint-placeholder-val="{{false}}">
+        <div style="display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:12px;margin-bottom:14px">
+          <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:15px 18px">
+            <div style="font-size:13px;font-weight:700">Evolução das vendas</div>
+            <div style="font-size:10.5px;color:#a89f90;margin-bottom:10px">volume e valor por mês do pedido — segue os filtros aplicados</div>
+            <sc-for list="{{rvpEvolucao}}" as="ev" hint-placeholder-count="3">
+              <div style="display:flex;align-items:center;gap:9px;padding:4px 0">
+                <span style="font-size:11.5px;font-weight:700;color:#6b6459;width:56px;flex:none">{{ev.mes}}</span>
+                <div style="flex:1;height:14px;background:#f1ece2;border-radius:6px;overflow:hidden"><div style="height:100%;border-radius:6px;background:linear-gradient(90deg,#cfa055,#B38335);width:{{ev.w}}%"></div></div>
+                <span style="font-size:11.5px;font-weight:700;color:#8f682a;white-space:nowrap">{{ev.valorFmt}}</span>
+                <span style="font-size:10.5px;color:#a89f90;white-space:nowrap">{{ev.qtdTxt}}</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:15px 18px">
+            <div style="font-size:13px;font-weight:700">Produtos mais vendidos</div>
+            <div style="font-size:10.5px;color:#a89f90;margin-bottom:10px">por quantidade no recorte · com preço médio</div>
+            <sc-for list="{{rvpTopProds}}" as="tp" hint-placeholder-count="3">
+              <div style="padding:4px 0">
+                <div style="display:flex;justify-content:space-between;gap:8px;font-size:11.5px"><span style="color:#55503f"><b style="color:#8f682a">{{tp.pos}}º</b> {{tp.nome}}</span><span style="font-weight:700;white-space:nowrap">{{tp.qtdTxt}}</span></div>
+                <div style="display:flex;align-items:center;gap:8px;margin-top:2px">
+                  <div style="flex:1;height:8px;background:#f1ece2;border-radius:5px;overflow:hidden"><div style="height:100%;border-radius:5px;background:linear-gradient(90deg,#7fae86,#2f6b39);width:{{tp.w}}%"></div></div>
+                  <span style="font-size:10.5px;color:#a89f90;white-space:nowrap">{{tp.valorFmt}} · médio {{tp.medioFmt}}</span>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:15px 18px">
+            <div style="font-size:13px;font-weight:700">Revendas que mais compraram</div>
+            <div style="font-size:10.5px;color:#a89f90;margin-bottom:10px">por valor no recorte · quantidade e pedidos</div>
+            <sc-for list="{{rvpTopRevs}}" as="tr2" hint-placeholder-count="3">
+              <div style="padding:4px 0">
+                <div style="display:flex;justify-content:space-between;gap:8px;font-size:11.5px"><span style="color:#55503f"><b style="color:#8f682a">{{tr2.pos}}º</b> {{tr2.nome}}</span><span style="font-weight:700;white-space:nowrap">{{tr2.valorFmt}}</span></div>
+                <div style="display:flex;align-items:center;gap:8px;margin-top:2px">
+                  <div style="flex:1;height:8px;background:#f1ece2;border-radius:5px;overflow:hidden"><div style="height:100%;border-radius:5px;background:linear-gradient(90deg,#9b7fc4,#5d3f96);width:{{tr2.w}}%"></div></div>
+                  <span style="font-size:10.5px;color:#a89f90;white-space:nowrap">{{tr2.qtdTxt}}</span>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
       <div style="display:flex;gap:8px;margin-bottom:14px">
         <div onClick="{{rvpVisTabelaFn}}" style="font-size:12px;font-weight:700;border:1px solid #ddd5c7;border-radius:8px;padding:7px 14px;cursor:pointer;background:{{rvpTabBg}};color:{{rvpTabFg}}">Tabela</div>
         <div onClick="{{rvpVisGrafFn}}" title="Barras por produto — clique numa barra para abrir as vendas (drill-down)" style="font-size:12px;font-weight:700;border:1px solid #ddd5c7;border-radius:8px;padding:7px 14px;cursor:pointer;background:{{rvpGrafBg}};color:{{rvpGrafFg}}">Gráfico</div>
@@ -4182,6 +4224,7 @@ class Component extends DCLogic {
         "Em \"Pedidos detalhados\", clique em uma linha para abrir o pedido; para levar os dados ao Excel, use \"⬇ Pedidos (CSV)\" ou \"⬇ Faturamentos (CSV)\" no topo."
       ],
       "dicas": [
+        "Indicadores de vendas (RF73): na aba \"Venda por produtos\", os painéis \"Evolução das vendas\" (volume e valor por mês), \"Produtos mais vendidos\" (por quantidade, com preço médio) e \"Revendas que mais compraram\" respondem aos mesmos filtros de período, produto, revenda, fornecedor e categoria — junto com os KPIs de quantidade, valor total e preço médio.",
         "Os filtros valem para tudo — indicadores, gráficos, rankings, tabelas e também para os arquivos CSV exportados.",
         "Quando algum filtro está ativo, aparece \"✕ Limpar filtros\" ao lado dos seletores.",
         "O prazo médio de resposta e a economia das cotações são calculados a partir das propostas registradas."
@@ -6338,6 +6381,26 @@ class Component extends DCLogic {
       {label:'Valor total',val:this.fmt(rvpTotVal),sub:'itens de pedidos não rejeitados'},
       {label:'Preço médio geral',val:rvpTotQtd?this.fmt(rvpTotVal/rvpTotQtd):'—',sub:'valor total ÷ quantidade'}];
     const rvpFiltroAtivo=!!(S.rvpDe||S.rvpAte||S.rvpProd!=='0'||S.rvpRev!=='0'||S.rvpForn!=='0'||S.rvpCat!=='todas');
+    // RF73 — indicadores de vendas do recorte filtrado (respondem a todos os filtros acima)
+    const rvpMeses={};
+    rvpLinhas.forEach(l=>{ const m=(l.data||'').slice(3); if(!m) return;
+      const g=rvpMeses[m]||(rvpMeses[m]={qtd:0,valor:0}); g.qtd+=l.qtd; g.valor+=l.valor; });
+    const rvpMesesK=Object.keys(rvpMeses).sort((a,b)=>(a.slice(3)+a.slice(0,2)).localeCompare(b.slice(3)+b.slice(0,2)));
+    const rvpMaxMes=Math.max(1,...rvpMesesK.map(m=>rvpMeses[m].valor));
+    const rvpEvolucao=rvpMesesK.map(m=>({mes:m,valorFmt:this.fmt(rvpMeses[m].valor),qtdTxt:rvpMeses[m].qtd+' un',
+      w:Math.max(4,Math.round(rvpMeses[m].valor/rvpMaxMes*100))}));
+    const topQtdArr=[...rvpAgg].sort((a,b)=>b.qtd-a.qtd).slice(0,5);
+    const rvpMaxQ=Math.max(1,...topQtdArr.map(g=>g.qtd));
+    const rvpTopProds=topQtdArr.map((g,ix)=>({pos:String(ix+1),nome:g.descricao,codigo:g.codigo,
+      qtdTxt:g.qtd+' '+g.unidade.toLowerCase()+'(s)',valorFmt:this.fmt(g.valor),medioFmt:this.fmt(g.valor/(g.qtd||1)),
+      w:Math.max(4,Math.round(g.qtd/rvpMaxQ*100))}));
+    const rvpRevBy={};
+    rvpLinhas.forEach(l=>{ const g=rvpRevBy[l.revNome]||(rvpRevBy[l.revNome]={qtd:0,valor:0,peds:new Set()});
+      g.qtd+=l.qtd; g.valor+=l.valor; g.peds.add(l.pedidoId); });
+    const rvpRevArr=Object.entries(rvpRevBy).sort((a,b)=>b[1].valor-a[1].valor).slice(0,5);
+    const rvpMaxR=Math.max(1,...rvpRevArr.map(([,g])=>g.valor));
+    const rvpTopRevs=rvpRevArr.map(([nome,g],ix)=>({pos:String(ix+1),nome,valorFmt:this.fmt(g.valor),
+      qtdTxt:g.qtd+' un · '+g.peds.size+' pedido(s)',w:Math.max(4,Math.round(g.valor/rvpMaxR*100))}));
     const rvpVals={
       relAbaGeral:(S.relAba||'geral')!=='produtos',relAbaProd:S.relAba==='produtos',
       relAbaGeralFn:this.setRelAba('geral'),relAbaProdFn:this.setRelAba('produtos'),
@@ -6354,6 +6417,7 @@ class Component extends DCLogic {
       rvpTabBg:(S.rvpVis||'tabela')!=='grafico'?'#272525':'#fff',rvpTabFg:(S.rvpVis||'tabela')!=='grafico'?'#fff':'#6b6459',
       rvpGrafBg:S.rvpVis==='grafico'?'#272525':'#fff',rvpGrafFg:S.rvpVis==='grafico'?'#fff':'#6b6459',
       rvpRows,rvpKpis,rvpVazio:rvpRows.length===0,
+      rvpEvolucao,rvpTopProds,rvpTopRevs,rvpTemInd:rvpLinhas.length>0,
       rvpTotValFmt:this.fmt(rvpTotVal),rvpTotQtdTxt:String(rvpTotQtd),rvpRowsN:String(rvpRows.length)};
     const relCompOpts=[{v:'todas',label:'Todas as competências'},...relComps.map(c=>({v:c,label:'Competência '+c}))];
     const relRevOpts=[{v:'0',label:'Todas as revendas'},...S.revendas.map(r=>({v:String(r.id),label:r.nome}))];
