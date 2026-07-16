@@ -132,6 +132,22 @@ export const TEMPLATES = {
     html: layout('Pedido encaminhado ao fornecedor',
       p(`Seu pedido ${b(v.pedidoId)} foi recebido e encaminhado para o fornecedor ${b(v.fornecedorNome)}, responsável pelo faturamento e pela entrega.`) + itensDe(v, 'Itens encaminhados'), 'Pedido'),
   }),
+  pedido_aceite_revenda: (v) => ({
+    subject: `Pedido ${v.pedidoId}: negociação concluída — seu aceite é necessário`,
+    html: layout('Aprovação comercial da revenda',
+      p(`Olá${v.revendaNome ? ', ' + esc(v.revendaNome) : ''}. A negociação do seu pedido ${b(v.pedidoId)} foi concluída com ${b(v.fornecedorNome)} e aguarda o seu ACEITE COMERCIAL antes do encaminhamento definitivo ao fornecedor.`) +
+      (v.itensLista ? tabelaItens(v.itensLista) : '') +
+      linhas([['Pedido', v.pedidoId], ['Fornecedor vencedor', v.fornecedorNome], ['Frete', v.frete]]) +
+      p('Acesse "Meus pedidos" na plataforma e use "Aprovação comercial…" para aceitar ou recusar POR ITEM — itens recusados retornam à negociação.'), 'Aceite da revenda'),
+  }),
+  aceite_revenda_loja: (v) => ({
+    subject: `Pedido ${v.pedidoId}: decisão comercial da revenda ${v.revendaNome}`,
+    html: layout('Decisão comercial da revenda',
+      p(`A revenda ${b(v.revendaNome)} registrou a decisão comercial do pedido ${b(v.pedidoId)}${v.usuario ? ' (por ' + esc(v.usuario) + ')' : ''}.`) +
+      (v.aceitos && v.aceitos.length ? p(b('Itens aceitos — encaminhados ao fornecedor:')) + tabelaItens(v.aceitos) : '') +
+      (v.recusados && v.recusados.length ? p(b('Itens recusados — devolvidos à negociação (nova rodada):')) + tabelaItens(v.recusados) + linhas([['Motivo da recusa', v.motivo]]) : ''),
+      'Aceite da revenda'),
+  }),
   pedido_estoque_revenda: (v) => ({
     subject: `Seu pedido ${v.pedidoId} será atendido pela Loja`,
     html: layout('Pedido atendido pelo estoque da Loja',
