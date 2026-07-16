@@ -2740,6 +2740,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
           <sc-for list="{{propInfo.fotos}}" as="ft" hint-placeholder-count="0"><sc-if value="{{ft.src}}" hint-placeholder-val="{{false}}"><img loading="lazy" src="{{ft.src}}" alt="item" onClick="{{ft.ver}}" title="Clique para ampliar" style="width:44px;height:44px;object-fit:cover;border-radius:8px;border:1px solid #eae3d6;cursor:zoom-in"></sc-if></sc-for>
         </div>
         <div style="font-size:12.5px;color:#6b6459"><b style="color:#272525">Demanda:</b> {{propInfo.itensTxt}} · referência {{propInfo.refFmt}}</div>
+        <sc-if value="{{propInfo.ocultosTxt}}" hint-placeholder-val="{{false}}"><div style="font-size:11.5px;font-weight:600;color:#5d3f96;background:#f3eefa;border:1px solid #ddd0ee;border-radius:8px;padding:7px 11px;margin-top:8px">{{propInfo.ocultosTxt}}</div></sc-if>
       </div>
       <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 6px">Preço unitário por item (R$) — a Loja pode adjudicar item a item</div>
       <div style="display:flex;flex-direction:column;gap:8px">
@@ -3116,6 +3117,10 @@ input::placeholder,textarea::placeholder{color:#b0a795}
   </div>
 </sc-if>
 
+<sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+  <div style="position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:#a33a2b;color:#fff;font-size:13px;font-weight:600;border-radius:10px;padding:12px 20px;box-shadow:0 10px 30px rgba(39,37,37,.35);z-index:80;max-width:80vw;text-align:center">⛔ {{toast}}</div>
+</sc-if>
+
 <sc-if value="{{temLb}}" hint-placeholder-val="{{false}}">
   <div style="position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center">
     <div onClick="{{lbClose}}" style="position:absolute;inset:0;background:rgba(24,22,20,.88)"></div>
@@ -3160,7 +3165,7 @@ class Component extends DCLogic {
 
   state = {
     logado:false, loginRole:'loja', loginEmail:'', loginSenha:'', loginErro:null,
-    role:null, scr:null, fornAtivo:1, revAtivo:1, ajudaStep:0, ajudaPlay:false, ajudaMax:false,
+    role:null, scr:null, fornAtivo:1, revAtivo:1, ajudaStep:0, ajudaPlay:false, ajudaMax:false, toast:null,
     usuario:null, buscaUsr:'', filtroPapel:'todos', invTplData:'',
     usuarios:[
       {id:1,nome:'Administrador Técnico',email:'admin@cidadeimperial.com.br',senhaHash:'108bf99ab7e362',papel:'admin',fornecedorId:null,revendaId:null,ativo:true,permissoes:{},ultimoAcesso:null,criadoEm:'01/01/2026'},
@@ -3880,7 +3885,8 @@ class Component extends DCLogic {
       "dicas": [
         "O botão de proposta só aparece enquanto a cotação está com a etiqueta \"Aguardando propostas\"; depois de encerrada ele some e não é mais possível responder.",
         "Respeite a data mostrada em \"prazo:\" no cartão — é o limite para enviar ou ajustar sua proposta.",
-        "Suas propostas são sigilosas: você não vê os valores dos concorrentes e eles não veem os seus."
+        "Suas propostas são sigilosas: você não vê os valores dos concorrentes e eles não veem os seus.",
+        "Os cartões e a janela da proposta exibem apenas os produtos vinculados ao seu cadastro — itens de outros fornecedores na mesma cotação não aparecem, e tentativas de acesso direto a produtos de terceiros são bloqueadas e registradas na auditoria."
       ]
     },
     "ffat": {
@@ -4128,6 +4134,7 @@ class Component extends DCLogic {
     const cur=s.fotoIdx[id]||0; return {fotoIdx:{...s.fotoIdx,[id]:(cur+dir+len)%len}}; }); return this._fn[k]; }
   pickFotoP(i){ this._pfp=this._pfp||{}; if(!this._pfp[i]) this._pfp[i]=()=>this.setState(s=>({form:{...s.form,fotoP:i}})); return this._pfp[i]; }
   verFoto(id){ this._vf=this._vf||{}; if(!this._vf[id]) this._vf[id]=(e)=>{ if(e&&e.stopPropagation) e.stopPropagation(); const p=this.state.produtos.find(x=>x.id===id); if(!p) return;
+    const fidV=this._fidForn(); if(fidV&&!this._pTemForn(p,fidV)) return this._bloqueioTerceiro(p,'ampliar imagem do produto');
     const fotos=this.fotosDe(p);
     this.setState({lightbox:{fotos,idx:(this.state.fotoIdx[id]||0)%fotos.length,titulo:p.descricao,sub:p.codigo+' · '+p.unidade}}); }; return this._vf[id]; }
   lbNav(dir){ this._lbn=this._lbn||{}; if(!this._lbn[dir]) this._lbn[dir]=()=>this.setState(s=>{ const lb=s.lightbox; if(!lb) return null;
@@ -4194,7 +4201,7 @@ class Component extends DCLogic {
     this.audit('Lembrete de cotação enviado',cid+' → '+f.nome);
     const cL=this.state.cotacoes.find(x=>x.id===cid);
     this.notificar('cotacao_lembrete',this._fornEmail(fid),{cotacao:cid,fornecedorNome:f.nome,prazo:(cL?cL.prazo:''),itensLista:this._itensCot(cL)}); }; return this._lc[k]; }
-  componentDidMount(){ this._kb=e=>{
+  componentDidMount(){ window.CI=this; this._kb=e=>{
     if(this.state.modal==='ajuda'){ const n=(this.ajudaConteudo().passos||[]).length;
       if(e.key==='Escape') this.fecharAjuda();
       if(e.key==='ArrowRight') this.ajudaGo(Math.min(this.state.ajudaStep+1,n-1))();
@@ -4594,7 +4601,7 @@ class Component extends DCLogic {
     const ped=this.state.pedidos.find(p=>p.id===c.pedidoId)||{itens:[]};
     const citens=c.itens||ped.itens||[];
     const rod=this._cotRod(c); const rodItens=rod>1?this._rodItens(c):null;
-    const alvo=rodItens?citens.filter(it=>rodItens.includes(it.produtoId)):citens;
+    const alvo=this._soVinculados(rodItens?citens.filter(it=>rodItens.includes(it.produtoId)):citens).itens; // RF55
     const fid=this.state.fornAtivo; const me=this.state.fornecedores.find(x=>x.id===fid);
     const antes=rod>1?this._propAteRodada(c,fid,rod-1):null;
     const prev=this._propsEfetivas(c).find(p=>p.fornecedorId===fid);
@@ -4607,8 +4614,9 @@ class Component extends DCLogic {
       try{ anexosUp=await this._subirAnexos(f.anexos); }
       catch(e2){ this.setState(s=>({form:{...s.form,propBusy:false,erro:e2.message||'Falha ao enviar os anexos da proposta.'}})); return; } }
     const anexosProp=anexosUp.map(a=>({...a,quando:this.ts(),autor:me.nome}));
-    let total=0,okAll=citens.length>0;
-    citens.forEach(it=>{ const u=itens[it.produtoId]; if(u!=null) total+=u*it.qtd; else okAll=false; });
+    const citensMeus=this._soVinculados(citens).itens;
+    let total=0,okAll=citensMeus.length>0;
+    citensMeus.forEach(it=>{ const u=itens[it.produtoId]; if(u!=null) total+=u*it.qtd; else okAll=false; });
     total=okAll?Math.round(total*100)/100:Math.round(totAlvo*100)/100;
     this.updCot(cid,cc=>{ cc.propostas=cc.propostas.filter(p=>!(p.fornecedorId===fid&&(p.rodada||1)===rod));
       cc.propostas.push({fornecedorId:fid,rodada:rod,preco:total,itens,prazoEntrega:f.prazoEntrega,validade:f.validade||'—',condicoes:f.condicoes||'—',quando:this.hoje(),anexos:anexosProp});
@@ -4670,6 +4678,16 @@ class Component extends DCLogic {
     e.target.value=''; };
   rmAnexoFatExtra(ix){ this._rmfe=this._rmfe||{}; if(!this._rmfe[ix]) this._rmfe[ix]=()=>this.setState(s=>({form:{...s.form,anexosExtras:(s.form.anexosExtras||[]).filter((_,j)=>j!==ix),erro:null}})); return this._rmfe[ix]; }
   // ——— RF53: Complementação cadastral do produto (dados fiscais e logísticos) ———
+  // ——— RF55: restrição de visibilidade de produtos por fornecedor ———
+  _fidForn(){ return this.role==='fornecedor'?this.state.fornAtivo:null; }
+  _soVinculados(citens){ const fid=this._fidForn(); if(!fid) return {itens:citens,ocultos:0};
+    const vis=(citens||[]).filter(it=>{ const p=this.state.produtos.find(x=>x.id===it.produtoId); return p&&this._pTemForn(p,fid); });
+    return {itens:vis,ocultos:(citens||[]).length-vis.length}; }
+  toast(msg){ clearTimeout(this._toastT); this.setState({toast:msg}); this._toastT=setTimeout(()=>this.setState({toast:null}),5000); }
+  _bloqueioTerceiro(p,onde){ const me=(this.state.fornecedores.find(x=>x.id===this.state.fornAtivo)||{}).nome||this.userName();
+    this.audit('Acesso bloqueado a produto de terceiro',((p&&p.codigo)||'produto')+' · tentativa de '+me+(onde?' — '+onde:'')+' (RF55)');
+    this.toast('Acesso bloqueado: '+((p&&p.codigo)||'este produto')+' não está vinculado ao seu cadastro — a tentativa foi registrada na auditoria.');
+    setTimeout(()=>this._flushPersist(),0); return null; }
   _ficha(p){ return (p&&p.ficha)||{}; }
   _fichaCompleta(p){ const fi=this._ficha(p); return !!(fi.ncm&&fi.ean&&fi.pesoBruto&&fi.pesoLiquido&&fi.altura&&fi.largura&&fi.comprimento); }
   fxNcm=e=>{ const d=String(e.target.value||'').replace(/\D/g,'').slice(0,8);
@@ -4679,7 +4697,7 @@ class Component extends DCLogic {
     this.setState(s=>({form:{...s.form,ean:d,erro:null}})); };
   openFicha(pid){ this._ofc=this._ofc||{}; if(!this._ofc[pid]) this._ofc[pid]=(e)=>{ if(e&&e.stopPropagation) e.stopPropagation();
     const p=this.state.produtos.find(x=>x.id===pid); if(!p) return;
-    const fid=this.role==='fornecedor'?this.state.fornAtivo:null; if(fid&&!this._pTemForn(p,fid)) return; // RF55: só os SEUS produtos
+    const fid=this.role==='fornecedor'?this.state.fornAtivo:null; if(fid&&!this._pTemForn(p,fid)) return this._bloqueioTerceiro(p,'abrir complementação cadastral'); // RF55
     const fi=this._ficha(p); const tx=v=>v==null?'':(typeof v==='number'?String(v).replace('.',','):String(v));
     this.setState({modal:'ficha',form:{fichaId:pid,pesoBruto:tx(fi.pesoBruto),pesoLiquido:tx(fi.pesoLiquido),altura:tx(fi.altura),largura:tx(fi.largura),comprimento:tx(fi.comprimento),ncm:fi.ncm||'',ean:fi.ean||'',unidadeMedida:fi.unidadeMedida||'',obs:fi.obs||'',fotosNovas:[]}}); }; return this._ofc[pid]; }
   addFotoFicha=e=>{ const files=[...((e.target&&e.target.files)||[])]; if(!files.length) return;
@@ -4697,7 +4715,7 @@ class Component extends DCLogic {
   confirmFicha=async()=>{ const f=this.state.form; if(f.fichaBusy) return;
     const p=this.state.produtos.find(x=>x.id===f.fichaId); if(!p) return;
     const fid=this.role==='fornecedor'?this.state.fornAtivo:null;
-    if(fid){ if(!this._pTemForn(p,fid)) return this.err('Este produto não está vinculado ao seu cadastro (RF55).'); }
+    if(fid){ if(!this._pTemForn(p,fid)){ this._bloqueioTerceiro(p,'salvar complementação cadastral'); return this.err('Este produto não está vinculado ao seu cadastro (RF55).'); } }
     else if(!this.pode('cadastros.produtos')) return this.negado('Você não tem permissão para editar produtos.','cadastros.produtos');
     const dec=v=>{ const s=String(v??'').trim(); if(s==='') return null; const x=parseFloat(s.replace(/\./g,'').replace(',','.')); return (isNaN(x)||x<=0)?NaN:x; };
     const novo={};
@@ -5684,7 +5702,8 @@ class Component extends DCLogic {
       const rodF=this._cotRod(c); const rconvF=this._rodConv(c);
       const participaRod=rodF===1||!rconvF||rconvF.includes(fid);
       const ped=PEDS.find(p=>p.id===c.pedidoId)||{itens:[]};
-      const citens=c.itens||ped.itens||[];
+      const citensTot=c.itens||ped.itens||[];
+      const citens=this._soVinculados(citensTot).itens; // RF55: só os produtos vinculados
       let resultado='';
       if(c.status==='encerrada'){ if(!c.vencedorId&&c.vencItens&&Object.keys(c.vencItens).length){
           const meusIt=Object.keys(c.vencItens).filter(k=>c.vencItens[k]===fid).length;
@@ -5756,7 +5775,8 @@ class Component extends DCLogic {
       if(c){ const ped=PEDS.find(p=>p.id===c.pedidoId)||{itens:[],total:0};
         const rodP=this._cotRod(c); const rodItensP=rodP>1?this._rodItens(c):null;
         const citensAll=c.itens||ped.itens||[];
-        const citens=rodItensP?citensAll.filter(it=>rodItensP.includes(it.produtoId)):citensAll;
+        const citensRod=rodItensP?citensAll.filter(it=>rodItensP.includes(it.produtoId)):citensAll;
+        const filP=this._soVinculados(citensRod); const citens=filP.itens; // RF55
         let totP=0,okP=true;
         const itensP=citens.map(it=>{ const pr=P(it.produtoId); const v=S.form['ip'+it.produtoId]||'';
           const u=this.num(v); if(u) totP+=u*it.qtd; else okP=false;
@@ -5765,7 +5785,8 @@ class Component extends DCLogic {
         propInfo={cotId:c.id,prazo:c.prazo,rodadaTag:rodP>1?'Contraproposta — rodada '+rodP+' · revise os preços dos itens em renegociação':'',temRodadaTag:rodP>1,itensTxt:citens.map(i=>P(i.produtoId).descricao+' ×'+i.qtd).join(', '),
           refFmt:this.fmt(citens.reduce((a,i)=>a+i.qtd*i.preco,0)),
           fotos:citens.map(i=>({src:this.fotosDe(P(i.produtoId))[0],ver:this.verFoto(i.produtoId)})),
-          itens:itensP,totalFmt:okP?this.fmt(totP):'— complete os itens —'}; } }
+          itens:itensP,totalFmt:okP?this.fmt(totP):'— complete os itens —',
+          ocultosTxt:filP.ocultos?(filP.ocultos+' item(ns) desta cotação pertence(m) a produtos de outros fornecedores e não são exibidos — você cota somente os produtos vinculados ao seu cadastro (RF55).'):''}; } }
     let fatInfo={pedidoId:'',revNome:'',pctStr:'',itensTxt:''};
     if(M==='faturar'&&S.form.pedidoId){ const p=PEDS.find(x=>x.id===S.form.pedidoId);
       if(p){ const meusF=p.itens.filter(i=>i.st==='direto'&&i.fornecedorId===fid);
@@ -5974,7 +5995,7 @@ class Component extends DCLogic {
       relPedsN:String(relPedRows.length),relFatsN:String(relFats.length),
       exportRelPedidos:this.exportRelPedidos,exportRelFat:this.exportRelFat,
       // fornecedor
-      fMeNome:fMe.nome||'',fPctStr,fPedRows,fCotRows,fFatRows,fRoyRows,
+      fMeNome:fMe.nome||'',fPctStr,fPedRows,fCotRows,fFatRows,fRoyRows,toast:S.toast||'',
       fVisCards:(S.fPedVis||'cards')!=='lista',fVisLista:S.fPedVis==='lista',
       fPedVisCards:this.setFPedVis('cards'),fPedVisLista:this.setFPedVis('lista'),
       fVisCardsBg:(S.fPedVis||'cards')!=='lista'?'#272525':'#fff',fVisCardsFg:(S.fPedVis||'cards')!=='lista'?'#fff':'#6b6459',
