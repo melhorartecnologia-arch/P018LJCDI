@@ -63,10 +63,18 @@ const EXEC = {
   RF72: { commit: '1482c1d',
     entrega: 'Aba "Vendas por produto" em Relatórios com visão em tabela e visão gráfica com drill-down por produto, filtros por período, produto, revenda, fornecedor e categoria, e exportação Excel do recorte.',
     evid: 'docs/evidencias/RelatorioVendaProdutos-*' },
+  RF69: { commit: '560f91a',
+    entrega: 'Revenda e Loja podem recusar o documento fiscal com motivo obrigatório; a nota fica "Documento recusado — pendente de regularização" com o valor fora dos royalties até regularizar; o fornecedor vê a pendência com o motivo e reenvia por janela própria (novo documento passa pela análise fiscal, que barra arquivo incompatível); histórico completo de recusas/reenvios na linha da nota, auditoria e e-mails (nf_recusada / nf_regularizada).',
+    evid: 'docs/evidencias/RecusaDocumentoFiscal-Descricao' },
+  RF54: { commit: '02adf4f',
+    entrega: 'Upload de múltiplas imagens (PNG/JPG, 5 MB) com pré-visualização imediata e tag NOVA na janela do produto; clique define a imagem PRINCIPAL — usada no catálogo das revendas, listas e detalhe; remoção nunca perde a imagem: painel "Histórico de imagens" preserva as substituídas com miniatura, autor e data; bloqueio impede produto sem imagem; produto novo pode nascer com imagens reais; tudo auditado e persistido.',
+    evid: 'docs/evidencias/GestaoImagensProduto-Descricao' },
+  RF56: { commit: '2d1d16b',
+    entrega: 'Tela própria "De/Para Produto × Fornecedor" (menu Cadastros da Loja): matriz produto × fornecedores ativos com vínculo alternado por clique; alimenta na hora a visibilidade do fornecedor (RF55) e os convidáveis de cotação/envio direto (mesmo cadastro do RF51); cada criação/remoção auditada nominalmente; bloqueio do último vínculo; alerta âmbar para fornecedor sem contrato vigente; KPIs (vínculos ativos, produtos com fornecedor único), busca e atalho no detalhe do produto.',
+    evid: 'docs/evidencias/DeParaProdutoFornecedor-Descricao' },
 }
 const PEND_OBS = {
   RF49: 'Parcialmente avançado: o detalhe do pedido já tem linha do tempo de etapas e ganhou o status/etapa "Aguardando aceite da revenda" (RF68). Pendentes: modelo completo de etapas com nomenclatura por estágio e filtros das listas pelos novos status.',
-  RF56: 'Parcialmente coberto pelo RF51: os vínculos produto×fornecedor já são geridos na seção do produto e alimentam a lista de convidáveis das cotações e o envio direto. Pendentes: tela própria de De/Para e auditoria dedicada das alterações de vínculo.',
   RF74: 'O pré-requisito RF58 (rodadas de cotação) já foi executado.',
   RF75: 'Parte dos novos dados já existe (rodadas, anexos, vendas por produto); aguarda a implementação dos demais blocos C, E e G.',
 }
