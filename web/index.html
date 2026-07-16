@@ -790,7 +790,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
           <th style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Descrição</th>
           <th style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Fornecedor</th>
           <th style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Unidade</th>
-          <th style="text-align:right;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Preço</th>
+          <th style="text-align:right;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Preço estimado</th>
           <th style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Catálogo</th>
           <th style="text-align:right;padding:10px 18px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2"></th>
         </tr></thead>
@@ -825,7 +825,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <div onClick="{{pdd.toggle}}" style="border:1px solid #e5ddcd;color:#8a8378;border-radius:9px;padding:9px 14px;font-size:12.5px;font-weight:600;cursor:pointer" style-hover="background:#f7f3ea">{{pdd.toggleLabel}}</div>
       </div>
     </div>
-    <div style="font-size:13px;color:#8a8378;margin-bottom:18px">{{pdd.codigo}} · vendido por {{pdd.unidade}} · {{pdd.precoFmt}}</div>
+    <div style="font-size:13px;color:#8a8378;margin-bottom:18px">{{pdd.codigo}} · vendido por {{pdd.unidade}} · preço estimado: {{pdd.precoFmt}}</div>
     <div style="display:grid;grid-template-columns:1fr 1.35fr;gap:14px;align-items:start;margin-bottom:16px">
       <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:14px">
         <sc-if value="{{pdd.foto}}" hint-placeholder-val="{{false}}">
@@ -2069,9 +2069,10 @@ input::placeholder,textarea::placeholder{color:#b0a795}
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
         <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Unidade</div>
         <input value="{{form.unidade}}" onChange="{{fxUnidade}}" placeholder="Barril, Caixa…" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
-        <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Preço (R$)</div>
+        <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Preço estimado (R$)</div>
         <input value="{{form.preco}}" onChange="{{fxPreco}}" placeholder="0,00" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
       </div>
+      <sc-if value="{{form.precoInfo}}" hint-placeholder-val="{{false}}"><div style="font-size:11px;color:#8f682a;background:#fdf6e7;border:1px solid #f0e2c4;border-radius:8px;padding:7px 10px;margin-top:10px;line-height:1.45">{{form.precoInfo}}</div></sc-if>
       <sc-if value="{{form.erro}}" hint-placeholder-val="{{false}}"><div style="color:#a33a2b;font-size:12.5px;margin-top:12px">{{form.erro}}</div></sc-if>
       <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:18px">
         <div onClick="{{mClose}}" style="border:1px solid #ddd5c7;border-radius:8px;padding:9px 15px;font-size:13px;font-weight:600;cursor:pointer;color:#6b6459" style-hover="background:#f7f3ea">Cancelar</div>
@@ -3142,7 +3143,7 @@ class Component extends DCLogic {
         "No topo da tela, confira os quatro indicadores (Ativos no catálogo, Inativos, Fornecedores representados e Movimentado em pedidos) para ter uma visão geral do catálogo.",
         "Para encontrar um produto, digite no campo \"Buscar por código ou descrição…\" e/ou use os seletores \"Todos os fornecedores\" e \"Todos os status\" (que filtra por Ativos no catálogo ou Inativos).",
         "Para cadastrar um novo produto, clique no botão \"+ Novo produto\", no canto superior direito.",
-        "Na janela que abrir, preencha a \"Descrição\", escolha o \"Fornecedor / contrato\" e informe a \"Unidade\" e o \"Preço (R$)\" — descrição, fornecedor e preço são obrigatórios.",
+        "Na janela que abrir, preencha a \"Descrição\", escolha o \"Fornecedor / contrato\" e informe a \"Unidade\" e o \"Preço estimado (R$)\" — descrição, fornecedor e preço estimado são obrigatórios.",
         "Clique em \"Homologar produto\" para salvar o cadastro (ou em \"Cancelar\" para desistir).",
         "Para ver os detalhes de um produto, clique sobre a linha dele na tabela: abre a tela \"Detalhe do produto\", com fornecedor, contrato, royalty do contrato, histórico de preço e pedidos, além do botão \"Editar produto\".",
         "Para tirar um produto do catálogo das revendas ou colocá-lo de volta, clique no link \"Inativar\" ou \"Ativar\" à direita da linha; a coluna \"Catálogo\" mostra a situação atual de cada item."
@@ -3150,7 +3151,8 @@ class Component extends DCLogic {
       "dicas": [
         "No seletor \"Fornecedor / contrato\" só aparecem fornecedores ativos, pois todo produto precisa estar ligado a um fornecedor com contrato vigente.",
         "Inativar não exclui o produto: ele apenas sai do catálogo das revendas e pode ser reativado a qualquer momento pelo mesmo link.",
-        "Na coluna \"Código\", clique na miniatura da foto do produto para ampliar a imagem."
+        "Na coluna \"Código\", clique na miniatura da foto do produto para ampliar a imagem.",
+        "Ao editar um produto, o campo \"Preço estimado (R$)\" já vem preenchido automaticamente com o último valor do histórico (última alteração de preço ou último preço praticado em pedido); o valor continua editável e a alteração manual entra no histórico de preços."
       ]
     },
     "proddet": {
@@ -3158,11 +3160,11 @@ class Component extends DCLogic {
       "titulo": "Detalhe do produto: consultar e gerenciar",
       "resumo": "Tela da Loja para ver todos os dados de um produto homologado — foto, fornecedor, contrato, indicadores e pedidos — e gerenciar sua edição e disponibilidade no catálogo.",
       "passos": [
-        "No topo, confira o nome do produto e, ao lado dele, o selo de status (Ativo ou Inativo); logo abaixo do título aparecem o código, a unidade em que o produto é vendido e o preço atual.",
+        "No topo, confira o nome do produto e, ao lado dele, o selo de status (Ativo ou Inativo); logo abaixo do título aparecem o código, a unidade em que o produto é vendido e o preço estimado atual.",
         "Clique na foto principal (ela mostra o aviso 'Clique para ampliar') para vê-la em tamanho grande; as miniaturas logo abaixo trocam a foto exibida em destaque.",
         "No quadro 'Vínculo — fornecedor e contrato (RF05)', clique no nome do fornecedor para abrir o cadastro dele e confira os campos 'Contrato' e 'Royalty do contrato'.",
         "Acompanhe os quatro indicadores ('Pedidos com o produto', 'Quantidade pedida', 'Movimentado' e 'Fotos cadastradas') e o quadro 'Histórico de preço', que lista as mudanças de valor.",
-        "Para corrigir dados, clique em 'Editar produto': abre um formulário onde você ajusta descrição, unidade, preço, fornecedor e fotos.",
+        "Para corrigir dados, clique em 'Editar produto': abre um formulário onde você ajusta descrição, unidade, fornecedor, fotos e o preço estimado — que já vem preenchido com o último valor do histórico de preços e continua editável.",
         "Use o botão 'Inativar no catálogo' (ou 'Ativar no catálogo', quando o produto já estiver inativo) para tirar ou disponibilizar o produto para as revendas.",
         "Na seção 'Pedidos com este produto', clique em uma linha da tabela para abrir o pedido correspondente.",
         "Clique em '← Voltar para produtos', no topo da tela, para retornar à lista de produtos."
@@ -3668,8 +3670,21 @@ class Component extends DCLogic {
     const c=this.state.contratos.find(x=>x.id===f.contratoId);
     this.setState(s=>({contratos:s.contratos.map(x=>x.id===f.contratoId?{...x,royalty:pct,historico:[...x.historico,{data:this.hoje(),de:String(x.royalty).replace('.',',')+'%',para:String(pct).replace('.',',')+'%',usuario:this.userName()}]}:x),modal:null,form:{}}));
     this.audit('Alteração de royalty',c.numero+' → '+pct+'%'); };
+  // Último preço registrado no histórico do produto: considera a última alteração de
+  // preço (precoHist) e o último preço praticado em pedidos (precoNeg quando houver
+  // negociação em cotação, senão o preço unitário do item). Em empate de data, a
+  // alteração de preço prevalece sobre o preço praticado.
+  _ultimoPrecoHist(p){ let best=null;
+    const cand=(valor,quando,origem,prio)=>{ const d=this._parseData(quando); if(!valor||!d) return;
+      if(!best||d>best.d||(d.getTime()===best.d.getTime()&&prio>best.prio)) best={valor,d,quando,origem,prio}; };
+    (p.precoHist||[]).forEach(h=>cand(this.num(h.para),h.data,'última alteração de preço em '+h.data,2));
+    (this.state.pedidos||[]).forEach(x=>{ if(x.status==='rejeitado') return;
+      (x.itens||[]).forEach(i=>{ if(i.produtoId!==p.id||i.st==='rejeitado') return;
+        const v=i.precoNeg?Math.round(i.precoNeg/(i.qtd||1)*100)/100:i.preco;
+        cand(v,x.data,'último preço praticado no pedido '+x.id+' de '+x.data,1); }); });
+    return best; }
   salvarProduto=()=>{ if(!this.pode('cadastros.produtos')) return this.negado('Você não tem permissão para gerenciar produtos.','cadastros.produtos'); const f=this.state.form; if(!f.descricao||!f.fornecedorId) return this.err('Informe descrição e fornecedor (RF05).');
-    const preco=this.num(f.preco); if(!preco) return this.err('Informe o preço (RF06).');
+    const preco=this.num(f.preco); if(!preco) return this.err('Informe o preço estimado (RF06).');
     if(f.editId){ const old=this.state.produtos.find(x=>x.id===f.editId);
       const fotosAtuais=this.fotosDe(old); const fp=f.fotoP||0;
       const rot=[...fotosAtuais.slice(fp),...fotosAtuais.slice(0,fp)];
@@ -4596,7 +4611,10 @@ class Component extends DCLogic {
             qtd:x.itens.filter(i=>i.produtoId===p.id).reduce((b,i)=>b+i.qtd,0)+'×',
             ...this.chip(x.status),open:this.openPed(x.id)})),
           semPedidos:emPeds.length===0,
-          editar:this.open('produto',{editId:p.id,descricao:p.descricao,unidade:p.unidade,preco:String(p.preco).replace('.',','),fornecedorId:String(p.fornecedorId),fotoP:0}),
+          editar:(()=>{ const h=this._ultimoPrecoHist(p); const val=h?h.valor:p.preco;
+            return this.open('produto',{editId:p.id,descricao:p.descricao,unidade:p.unidade,preco:String(val).replace('.',','),
+              precoInfo:h?('Preenchido automaticamente com o último valor do histórico: '+this.fmt(h.valor)+' — '+h.origem+'. Você pode ajustar; a alteração manual alimenta o histórico de preços.'):null,
+              fornecedorId:String(p.fornecedorId),fotoP:0}); })(),
           toggle:this.toggleProd(p.id),toggleLabel:p.ativo?'Inativar no catálogo':'Ativar no catálogo',
           voltar:this.go('prod')}; } }
     const prodModalTitulo=S.form.editId&&S.modal==='produto'?'Editar produto homologado':'Novo produto homologado';
