@@ -286,7 +286,7 @@
         {
           "quando": "09/07/2026 08:15",
           "usuario": "Bar do Imperador (Revenda)",
-          "acao": "Pedido criado pela revenda — aguardando aprovação da Loja"
+          "acao": "Pedido criado pela revenda — aguardando análise da Loja"
         }
       ]
     },
@@ -311,7 +311,7 @@
         {
           "quando": "08/07/2026 10:44",
           "usuario": "Empório Colonial (Revenda)",
-          "acao": "Pedido criado pela revenda — aguardando aprovação da Loja"
+          "acao": "Pedido criado pela revenda — aguardando análise da Loja"
         }
       ]
     },
@@ -380,7 +380,7 @@
         {
           "quando": "05/07/2026 14:20",
           "usuario": "Ana Ribeiro (Loja)",
-          "acao": "Pedido aprovado pela Loja"
+          "acao": "Pedido recebido e confirmado pela Loja"
         },
         {
           "quando": "05/07/2026 16:05",
@@ -423,7 +423,7 @@
         {
           "quando": "04/07/2026 11:10",
           "usuario": "Ana Ribeiro (Loja)",
-          "acao": "Pedido aprovado pela Loja"
+          "acao": "Pedido recebido e confirmado pela Loja"
         },
         {
           "quando": "04/07/2026 11:12",
@@ -466,7 +466,7 @@
         {
           "quando": "01/07/2026 10:30",
           "usuario": "Ana Ribeiro (Loja)",
-          "acao": "Pedido aprovado e encaminhado (envio direto) a Distribuidora Serra Verde"
+          "acao": "Pedido recebido e encaminhado (envio direto) a Distribuidora Serra Verde"
         },
         {
           "quando": "03/07/2026 15:45",
@@ -513,7 +513,7 @@
         {
           "quando": "29/05/2026 09:15",
           "usuario": "Ana Ribeiro (Loja)",
-          "acao": "Pedido aprovado · cotação COT-007 aberta com 2 fornecedores"
+          "acao": "Pedido recebido · cotação COT-007 aberta com 2 fornecedores"
         },
         {
           "quando": "06/06/2026 11:00",
@@ -554,7 +554,7 @@
         {
           "quando": "15/06/2026 13:00",
           "usuario": "Ana Ribeiro (Loja)",
-          "acao": "Pedido aprovado e encaminhado (envio direto) a Distribuidora Serra Verde"
+          "acao": "Pedido recebido e encaminhado (envio direto) a Distribuidora Serra Verde"
         },
         {
           "quando": "18/06/2026 16:30",
@@ -597,7 +597,7 @@
         {
           "quando": "10/06/2026 14:05",
           "usuario": "Ana Ribeiro (Loja)",
-          "acao": "Pedido aprovado e encaminhado (envio direto) a Imperial Bebidas Ltda"
+          "acao": "Pedido recebido e encaminhado (envio direto) a Imperial Bebidas Ltda"
         },
         {
           "quando": "12/06/2026 10:00",

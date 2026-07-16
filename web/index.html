@@ -89,7 +89,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
     <sc-if value="{{temNotif}}" hint-placeholder-val="{{false}}">
       <div onClick="{{verPedidos}}" style="display:flex;align-items:center;gap:7px;background:#faf3e4;border:1px solid #e6cf9e;border-radius:9px;padding:7px 12px;cursor:pointer;font-size:12px;font-weight:600;color:#8a5a12" style-hover="background:#f5ebd2">
         <span style="width:8px;height:8px;border-radius:50%;background:#B38335;display:inline-block"></span>
-        {{notifCount}} pedidos aguardando aprovação
+        {{notifCount}} pedidos aguardando recebimento
       </div>
     </sc-if>
     <div onClick="{{abrirAjuda}}" title="Como usar esta tela — tutorial em vídeo e passo a passo" style="display:flex;align-items:center;gap:8px;background:#272525;border-radius:9px;padding:6px 12px 6px 7px;cursor:pointer;flex:none" style-hover="background:#3a3735">
@@ -130,7 +130,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
             <div style="font-size:13px;color:#8a8378;margin-bottom:20px">Indicadores de pedidos, cotações, faturamento e royalties · {{compAtualLabel}}</div>
             <sc-if value="{{exibirBanner}}" hint-placeholder-val="{{false}}">
               <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;background:#faf3e4;border:1px solid #e6cf9e;border-radius:12px;padding:13px 18px;margin-bottom:18px">
-                <div style="font-size:13.5px;color:#6d4a10"><b>{{notifCount}} pedidos</b> de revendas aguardam análise e aprovação da Loja.</div>
+                <div style="font-size:13.5px;color:#6d4a10"><b>{{notifCount}} pedidos</b> de revendas aguardam análise e recebimento pela Loja.</div>
                 <div onClick="{{verPedidos}}" style="background:#B38335;color:#fff;border-radius:8px;padding:8px 15px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:#9a6f2b">Analisar pedidos</div>
               </div>
             </sc-if>
@@ -188,7 +188,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
     <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-bottom:18px">
       <div>
         <div style="font-size:21px;font-weight:700;margin:2px 0 3px">Pedidos</div>
-        <div style="font-size:13px;color:#8a8378">Aprovação total ou por item · atendimento com estoque da Loja, envio direto ou cotação — combináveis no mesmo pedido</div>
+        <div style="font-size:13px;color:#8a8378">Recebimento total ou por item · atendimento com estoque da Loja, envio direto ou cotação — combináveis no mesmo pedido</div>
       </div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px">
@@ -236,7 +236,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
                   </div>
                   <sc-if value="{{p.pendente}}" hint-placeholder-val="{{false}}">
                     <div style="display:flex;gap:6px;flex:none">
-                      <sc-if value="{{podeAprovar}}" hint-placeholder-val="{{true}}"><span onClick="{{p.aprovarFn}}" title="Aprovar pedido" style="font-size:11.5px;font-weight:700;color:#fff;background:#B38335;border-radius:7px;padding:5px 10px;cursor:pointer;white-space:nowrap" style-hover="background:#9a6f2b">Aprovar</span></sc-if>
+                      <sc-if value="{{podeAprovar}}" hint-placeholder-val="{{true}}"><span onClick="{{p.aprovarFn}}" title="Recebimento do pedido" style="font-size:11.5px;font-weight:700;color:#fff;background:#B38335;border-radius:7px;padding:5px 10px;cursor:pointer;white-space:nowrap" style-hover="background:#9a6f2b">Receber</span></sc-if>
                       <sc-if value="{{podeRejeitar}}" hint-placeholder-val="{{true}}"><span onClick="{{p.rejeitarFn}}" title="Rejeitar com justificativa" style="font-size:11.5px;font-weight:700;color:#a33a2b;border:1px solid #e7c4bc;border-radius:7px;padding:4px 10px;cursor:pointer;white-space:nowrap;background:#fff" style-hover="background:#fbf1ef">Rejeitar</span></sc-if>
                     </div>
                   </sc-if>
@@ -297,7 +297,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
                   <td style="padding:10px 18px;text-align:right;border-bottom:1px solid #f5f1e8">
                     <sc-if value="{{i.pendItem}}" hint-placeholder-val="{{false}}">
                       <div style="display:flex;gap:6px;justify-content:flex-end">
-                        <sc-if value="{{podeAprovar}}" hint-placeholder-val="{{true}}"><span onClick="{{i.aprovarItemFn}}" style="font-size:11px;font-weight:700;color:#fff;background:#B38335;border-radius:7px;padding:4px 10px;cursor:pointer;white-space:nowrap" style-hover="background:#9a6f2b">Aprovar</span></sc-if>
+                        <sc-if value="{{podeAprovar}}" hint-placeholder-val="{{true}}"><span onClick="{{i.aprovarItemFn}}" title="Recebimento do item" style="font-size:11px;font-weight:700;color:#fff;background:#B38335;border-radius:7px;padding:4px 10px;cursor:pointer;white-space:nowrap" style-hover="background:#9a6f2b">Receber</span></sc-if>
                         <sc-if value="{{podeRejeitar}}" hint-placeholder-val="{{true}}"><span onClick="{{i.rejeitarItemFn}}" style="font-size:11px;font-weight:700;color:#a33a2b;border:1px solid #e7c4bc;border-radius:7px;padding:3px 10px;cursor:pointer;white-space:nowrap;background:#fff" style-hover="background:#fbf1ef">Rejeitar</span></sc-if>
                       </div>
                     </sc-if>
@@ -364,7 +364,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
             <div style="font-size:14px;font-weight:700;margin-bottom:4px">Análise da Loja</div>
             <div style="font-size:12.5px;color:#8a8378;margin-bottom:13px">Aprove ou rejeite o pedido como um todo — ou decida item a item usando as ações na tabela de itens.</div>
             <div style="display:flex;gap:9px">
-              <sc-if value="{{podeAprovar}}" hint-placeholder-val="{{true}}"><div onClick="{{pd.aprovarFn}}" style="flex:1;text-align:center;background:#B38335;color:#fff;border-radius:9px;padding:10px 0;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#9a6f2b">Aprovar pedido</div></sc-if>
+              <sc-if value="{{podeAprovar}}" hint-placeholder-val="{{true}}"><div onClick="{{pd.aprovarFn}}" style="flex:1;text-align:center;background:#B38335;color:#fff;border-radius:9px;padding:10px 0;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#9a6f2b">Recebimento de Pedidos</div></sc-if>
               <sc-if value="{{podeRejeitar}}" hint-placeholder-val="{{true}}"><div onClick="{{pd.rejeitarFn}}" style="flex:1;text-align:center;background:#fff;color:#a33a2b;border:1px solid #e7c4bc;border-radius:9px;padding:10px 0;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#fbf1ef">Rejeitar…</div></sc-if>
             </div>
           </div>
@@ -1526,7 +1526,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
       <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:16px 18px">
         <div style="font-size:11px;font-weight:700;letter-spacing:.07em;color:#8f682a;margin-bottom:5px">DONA DA PLATAFORMA</div>
         <div style="font-size:15px;font-weight:700;margin-bottom:8px">Loja Cidade Imperial</div>
-        <div style="font-size:12.5px;color:#6b6459;line-height:1.55">Homologa produtos, cadastra contratos e royalties, aprova pedidos, decide entre envio direto e cotação, seleciona propostas e recebe os royalties no fechamento mensal.</div>
+        <div style="font-size:12.5px;color:#6b6459;line-height:1.55">Homologa produtos, cadastra contratos e royalties, recebe e confirma pedidos, decide entre envio direto e cotação, seleciona propostas e recebe os royalties no fechamento mensal.</div>
       </div>
       <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:16px 18px">
         <div style="font-size:11px;font-weight:700;letter-spacing:.07em;color:#8f682a;margin-bottom:5px">FORNECE OS PRODUTOS</div>
@@ -1668,7 +1668,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
 <sc-if value="{{sCat}}" hint-placeholder-val="{{false}}">
   <div data-screen-label="Catálogo (revenda)" style="animation:fadeUp .25s ease">
     <div style="font-size:21px;font-weight:700;margin:2px 0 3px">Catálogo de produtos homologados</div>
-    <div style="font-size:13px;color:#8a8378;margin-bottom:16px">Produtos disponíveis para {{rMeNome}} · selecione quantidades e envie o pedido para aprovação da Loja</div>
+    <div style="font-size:13px;color:#8a8378;margin-bottom:16px">Produtos disponíveis para {{rMeNome}} · selecione quantidades e envie o pedido para análise da Loja</div>
     <input value="{{buscaCat}}" onChange="{{setBuscaCat}}" placeholder="Buscar produto…" style="width:100%;box-sizing:border-box;padding:11px 14px;border:1px solid #e5ddcd;border-radius:9px;font:inherit;font-size:13px;background:#fff;outline:none;color:#272525;margin-bottom:16px">
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:13px;padding-bottom:80px">
       <sc-for list="{{catRows}}" as="p" hint-placeholder-count="6">
@@ -1687,7 +1687,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
           <div style="font-size:14px;font-weight:700;line-height:1.35">{{p.descricao}}</div>
           <div style="font-size:12px;color:#8a8378">{{p.fornNome}}</div>
           <div style="display:flex;align-items:center;justify-content:space-between;margin-top:9px">
-            <div style="font-size:12px;font-weight:600;color:#a89f90" title="O valor é definido pela Loja após a aprovação/negociação do pedido">Valor sob negociação</div>
+            <div style="font-size:12px;font-weight:600;color:#a89f90" title="O valor é definido pela Loja após a análise/negociação do pedido">Valor sob negociação</div>
             <div style="display:flex;align-items:center;gap:8px">
               <sc-if value="{{p.temQtd}}" hint-placeholder-val="{{false}}">
                 <div onClick="{{p.sub}}" style="width:30px;height:30px;border:1px solid #e5ddcd;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:#8f682a;font-weight:700" style-hover="background:#f7f3ea">−</div>
@@ -1701,8 +1701,8 @@ input::placeholder,textarea::placeholder{color:#b0a795}
     </div>
     <sc-if value="{{temCart}}" hint-placeholder-val="{{false}}">
       <div style="position:sticky;bottom:14px;background:#272525;border-radius:13px;padding:13px 20px;display:flex;align-items:center;justify-content:space-between;gap:14px;box-shadow:0 10px 30px rgba(39,37,37,.3)">
-        <div style="font-size:13.5px;color:#d9d2c6"><b style="color:#fff">{{cartCount}} itens</b> no pedido · o valor será definido pela Loja após a aprovação</div>
-        <div onClick="{{enviarPedido}}" style="background:#B38335;color:#fff;border-radius:9px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="background:#9a6f2b">Enviar pedido para aprovação</div>
+        <div style="font-size:13.5px;color:#d9d2c6"><b style="color:#fff">{{cartCount}} itens</b> no pedido · o valor será definido pela Loja após a análise</div>
+        <div onClick="{{enviarPedido}}" style="background:#B38335;color:#fff;border-radius:9px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="background:#9a6f2b">Enviar pedido para análise</div>
       </div>
     </sc-if>
   </div>
@@ -2704,36 +2704,36 @@ class Component extends DCLogic {
     ],
     pedidos:[
       {id:'PED-0044',revendaId:1,fornecedorId:null,cotacaoId:null,itens:[{produtoId:1,qtd:2,preco:620,st:'pendente'},{produtoId:8,qtd:3,preco:96,st:'pendente'}],total:1528,status:'pendente',justificativa:null,data:'09/07/2026',trilha:[
-        {quando:'09/07/2026 08:15',usuario:'Bar do Imperador (Revenda)',acao:'Pedido criado pela revenda — aguardando aprovação da Loja'}]},
+        {quando:'09/07/2026 08:15',usuario:'Bar do Imperador (Revenda)',acao:'Pedido criado pela revenda — aguardando análise da Loja'}]},
       {id:'PED-0045',revendaId:2,fornecedorId:null,cotacaoId:null,itens:[{produtoId:5,qtd:8,preco:132,st:'pendente'}],total:1056,status:'pendente',justificativa:null,data:'08/07/2026',trilha:[
-        {quando:'08/07/2026 10:44',usuario:'Empório Colonial (Revenda)',acao:'Pedido criado pela revenda — aguardando aprovação da Loja'}]},
+        {quando:'08/07/2026 10:44',usuario:'Empório Colonial (Revenda)',acao:'Pedido criado pela revenda — aguardando análise da Loja'}]},
       {id:'PED-0046',revendaId:3,fornecedorId:null,cotacaoId:null,itens:[{produtoId:3,qtd:6,preco:740,st:'rejeitado',justif:'Limite de crédito da revenda excedido no período.'}],total:4440,status:'rejeitado',justificativa:'Limite de crédito da revenda excedido no período.',data:'07/07/2026',trilha:[
         {quando:'07/07/2026 09:12',usuario:'Choperia Alto da Serra (Revenda)',acao:'Pedido criado pela revenda'},
         {quando:'07/07/2026 15:40',usuario:'Ana Ribeiro (Loja)',acao:'Pedido rejeitado — Limite de crédito da revenda excedido no período.'}]},
       {id:'PED-0043',revendaId:3,fornecedorId:null,cotacaoId:'COT-008',itens:[{produtoId:2,qtd:2,preco:890,st:'cotacao',cotacaoId:'COT-008'},{produtoId:1,qtd:1,preco:620,st:'cotacao',cotacaoId:'COT-008'}],total:2400,status:'em cotação',justificativa:null,data:'05/07/2026',trilha:[
         {quando:'05/07/2026 09:30',usuario:'Choperia Alto da Serra (Revenda)',acao:'Pedido criado pela revenda'},
-        {quando:'05/07/2026 14:20',usuario:'Ana Ribeiro (Loja)',acao:'Pedido aprovado pela Loja'},
+        {quando:'05/07/2026 14:20',usuario:'Ana Ribeiro (Loja)',acao:'Pedido recebido e confirmado pela Loja'},
         {quando:'05/07/2026 16:05',usuario:'Ana Ribeiro (Loja)',acao:'Cotação COT-008 aberta com 3 fornecedores'}]},
       {id:'PED-0042',revendaId:2,fornecedorId:2,cotacaoId:null,itens:[{produtoId:4,qtd:15,preco:148,st:'direto',fornecedorId:2},{produtoId:6,qtd:5,preco:89,st:'direto',fornecedorId:2}],total:2665,status:'encaminhado',justificativa:null,data:'04/07/2026',trilha:[
         {quando:'04/07/2026 08:50',usuario:'Empório Colonial (Revenda)',acao:'Pedido criado pela revenda'},
-        {quando:'04/07/2026 11:10',usuario:'Ana Ribeiro (Loja)',acao:'Pedido aprovado pela Loja'},
+        {quando:'04/07/2026 11:10',usuario:'Ana Ribeiro (Loja)',acao:'Pedido recebido e confirmado pela Loja'},
         {quando:'04/07/2026 11:12',usuario:'Ana Ribeiro (Loja)',acao:'Encaminhado (envio direto) a Imperial Bebidas Ltda'}]},
       {id:'PED-0041',revendaId:1,fornecedorId:1,cotacaoId:null,itens:[{produtoId:1,qtd:4,preco:620,st:'faturado',fornecedorId:1},{produtoId:3,qtd:1,preco:740,st:'faturado',fornecedorId:1}],total:3220,status:'faturado',justificativa:null,data:'01/07/2026',trilha:[
         {quando:'01/07/2026 09:00',usuario:'Bar do Imperador (Revenda)',acao:'Pedido criado pela revenda'},
-        {quando:'01/07/2026 10:30',usuario:'Ana Ribeiro (Loja)',acao:'Pedido aprovado e encaminhado (envio direto) a Distribuidora Serra Verde'},
+        {quando:'01/07/2026 10:30',usuario:'Ana Ribeiro (Loja)',acao:'Pedido recebido e encaminhado (envio direto) a Distribuidora Serra Verde'},
         {quando:'03/07/2026 15:45',usuario:'Distribuidora Serra Verde (Fornecedor)',acao:'Faturado (NF-1207) diretamente à revenda — R$ 3.220,00'}]},
       {id:'PED-0040',revendaId:1,fornecedorId:3,cotacaoId:'COT-007',itens:[{produtoId:7,qtd:8,preco:210,st:'faturado',fornecedorId:3,cotacaoId:'COT-007',precoNeg:1600},{produtoId:8,qtd:6,preco:96,st:'faturado',fornecedorId:3,cotacaoId:'COT-007',precoNeg:612}],total:2256,status:'faturado',justificativa:null,data:'28/05/2026',trilha:[
         {quando:'28/05/2026 10:00',usuario:'Bar do Imperador (Revenda)',acao:'Pedido criado pela revenda'},
-        {quando:'29/05/2026 09:15',usuario:'Ana Ribeiro (Loja)',acao:'Pedido aprovado · cotação COT-007 aberta com 2 fornecedores'},
+        {quando:'29/05/2026 09:15',usuario:'Ana Ribeiro (Loja)',acao:'Pedido recebido · cotação COT-007 aberta com 2 fornecedores'},
         {quando:'06/06/2026 11:00',usuario:'Ana Ribeiro (Loja)',acao:'Pedido gerado para Atacadão Fluminense (vencedor da COT-007)'},
         {quando:'24/06/2026 14:20',usuario:'Atacadão Fluminense (Fornecedor)',acao:'Faturado (NF-1204) diretamente à revenda — R$ 2.212,00'}]},
       {id:'PED-0039',revendaId:3,fornecedorId:1,cotacaoId:null,itens:[{produtoId:2,qtd:3,preco:890,st:'faturado',fornecedorId:1}],total:2670,status:'faturado',justificativa:null,data:'15/06/2026',trilha:[
         {quando:'15/06/2026 08:40',usuario:'Choperia Alto da Serra (Revenda)',acao:'Pedido criado pela revenda'},
-        {quando:'15/06/2026 13:00',usuario:'Ana Ribeiro (Loja)',acao:'Pedido aprovado e encaminhado (envio direto) a Distribuidora Serra Verde'},
+        {quando:'15/06/2026 13:00',usuario:'Ana Ribeiro (Loja)',acao:'Pedido recebido e encaminhado (envio direto) a Distribuidora Serra Verde'},
         {quando:'18/06/2026 16:30',usuario:'Distribuidora Serra Verde (Fornecedor)',acao:'Faturado (NF-1201) diretamente à revenda — R$ 2.670,00'}]},
       {id:'PED-0038',revendaId:2,fornecedorId:2,cotacaoId:null,itens:[{produtoId:4,qtd:20,preco:148,st:'faturado',fornecedorId:2},{produtoId:5,qtd:10,preco:132,st:'faturado',fornecedorId:2}],total:4280,status:'faturado',justificativa:null,data:'10/06/2026',trilha:[
         {quando:'10/06/2026 09:20',usuario:'Empório Colonial (Revenda)',acao:'Pedido criado pela revenda'},
-        {quando:'10/06/2026 14:05',usuario:'Ana Ribeiro (Loja)',acao:'Pedido aprovado e encaminhado (envio direto) a Imperial Bebidas Ltda'},
+        {quando:'10/06/2026 14:05',usuario:'Ana Ribeiro (Loja)',acao:'Pedido recebido e encaminhado (envio direto) a Imperial Bebidas Ltda'},
         {quando:'12/06/2026 10:00',usuario:'Imperial Bebidas Ltda (Fornecedor)',acao:'Faturado (NF-1198) diretamente à revenda — R$ 4.280,00'}]}
     ],
     cotacoes:[
@@ -2995,53 +2995,53 @@ class Component extends DCLogic {
     "dash": {
       "rotina": "Painel geral",
       "titulo": "Painel geral da Loja",
-      "resumo": "Tela inicial da Loja que reúne os principais indicadores (pedidos, cotações, faturamento e royalties) e serve de atalho para acompanhar os pedidos recentes e o faturamento por fornecedor. É uma tela de visão e navegação: as aprovações acontecem depois, ao abrir cada pedido.",
+      "resumo": "Tela inicial da Loja que reúne os principais indicadores (pedidos, cotações, faturamento e royalties) e serve de atalho para acompanhar os pedidos recentes e o faturamento por fornecedor. É uma tela de visão e navegação: o recebimento dos pedidos acontece depois, ao abrir cada pedido.",
       "passos": [
         "Ao entrar como Loja, esta é a primeira tela. Logo abaixo do título 'Painel geral', o subtítulo termina com a competência atual (por exemplo, 'competência 07/2026'), indicando o mês a que se referem os números.",
-        "Se houver pendências, aparece uma faixa amarela com o texto 'N pedidos de revendas aguardam análise e aprovação da Loja.'. Clique no botão 'Analisar pedidos', à direita da faixa, para ir direto à tela de Pedidos.",
+        "Se houver pendências, aparece uma faixa amarela com o texto 'N pedidos de revendas aguardam análise e recebimento pela Loja.'. Clique no botão 'Analisar pedidos', à direita da faixa, para ir direto à tela de Pedidos.",
         "Leia os quatro cartões no topo: 'Pedidos pendentes', 'Cotações em andamento', 'Faturado no mês' e 'Royalties a receber'. Cada cartão mostra o nome do indicador, o número principal em destaque e uma breve descrição abaixo.",
         "No painel 'Pedidos recentes', acompanhe a lista com as colunas Pedido, Revenda, Total e Status. Clique sobre qualquer linha para abrir o detalhe daquele pedido.",
         "Na coluna 'Pedido', cada pedido pode exibir uma miniatura da foto do produto. Clique na miniatura (aparece a dica 'Clique para ampliar') para abrir a imagem em tamanho maior, sem sair do painel.",
-        "Clique em 'Ver todos →', no topo do painel 'Pedidos recentes', para ir à tela completa de Pedidos e usar filtros e aprovações.",
+        "Clique em 'Ver todos →', no topo do painel 'Pedidos recentes', para ir à tela completa de Pedidos e usar filtros e registrar recebimentos.",
         "No painel lateral 'Faturamento por fornecedor' (legenda 'Acumulado no sistema · base do royalty'), veja o total de cada fornecedor ao lado da barra e, logo abaixo, o percentual e o valor do royalty no formato 'Royalty X% · R$...'."
       ],
       "dicas": [
-        "A aprovação ou rejeição de pedidos não é feita neste painel: ela acontece ao abrir o pedido, seja pela linha em 'Pedidos recentes', pelo botão 'Analisar pedidos' ou por 'Ver todos →'.",
-        "A faixa amarela só aparece quando há pedidos aguardando aprovação; se ela não estiver visível, não há pendências no momento.",
+        "O recebimento ou a rejeição de pedidos não é feito neste painel: ele acontece ao abrir o pedido, seja pela linha em 'Pedidos recentes', pelo botão 'Analisar pedidos' ou por 'Ver todos →'.",
+        "A faixa amarela só aparece quando há pedidos aguardando recebimento; se ela não estiver visível, não há pendências no momento.",
         "O bloco 'Faturamento por fornecedor' mostra a base usada para calcular o royalty — use-o para conferir rapidamente qual fornecedor mais fatura."
       ]
     },
     "ped": {
       "rotina": "Pedidos",
-      "titulo": "Aprovar e acompanhar pedidos das revendas",
-      "resumo": "Tela da Loja para revisar os pedidos enviados pelas revendas, aprovar ou rejeitar (o pedido inteiro ou item por item) e acompanhar como cada um é atendido — com estoque da Loja, envio direto ao fornecedor ou cotação.",
+      "titulo": "Receber e acompanhar pedidos das revendas",
+      "resumo": "Tela da Loja para revisar os pedidos enviados pelas revendas, receber ou rejeitar (o pedido inteiro ou item por item) e acompanhar como cada um é atendido — com estoque da Loja, envio direto ao fornecedor ou cotação.",
       "passos": [
-        "Comece pelos quatro cartões no topo — 'Pendentes de aprovação', 'Aguardando decisão', 'Em atendimento' e 'Pedidos no mês' — para ter uma visão geral do que precisa da sua atenção.",
+        "Comece pelos quatro cartões no topo — 'Pendentes de recebimento', 'Aguardando decisão', 'Em atendimento' e 'Pedidos no mês' — para ter uma visão geral do que precisa da sua atenção.",
         "Para achar um pedido específico, digite o número do pedido ou o nome da revenda no campo 'Buscar por número do pedido ou revenda…'.",
-        "Para filtrar a lista, use o seletor 'Todas as revendas' para escolher uma revenda e o seletor 'Todos os status' para mostrar só um tipo — por exemplo, 'Pendente' para ver apenas o que aguarda aprovação.",
+        "Para filtrar a lista, use o seletor 'Todas as revendas' para escolher uma revenda e o seletor 'Todos os status' para mostrar só um tipo — por exemplo, 'Pendente' para ver apenas o que aguarda recebimento.",
         "Na tabela, confira as colunas Pedido, Revenda, Itens, Fornecedor destino, Total e Status; clique em uma miniatura de foto para ampliá-la ('Clique para ampliar').",
-        "Para aprovar um pedido de uma só vez, clique no botão dourado 'Aprovar', que aparece na coluna Status apenas nas linhas pendentes — ele aprova todos os itens que ainda estão pendentes.",
+        "Para receber um pedido de uma só vez, clique no botão dourado 'Receber', que aparece na coluna Status apenas nas linhas pendentes — ele confirma o recebimento de todos os itens que ainda estão pendentes.",
         "Para recusar, clique em 'Rejeitar' na mesma linha: abre uma janela em que você precisa escrever a justificativa (obrigatória) e confirmar em 'Rejeitar pedido'; essa justificativa fica visível para a revenda.",
         "Para decidir item por item ou definir como o pedido será atendido (estoque da Loja, envio direto a um fornecedor ou cotação), clique sobre a linha para abrir a tela 'Detalhe do pedido'."
       ],
       "dicas": [
-        "Os botões 'Aprovar' e 'Rejeitar' na lista só aparecem nas linhas com status 'Pendente'; pedidos já decididos não mostram essas ações.",
+        "Os botões 'Receber' e 'Rejeitar' na lista só aparecem nas linhas com status 'Pendente'; pedidos já decididos não mostram essas ações.",
         "A rejeição sempre exige uma justificativa — sem ela o sistema não conclui a operação, e o texto informado fica visível para a revenda.",
-        "O botão 'Aprovar' da lista libera o pedido inteiro de uma vez; quando quiser tratar os itens de formas diferentes, abra o 'Detalhe do pedido' clicando na linha.",
+        "O botão 'Receber' da lista libera o pedido inteiro de uma vez; quando quiser tratar os itens de formas diferentes, abra o 'Detalhe do pedido' clicando na linha.",
         "No detalhe, as opções de atendimento — 'Atender com estoque da Loja…', 'Envio direto a um fornecedor…' e 'Abrir cotação (2+ fornecedores)…' — só ficam disponíveis depois que os itens são aprovados e podem ser combinadas no mesmo pedido."
       ]
     },
     "peddet": {
       "rotina": "Detalhe do pedido",
       "titulo": "Analisar e decidir um pedido (Loja)",
-      "resumo": "Tela da Loja para analisar um pedido da revenda: aprovar ou rejeitar (o pedido todo ou item a item), definir como atender (estoque, envio direto ou cotação) e acompanhar a trilha e a cotação vinculada.",
+      "resumo": "Tela da Loja para analisar um pedido da revenda: receber ou rejeitar (o pedido todo ou item a item), definir como atender (estoque, envio direto ou cotação) e acompanhar a trilha e a cotação vinculada.",
       "passos": [
         "Confira o cabeçalho no topo: número do pedido, a etiqueta de status e a barra com as quatro etapas (Criado, Análise da Loja, Atendimento e Faturamento), para saber em que ponto o pedido está. Use o link \"← Voltar para pedidos\" para retornar à lista.",
         "Revise a tabela \"Itens do pedido\" (colunas Produto, Unid., Qtd, Preço, Subtotal e Situação do item). Clique na miniatura de um produto para ampliá-la. O total aparece no rodapé, em \"Valor total calculado automaticamente\".",
-        "Enquanto o pedido aguarda decisão, aparece à direita o painel \"Análise da Loja\". Para decidir o pedido inteiro de uma vez, clique em \"Aprovar pedido\" (aprova todos os itens pendentes) ou em \"Rejeitar…\".",
-        "Para decidir item a item, use os botões \"Aprovar\" e \"Rejeitar\" que aparecem na coluna \"Situação do item\", em cada linha que ainda estiver pendente.",
+        "Enquanto o pedido aguarda decisão, aparece à direita o painel \"Análise da Loja\". Para decidir o pedido inteiro de uma vez, clique em \"Recebimento de Pedidos\" (recebe todos os itens pendentes) ou em \"Rejeitar…\".",
+        "Para decidir item a item, use os botões \"Receber\" e \"Rejeitar\" que aparecem na coluna \"Situação do item\", em cada linha que ainda estiver pendente.",
         "Ao clicar em qualquer \"Rejeitar\" (do pedido ou de um item), abre-se uma janela para escrever a justificativa. Ela é obrigatória e fica visível para a revenda; sem o motivo, a rejeição não é concluída.",
-        "Depois de aprovar, surge o painel \"Decisão de atendimento — por item\". Escolha \"Atender com estoque da Loja…\", \"Envio direto a um fornecedor…\" ou \"Abrir cotação (2+ fornecedores)…\"; na janela que abrir, marque os itens e confirme.",
+        "Depois de receber, surge o painel \"Decisão de atendimento — por item\". Escolha \"Atender com estoque da Loja…\", \"Envio direto a um fornecedor…\" ou \"Abrir cotação (2+ fornecedores)…\"; na janela que abrir, marque os itens e confirme.",
         "No bloco \"Informações\" (à direita), confira a Revenda e o Fornecedor de destino. Se houver \"Cotação vinculada\", clique no código dela (ex.: COT-008 →) para abrir a cotação.",
         "Acompanhe cada ação no bloco \"Trilha do pedido — data, hora e usuário\", que registra o que foi feito, por quem e quando."
       ],
@@ -3067,7 +3067,7 @@ class Component extends DCLogic {
         "Defina o resultado clicando em \"Vencedora (todos os itens)\" no fornecedor escolhido ou, para dividir o pedido, use \"Escolher para este item\" na seção \"Adjudicação por item\"; se precisar encerrar sem escolher, use \"Cancelar cotação…\"."
       ],
       "dicas": [
-        "Só aparecem no seletor \"Pedido de origem\" pedidos que já têm itens aprovados — aprove os itens antes de abrir a cotação.",
+        "Só aparecem no seletor \"Pedido de origem\" pedidos que já têm itens aprovados — receba os itens antes de abrir a cotação.",
         "Se você escolher uma proposta que não seja a de MENOR PREÇO, o sistema abre a janela \"Justificar escolha fora do menor preço\" e exige um motivo, que fica registrado no histórico da cotação.",
         "Cada fornecedor enxerga apenas a própria proposta; o Mapa comparativo completo é visível somente para a Loja.",
         "No detalhe da cotação, o \"Histórico completo da cotação (auditoria)\" registra cada ação com data e usuário."
@@ -3379,7 +3379,7 @@ class Component extends DCLogic {
     "cat": {
       "rotina": "Catálogo de produtos",
       "titulo": "Montar e enviar pedido pelo catálogo",
-      "resumo": "Tela da Revenda para navegar pelos produtos homologados, escolher as quantidades e enviar o pedido para aprovação da Loja. O total é calculado automaticamente.",
+      "resumo": "Tela da Revenda para navegar pelos produtos homologados, escolher as quantidades e enviar o pedido para análise da Loja. O total é calculado automaticamente.",
       "passos": [
         "No campo \"Buscar produto…\" (topo da tela), digite parte do nome ou do código do produto para filtrar a lista; deixe em branco para ver todos os produtos disponíveis.",
         "Localize o produto entre os cards, conferindo o código · unidade, a descrição, o fornecedor e o preço mostrados em cada card.",
@@ -3388,10 +3388,10 @@ class Component extends DCLogic {
         "Clique no botão \"−\" para diminuir a quantidade; quando ela chega a zero, o item sai do pedido.",
         "Repita nos demais produtos que quiser incluir no mesmo pedido.",
         "Confira a barra escura fixa na parte de baixo da tela, que mostra a quantidade de itens no pedido e o total calculado automaticamente.",
-        "Clique em \"Enviar pedido para aprovação\" para finalizar; o pedido é criado com status pendente, o catálogo é esvaziado e você vai para a tela \"Meus pedidos\"."
+        "Clique em \"Enviar pedido para análise\" para finalizar; o pedido é criado com status pendente, o catálogo é esvaziado e você vai para a tela \"Meus pedidos\"."
       ],
       "dicas": [
-        "A barra escura com o botão \"Enviar pedido para aprovação\" só aparece depois que você adiciona pelo menos um item; com o pedido vazio ela fica oculta.",
+        "A barra escura com o botão \"Enviar pedido para análise\" só aparece depois que você adiciona pelo menos um item; com o pedido vazio ela fica oculta.",
         "Você não digita valores: o preço vem do cadastro e o total é somado automaticamente conforme as quantidades escolhidas.",
         "A tela lista apenas os produtos homologados e disponíveis para a sua revenda; se algum item não aparecer, confirme a homologação com a Loja."
       ]
@@ -3410,7 +3410,7 @@ class Component extends DCLogic {
         "Quando um pedido é rejeitado, aparece um texto em vermelho logo abaixo da etiqueta de status, com a justificativa informada pela Loja."
       ],
       "dicas": [
-        "Esta tela serve apenas para acompanhar; para criar um novo pedido, abra a tela \"Catálogo de produtos\" (menu \"Compras\"), adicione os produtos e clique em \"Enviar pedido para aprovação\".",
+        "Esta tela serve apenas para acompanhar; para criar um novo pedido, abra a tela \"Catálogo de produtos\" (menu \"Compras\"), adicione os produtos e clique em \"Enviar pedido para análise\".",
         "Todo pedido novo começa como \"pendente\" e só muda depois que a Loja o analisa; a coluna \"Fornecedor (faturamento)\" só é preenchida quando a Loja encaminha o pedido a um fornecedor ou encerra a cotação.",
         "A coluna \"Fornecedor (faturamento)\" pode mostrar \"Estoque da Loja\" quando o pedido é atendido pelo próprio estoque da Loja."
       ]
@@ -3461,7 +3461,7 @@ class Component extends DCLogic {
         "Clique em \"+ Novo usuário\" para criar uma conta: informe nome, e-mail (login), o perfil de acesso e a senha inicial; para Fornecedor e Revenda, selecione também o vínculo.",
         "Use o campo \"Buscar por nome ou e-mail…\" e o seletor \"Todos os perfis\" para localizar contas na lista.",
         "Na coluna \"Permissões\", o selo \"⚙ padrão do perfil\" indica que o usuário segue o padrão; \"personalizada(s)\" mostra quantas permissões foram ajustadas individualmente.",
-        "Clique no selo \"⚙\" para abrir o editor de permissões: cada chave do sistema (aprovar pedidos, decidir cotações, faturar, cobrar royalties, exportar…) tem um interruptor permitir/negar.",
+        "Clique no selo \"⚙\" para abrir o editor de permissões: cada chave do sistema (receber pedidos, decidir cotações, faturar, cobrar royalties, exportar…) tem um interruptor permitir/negar.",
         "No editor, a linha mostra a origem de cada permissão — \"padrão do perfil\" ou \"personalizada\" (com o padrão entre parênteses); use \"↺ Restaurar padrão do perfil\" para limpar os ajustes.",
         "Use \"Editar\" para alterar nome, e-mail, perfil, vínculo ou redefinir a senha (deixe em branco para manter a atual).",
         "Use \"Inativar\"/\"Reativar\" para bloquear ou devolver o acesso — um usuário inativo não consegue entrar na plataforma."
@@ -3490,7 +3490,7 @@ class Component extends DCLogic {
       "dicas": [
         "O saldo é sempre calculado sobre o inventário mais recente; lance um novo inventário para atualizar a base.",
         "Atendimentos \"com estoque da Loja\" feitos após o lançamento consomem o saldo automaticamente.",
-        "Os alertas são informativos — a decisão de como atender (estoque, direto ou cotação) continua com o aprovador.",
+        "Os alertas são informativos — a decisão de como atender (estoque, direto ou cotação) continua com a Loja.",
         "A planilha carregada nunca grava direto: o lançamento só acontece depois da sua revisão e confirmação."
       ]
     },
@@ -3702,14 +3702,14 @@ class Component extends DCLogic {
     this.audit('Regra de visibilidade alterada',r.nome+' × '+f.nome); }; return this._tv[k]; }
 
   aprovar(id){ this._ap=this._ap||{}; if(!this._ap[id]) this._ap[id]=(e)=>{ if(e&&e.stopPropagation) e.stopPropagation(); if(!this.pode('pedidos.aprovar')) return;
-    this.updPed(id,p=>{p.itens=p.itens.map(i=>(i.st||'pendente')==='pendente'?{...i,st:'aprovado'}:i);p.trilha.push(this.tr('Pedido aprovado pela Loja — todos os itens pendentes'));return p;});
-    this.audit('Aprovação de pedido',id);
+    this.updPed(id,p=>{p.itens=p.itens.map(i=>(i.st||'pendente')==='pendente'?{...i,st:'aprovado'}:i);p.trilha.push(this.tr('Pedido recebido e confirmado pela Loja — todos os itens pendentes'));return p;});
+    this.audit('Recebimento de pedido',id);
     const ped=this.state.pedidos.find(p=>p.id===id);
     if(ped){ const _sub=ped.itens.filter(i=>i.st!=='rejeitado'); this.notificar('pedido_aprovado',this._revEmail(ped.revendaId),{pedidoId:id,revendaNome:this._revNome(ped.revendaId),itensLista:_sub.map(i=>this._itemView(i)),ocultarValor:this._revOcultar(_sub)}); } }; return this._ap[id]; }
   aprovarItem(pid,ix){ this._api=this._api||{}; const k=pid+'|'+ix; if(!this._api[k]) this._api[k]=()=>{ if(!this.pode('pedidos.aprovar')) return;
     const ped=this.state.pedidos.find(p=>p.id===pid); const prod=this.state.produtos.find(x=>x.id===ped.itens[ix].produtoId);
-    this.updPed(pid,p=>{p.itens=p.itens.map((i,j)=>j===ix?{...i,st:'aprovado'}:i);p.trilha.push(this.tr('Item aprovado: '+(prod?prod.descricao:'')));return p;});
-    this.audit('Aprovação de item de pedido',pid+' · '+(prod?prod.codigo:''));
+    this.updPed(pid,p=>{p.itens=p.itens.map((i,j)=>j===ix?{...i,st:'aprovado'}:i);p.trilha.push(this.tr('Item recebido e confirmado: '+(prod?prod.descricao:'')));return p;});
+    this.audit('Recebimento de item de pedido',pid+' · '+(prod?prod.codigo:''));
     this.notificar('item_aprovado',this._revEmail(ped.revendaId),{pedidoId:pid,produto:(prod?prod.descricao:'')}); }; return this._api[k]; }
   confirmRejeitar=()=>{ if(!this.pode('pedidos.rejeitar')) return this.negado('Você não tem permissão para rejeitar.','pedidos.rejeitar'); const j=(this.state.form.justif||'').trim(); if(!j) return this.err('A justificativa é obrigatória em caso de rejeição (RF16).');
     const id=this.state.form.pedidoId; const ix=this.state.form.itemIdx;
@@ -4073,7 +4073,7 @@ class Component extends DCLogic {
     const itens=ids.map(k=>{ const p=this.state.produtos.find(x=>x.id===+k); return {produtoId:p.id,qtd:cart[k],preco:p.preco,st:'pendente'}; });
     const total=itens.reduce((a,i)=>a+i.qtd*i.preco,0);
     const n=this.state.seq.ped; const id='PED-00'+n;
-    this.setState(s=>({pedidos:[{id,revendaId:s.revAtivo,fornecedorId:null,cotacaoId:null,itens,total,status:'pendente',justificativa:null,data:this.hoje(),trilha:[this.tr('Pedido criado pela revenda — aguardando aprovação da Loja')]},...s.pedidos],seq:{...s.seq,ped:n+1},cart:{},scr:'rped'}));
+    this.setState(s=>({pedidos:[{id,revendaId:s.revAtivo,fornecedorId:null,cotacaoId:null,itens,total,status:'pendente',justificativa:null,data:this.hoje(),trilha:[this.tr('Pedido criado pela revenda — aguardando análise da Loja')]},...s.pedidos],seq:{...s.seq,ped:n+1},cart:{},scr:'rped'}));
     this.audit('Novo pedido criado',id+' · '+this.fmt(total));
     const _rev=this.state.revAtivo; const _il=itens.map(i=>this._itemView(i));
     const _sres=this._saldoItens(itens);
@@ -4094,7 +4094,7 @@ class Component extends DCLogic {
   PERMS=[
     {mod:'Pedidos',itens:[
       ['pedidos.ver','Ver pedidos e detalhes',['admin','loja']],
-      ['pedidos.aprovar','Aprovar pedidos e itens',['admin','loja']],
+      ['pedidos.aprovar','Receber pedidos e itens',['admin','loja']],
       ['pedidos.rejeitar','Rejeitar pedidos e itens',['admin','loja']],
       ['pedidos.atender','Definir atendimento (estoque, envio direto, cotação)',['admin','loja']],
       ['pedidos.criar','Criar pedidos no catálogo (revenda)',['admin','revenda']]]},
@@ -4326,7 +4326,7 @@ class Component extends DCLogic {
     const royAberto=fechRows.filter(r=>!r.pago).reduce((a,r)=>a+r.totalRoy,0);
     const cotAndamento=S.cotacoes.filter(c=>c.status==='aguardando propostas').length;
     const kpis=[
-      {label:'Pedidos pendentes',val:String(pendentes),sub:'aguardando aprovação da Loja'},
+      {label:'Pedidos pendentes',val:String(pendentes),sub:'aguardando análise da Loja'},
       {label:'Cotações em andamento',val:String(cotAndamento),sub:'aguardando propostas de fornecedores'},
       {label:'Faturado no mês',val:this.fmt(fatMes),sub:'competência '+compA},
       {label:'Royalties a receber',val:this.fmt(royAberto),sub:'fechamentos em aberto ou em atraso'}];
@@ -4357,7 +4357,7 @@ class Component extends DCLogic {
         aprovarFn:this.aprovar(p.id),rejeitarFn:this.open('rejeitar',{pedidoId:p.id})};});
     const valMes=PEDS.filter(p=>p.data.endsWith('/'+this.compAtual().replace('/','/'))||p.data.slice(3)===this.compAtual()).reduce((a,p)=>a+(p.total),0);
     const pedKpis=[
-      {label:'Pendentes de aprovação',val:String(PEDS.filter(p=>p.status==='pendente').length),sub:this.fmt(PEDS.filter(p=>p.status==='pendente').reduce((a,p)=>a+p.total,0))+' aguardando análise'},
+      {label:'Pendentes de recebimento',val:String(PEDS.filter(p=>p.status==='pendente').length),sub:this.fmt(PEDS.filter(p=>p.status==='pendente').reduce((a,p)=>a+p.total,0))+' aguardando análise'},
       {label:'Aguardando decisão',val:String(PEDS.filter(p=>p.status==='aprovado').length),sub:'aprovados — direto ou cotação'},
       {label:'Em atendimento',val:String(PEDS.filter(p=>p.status==='em cotação'||p.status==='encaminhado').length),sub:'em cotação ou no fornecedor'},
       {label:'Pedidos no mês',val:this.fmt(valMes),sub:'competência '+this.compAtual()}];
@@ -4372,7 +4372,7 @@ class Component extends DCLogic {
         const fatPed=S.faturamentos.find(x=>x.pedidoId===p.id);
         let steps;
         if(p.status==='rejeitado'){ steps=[this.mkStep('Criado',p.data,'done'),this.mkStep('Rejeitado','pela Loja, com justificativa','rejected'),this.mkStep('Atendimento','não se aplica','skipped'),this.mkStep('Faturamento','não se aplica','skipped')]; }
-        else { const s2=p.status==='pendente'?this.mkStep('Análise da Loja','aprovação total ou por item','current'):this.mkStep('Aprovado','pela Loja Cidade Imperial','done');
+        else { const s2=p.status==='pendente'?this.mkStep('Análise da Loja','recebimento total ou por item','current'):this.mkStep('Aprovado','pela Loja Cidade Imperial','done');
           let s3; if(p.status==='pendente') s3=this.mkStep('Atendimento','estoque, direto ou cotação','pending');
           else if(p.status==='aprovado') s3=this.mkStep('Atendimento','por item: estoque × direto × cotação','current');
           else if(p.status==='em cotação') s3=this.mkStep('Em cotação',[...new Set(p.itens.filter(i=>i.st==='cotacao').map(i=>i.cotacaoId))].join(', '),'current');
@@ -4612,7 +4612,7 @@ class Component extends DCLogic {
           ...this.chip(r.ativo?'ativo':'inativo'),open:this.openRev(r.id)};});
     const revKpis=[
       {label:'Revendas ativas',val:String(S.revendas.filter(r=>r.ativo).length),sub:'de '+S.revendas.length+' cadastradas'},
-      {label:'Pedidos das revendas',val:String(PEDS.length),sub:PEDS.filter(p=>p.status==='pendente').length+' pendentes de aprovação'},
+      {label:'Pedidos das revendas',val:String(PEDS.length),sub:PEDS.filter(p=>p.status==='pendente').length+' pendentes de recebimento'},
       {label:'Valor em pedidos',val:this.fmt(PEDS.reduce((a,p)=>a+(p.total),0)),sub:'todos os status'},
       {label:'Faturado às revendas',val:this.fmt(S.faturamentos.reduce((a,f)=>a+f.valor,0)),sub:'faturamento direto dos fornecedores'}];
     let rd=null;
@@ -4848,7 +4848,7 @@ class Component extends DCLogic {
     const loginDemo=[
       {label:'Administrador Técnico',email:'admin@cidadeimperial.com.br',senha:'admin123'},
       {label:'Loja (Ana Ribeiro)',email:'ana@cidadeimperial.com.br',senha:'loja123'},
-      {label:'Loja · analista sem aprovação',email:'carlos@cidadeimperial.com.br',senha:'loja123'},
+      {label:'Loja · analista sem permissão de receber',email:'carlos@cidadeimperial.com.br',senha:'loja123'},
       {label:'Fornecedor (Serra Verde)',email:'comercial@serraverde.com.br',senha:'forn123'},
       {label:'Revenda (Bar do Imperador)',email:'compras@bardoimperador.com.br',senha:'rev123'}
     ].map(x=>({...x,pick:this.preencherLogin(x.email,x.senha)}));

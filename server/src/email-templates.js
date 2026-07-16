@@ -78,7 +78,7 @@ const tabelaItens = (itens, titulo = 'Itens', mostrarValor = true) => {
       )
       .join('') +
     '</tbody></table>' +
-    (mostrarValor ? '' : '<div style="font-size:12px;color:#8a8378;margin:-6px 0 12px">Os valores serão informados após a negociação/aprovação da Loja.</div>')
+    (mostrarValor ? '' : '<div style="font-size:12px;color:#8a8378;margin:-6px 0 12px">Os valores serão informados após a negociação/análise da Loja.</div>')
   )
 }
 const itensDe = (v, titulo) => tabelaItens(v.itensLista, titulo, !v.ocultarValor)
@@ -86,28 +86,28 @@ const itensDe = (v, titulo) => tabelaItens(v.itensLista, titulo, !v.ocultarValor
 export const TEMPLATES = {
   // ── Pedidos ───────────────────────────────────────────────────────────
   pedido_novo_loja: (v) => ({
-    subject: `Novo pedido ${v.pedidoId} aguardando aprovação`,
-    html: layout('Novo pedido aguardando aprovação',
-      p(`Um novo pedido foi criado por ${b(v.revendaNome)} e aguarda análise e aprovação da Loja.`) +
+    subject: `Novo pedido ${v.pedidoId} aguardando recebimento`,
+    html: layout('Novo pedido aguardando recebimento',
+      p(`Um novo pedido foi criado por ${b(v.revendaNome)} e aguarda análise e recebimento da Loja.`) +
       linhas([['Pedido', v.pedidoId], ['Revenda', v.revendaNome], ['Total', v.total], ['Data', v.data],
         v.estoqueInfo ? ['Estoque (inventário)', v.estoqueInfo] : null]) + itensDe(v), 'Pedido'),
   }),
   pedido_recebido_revenda: (v) => ({
     subject: `Recebemos seu pedido ${v.pedidoId}`,
     html: layout('Recebemos o seu pedido',
-      p('Olá! Recebemos o seu pedido e ele já está em análise pela Loja Cidade Imperial. Avisaremos assim que for aprovado.') +
+      p('Olá! Recebemos o seu pedido e ele já está em análise pela Loja Cidade Imperial. Avisaremos assim que o recebimento for confirmado.') +
       linhas([['Pedido', v.pedidoId], ['Data', v.data]]) + itensDe(v), 'Pedido'),
   }),
   pedido_aprovado: (v) => ({
-    subject: `Seu pedido ${v.pedidoId} foi aprovado`,
-    html: layout('Pedido aprovado',
-      p(`Boa notícia${v.revendaNome ? ', ' + esc(v.revendaNome) : ''}! Seu pedido foi <b style="color:#2f6b39">aprovado</b> pela Loja e seguirá para atendimento.`) +
-      linhas([['Pedido', v.pedidoId]]) + itensDe(v, 'Itens aprovados'), 'Pedido'),
+    subject: `Seu pedido ${v.pedidoId} foi recebido e confirmado`,
+    html: layout('Pedido recebido e confirmado',
+      p(`Boa notícia${v.revendaNome ? ', ' + esc(v.revendaNome) : ''}! Seu pedido foi <b style="color:#2f6b39">recebido e confirmado</b> pela Loja e seguirá para atendimento.`) +
+      linhas([['Pedido', v.pedidoId]]) + itensDe(v, 'Itens recebidos'), 'Pedido'),
   }),
   item_aprovado: (v) => ({
-    subject: `Item aprovado no pedido ${v.pedidoId}`,
-    html: layout('Item aprovado',
-      p(`Um item do seu pedido ${b(v.pedidoId)} foi aprovado pela Loja: ${b(v.produto)}.`), 'Pedido'),
+    subject: `Item recebido no pedido ${v.pedidoId}`,
+    html: layout('Item recebido',
+      p(`Um item do seu pedido ${b(v.pedidoId)} foi recebido e confirmado pela Loja: ${b(v.produto)}.`), 'Pedido'),
   }),
   pedido_rejeitado: (v) => ({
     subject: `Seu pedido ${v.pedidoId} foi rejeitado`,
@@ -130,7 +130,7 @@ export const TEMPLATES = {
   pedido_encaminhado_revenda: (v) => ({
     subject: `Seu pedido ${v.pedidoId} foi encaminhado ao fornecedor`,
     html: layout('Pedido encaminhado ao fornecedor',
-      p(`Seu pedido ${b(v.pedidoId)} foi aprovado e encaminhado para o fornecedor ${b(v.fornecedorNome)}, responsável pelo faturamento e pela entrega.`) + itensDe(v, 'Itens encaminhados'), 'Pedido'),
+      p(`Seu pedido ${b(v.pedidoId)} foi recebido e encaminhado para o fornecedor ${b(v.fornecedorNome)}, responsável pelo faturamento e pela entrega.`) + itensDe(v, 'Itens encaminhados'), 'Pedido'),
   }),
   pedido_estoque_revenda: (v) => ({
     subject: `Seu pedido ${v.pedidoId} será atendido pela Loja`,
