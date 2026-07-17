@@ -81,17 +81,20 @@ const EXEC = {
   RF64: { commit: '24c3fd2',
     entrega: 'Contratos com royalty parcelado (1 a 12 parcelas mensais): a cobrança divide o valor apurado em parcelas exatas em centavos, com vencimentos individuais (1ª no vencimento do gatilho, demais no mesmo dia dos meses seguintes) e prévia recalculada ao vivo. Cada parcela tem status próprio (a pagar/em atraso/paga), registro de pagamento e lembrete de atraso individuais; o fechamento só fica pago com todas quitadas. Painel "Controle por parcela" consolida previsto × recebido × pendente × em atraso.',
     evid: 'docs/evidencias/RoyaltiesParcelados-Descricao' },
-  RF66: { commit: '62eb444',
+  RF74: { commit: '62eb444',
     entrega: 'Painel "Economia da cotação — escolha × negociação" nas cotações decididas: economia da ESCOLHA (referência dos itens − menor proposta da 1ª rodada, com frete) separada da economia ADICIONAL de negociação (rodadas RF58 e adjudicação por item), com fluxo referência → menor 1ª rodada → fechamento e % sobre a referência. Consolidado por período (mês da decisão) na tela de Cotações, com tabela por cotação.',
     evid: 'docs/evidencias/EconomiaCotacao-Descricao' },
   RF73: { commit: '9e48afe',
     entrega: 'Painéis de indicadores na aba "Venda por produtos": evolução das vendas (volume em unidades e valor por mês do pedido), produtos mais vendidos (top por quantidade, com preço médio por produto) e revendas que mais compraram (por valor, com unidades e pedidos) — todos calculados sobre o mesmo recorte e respondendo aos filtros de período, produto, revenda, fornecedor e categoria.',
     evid: 'docs/evidencias/IndicadoresVendas-Descricao' },
+  RF66: { commit: 'cf4b14b',
+    entrega: 'Painel "Previsão de recebíveis — Previsto × Realizado" na tela de Royalties, por competência e fornecedor e respeitando os filtros: previsto (royalty apurado, incluindo parcelas futuras — RF64), realizado (pagamentos registrados), em aberto, % de realização com barra e a data do PRÓXIMO recebimento (parcela futura, vencimento da cobrança ou previsão pelo gatilho do contrato — RF63, mesmo antes da emissão). Totais do recorte e exportação Excel auditada.',
+    evid: 'suíte E2E de aceite (16 cenários combinados com o RF75)' },
+  RF75: { commit: 'cf4b14b',
+    entrega: 'Painel "Desempenho ampliado — frete, rodadas, parcelas e aceite" na Visão geral dos Relatórios, consolidando os novos dados: economia do processo de compra (RF74), % de cotações com rodadas (RF58), itens aguardando aceite da revenda (RF68) e royalties em atraso por parcela (RF64); tabela por fornecedor com propostas, contrapropostas de rodadas, vitórias, frete médio ofertado (RF59), situação de aceite e royalty previsto/realizado (RF66).',
+    evid: 'suíte E2E de aceite (16 cenários combinados com o RF66)' },
 }
-const PEND_OBS = {
-  RF74: 'O pré-requisito RF58 (rodadas de cotação) já foi executado — o treinamento/material pode ser agendado.',
-  RF75: 'Todos os blocos funcionais (A–G) estão executados; pendente apenas a atualização consolidada do Manual do Usuário e dos tutoriais com as novas rotinas.',
-}
+const PEND_OBS = {}
 const EXEC_DATA = '17/07/2026'
 
 // [id, titulo, origem, prioridade, descricao, criterios[], dependencia?]
