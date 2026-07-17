@@ -213,6 +213,9 @@ input::placeholder,textarea::placeholder{color:#b0a795}
       <select value="{{filtroStatus}}" onChange="{{setFiltroStatus}}" style="padding:10px 12px;border:1px solid #e5ddcd;border-radius:9px;font:inherit;font-size:12.5px;font-weight:600;color:#272525;background:#fff;outline:none;cursor:pointer">
         <sc-for list="{{stOpts}}" as="o" hint-placeholder-count="3"><option value="{{o.v}}">{{o.label}}</option></sc-for>
       </select>
+      <select value="{{filtroEtapa}}" onChange="{{setFiltroEtapa}}" title="Filtra pela etapa atual do workflow do pedido (RF49)" style="padding:10px 12px;border:1px solid #e5ddcd;border-radius:9px;font:inherit;font-size:12.5px;font-weight:600;color:#272525;background:#fff;outline:none;cursor:pointer;max-width:250px">
+        <sc-for list="{{etapaOpts}}" as="o" hint-placeholder-count="3"><option value="{{o.v}}">{{o.label}}</option></sc-for>
+      </select>
     </div>
     <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;overflow:hidden">
       <table style="width:100%;border-collapse:collapse">
@@ -236,6 +239,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
                 <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
                   <div>
                     <span style="font-size:11.5px;font-weight:600;border-radius:7px;padding:3px 9px;background:{{p.stBg}};color:{{p.stFg}};white-space:nowrap">{{p.stLabel}}</span>
+                    <div style="font-size:10px;font-weight:600;color:#8f682a;margin-top:4px;white-space:nowrap">{{p.etapaTxt}}</div>
                     <sc-if value="{{p.aguarda}}" hint-placeholder-val="{{false}}"><div style="font-size:10.5px;color:#b0a795;margin-top:4px">criado {{p.aguarda}}</div></sc-if>
                     <sc-if value="{{p.temSaldoAlerta}}" hint-placeholder-val="{{false}}"><div style="margin-top:4px"><span style="font-size:10px;font-weight:700;border-radius:6px;padding:2px 7px;background:{{p.saldoBg}};color:{{p.saldoFg}};white-space:nowrap">◈ {{p.saldoLabel}}</span></div></sc-if>
                   </div>
@@ -261,6 +265,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px">
       <div style="font-size:21px;font-weight:700">{{pd.id}}</div>
       <span style="font-size:12px;font-weight:600;border-radius:7px;padding:4px 10px;background:{{pd.stBg}};color:{{pd.stFg}}">{{pd.stLabel}}</span>
+      <span title="Etapa atual do workflow do pedido (RF49)" style="font-size:12px;font-weight:700;border-radius:7px;padding:4px 10px;background:#faf5e9;border:1px solid #ecdcbc;color:#8f682a">{{pd.etapaTxt}}</span>
     </div>
     <div style="font-size:13px;color:#8a8378;margin-bottom:16px">Criado em {{pd.data}} · {{pd.revNome}} — {{pd.revCidade}}</div>
     <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:18px 22px;margin-bottom:14px">
@@ -2038,6 +2043,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
             <div style="font-size:16px;font-weight:700">{{p.totalFmt}}</div>
             <div onClick="{{p.anexar}}" style="border:1px solid #d9c193;color:#8f682a;border-radius:9px;padding:9px 13px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:#faf5e9">📎 Anexar documentos…</div>
             <sc-if value="{{p.podeFaturar}}" hint-placeholder-val="{{false}}">
+              <sc-if value="{{p.podeConfirmar}}" hint-placeholder-val="{{false}}"><div onClick="{{p.confirmar}}" title="Confirma o recebimento do pedido — a etapa avança para produção/atendimento (RF49)" style="border:1px solid #d9c193;color:#8f682a;border-radius:9px;padding:9px 13px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;background:#fff" style-hover="background:#faf5e9">Confirmar recebimento</div></sc-if>
               <div onClick="{{p.faturar}}" style="background:#B38335;color:#fff;border-radius:9px;padding:9px 15px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:#9a6f2b">Registrar faturamento…</div>
             </sc-if>
           </div>
@@ -2259,6 +2265,11 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         </sc-for>
       </div>
     </sc-if>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:12px">
+      <select value="{{filtroEtapaRev}}" onChange="{{setFiltroEtapaRev}}" title="Filtra pela etapa atual do workflow do pedido (RF49)" style="padding:9px 12px;border:1px solid #e5ddcd;border-radius:9px;font:inherit;font-size:12.5px;font-weight:600;color:#272525;background:#fff;outline:none;cursor:pointer;max-width:270px">
+        <sc-for list="{{etapaOpts}}" as="o" hint-placeholder-count="3"><option value="{{o.v}}">{{o.label}}</option></sc-for>
+      </select>
+    </div>
     <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;overflow:hidden">
       <table style="width:100%;border-collapse:collapse">
         <thead><tr>
@@ -2272,6 +2283,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
           <sc-for list="{{rPedRows}}" as="p" hint-placeholder-count="3">
             <tr>
               <td style="padding:11px 18px;font-size:13px;font-weight:600;border-bottom:1px solid #f5f1e8">{{p.id}}<div style="font-size:11px;font-weight:400;color:#a89f90">{{p.data}}</div>
+                <div style="font-size:10px;font-weight:600;color:#8f682a;margin-top:3px;white-space:nowrap">{{p.etapaTxt}}</div>
                 <sc-if value="{{p.revTag}}" hint-placeholder-val="{{false}}"><div style="margin-top:3px"><span style="font-size:10px;font-weight:700;color:#5d3f96;background:#f3eefa;border:1px solid #ddd0ee;border-radius:6px;padding:1px 7px;white-space:nowrap">🏪 {{p.revTag}}</span></div></sc-if></td>
               <td style="padding:11px 10px;border-bottom:1px solid #f5f1e8"><div style="display:flex;align-items:center"><sc-for list="{{p.fotos}}" as="ft" hint-placeholder-count="0"><sc-if value="{{ft.src}}" hint-placeholder-val="{{false}}"><img loading="lazy" src="{{ft.src}}" alt="item" onClick="{{ft.ver}}" title="Clique para ampliar" style="width:32px;height:32px;object-fit:cover;border-radius:8px;border:2px solid #fff;margin-right:-8px;box-shadow:0 1px 3px rgba(39,37,37,.18);cursor:zoom-in"></sc-if></sc-for><span style="font-size:12px;color:#8a8378;margin-left:16px;white-space:nowrap">{{p.itensN}}</span></div></td>
               <td style="padding:11px 10px;font-size:13px;border-bottom:1px solid #f5f1e8">{{p.fornNome}}
@@ -3735,6 +3747,24 @@ class Component extends DCLogic {
     return 'faturado'; }
   itemTotal(i){ return i.precoNeg!=null?i.precoNeg:i.qtd*i.preco; }
   pedTotal(p){ return p.itens.filter(i=>i.st!=='rejeitado').reduce((a,i)=>a+this.itemTotal(i),0); }
+  // ——— RF49: workflow de etapas do pedido (Ata 5.11) ———
+  ETAPAS_PED=['Recebimento / aprovação','Cotação / decisão de atendimento','Seleção do vencedor','Aceite comercial da revenda','Encaminhamento ao fornecedor','Confirmação pelo fornecedor','Produção / atendimento','Faturamento','Conclusão'];
+  _etapaLabel(n){ return n>0?this.ETAPAS_PED[n-1]:'Rejeitado'; }
+  _etapaItemIdx(p,i){ const st=i.st||'pendente';
+    if(st==='rejeitado') return 0;
+    if(st==='pendente') return 1;
+    if(st==='aprovado') return 2;
+    if(st==='cotacao'){ const c=this.state.cotacoes.find(x=>x.id===i.cotacaoId);
+      return (c&&this._propsEfetivas(c).length)?3:2; }
+    if(st==='aceite') return 4;
+    if(st==='direto') return ((p.confForn||{})[i.fornecedorId])?7:6;
+    if(st==='estoque') return 9;
+    if(st==='faturado'){ const f=this.state.faturamentos.find(x=>x.pedidoId===p.id&&x.fornecedorId===i.fornecedorId);
+      return (f&&f.docStatus==='recusado')?8:9; }
+    return 1; }
+  _etapaPedIdx(p){ const es=(p.itens||[]).map(i=>this._etapaItemIdx(p,i)).filter(e=>e>0);
+    return es.length?Math.min(...es):0; }
+  _etapaTxt(p){ const n=this._etapaPedIdx(p); return n>0?('Etapa '+n+'/9 · '+this._etapaLabel(n)):'Pedido rejeitado'; }
 
   get role(){ return this.state.role ?? (this.props.perfilInicial ?? 'loja'); }
   get scr(){ return this.state.scr ?? ({loja:'dash',fornecedor:'fped',revenda:'cat'})[this.role]; }
@@ -3963,6 +3993,7 @@ class Component extends DCLogic {
         "Para decidir item por item ou definir como o pedido será atendido (estoque da Loja, envio direto a um fornecedor ou cotação), clique sobre a linha para abrir a tela 'Detalhe do pedido'."
       ],
       "dicas": [
+        "Workflow de etapas (RF49): cada pedido mostra \"Etapa N/9\" com a nomenclatura do estágio real (Recebimento/aprovação → Cotação → Seleção → Aceite da revenda → Encaminhamento → Confirmação pelo fornecedor → Produção → Faturamento → Conclusão); o novo seletor \"Todas as etapas\" filtra a lista pela etapa atual e o detalhe exibe a linha do tempo completa com a etapa destacada — toda transição fica na trilha e na auditoria com data, usuário e de/para.",
         "Os botões 'Receber' e 'Rejeitar' na lista só aparecem nas linhas com status 'Pendente'; pedidos já decididos não mostram essas ações.",
         "A rejeição sempre exige uma justificativa — sem ela o sistema não conclui a operação, e o texto informado fica visível para a revenda.",
         "O botão 'Receber' da lista libera o pedido inteiro de uma vez; quando quiser tratar os itens de formas diferentes, abra o 'Detalhe do pedido' clicando na linha.",
@@ -4269,6 +4300,7 @@ class Component extends DCLogic {
         "Clique em \"Confirmar faturamento\" para concluir, ou em \"Cancelar\" para fechar sem registrar. Se a análise automática estiver habilitada, o documento é verificado na hora: se não corresponder ao pedido, o registro é recusado e o motivo aparece em vermelho na janela."
       ],
       "dicas": [
+        "Ao receber um pedido encaminhado, clique em \"Confirmar recebimento\" no card — a etapa do pedido avança para \"Produção / atendimento\" (RF49) e a confirmação fica registrada na trilha, na auditoria e visível à Loja e à revenda.",
         "O campo \"Valor efetivamente faturado (R$)\" já vem preenchido com a soma dos seus itens pendentes; confira e edite o valor antes de confirmar.",
         "O anexo do documento fiscal é obrigatório: sem PDF ou XML da nota não é possível confirmar o faturamento. Prefira o XML da NF-e — ele é lido com mais precisão pela análise automática.",
         "O royalty é calculado automaticamente sobre o valor faturado, conforme o percentual do seu contrato — você só informa o valor.",
@@ -4394,6 +4426,7 @@ class Component extends DCLogic {
         "Quando um pedido é rejeitado, aparece um texto em vermelho logo abaixo da etiqueta de status, com a justificativa informada pela Loja."
       ],
       "dicas": [
+        "Workflow de etapas (RF49): cada pedido mostra \"Etapa N/9\" com o mesmo estágio que a Loja enxerga; use o seletor \"Todas as etapas\" para filtrar e acompanhe as transições na trilha do pedido.",
         "Quando a Loja fecha uma negociação em cotação, o pedido fica \"Aguardando aceite da revenda\" e o botão dourado \"Aprovação comercial…\" aparece na linha: é onde você vê os valores negociados e o frete e ACEITA ou RECUSA por item (motivo obrigatório na recusa) — itens recusados voltam à negociação em nova rodada.",
         "Usuário de grupo econômico (vinculado a 2+ revendas): o seletor dourado no topo troca a revenda ativa SEM novo login e a opção \"Grupo — visão consolidada\" mostra os pedidos de todas as revendas juntos, com indicadores agregados e a revenda identificada em cada linha.",
         "Esta tela serve apenas para acompanhar; para criar um novo pedido, abra a tela \"Catálogo de produtos\" (menu \"Compras\"), adicione os produtos e clique em \"Enviar pedido para análise\".",
@@ -4563,6 +4596,15 @@ class Component extends DCLogic {
   openProd(id){ this._opr=this._opr||{}; if(!this._opr[id]) this._opr[id]=()=>this.setState({scr:'proddet',selProd:id}); return this._opr[id]; }
   openRev(id){ this._orv=this._orv||{}; if(!this._orv[id]) this._orv[id]=()=>this.setState({scr:'revdet',selRev:id}); return this._orv[id]; }
   setBuscaRev=e=>this.setState({buscaRev:e.target.value});
+  // RF49 — fornecedor confirma o recebimento do pedido encaminhado
+  confirmarRecebForn(pid){ this._crf=this._crf||{}; if(!this._crf[pid]) this._crf[pid]=()=>{ const fid=this.state.fornAtivo;
+    const me=this.state.fornecedores.find(x=>x.id===fid)||{nome:this.userName()};
+    this.updPed(pid,p=>{ p.confForn={...(p.confForn||{}),[fid]:{quando:this.ts(),usuario:me.nome}};
+      p.trilha.push(this.tr('Recebimento do pedido confirmado por '+me.nome+' — itens em produção/atendimento')); return p;});
+    this.audit('Confirmação de recebimento pelo fornecedor',pid+' · '+me.nome);
+    this.toast('Recebimento confirmado — o pedido segue para produção/atendimento.'); }; return this._crf[pid]; }
+  setFiltroEtapa=e=>this.setState({filtroEtapa:e.target.value});
+  setFiltroEtapaRev=e=>this.setState({filtroEtapaRev:e.target.value});
   setBuscaPed=e=>this.setState({buscaPed:e.target.value});
   setFiltroRev=e=>this.setState({filtroRev:e.target.value});
   toggleProdBloq(rid,pid){ this._tpb=this._tpb||{}; const k=rid+'-'+pid; if(!this._tpb[k]) this._tpb[k]=()=>{
@@ -4688,7 +4730,17 @@ class Component extends DCLogic {
     this.audit('Encerramento de contrato',c.numero+' · '+this.hoje()); }; return this._ec[id]; }
   openPed(id){ this._op=this._op||{}; if(!this._op[id]) this._op[id]=()=>this.setState({scr:'peddet',selPed:id}); return this._op[id]; }
   openCot(id){ this._oc=this._oc||{}; if(!this._oc[id]) this._oc[id]=()=>this.setState({scr:'cotdet',selCot:id}); return this._oc[id]; }
-  updPed(id,fn){ this.setState(s=>({pedidos:s.pedidos.map(p=>p.id===id?fn({...p,trilha:[...p.trilha]}):p)})); }
+  updPed(id,fn){ // RF49 — toda mudança que altera a etapa gera registro de/para na trilha e na auditoria
+    const cur=this.state.pedidos.find(p=>p.id===id); let trans=null;
+    if(cur){ const eA=this._etapaPedIdx(cur);
+      const sim=fn({...cur,itens:cur.itens.map(i=>({...i})),trilha:[...cur.trilha]});
+      const eD=this._etapaPedIdx(sim);
+      if(eA!==eD&&eD>0) trans={de:this._etapaLabel(eA),para:this._etapaLabel(eD),n:eD}; }
+    this.setState(s=>({pedidos:s.pedidos.map(p=>{ if(p.id!==id) return p;
+      const novo=fn({...p,trilha:[...p.trilha]});
+      if(trans) novo.trilha.push(this.tr('Etapa do pedido: '+trans.de+' → '+trans.para+' (etapa '+trans.n+' de 9)'));
+      return novo; })}));
+    if(trans) this.audit('Transição de etapa do pedido',id+' · '+trans.de+' → '+trans.para+' (etapa '+trans.n+' de 9)'); }
   updCot(id,fn){ this.setState(s=>({cotacoes:s.cotacoes.map(c=>c.id===id?fn({...c,propostas:[...c.propostas],historico:[...c.historico]}):c)})); }
 
   salvarForn=()=>{ if(!this.pode('cadastros.fornecedores')) return this.negado('Você não tem permissão para gerenciar fornecedores.','cadastros.fornecedores'); const f=this.state.form; if(!f.nome||!f.cnpj) return this.err('Informe ao menos nome e CNPJ.');
@@ -5939,15 +5991,17 @@ class Component extends DCLogic {
     const barRows=fatPorForn.map(x=>({nome:x.nome,valFmt:this.fmt(x.tot),royFmt:this.fmt(x.roy),pct:x.pct,w:Math.round(x.tot/maxFat*100)}));
 
     // pedidos (loja)
-    const stOpts=['todos','pendente','aprovado','em cotação','encaminhado','faturado','atendido','rejeitado'].map(s=>({v:s,label:s==='todos'?'Todos os status':this.chip(s).stLabel}));
+    const stOpts=['todos','pendente','aprovado','em cotação','aguardando aceite','encaminhado','faturado','atendido','rejeitado'].map(s=>({v:s,label:s==='todos'?'Todos os status':this.chip(s).stLabel}));
+    const etapaOpts=[{v:'0',label:'Todas as etapas'},...this.ETAPAS_PED.map((l,ix)=>({v:String(ix+1),label:'Etapa '+(ix+1)+' · '+l}))];
     const dParse2=s=>{const q=(s||'').split('/');return q.length===3?new Date(+q[2],+q[1]-1,+q[0]):null;};
     const idade=s=>{const d=dParse2(s); if(!d)return ''; const n=Math.max(0,Math.round((new Date()-d)/86400000)); return n===0?'hoje':(n===1?'há 1 dia':'há '+n+' dias');};
     const bp=S.buscaPed.toLowerCase();
     const pedRows=PEDS.filter(p=>(S.filtroStatus==='todos'||p.status===S.filtroStatus)
+        &&((S.filtroEtapa||'0')==='0'||this._etapaPedIdx(p)===+S.filtroEtapa)
         &&(S.filtroRev==='0'||p.revendaId===+S.filtroRev)
         &&(!bp||p.id.toLowerCase().includes(bp)||R(p.revendaId).nome.toLowerCase().includes(bp)))
       .map(p=>{ const sres=p.status==='pendente'?this._saldoItens(p.itens):null; const schip=sres?this._saldoChip(sres):null;
-        return {...pedRow(p),pendente:p.status==='pendente'&&(this.pode('pedidos.aprovar')||this.pode('pedidos.rejeitar')),aguarda:p.status==='pendente'?idade(p.data):'',
+        return {...pedRow(p),etapaTxt:this._etapaTxt(p),pendente:p.status==='pendente'&&(this.pode('pedidos.aprovar')||this.pode('pedidos.rejeitar')),aguarda:p.status==='pendente'?idade(p.data):'',
         temSaldoAlerta:!!schip,saldoLabel:schip?schip.label:'',saldoBg:schip?schip.bg:'',saldoFg:schip?schip.fg:'',
         aprovarFn:this.aprovar(p.id),rejeitarFn:this.open('rejeitar',{pedidoId:p.id})};});
     const valMes=PEDS.filter(p=>p.data.endsWith('/'+this.compAtual().replace('/','/'))||p.data.slice(3)===this.compAtual()).reduce((a,p)=>a+(p.total),0);
@@ -5967,21 +6021,30 @@ class Component extends DCLogic {
         const fatPed=S.faturamentos.find(x=>x.pedidoId===p.id);
         let steps;
         if(p.status==='rejeitado'){ steps=[this.mkStep('Criado',p.data,'done'),this.mkStep('Rejeitado','pela Loja, com justificativa','rejected'),this.mkStep('Atendimento','não se aplica','skipped'),this.mkStep('Faturamento','não se aplica','skipped')]; }
-        else { const s2=p.status==='pendente'?this.mkStep('Análise da Loja','recebimento total ou por item','current'):this.mkStep('Aprovado','pela Loja Cidade Imperial','done');
-          let s3; if(p.status==='pendente') s3=this.mkStep('Atendimento','estoque, direto ou cotação','pending');
-          else if(p.status==='aprovado') s3=this.mkStep('Atendimento','por item: estoque × direto × cotação','current');
-          else if(p.status==='em cotação') s3=this.mkStep('Em cotação',[...new Set(p.itens.filter(i=>i.st==='cotacao').map(i=>i.cotacaoId))].join(', '),'current');
-          else if(p.status==='aguardando aceite') s3=this.mkStep('Aceite da revenda','valores negociados — aguardando aprovação comercial (RF68)','current');
-          else s3=this.mkStep('Atendimento',destTxt(p),'done');
-          let s4; if(p.status==='faturado') s4=this.mkStep('Faturado',fatPed?fatPed.id+' · '+fatPed.data:'direto à revenda','done');
-          else if(p.status==='atendido') s4=this.mkStep('Concluído','atendido com estoque da Loja','done');
-          else if(p.status==='encaminhado') s4=this.mkStep('Faturamento','aguardando fornecedor(es)','current');
-          else s4=this.mkStep('Faturamento','direto à revenda','pending');
-          steps=[this.mkStep('Criado',p.data,'done'),s2,s3,s4]; }
+        else { // RF49 — linha completa: recebimento → cotação → seleção → aceite → encaminhamento → confirmação → produção → faturamento → conclusão
+          const eAtual=this._etapaPedIdx(p);
+          const temCot=p.itens.some(i=>i.cotacaoId), temNeg=p.itens.some(i=>i.precoNeg!=null);
+          const soEstoque=p.itens.filter(i=>i.st!=='rejeitado').every(i=>i.st==='estoque');
+          const confN=Object.keys(p.confForn||{}).length;
+          const subsE=[
+            'análise da Loja'+(p.data?' · criado '+p.data:''),
+            temCot?[...new Set(p.itens.filter(i=>i.cotacaoId).map(i=>i.cotacaoId))].join(', '):'estoque × direto × cotação',
+            temCot?'mapa comparativo de propostas':'quando houver cotação',
+            temNeg?'aprovação comercial (RF68)':'quando houver negociação',
+            destTxt(p)||'fornecedor(es) a definir',
+            confN?('confirmado: '+Object.values(p.confForn).map(c2=>c2.usuario).join(', ')):'aguardando o fornecedor',
+            'em produção ou atendimento',
+            fatPed?(fatPed.id+' · '+fatPed.data):'documento fiscal do fornecedor',
+            'itens atendidos e documentos ok'];
+          steps=this.ETAPAS_PED.map((lb,ix)=>{ const nE=ix+1;
+            let stE=nE<eAtual?'done':(nE===eAtual?'current':'pending');
+            if(nE<eAtual){ if((nE===2||nE===3)&&!temCot) stE='skipped'; if(nE===4&&!temNeg) stE='skipped';
+              if(nE>=5&&nE<=8&&soEstoque) stE='skipped'; }
+            return this.mkStep(lb,subsE[ix],stE); }); }
         steps=steps.map((s,i)=>({...s,temLinha:i>0}));
         const cotIds=[...new Set(p.itens.filter(i=>i.cotacaoId&&i.st==='cotacao').map(i=>i.cotacaoId))];
         const dt=destTxt(p);
-        pd={id:p.id,steps,data:p.data,...this.chip(p.status),revNome:R(p.revendaId).nome,revCidade:R(p.revendaId).cidade||'',revContato:((R(p.revendaId).telefone&&R(p.revendaId).telefone!=='—')?('📞 '+R(p.revendaId).telefone+' · '):'')+(R(p.revendaId).email||''),
+        pd={id:p.id,steps,data:p.data,...this.chip(p.status),etapaTxt:this._etapaTxt(p),revNome:R(p.revendaId).nome,revCidade:R(p.revendaId).cidade||'',revContato:((R(p.revendaId).telefone&&R(p.revendaId).telefone!=='—')?('📞 '+R(p.revendaId).telefone+' · '):'')+(R(p.revendaId).email||''),
           fornDest:dt==='—'?'— ainda não definido —':dt,
           temCot:cotIds.length>0,cotId:cotIds.join(', '),verCot:cotIds.length?this.openCot(cotIds[0]):null,
           itens:p.itens.map((i,ix)=>{const pr=P(i.produtoId); const st=i.st||'pendente';
@@ -6517,7 +6580,9 @@ class Component extends DCLogic {
       const pend=meus.filter(i=>i.st==='direto');
       const tot=meus.reduce((a,i)=>a+this.itemTotal(i),0);
       fPedRows.push({id:p.id,data:p.data,revNome:R(p.revendaId).nome,revContatoTxt:this._telTxt(R(p.revendaId).telefone),
-        origem:meus.some(i=>i.cotacaoId)?'Cotação '+meus.find(i=>i.cotacaoId).cotacaoId:'Envio direto',
+        podeConfirmar:pend.length>0&&!((p.confForn||{})[fid]),confirmar:this.confirmarRecebForn(p.id),
+        confInfo:((p.confForn||{})[fid])?('✓ Recebimento confirmado em '+(p.confForn[fid].quando||'')+' — em produção/atendimento'):'',
+        origem:(meus.some(i=>i.cotacaoId)?'Cotação '+meus.find(i=>i.cotacaoId).cotacaoId:'Envio direto')+(((p.confForn||{})[fid])?' · recebimento confirmado':''),
         parcial:meus.length<p.itens.length?('Atendimento parcial: '+meus.length+' de '+p.itens.length+' itens do pedido são seus'):'',
         totalFmt:this.fmt(tot),...this.chip(pend.length?'encaminhado':'faturado'),podeFaturar:pend.length>0&&this.pode('faturamento.faturar'),
         itensTxt:meus.map(i=>P(i.produtoId).descricao+' ×'+i.qtd).join(', '),
@@ -6583,7 +6648,8 @@ class Component extends DCLogic {
     const cartTotal=cartIds.reduce((a,k)=>a+S.cart[k]*(P(+k).preco||0),0);
     const revsCtx=(isRev&&S.revGrupo&&uAtual)?this._minhasRevs(uAtual):[rid];
     const rpedGrupo=isRev&&S.revGrupo&&revsCtx.length>1;
-    const rPedRows=PEDS.filter(p=>revsCtx.includes(p.revendaId)).map(p=>({id:p.id,data:p.data,revTag:rpedGrupo?(R(p.revendaId).nome||''):'',
+    const rPedRows=PEDS.filter(p=>revsCtx.includes(p.revendaId)&&((S.filtroEtapaRev||'0')==='0'||this._etapaPedIdx(p)===+S.filtroEtapaRev)).map(p=>({id:p.id,data:p.data,revTag:rpedGrupo?(R(p.revendaId).nome||''):'',
+      etapaTxt:this._etapaTxt(p),
       fotos:p.itens.map(i=>({src:this.fotosDe(P(i.produtoId))[0],ver:this.verFoto(i.produtoId)})),
       itensN:p.itens.length+(p.itens.length===1?' item':' itens'),totalFmt:this._revTotalFmt(p),
       fornNome:destTxt(p),...this.chip(p.status),
@@ -6858,6 +6924,7 @@ class Component extends DCLogic {
       // pedidos
       pedRows,stOpts,filtroStatus:S.filtroStatus,setFiltroStatus:this.setFiltroStatus,pd,
       pedKpis,buscaPed:S.buscaPed,setBuscaPed:this.setBuscaPed,filtroRev:S.filtroRev,setFiltroRev:this.setFiltroRev,revFilterOpts,
+      etapaOpts,filtroEtapa:S.filtroEtapa||'0',setFiltroEtapa:this.setFiltroEtapa,filtroEtapaRev:S.filtroEtapaRev||'0',setFiltroEtapaRev:this.setFiltroEtapaRev,
       // cotações
       cotRows,cd,pedAprovOpts,temPedAprov,cotKpis,filtroCot:S.filtroCot||'todas',setFiltroCot:this.setFiltroCot,
       ecoCons,ecoMesOpts,filtroEcoCot:S.filtroEcoCot||'todas',setFiltroEcoCot:this.setFiltroEcoCot,
