@@ -89,10 +89,10 @@ const EXEC = {
     evid: 'docs/evidencias/IndicadoresVendas-Descricao' },
   RF66: { commit: 'cf4b14b',
     entrega: 'Painel "Previsão de recebíveis — Previsto × Realizado" na tela de Royalties, por competência e fornecedor e respeitando os filtros: previsto (royalty apurado, incluindo parcelas futuras — RF64), realizado (pagamentos registrados), em aberto, % de realização com barra e a data do PRÓXIMO recebimento (parcela futura, vencimento da cobrança ou previsão pelo gatilho do contrato — RF63, mesmo antes da emissão). Totais do recorte e exportação Excel auditada.',
-    evid: 'suíte E2E de aceite (16 cenários combinados com o RF75)' },
+    evid: 'docs/evidencias/PrevisaoRecebiveis-Descricao' },
   RF75: { commit: 'cf4b14b',
     entrega: 'Painel "Desempenho ampliado — frete, rodadas, parcelas e aceite" na Visão geral dos Relatórios, consolidando os novos dados: economia do processo de compra (RF74), % de cotações com rodadas (RF58), itens aguardando aceite da revenda (RF68) e royalties em atraso por parcela (RF64); tabela por fornecedor com propostas, contrapropostas de rodadas, vitórias, frete médio ofertado (RF59), situação de aceite e royalty previsto/realizado (RF66).',
-    evid: 'suíte E2E de aceite (16 cenários combinados com o RF66)' },
+    evid: 'docs/evidencias/DesempenhoAmpliado-Descricao' },
 }
 const PEND_OBS = {}
 const EXEC_DATA = '17/07/2026'
