@@ -1,12 +1,12 @@
 // Gera o PDF REV02 — Requisitos Funcionais Melhorias da Fase 1 com STATUS DE EXECUÇÃO
-// (base: documento REV01 de 15/07/2026 + implementações de 16/07/2026).
+// (base: documento REV01 de 15/07/2026 + implementações de 16–17/07/2026).
 // Rode a partir de docs/gerador:  node 10-build-requisitos-status.mjs
 import pw from '/opt/node22/lib/node_modules/playwright/index.js'
 const { chromium } = pw
 
 const OUT = '/home/user/P018LJCDI/docs/Plataforma-Cidade-Imperial-Requisitos-Melhorias-Fase1-REV02-Status.pdf'
 
-// Status de execução por requisito (16/07/2026, branch claude/plataforma-cidade-imperial-dmxbmw)
+// Status de execução por requisito (17/07/2026, branch claude/plataforma-cidade-imperial-dmxbmw)
 const EXEC = {
   RF48: { commit: '50f311b',
     entrega: 'Rótulo "Recebimento de Pedidos" aplicado no detalhe do pedido, nas ações por item, nos e-mails, na trilha do pedido, na auditoria e nos guias "Como usar". Suíte E2E de aceite verde.',
@@ -72,13 +72,27 @@ const EXEC = {
   RF56: { commit: '2d1d16b',
     entrega: 'Tela própria "De/Para Produto × Fornecedor" (menu Cadastros da Loja): matriz produto × fornecedores ativos com vínculo alternado por clique; alimenta na hora a visibilidade do fornecedor (RF55) e os convidáveis de cotação/envio direto (mesmo cadastro do RF51); cada criação/remoção auditada nominalmente; bloqueio do último vínculo; alerta âmbar para fornecedor sem contrato vigente; KPIs (vínculos ativos, produtos com fornecedor único), busca e atalho no detalhe do produto.',
     evid: 'docs/evidencias/DeParaProdutoFornecedor-Descricao' },
+  RF49: { commit: 'a7d154e',
+    entrega: 'Linha completa de 9 etapas no detalhe do pedido (recebimento/aprovação → cotação/decisão → seleção do vencedor → aceite comercial da revenda → encaminhamento → confirmação pelo fornecedor → produção/atendimento → faturamento → conclusão), com a etapa atual destacada, etapas não aplicáveis puladas e chip "Etapa N/9". Toda transição registrada automaticamente na trilha e na auditoria com data, usuário e de/para. Nova ação do fornecedor "Confirmar recebimento". Loja e Revenda com o mesmo rótulo de etapa nas listas e novo filtro "Todas as etapas" nas duas visões (+ status "aguardando aceite" no filtro da Loja).',
+    evid: 'docs/evidencias/WorkflowStatusPedido-Descricao' },
+  RF63: { commit: '2d3f6b9',
+    entrega: 'Campo "gatilho de pagamento" no contrato (emissão da NF — padrão, entrada do pedido, recebimento do boleto pelo fornecedor ou outro gatilho com descrição obrigatória). O vencimento sugerido da cobrança passa a ser o dia acordado do fornecedor (RF65) no mês seguinte à data do gatilho mais recente do fechamento, com a base explicada na janela e campo editável; gatilho boleto usa a data do boleto anexado (base provisória na NF até anexar). Alterações com de/para no histórico do contrato e na auditoria.',
+    evid: 'docs/evidencias/GatilhosPagamentoRoyalty-Descricao' },
+  RF64: { commit: '24c3fd2',
+    entrega: 'Contratos com royalty parcelado (1 a 12 parcelas mensais): a cobrança divide o valor apurado em parcelas exatas em centavos, com vencimentos individuais (1ª no vencimento do gatilho, demais no mesmo dia dos meses seguintes) e prévia recalculada ao vivo. Cada parcela tem status próprio (a pagar/em atraso/paga), registro de pagamento e lembrete de atraso individuais; o fechamento só fica pago com todas quitadas. Painel "Controle por parcela" consolida previsto × recebido × pendente × em atraso.',
+    evid: 'docs/evidencias/RoyaltiesParcelados-Descricao' },
+  RF66: { commit: '62eb444',
+    entrega: 'Painel "Economia da cotação — escolha × negociação" nas cotações decididas: economia da ESCOLHA (referência dos itens − menor proposta da 1ª rodada, com frete) separada da economia ADICIONAL de negociação (rodadas RF58 e adjudicação por item), com fluxo referência → menor 1ª rodada → fechamento e % sobre a referência. Consolidado por período (mês da decisão) na tela de Cotações, com tabela por cotação.',
+    evid: 'docs/evidencias/EconomiaCotacao-Descricao' },
+  RF73: { commit: '9e48afe',
+    entrega: 'Painéis de indicadores na aba "Venda por produtos": evolução das vendas (volume em unidades e valor por mês do pedido), produtos mais vendidos (top por quantidade, com preço médio por produto) e revendas que mais compraram (por valor, com unidades e pedidos) — todos calculados sobre o mesmo recorte e respondendo aos filtros de período, produto, revenda, fornecedor e categoria.',
+    evid: 'docs/evidencias/IndicadoresVendas-Descricao' },
 }
 const PEND_OBS = {
-  RF49: 'Parcialmente avançado: o detalhe do pedido já tem linha do tempo de etapas e ganhou o status/etapa "Aguardando aceite da revenda" (RF68). Pendentes: modelo completo de etapas com nomenclatura por estágio e filtros das listas pelos novos status.',
-  RF74: 'O pré-requisito RF58 (rodadas de cotação) já foi executado.',
-  RF75: 'Parte dos novos dados já existe (rodadas, anexos, vendas por produto); aguarda a implementação dos demais blocos C, E e G.',
+  RF74: 'O pré-requisito RF58 (rodadas de cotação) já foi executado — o treinamento/material pode ser agendado.',
+  RF75: 'Todos os blocos funcionais (A–G) estão executados; pendente apenas a atualização consolidada do Manual do Usuário e dos tutoriais com as novas rotinas.',
 }
-const EXEC_DATA = '16/07/2026'
+const EXEC_DATA = '17/07/2026'
 
 // [id, titulo, origem, prioridade, descricao, criterios[], dependencia?]
 const BLOCOS = [
@@ -264,7 +278,7 @@ function reqHtml([id, titulo, origem, prio, desc, criterios, nota]) {
     ? `<span class="st st-ok">✓ EXECUTADO</span>`
     : `<span class="st st-pend">⏳ PENDENTE</span>`
   const rodape = ex
-    ? `<div class="exec-box"><b>✓ Executado em ${EXEC_DATA} · commit ${esc(ex.commit)}</b><br>${esc(ex.entrega)}<br><span class="exec-evid">Evidências: ${esc(ex.evid)} · verificação: suíte E2E de aceite + regressões em banco novo.</span>${ex.obs ? `<br><span class="exec-obs">Observação: ${esc(ex.obs)}</span>` : ''}</div>`
+    ? `<div class="exec-box"><b>✓ Executado em 16–17/07/2026 · commit ${esc(ex.commit)}</b><br>${esc(ex.entrega)}<br><span class="exec-evid">Evidências: ${esc(ex.evid)} · verificação: suíte E2E de aceite + regressões em banco novo.</span>${ex.obs ? `<br><span class="exec-obs">Observação: ${esc(ex.obs)}</span>` : ''}</div>`
     : `<div class="pend-box"><b>⏳ Ainda não executado</b> — aguardando aprovação/priorização.${PEND_OBS[id] ? ' ' + esc(PEND_OBS[id]) : ''}</div>
     <table class="aprova"><tr>
       <td style="width:52%"><b>Decisão:</b> ☐ Aprovado &nbsp; ☐ Aprovado com ajustes &nbsp; ☐ Reprovado</td>
@@ -341,17 +355,17 @@ const html = `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8"><sty
   <div style="position:absolute;left:16mm;right:16mm;top:70mm">
     <div style="font-size:13px;font-weight:700;letter-spacing:.18em;color:#e3bf7e;margin-bottom:12px">ATUALIZAÇÃO DE STATUS · REV02</div>
     <div style="font-size:38px;font-weight:800;color:#fff;line-height:1.12;letter-spacing:-.5px">Requisitos Funcionais<br>Melhorias da Validação da Fase 1<br><span style="color:#e3bf7e">Status de Execução</span></div>
-    <div style="font-size:14px;color:#c9c1b4;margin-top:16px;line-height:1.6;max-width:158mm">Atualização do documento de <b style="color:#e8e2d6">15/07/2026 (REV01)</b> com a marcação do que já foi executado até <b style="color:#e8e2d6">16/07/2026</b>: dos ${total} requisitos (RF48–RF75), <b style="color:#8fd19a">${nExec} estão executados, testados e publicados</b> no branch de desenvolvimento e <b style="color:#e3bf7e">${total - nExec} permanecem pendentes</b> de aprovação/priorização. Cada requisito traz o status, e os executados incluem commit, resumo da entrega e evidências.</div>
+    <div style="font-size:14px;color:#c9c1b4;margin-top:16px;line-height:1.6;max-width:158mm">Atualização do documento de <b style="color:#e8e2d6">15/07/2026 (REV01)</b> com a marcação do que já foi executado até <b style="color:#e8e2d6">${EXEC_DATA}</b>: dos ${total} requisitos (RF48–RF75), <b style="color:#8fd19a">${nExec} estão executados, testados e publicados</b> no branch de desenvolvimento e <b style="color:#e3bf7e">${total - nExec} permanecem pendentes</b> de aprovação/priorização. Cada requisito traz o status, e os executados incluem commit, resumo da entrega e evidências.</div>
   </div>
   <div style="position:absolute;left:16mm;bottom:42mm;right:16mm;display:flex;gap:8px;flex-wrap:wrap">
     ${BLOCOS.map((b) => { const e = b.reqs.filter((r) => EXEC[r[0]]).length; return `<div style="background:#ffffff10;border:1px solid #ffffff22;border-radius:8px;padding:6px 11px;font-size:9.5px;color:#e8e2d6">${esc(b.b.replace(/Bloco [A-Z] — /, ''))} · <b style="color:${e ? '#8fd19a' : '#e3bf7e'}">${e}/${b.reqs.length}</b></div>` }).join('')}
   </div>
-  <div style="position:absolute;left:16mm;bottom:18mm;font-size:10px;color:#8a8378">Projeto P2606001 · 16/07/2026 · REV02 — Base: documento REV01 (15/07/2026) + implementações no branch claude/plataforma-cidade-imperial-dmxbmw</div>
+  <div style="position:absolute;left:16mm;bottom:18mm;font-size:10px;color:#8a8378">Projeto P2606001 · ${EXEC_DATA} · REV02 — Base: documento REV01 (15/07/2026) + implementações no branch claude/plataforma-cidade-imperial-dmxbmw</div>
 </div>
 
 <div class="miolo">
   <div class="sec-title">1 · CONTEXTO DESTA ATUALIZAÇÃO</div>
-  <p class="intro">O documento REV01 (15/07/2026) consolidou as melhorias da validação da Fase 1 em <b>${total} requisitos funcionais (RF48–RF75)</b>. Esta REV02 atualiza aquele documento com o <b>status de execução em 16/07/2026</b>: os requisitos aprovados e solicitados na sequência da reunião já foram implementados, testados e publicados no branch de desenvolvimento <span class="mono">claude/plataforma-cidade-imperial-dmxbmw</span>.</p>
+  <p class="intro">O documento REV01 (15/07/2026) consolidou as melhorias da validação da Fase 1 em <b>${total} requisitos funcionais (RF48–RF75)</b>. Esta REV02 atualiza aquele documento com o <b>status de execução em ${EXEC_DATA}</b>: os requisitos aprovados e solicitados na sequência da reunião já foram implementados, testados e publicados no branch de desenvolvimento <span class="mono">claude/plataforma-cidade-imperial-dmxbmw</span>.</p>
   <p class="intro"><b>Como ler:</b> requisitos com o selo <b style="color:#2f6b39">✓ EXECUTADO</b> foram implementados com suíte E2E de aceite, regressões em banco novo e evidências em PNG (pasta <span class="mono">docs/evidencias/</span>); o quadro verde de cada um resume a entrega e cita o commit. Requisitos com o selo <b style="color:#8a5a12">⏳ PENDENTE</b> ainda não foram executados e mantêm o campo de decisão original para aprovação/priorização.</p>
 
   <div class="sec-title">2 · PAINEL DE EXECUÇÃO</div>
@@ -362,7 +376,7 @@ const html = `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8"><sty
     <div class="kpi"><div class="n" style="color:#272525">${nExec * 2}</div><div class="l">entregas (implementação + evidência) publicadas</div></div>
   </div>
   <div class="barra"><div style="width:${pct}%"></div></div>
-  <div style="font-size:9.5px;color:#6b6459;margin-bottom:6px">${nExec} de ${total} requisitos executados até 16/07/2026 — cada um com commit próprio, teste E2E de aceite e evidências.</div>
+  <div style="font-size:9.5px;color:#6b6459;margin-bottom:6px">${nExec} de ${total} requisitos executados até ${EXEC_DATA} — cada um com commit próprio, teste E2E de aceite e evidências.</div>
 
   <div class="sec-title">3 · REQUISITOS FUNCIONAIS COM STATUS</div>
   ${BLOCOS.map((b) => { const e = b.reqs.filter((r) => EXEC[r[0]]).length; return `<h2 class="bloco">${esc(b.b)} <span style="float:right;font-size:11px;color:${e ? '#8fd19a' : '#e3bf7e'}">${e}/${b.reqs.length} executados</span></h2>${b.reqs.map(reqHtml).join('')}` }).join('')}
@@ -392,7 +406,7 @@ const html = `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8"><sty
   </table>
   <p class="intro" style="font-size:10.5px;color:#6b6459">Após a aprovação dos ${total - nExec} itens pendentes: consolidação do backlog priorizado, avaliação técnica de esforço e prazo por item, implementação, atualização do Plano de Testes e nova rodada de validação (Ata, seção 8). Os ${nExec} itens executados seguem disponíveis para validação no ambiente de homologação.</p>
   <div style="display:flex;justify-content:space-between;font-size:9px;color:#a89f90;border-top:1px solid #eae3d6;padding-top:6px;margin-top:8px">
-    <span>Plataforma Cidade Imperial — Requisitos Funcionais das Melhorias da Fase 1 (RF48–RF75) · Status de Execução</span><span>16/07/2026 · REV02</span>
+    <span>Plataforma Cidade Imperial — Requisitos Funcionais das Melhorias da Fase 1 (RF48–RF75) · Status de Execução</span><span>${EXEC_DATA} · REV02</span>
   </div>
 </div>
 </body></html>`
