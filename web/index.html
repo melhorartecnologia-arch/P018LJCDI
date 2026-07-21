@@ -2331,7 +2331,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
 <sc-if value="{{sRPed}}" hint-placeholder-val="{{false}}">
   <div data-screen-label="Meus pedidos (revenda)" style="animation:fadeUp .25s ease">
     <div style="font-size:21px;font-weight:700;margin:2px 0 3px">Meus pedidos</div>
-    <div style="font-size:13px;color:#8a8378;margin-bottom:18px">Acompanhe o status: pendente, em cotação, aprovado, rejeitado ou faturado</div>
+    <div style="font-size:13px;color:#8a8378;margin-bottom:18px">Acompanhe o status: pendente, recebido, em cotação, rejeitado ou faturado</div>
     <sc-if value="{{rpedGrupo}}" hint-placeholder-val="{{false}}">
       <div style="font-size:12.5px;font-weight:600;color:#5d3f96;background:#f3eefa;border:1px solid #ddd0ee;border-radius:10px;padding:10px 14px;margin:-8px 0 14px">📊 Visão consolidada do grupo econômico — pedidos de todas as revendas vinculadas, com a revenda identificada em cada linha. Para criar pedidos ou consultar o catálogo, selecione uma revenda no seletor de contexto (a consulta individual continua a um clique).</div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px">
@@ -3801,7 +3801,8 @@ class Component extends DCLogic {
   };
 
   CH = {
-    pendente:['#fdf3e0','#8a5a12','Pendente'], aprovado:['#e9f3ea','#2f6b39','Aprovado'],
+    pendente:['#fdf3e0','#8a5a12','Pendente'], aprovado:['#e9f3ea','#2f6b39','Recebido'],
+    recebido:['#e9eef8','#33568f','Pedido recebido — aguardando cotação'],
     'em cotação':['#e9eef8','#33568f','Em cotação'], encaminhado:['#f0eaf8','#5d3f96','Encaminhado'],
     faturado:['#e6f2f0','#1f6b5e','Faturado'], rejeitado:['#fbeae7','#a33a2b','Rejeitado'],
     'aguardando propostas':['#fdf3e0','#8a5a12','Aguardando propostas'], encerrada:['#e9f3ea','#2f6b39','Encerrada'],
@@ -3818,7 +3819,7 @@ class Component extends DCLogic {
     const act=sts.filter(s=>s!=='rejeitado');
     if(!act.length) return 'rejeitado';
     if(act.some(s=>s==='pendente')) return 'pendente';
-    if(act.some(s=>s==='aprovado')) return 'aprovado';
+    if(act.some(s=>s==='aprovado')) return 'recebido';
     if(act.some(s=>s==='cotacao')) return 'em cotação';
     if(act.some(s=>s==='aceite')) return 'aguardando aceite';
     if(act.some(s=>s==='direto')) return 'encaminhado';
@@ -4502,7 +4503,7 @@ class Component extends DCLogic {
         "Clique em qualquer miniatura da coluna \"Itens\" (aparece a dica \"Clique para ampliar\") para ver a foto do produto em tamanho maior.",
         "Na coluna \"Fornecedor (faturamento)\" confira quem vai faturar o pedido; enquanto a Loja ainda não definir o fornecedor, o campo mostra apenas um traço (\"—\").",
         "Veja o valor total do pedido na coluna \"Total\".",
-        "Acompanhe a etiqueta colorida na coluna \"Status\", que indica a situação do pedido (pendente, em cotação, aprovado, rejeitado ou faturado, como explica o texto logo abaixo do título da tela).",
+        "Acompanhe a etiqueta colorida na coluna \"Status\", que indica a situação do pedido (pendente, recebido, em cotação, rejeitado ou faturado, como explica o texto logo abaixo do título da tela).",
         "Quando o fornecedor fatura, os documentos do faturamento aparecem na coluna \"Fornecedor (faturamento)\" como etiquetas verdes — \"📎 NF …\" para a nota fiscal e \"📎 Boleto …\" para o boleto — clique para baixar cada arquivo.",
         "Quando um pedido é rejeitado, aparece um texto em vermelho logo abaixo da etiqueta de status, com a justificativa informada pela Loja."
       ],
@@ -6104,7 +6105,7 @@ class Component extends DCLogic {
     const barRows=fatPorForn.map(x=>({nome:x.nome,valFmt:this.fmt(x.tot),royFmt:this.fmt(x.roy),pct:x.pct,w:Math.round(x.tot/maxFat*100)}));
 
     // pedidos (loja)
-    const stOpts=['todos','pendente','aprovado','em cotação','aguardando aceite','encaminhado','faturado','atendido','rejeitado'].map(s=>({v:s,label:s==='todos'?'Todos os status':this.chip(s).stLabel}));
+    const stOpts=['todos','pendente','recebido','em cotação','aguardando aceite','encaminhado','faturado','atendido','rejeitado'].map(s=>({v:s,label:s==='todos'?'Todos os status':this.chip(s).stLabel}));
     const etapaOpts=[{v:'0',label:'Todas as etapas'},...this.ETAPAS_PED.map((l,ix)=>({v:String(ix+1),label:'Etapa '+(ix+1)+' · '+l}))];
     const dParse2=s=>{const q=(s||'').split('/');return q.length===3?new Date(+q[2],+q[1]-1,+q[0]):null;};
     const idade=s=>{const d=dParse2(s); if(!d)return ''; const n=Math.max(0,Math.round((new Date()-d)/86400000)); return n===0?'hoje':(n===1?'há 1 dia':'há '+n+' dias');};
@@ -6120,7 +6121,7 @@ class Component extends DCLogic {
     const valMes=PEDS.filter(p=>p.data.endsWith('/'+this.compAtual().replace('/','/'))||p.data.slice(3)===this.compAtual()).reduce((a,p)=>a+(p.total),0);
     const pedKpis=[
       {label:'Pendentes de recebimento',val:String(PEDS.filter(p=>p.status==='pendente').length),sub:this.fmt(PEDS.filter(p=>p.status==='pendente').reduce((a,p)=>a+p.total,0))+' aguardando análise'},
-      {label:'Aguardando decisão',val:String(PEDS.filter(p=>p.status==='aprovado').length),sub:'aprovados — direto ou cotação'},
+      {label:'Aguardando decisão',val:String(PEDS.filter(p=>p.status==='recebido').length),sub:'recebidos — aguardando cotação, envio direto ou estoque'},
       {label:'Em atendimento',val:String(PEDS.filter(p=>p.status==='em cotação'||p.status==='encaminhado').length),sub:'em cotação ou no fornecedor'},
       {label:'Pedidos no mês',val:this.fmt(valMes),sub:'competência '+this.compAtual()}];
     const revFilterOpts=[{id:'0',nome:'Todas as revendas'},...S.revendas.map(r=>({id:String(r.id),nome:r.nome}))];
@@ -6598,7 +6599,7 @@ class Component extends DCLogic {
     const relCompOpts=[{v:'todas',label:'Todas as competências'},...relComps.map(c=>({v:c,label:'Competência '+c}))];
     const relRevOpts=[{v:'0',label:'Todas as revendas'},...S.revendas.map(r=>({v:String(r.id),label:r.nome}))];
     const relFornOpts=[{v:'0',label:'Todos os fornecedores'},...S.fornecedores.map(f=>({v:String(f.id),label:f.nome}))];
-    const relStOpts=[{v:'todos',label:'Todos os status'},...['pendente','aprovado','em cotação','encaminhado','atendido','faturado','rejeitado'].map(s=>({v:s,label:this.chip(s).stLabel}))];
+    const relStOpts=[{v:'todos',label:'Todos os status'},...['pendente','recebido','em cotação','encaminhado','atendido','faturado','rejeitado'].map(s=>({v:s,label:this.chip(s).stLabel}))];
     // RF75 — desempenho ampliado com os novos campos (frete, rodadas, parcelas, aceite)
     const ecoTotProc=ecoDecs.reduce((a,x)=>a+x.e.total,0);
     const cotsAtivas=S.cotacoes.filter(c=>c.status!=='cancelada').length;
@@ -6650,7 +6651,7 @@ class Component extends DCLogic {
       valFmt:this.fmt(mesesMap[c].fat),royFmt:this.fmt(mesesMap[c].roy),tip:c+' · faturado '+this.fmt(mesesMap[c].fat)+' · royalty '+this.fmt(mesesMap[c].roy)}));
     const temSerie=relMeses.length>0;
     // distribuição por status
-    const relStatus=['pendente','aprovado','em cotação','encaminhado','atendido','faturado','rejeitado']
+    const relStatus=['pendente','recebido','em cotação','encaminhado','atendido','faturado','rejeitado']
       .map(s=>({...this.chip(s),s,n:relPeds.filter(p=>p.status===s).length})).filter(x=>x.n>0)
       .map(x=>({...x,nStr:String(x.n),w:Math.round(x.n/Math.max(1,relPeds.length)*100),pct:Math.round(x.n/Math.max(1,relPeds.length)*100)+'%'}));
     // top produtos e top revendas
