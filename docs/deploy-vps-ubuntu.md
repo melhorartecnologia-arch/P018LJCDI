@@ -118,11 +118,11 @@ Teste rápido antes do PM2 (deve logar `ouvindo em ... (banco: pg)`):
 ```bash
 npm run start:server
 # em outro terminal: curl http://127.0.0.1:3000/api/health
-#   → {"ok":true,"driver":"pg"}
+#   → {"ok":true,"driver":"postgres"}
 # volte e pare com Ctrl+C
 ```
 
-`"driver":"pg"` confirma que está no PostgreSQL do servidor (e não no embutido).
+`"driver":"postgres"` confirma que está no PostgreSQL do servidor (e não no embutido).
 
 ## 7. Rodar com PM2 (reinício automático + boot)
 
@@ -323,7 +323,7 @@ eliminar o aviso é preciso um domínio + Let's Encrypt (opções A ou B).
 
 1. Abra `https://plataforma.seudominio.com.br` (ou `http://IP` / `http://IP:3000`).
 2. Entre com um acesso de demonstração (ex.: `admin@cidadeimperial.com.br` / `admin123`).
-3. `curl -s localhost:3000/api/health` na VPS → `{"ok":true,"driver":"pg"}`.
+3. `curl -s localhost:3000/api/health` na VPS → `{"ok":true,"driver":"postgres"}`.
 4. Reinicie a VPS (`sudo reboot`) e confirme que a aplicação volta sozinha
    (`pm2 status` após reconectar).
 5. Em **Configurações Técnicas › Configuração de e-mail**, configure o SMTP e
@@ -379,7 +379,7 @@ gunzip -c /var/backups/cidadeimperial-2026-07-15.sql.gz \
 | --- | --- |
 | `pm2 status` mostra `errored`/reinícios | `pm2 logs cidade-imperial` mostra o erro real (geralmente `.env` com `DATABASE_URL` errada ou senha do banco incorreta). |
 | `/api/health` responde `{"ok":false,...}` | PostgreSQL fora do ar: `sudo systemctl status postgresql`. |
-| `driver` aparece como `pglite` em vez de `pg` | `DATABASE_URL` não está no `.env` (ou tem erro de digitação) — a aplicação caiu no banco embutido. |
+| `driver` aparece como `pglite` em vez de `postgres` | `DATABASE_URL` não está no `.env` (ou tem erro de digitação) — a aplicação caiu no banco embutido. |
 | Erro 413 ao anexar documento fiscal | Falta `client_max_body_size 20m;` no bloco do Nginx. |
 | Página abre mas sem dados / erro 502 | App parado: `pm2 restart cidade-imperial` e verifique `pm2 logs`. |
 | Aplicação não volta após reboot | `pm2 save` não foi executado, ou o comando impresso por `pm2 startup` não foi rodado. |
