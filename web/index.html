@@ -741,6 +741,19 @@ input::placeholder,textarea::placeholder{color:#b0a795}
       </div>
       <div onClick="{{novoForn}}" style="background:#B38335;color:#fff;border-radius:9px;padding:10px 16px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:#9a6f2b">+ Novo fornecedor</div>
     </div>
+    <sc-if value="{{podeCadForn}}" hint-placeholder-val="{{true}}">
+      <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:16px 18px;margin-bottom:14px">
+        <div style="font-size:14px;font-weight:700;margin-bottom:2px">Importar fornecedores por planilha</div>
+        <div style="font-size:12px;color:#8a8378;margin-bottom:12px">Baixe o modelo em Excel (.xlsx), preencha uma linha por registro e carregue o arquivo — você confere a prévia antes de gravar.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:9px;align-items:center">
+          <div onClick="{{impModeloForn}}" title="Modelo em branco com exemplos e instruções" style="border:1px solid #d9c193;color:#8f682a;background:#fff;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="background:#faf5e9">⬇ Baixar modelo</div>
+          <div onClick="{{impAtuaisForn}}" title="Mesmo modelo, já preenchido com os cadastros existentes" style="border:1px solid #e5ddcd;color:#6b6459;background:#fff;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:#f7f3ea">⬇ Modelo com os cadastros atuais</div>
+          <div onClick="{{impClicarForn}}" style="background:#272525;color:#fff;border-radius:8px;padding:8px 15px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="background:#3a3735">⬆ Carregar planilha preenchida…</div>
+          <input id="imp-file-fornecedor" type="file" accept=".xlsx,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv" onChange="{{impCarregarForn}}" style="display:none">
+        </div>
+        <div style="font-size:11px;color:#b0a795;margin-top:9px">Nada é gravado sem a sua confirmação: a plataforma mostra linha a linha o que será incluído, o que será atualizado e o que tem erro. Até 500 linhas por carga · aceita .xlsx (recomendado) e CSV.</div>
+      </div>
+    </sc-if>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px">
       <sc-for list="{{fornKpis}}" as="k" hint-placeholder-count="4">
         <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:14px 16px">
@@ -911,6 +924,19 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <div onClick="{{novoProduto}}" style="background:#B38335;color:#fff;border-radius:9px;padding:10px 16px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:#9a6f2b">+ Novo produto</div>
       </div>
     </div>
+    <sc-if value="{{podeCadProd}}" hint-placeholder-val="{{true}}">
+      <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:16px 18px;margin-bottom:14px">
+        <div style="font-size:14px;font-weight:700;margin-bottom:2px">Importar produtos homologados por planilha</div>
+        <div style="font-size:12px;color:#8a8378;margin-bottom:12px">Baixe o modelo em Excel (.xlsx), preencha uma linha por registro e carregue o arquivo — você confere a prévia antes de gravar.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:9px;align-items:center">
+          <div onClick="{{impModeloProd}}" title="Modelo em branco com exemplos e instruções" style="border:1px solid #d9c193;color:#8f682a;background:#fff;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="background:#faf5e9">⬇ Baixar modelo</div>
+          <div onClick="{{impAtuaisProd}}" title="Mesmo modelo, já preenchido com os cadastros existentes" style="border:1px solid #e5ddcd;color:#6b6459;background:#fff;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:#f7f3ea">⬇ Modelo com os cadastros atuais</div>
+          <div onClick="{{impClicarProd}}" style="background:#272525;color:#fff;border-radius:8px;padding:8px 15px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="background:#3a3735">⬆ Carregar planilha preenchida…</div>
+          <input id="imp-file-produto" type="file" accept=".xlsx,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv" onChange="{{impCarregarProd}}" style="display:none">
+        </div>
+        <div style="font-size:11px;color:#b0a795;margin-top:9px">Nada é gravado sem a sua confirmação: a plataforma mostra linha a linha o que será incluído, o que será atualizado e o que tem erro. Até 500 linhas por carga · aceita .xlsx (recomendado) e CSV.</div>
+      </div>
+    </sc-if>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px">
       <sc-for list="{{prodKpis}}" as="k" hint-placeholder-count="4">
         <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:14px 16px">
@@ -1213,6 +1239,68 @@ input::placeholder,textarea::placeholder{color:#b0a795}
   </div>
 </sc-if>
 
+<sc-if value="{{mImport}}" hint-placeholder-val="{{false}}">
+  <div style="position:fixed;inset:0;background:rgba(39,37,37,.45);display:flex;align-items:center;justify-content:center;z-index:50">
+    <div style="background:#fff;border-radius:14px;width:900px;max-width:95vw;max-height:90vh;overflow-y:auto;padding:22px 24px;box-shadow:0 18px 50px rgba(39,37,37,.25)">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:4px">
+        <div>
+          <div style="font-size:16px;font-weight:700">Prévia da importação — {{impInfo.titulo}}</div>
+          <div style="font-size:12.5px;color:#8a8378;margin-top:2px">{{impInfo.arquivo}} · confira antes de gravar; nada foi salvo ainda</div>
+        </div>
+        <div onClick="{{mClose}}" title="Fechar" style="font-size:20px;line-height:1;color:#a89f90;cursor:pointer;padding:2px 9px;border-radius:8px;flex:none" style-hover="background:#f7f3ea">×</div>
+      </div>
+      <sc-if value="{{impInfo.temErroArq}}" hint-placeholder-val="{{false}}">
+        <div style="background:#fbeae7;border:1px solid #f0cdc5;border-radius:10px;padding:13px 15px;font-size:13px;color:#a33a2b;line-height:1.5;margin-top:14px">{{impInfo.erroArq}}</div>
+        <div style="font-size:12px;color:#8a8378;margin-top:10px;line-height:1.5">Baixe o modelo pela própria tela e preencha sobre ele — os títulos das colunas precisam ser mantidos.</div>
+      </sc-if>
+      <sc-if value="{{impInfo.temLinhas}}" hint-placeholder-val="{{true}}">
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0">
+          <sc-for list="{{impInfo.kpis}}" as="k" hint-placeholder-count="4">
+            <div style="border:1px solid {{k.bd}};background:{{k.bg}};border-radius:10px;padding:11px 13px">
+              <div style="font-size:19px;font-weight:700;color:{{k.fg}}">{{k.val}}</div>
+              <div style="font-size:11px;color:#8a8378;margin-top:1px">{{k.label}}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="border:1px solid #eae3d6;border-radius:11px;overflow:hidden;max-height:46vh;overflow-y:auto">
+          <table style="width:100%;border-collapse:collapse">
+            <thead><tr>
+              <th style="text-align:left;padding:9px 14px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2;position:sticky;top:0;background:#fff">Linha</th>
+              <th style="text-align:left;padding:9px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2;position:sticky;top:0;background:#fff">{{impInfo.chaveLabel}}</th>
+              <th style="text-align:left;padding:9px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2;position:sticky;top:0;background:#fff">Registro</th>
+              <th style="text-align:left;padding:9px 14px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2;position:sticky;top:0;background:#fff">O que vai acontecer</th>
+            </tr></thead>
+            <tbody>
+              <sc-for list="{{impInfo.rows}}" as="r" hint-placeholder-count="4">
+                <tr style="background:{{r.linhaBg}}">
+                  <td style="padding:9px 14px;font-size:12px;color:#a89f90;border-bottom:1px solid #f5f1e8;white-space:nowrap">{{r.n}}</td>
+                  <td style="padding:9px 10px;font-size:12px;border-bottom:1px solid #f5f1e8;white-space:nowrap;font-family:monospace">{{r.chave}}</td>
+                  <td style="padding:9px 10px;border-bottom:1px solid #f5f1e8">
+                    <div style="font-size:12.5px;font-weight:600">{{r.rotulo}}</div>
+                    <div style="font-size:11px;color:#a89f90">{{r.detalhe}}</div>
+                  </td>
+                  <td style="padding:9px 14px;border-bottom:1px solid #f5f1e8">
+                    <span style="font-size:11px;font-weight:600;border-radius:6px;padding:2px 8px;background:{{r.acBg}};color:{{r.acFg}};white-space:nowrap">{{r.acLabel}}</span>
+                    <sc-if value="{{r.temErro}}" hint-placeholder-val="{{false}}"><div style="font-size:11px;color:#a33a2b;margin-top:3px;line-height:1.4">{{r.errosTxt}}</div></sc-if>
+                  </td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+        <div style="font-size:11.5px;color:#b0a795;margin-top:11px;line-height:1.5">{{impInfo.rodape}}</div>
+      </sc-if>
+      <sc-if value="{{form.erro}}" hint-placeholder-val="{{false}}"><div style="color:#a33a2b;font-size:12.5px;margin-top:11px">{{form.erro}}</div></sc-if>
+      <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:16px">
+        <div onClick="{{mClose}}" style="border:1px solid #e5ddcd;color:#6b6459;border-radius:8px;padding:9px 15px;font-size:13px;font-weight:600;cursor:pointer;background:#fff" style-hover="background:#f7f3ea">Cancelar</div>
+        <sc-if value="{{impInfo.podeGravar}}" hint-placeholder-val="{{true}}">
+          <div onClick="{{confirmImport}}" style="background:#B38335;color:#fff;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#9a6f2b">{{impInfo.btnLabel}}</div>
+        </sc-if>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
 <sc-if value="{{mGrupo}}" hint-placeholder-val="{{false}}">
   <div style="position:fixed;inset:0;background:rgba(39,37,37,.45);display:flex;align-items:center;justify-content:center;z-index:50">
     <div style="background:#fff;border-radius:14px;width:460px;max-width:92vw;max-height:88vh;overflow-y:auto;padding:22px 24px;box-shadow:0 18px 50px rgba(39,37,37,.25)">
@@ -1243,6 +1331,19 @@ input::placeholder,textarea::placeholder{color:#b0a795}
       </div>
       <div onClick="{{novaRevenda}}" style="background:#B38335;color:#fff;border-radius:9px;padding:10px 16px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:#9a6f2b">+ Nova revenda</div>
     </div>
+    <sc-if value="{{podeCadRev}}" hint-placeholder-val="{{true}}">
+      <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:16px 18px;margin-bottom:14px">
+        <div style="font-size:14px;font-weight:700;margin-bottom:2px">Importar revendas por planilha</div>
+        <div style="font-size:12px;color:#8a8378;margin-bottom:12px">Baixe o modelo em Excel (.xlsx), preencha uma linha por registro e carregue o arquivo — você confere a prévia antes de gravar.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:9px;align-items:center">
+          <div onClick="{{impModeloRev}}" title="Modelo em branco com exemplos e instruções" style="border:1px solid #d9c193;color:#8f682a;background:#fff;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="background:#faf5e9">⬇ Baixar modelo</div>
+          <div onClick="{{impAtuaisRev}}" title="Mesmo modelo, já preenchido com os cadastros existentes" style="border:1px solid #e5ddcd;color:#6b6459;background:#fff;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:#f7f3ea">⬇ Modelo com os cadastros atuais</div>
+          <div onClick="{{impClicarRev}}" style="background:#272525;color:#fff;border-radius:8px;padding:8px 15px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="background:#3a3735">⬆ Carregar planilha preenchida…</div>
+          <input id="imp-file-revenda" type="file" accept=".xlsx,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv" onChange="{{impCarregarRev}}" style="display:none">
+        </div>
+        <div style="font-size:11px;color:#b0a795;margin-top:9px">Nada é gravado sem a sua confirmação: a plataforma mostra linha a linha o que será incluído, o que será atualizado e o que tem erro. Até 500 linhas por carga · aceita .xlsx (recomendado) e CSV.</div>
+      </div>
+    </sc-if>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px">
       <sc-for list="{{revKpis}}" as="k" hint-placeholder-count="4">
         <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:14px 16px">
@@ -4417,6 +4518,8 @@ class Component extends DCLogic {
       "titulo": "Gerir fornecedores e royalties",
       "resumo": "Tela da Loja para cadastrar fornecedores, acompanhar seus contratos e definir o percentual de royalty com vigência e histórico de alterações.",
       "passos": [
+        "Para cadastrar em massa, use o bloco \"Importar fornecedores por planilha\": clique em \"⬇ Baixar modelo\" (Excel com as colunas certas, duas linhas de exemplo e uma aba de instruções) ou em \"⬇ Modelo com os cadastros atuais\" (mesmo formato, já preenchido com o que existe hoje — útil para revisar em lote).",
+        "Preencha uma linha por registro, salve e clique em \"⬆ Carregar planilha preenchida…\". A plataforma abre a prévia com os contadores (lidas, a incluir, a atualizar, com erro) e mostra linha a linha o que vai acontecer, com o motivo de cada recusa — nada é gravado até você clicar em \"Gravar N registro(s)\". Linhas com erro são ignoradas; corrija-as e carregue de novo.",
         "Confira os 4 indicadores no topo — Fornecedores ativos, Contratos vigentes, Royalty médio e Royalty gerado — para ter a visão geral antes de agir.",
         "Para localizar um fornecedor, digite nome, CNPJ ou cidade no campo \"Buscar fornecedor por nome, CNPJ ou cidade…\"; a lista é filtrada conforme você digita.",
         "Para incluir um fornecedor, clique em \"+ Novo fornecedor\" (canto superior direito), preencha ao menos Razão social e CNPJ — Cidade/UF, E-mail de contato, Telefone (com máscara automática) e Pessoa de contato são opcionais — e clique em \"Salvar fornecedor\".",
@@ -4459,6 +4562,8 @@ class Component extends DCLogic {
       "titulo": "Produtos homologados (Loja)",
       "resumo": "Tela da Loja para manter o catálogo de produtos homologados, sempre vinculados a um fornecedor e a um contrato. Aqui você cadastra, consulta e ativa ou inativa os produtos disponíveis para as revendas.",
       "passos": [
+        "Para cadastrar em massa, use o bloco \"Importar produtos por planilha\": clique em \"⬇ Baixar modelo\" (Excel com as colunas certas, duas linhas de exemplo e uma aba de instruções) ou em \"⬇ Modelo com os cadastros atuais\" (mesmo formato, já preenchido com o que existe hoje — útil para revisar em lote).",
+        "Preencha uma linha por registro, salve e clique em \"⬆ Carregar planilha preenchida…\". A plataforma abre a prévia com os contadores (lidas, a incluir, a atualizar, com erro) e mostra linha a linha o que vai acontecer, com o motivo de cada recusa — nada é gravado até você clicar em \"Gravar N registro(s)\". Linhas com erro são ignoradas; corrija-as e carregue de novo.",
         "No topo da tela, confira os quatro indicadores (Ativos no catálogo, Inativos, Fornecedores representados e Movimentado em pedidos) para ter uma visão geral do catálogo.",
         "Para encontrar um produto, digite no campo \"Buscar por código ou descrição…\" e/ou use os seletores \"Todos os fornecedores\" e \"Todos os status\" (que filtra por Ativos no catálogo ou Inativos).",
         "Para cadastrar um novo produto, clique no botão \"+ Novo produto\", no canto superior direito.",
@@ -4502,6 +4607,8 @@ class Component extends DCLogic {
       "titulo": "Cadastrar revendas e controlar visibilidade",
       "resumo": "Tela da Loja para cadastrar revendas, controlar o acesso (login) e definir quais fornecedores e produtos cada revenda pode ver e pedir.",
       "passos": [
+        "Para cadastrar em massa, use o bloco \"Importar revendas por planilha\": clique em \"⬇ Baixar modelo\" (Excel com as colunas certas, duas linhas de exemplo e uma aba de instruções) ou em \"⬇ Modelo com os cadastros atuais\" (mesmo formato, já preenchido com o que existe hoje — útil para revisar em lote).",
+        "Preencha uma linha por registro, salve e clique em \"⬆ Carregar planilha preenchida…\". A plataforma abre a prévia com os contadores (lidas, a incluir, a atualizar, com erro) e mostra linha a linha o que vai acontecer, com o motivo de cada recusa — nada é gravado até você clicar em \"Gravar N registro(s)\". Linhas com erro são ignoradas; corrija-as e carregue de novo.",
         "No topo, confira os 4 cartões — \"Revendas ativas\", \"Pedidos das revendas\", \"Valor em pedidos\" e \"Faturado às revendas\" — para ter o panorama geral.",
         "Para achar uma revenda, digite no campo \"Buscar revenda por nome, CNPJ ou cidade…\"; a lista filtra sozinha conforme você digita.",
         "Para cadastrar, clique em \"+ Nova revenda\" (canto superior direito), preencha Nome, CNPJ, Cidade/UF, Telefone (com máscara automática) e E-mail de acesso (login) e clique em \"Salvar revenda\".",
@@ -5333,6 +5440,237 @@ class Component extends DCLogic {
         else { const a={...i,...alloc}; novo.push(a); alocados.push(a); } }
       else novo.push(i); });
     return {novo,alocados,parcial}; }
+
+  // ══ Importação de cadastros por planilha (fornecedores, produtos, revendas) ══
+  // Um motor só, três configurações. O fluxo é sempre: baixar o modelo .xlsx →
+  // preencher → carregar → conferir a prévia linha a linha → confirmar. Nada é
+  // gravado antes da confirmação; linhas com erro são apontadas e ignoradas.
+  IMPORTS={
+    fornecedor:{
+      titulo:'fornecedores', aba:'Fornecedores', arquivo:'modelo-fornecedores',
+      perm:'cadastros.fornecedores', chaveLabel:'CNPJ',
+      cols:[
+        {k:'nome',    rot:'Nome',              larg:34, obrig:true,  ex:['Distribuidora Nova Serra','Bebidas do Vale Ltda']},
+        {k:'cnpj',    rot:'CNPJ',              larg:21, obrig:true,  ex:['11.222.333/0001-44','55.666.777/0001-88']},
+        {k:'cidade',  rot:'Cidade/UF',         larg:20, ex:['Petrópolis/RJ','Teresópolis/RJ']},
+        {k:'contato', rot:'E-mail de contato', larg:30, ex:['comercial@novaserra.com.br','vendas@bebidasdovale.com.br']},
+        {k:'telefone',rot:'Telefone',          larg:18, ex:['(24) 99999-0000','(21) 98888-1111']},
+        {k:'contatoNome',rot:'Pessoa de contato',larg:24,ex:['Carlos Andrade','Marina Alves']},
+        {k:'ativo',   rot:'Ativo (Sim/Não)',   larg:16, ex:['Sim','Sim']}],
+      ajuda:['Nome e CNPJ são obrigatórios. O CNPJ identifica o fornecedor: se já existir um com o mesmo CNPJ, a linha ATUALIZA o cadastro em vez de duplicar.',
+             '"Ativo" aceita Sim/Não (ou S/N, 1/0, true/false). Em branco, o fornecedor entra como ativo.',
+             'O contrato de royalty NÃO vem por esta planilha — cadastre-o depois, na própria tela do fornecedor.']},
+    produto:{
+      titulo:'produtos homologados', aba:'Produtos', arquivo:'modelo-produtos',
+      perm:'cadastros.produtos', chaveLabel:'Código',
+      cols:[
+        {k:'codigo',   rot:'Código',                larg:14, ex:['','PRD-004']},
+        {k:'descricao',rot:'Descrição',             larg:40, obrig:true, ex:['Chopp Weiss Imperial 30L','Cerveja Puro Malte 600ml (cx 12)']},
+        {k:'unidade',  rot:'Unidade',               larg:14, ex:['Barril','Caixa']},
+        {k:'categoria',rot:'Categoria',             larg:18, ex:['Chope','Cerveja']},
+        {k:'preco',    rot:'Preço estimado (R$)',   larg:20, ex:['780,00','148,00']},
+        {k:'fornecedores',rot:'Fornecedores (separe por ;)',larg:44, ex:['Distribuidora Serra Verde; Imperial Bebidas Ltda','Imperial Bebidas Ltda']},
+        {k:'ativo',    rot:'Ativo (Sim/Não)',       larg:16, ex:['Sim','Sim']}],
+      ajuda:['Descrição é obrigatória. Deixe o "Código" em branco para a plataforma gerar (PRD-0NN); preenchido, ele identifica o produto — se já existir, a linha ATUALIZA o cadastro.',
+             'Preço aceita 780,00 ou 780.00; em branco entra como 0,00 e pode ser ajustado depois.',
+             '"Fornecedores" aceita nomes ou CNPJs já cadastrados, separados por ponto e vírgula — é o De/Para (RF56). Cadastre os fornecedores antes dos produtos.',
+             'Categoria precisa existir em Cadastros › Categorias de produtos; se não existir ou vier em branco, o produto fica em "Outros".',
+             'As imagens não vêm pela planilha: o produto entra com a imagem padrão e você anexa as fotos depois.']},
+    revenda:{
+      titulo:'revendas', aba:'Revendas', arquivo:'modelo-revendas',
+      perm:'cadastros.revendas', chaveLabel:'CNPJ',
+      cols:[
+        {k:'nome',    rot:'Nome',              larg:34, obrig:true, ex:['Bar do Mirante','Choperia Vale Verde']},
+        {k:'cnpj',    rot:'CNPJ',              larg:21, obrig:true, ex:['22.333.444/0001-55','66.777.888/0001-99']},
+        {k:'cidade',  rot:'Cidade/UF',         larg:20, ex:['Petrópolis/RJ','Nova Friburgo/RJ']},
+        {k:'email',   rot:'E-mail de acesso',  larg:30, ex:['compras@barmirante.com.br','compras@valeverde.com.br']},
+        {k:'telefone',rot:'Telefone',          larg:18, ex:['(24) 99999-0000','(22) 98888-1111']},
+        {k:'ativo',   rot:'Ativo (Sim/Não)',   larg:16, ex:['Sim','Sim']}],
+      ajuda:['Nome e CNPJ são obrigatórios. O CNPJ identifica a revenda: se já existir uma com o mesmo CNPJ, a linha ATUALIZA o cadastro em vez de duplicar.',
+             'O e-mail é o login de acesso da revenda. Em branco, a plataforma gera um a partir do nome — ajuste depois em Usuários e permissões.',
+             'A revenda entra enxergando todos os fornecedores ativos; refine em "Visibilidade" no detalhe da revenda.']}};
+
+  _impSim(v){ const s=String(v==null?'':v).trim().toLowerCase();
+    if(!s) return null;
+    if(['sim','s','1','true','verdadeiro','ativo','x'].includes(s)) return true;
+    if(['nao','não','n','0','false','falso','inativo'].includes(s)) return false;
+    return null; }
+  _impDig(v){ return String(v==null?'':v).replace(/\D/g,''); }
+  _impCnpjFmt(v){ const d=this._impDig(v).slice(0,14);
+    if(d.length!==14) return String(v==null?'':v).trim();
+    return d.slice(0,2)+'.'+d.slice(2,5)+'.'+d.slice(5,8)+'/'+d.slice(8,12)+'-'+d.slice(12); }
+  _impNum(v){ if(typeof v==='number') return v; return this.num(v); }
+  _impTxt(v){ return String(v==null?'':v).trim(); }
+
+  // Lê a matriz da planilha e devolve linhas normalizadas + erros por linha.
+  _impLer(tipo,rows){
+    const cfg=this.IMPORTS[tipo]; const cols=cfg.cols;
+    const norm=s=>String(s==null?'':s).trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+    // acha a linha de cabeçalho (a que contém o rótulo da 1ª coluna obrigatória)
+    const alvo=norm(cols[0].rot);
+    let hIx=rows.findIndex(r=>(r||[]).some(c=>norm(c)===alvo));
+    if(hIx<0) hIx=0;
+    const head=(rows[hIx]||[]).map(norm);
+    const idx={};
+    cols.forEach(c=>{ let j=head.indexOf(norm(c.rot));
+      if(j<0) j=head.findIndex(h=>h&&norm(c.rot).startsWith(h)&&h.length>3);
+      idx[c.k]=j; });
+    const faltando=cols.filter(c=>c.obrig&&idx[c.k]<0).map(c=>c.rot);
+    if(faltando.length) throw new Error('a planilha não tem a(s) coluna(s) '+faltando.join(', ')+'. Baixe o modelo e preencha sobre ele.');
+    const linhas=[];
+    for(let i=hIx+1;i<rows.length;i++){
+      const r=rows[i]||[];
+      const val={}; cols.forEach(c=>{ val[c.k]=idx[c.k]>=0?r[idx[c.k]]:''; });
+      if(cols.every(c=>this._impTxt(val[c.k])==='')) continue; // linha vazia
+      linhas.push({n:i+1,val});
+    }
+    return linhas;
+  }
+
+  // Avalia cada linha: novo × atualização × erro, sem gravar nada.
+  _impAvaliar(tipo,linhas){
+    const S=this.state; const vistos={};
+    return linhas.map(l=>{
+      const v=l.val; const erros=[];
+      const out={n:l.n};
+      if(tipo==='fornecedor'||tipo==='revenda'){
+        const nome=this._impTxt(v.nome), cnpjD=this._impDig(v.cnpj);
+        if(!nome) erros.push('nome em branco');
+        if(!cnpjD) erros.push('CNPJ em branco');
+        else if(cnpjD.length!==14) erros.push('CNPJ com '+cnpjD.length+' dígitos (esperado 14)');
+        if(cnpjD&&vistos[cnpjD]) erros.push('CNPJ repetido na própria planilha (linha '+vistos[cnpjD]+')');
+        else if(cnpjD) vistos[cnpjD]=l.n;
+        const lista=tipo==='fornecedor'?S.fornecedores:S.revendas;
+        const jaTem=cnpjD?lista.find(x=>this._impDig(x.cnpj)===cnpjD):null;
+        out.chave=this._impCnpjFmt(v.cnpj); out.rotulo=nome||'—';
+        out.acao=erros.length?'erro':(jaTem?'atualiza':'novo'); out.alvoId=jaTem?jaTem.id:null;
+        out.detalhe=[this._impTxt(v.cidade),this._impTxt(tipo==='fornecedor'?v.contato:v.email)].filter(Boolean).join(' · ')||'—';
+        out.dados={nome,cnpj:this._impCnpjFmt(v.cnpj),cidade:this._impTxt(v.cidade)||'—',
+          telefone:this._impTxt(v.telefone)||'—',ativo:this._impSim(v.ativo)!==false,
+          contato:this._impTxt(v.contato)||'—',contatoNome:this._impTxt(v.contatoNome),
+          email:this._impTxt(v.email)};
+      } else {
+        const desc=this._impTxt(v.descricao), cod=this._impTxt(v.codigo).toUpperCase();
+        if(!desc) erros.push('descrição em branco');
+        if(cod&&vistos[cod]) erros.push('código repetido na própria planilha (linha '+vistos[cod]+')');
+        else if(cod) vistos[cod]=l.n;
+        const preco=this._impNum(v.preco);
+        if(this._impTxt(v.preco)&&!(preco>0)) erros.push('preço inválido: "'+this._impTxt(v.preco)+'"');
+        // fornecedores por nome ou CNPJ
+        const brutos=this._impTxt(v.fornecedores).split(/[;|]/).map(x=>x.trim()).filter(Boolean);
+        const fids=[],naoAchou=[];
+        brutos.forEach(b=>{ const d=this._impDig(b);
+          const f=d.length===14?S.fornecedores.find(x=>this._impDig(x.cnpj)===d)
+            :S.fornecedores.find(x=>x.nome.trim().toLowerCase()===b.toLowerCase());
+          if(f){ if(!fids.includes(f.id)) fids.push(f.id); } else naoAchou.push(b); });
+        if(naoAchou.length) erros.push('fornecedor não cadastrado: '+naoAchou.join(', '));
+        if(!fids.length&&!naoAchou.length) erros.push('informe ao menos um fornecedor');
+        const jaTem=cod?S.produtos.find(x=>(x.codigo||'').toUpperCase()===cod):null;
+        const cat=this._impTxt(v.categoria);
+        const catOk=cat&&(S.categorias||[]).some(c=>c.nome.toLowerCase()===cat.toLowerCase());
+        out.chave=cod||'(gerar)'; out.rotulo=desc||'—';
+        out.acao=erros.length?'erro':(jaTem?'atualiza':'novo'); out.alvoId=jaTem?jaTem.id:null;
+        out.detalhe=[catOk?cat:(cat?cat+' → Outros':'Outros'),this.fmt(preco),
+          fids.map(id=>this._fornNome(id)).join(', ')].filter(Boolean).join(' · ');
+        out.dados={codigo:cod,descricao:desc,unidade:this._impTxt(v.unidade)||'Unidade',
+          categoria:catOk?(S.categorias.find(c=>c.nome.toLowerCase()===cat.toLowerCase()).nome):'Outros',
+          preco,fornecedorIds:fids,ativo:this._impSim(v.ativo)!==false};
+      }
+      out.erros=erros;
+      return out; });
+  }
+
+  // Modelo .xlsx: aba de dados (cabeçalho + exemplos ou cadastros atuais) e aba de instruções.
+  baixarModeloCad(tipo,comDados){ this._bmc=this._bmc||{}; const k=tipo+'|'+(comDados?'1':'0');
+    if(!this._bmc[k]) this._bmc[k]=()=>{
+      if(typeof XLSX==='undefined') return alert('Componente de planilha não carregado — recarregue a página.');
+      const cfg=this.IMPORTS[tipo]; const cols=cfg.cols;
+      const linhas=[cols.map(c=>c.rot)];
+      if(comDados){ this._impAtuais(tipo).forEach(r=>linhas.push(cols.map(c=>r[c.k]!=null?r[c.k]:''))); }
+      else { for(let i=0;i<2;i++) linhas.push(cols.map(c=>(c.ex&&c.ex[i]!=null)?c.ex[i]:'')); }
+      const ws=XLSX.utils.aoa_to_sheet(linhas);
+      ws['!cols']=cols.map(c=>({wch:c.larg||18}));
+      const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,cfg.aba);
+      const inst=[['Como preencher — importação de '+cfg.titulo],[''],
+        ['1. Preencha uma linha por registro na aba "'+cfg.aba+'", sem alterar os títulos das colunas.'],
+        ['2. As linhas de exemplo podem ser apagadas ou sobrescritas.'],
+        ['3. Salve o arquivo e use "Carregar planilha preenchida" na tela de '+cfg.titulo+'.'],
+        ['4. A plataforma mostra uma prévia linha a linha antes de gravar — nada é salvo sem a sua confirmação.'],['']];
+      (cfg.ajuda||[]).forEach(a=>inst.push(['• '+a]));
+      inst.push(['']); inst.push(['Colunas']);
+      cols.forEach(c=>inst.push([c.rot,c.obrig?'obrigatória':'opcional']));
+      const wi=XLSX.utils.aoa_to_sheet(inst); wi['!cols']=[{wch:96},{wch:14}];
+      XLSX.utils.book_append_sheet(wb,wi,'Instruções');
+      XLSX.writeFile(wb,cfg.arquivo+(comDados?'-cadastros-atuais':'')+'.xlsx');
+      this.audit('Download de modelo de importação',cfg.titulo+(comDados?' · com os cadastros atuais':' · modelo em branco com exemplos')+' · .xlsx'); };
+    return this._bmc[k]; }
+
+  _impAtuais(tipo){ const S=this.state;
+    if(tipo==='fornecedor') return S.fornecedores.map(f=>({nome:f.nome,cnpj:f.cnpj,cidade:f.cidade,contato:f.contato,telefone:f.telefone,contatoNome:f.contatoNome||'',ativo:f.ativo?'Sim':'Não'}));
+    if(tipo==='revenda') return S.revendas.map(r=>({nome:r.nome,cnpj:r.cnpj,cidade:r.cidade,email:r.email,telefone:r.telefone,ativo:r.ativo?'Sim':'Não'}));
+    return S.produtos.map(p=>({codigo:p.codigo,descricao:p.descricao,unidade:p.unidade,categoria:this._pCat(p),
+      preco:String((p.preco||0).toFixed(2)).replace('.',','),
+      fornecedores:this._pForns(p).map(id=>this._fornNome(id)).join('; '),ativo:p.ativo?'Sim':'Não'})); }
+
+  clicarImport(tipo){ this._cim=this._cim||{}; if(!this._cim[tipo]) this._cim[tipo]=()=>{
+    const el=document.getElementById('imp-file-'+tipo); if(el) el.click(); }; return this._cim[tipo]; }
+
+  carregarImport(tipo){ this._cai=this._cai||{}; if(!this._cai[tipo]) this._cai[tipo]=e=>{
+    if(!this.pode(this.IMPORTS[tipo].perm)) return this.negado('Você não tem permissão para importar '+this.IMPORTS[tipo].titulo+'.',this.IMPORTS[tipo].perm);
+    const input=e.target; const file=input.files&&input.files[0]; if(!file) return;
+    const isCsv=/\.(csv|txt)$/i.test(file.name||'');
+    const fr=new FileReader();
+    fr.onload=()=>{ input.value='';
+      try{ if(typeof XLSX==='undefined') throw new Error('componente de planilha não carregado — recarregue a página.');
+        const wb=isCsv?XLSX.read(String(fr.result),{type:'string'}):XLSX.read(fr.result,{type:'array'});
+        const cfg=this.IMPORTS[tipo];
+        const nomeAba=wb.SheetNames.find(n=>n.trim().toLowerCase()===cfg.aba.toLowerCase())||wb.SheetNames.find(n=>n.trim().toLowerCase()!=='instruções'&&n.trim().toLowerCase()!=='instrucoes')||wb.SheetNames[0];
+        const ws=wb.Sheets[nomeAba]; if(!ws) throw new Error('nenhuma aba de dados encontrada no arquivo.');
+        const rows=XLSX.utils.sheet_to_json(ws,{header:1,raw:false,defval:''});
+        const linhas=this._impLer(tipo,rows);
+        if(!linhas.length) throw new Error('nenhuma linha preenchida encontrada abaixo do cabeçalho.');
+        if(linhas.length>500) throw new Error('a planilha tem '+linhas.length+' linhas; o limite por carga é 500. Divida o arquivo.');
+        this.setState({modal:'importcad',form:{impTipo:tipo,impArq:file.name,impRows:this._impAvaliar(tipo,linhas)}});
+      }catch(err){ this.setState({modal:'importcad',form:{impTipo:tipo,impArq:file.name,impRows:[],impErro:'Falha ao ler a planilha: '+err.message}}); } };
+    if(isCsv) fr.readAsText(file,'utf-8'); else fr.readAsArrayBuffer(file); };
+    return this._cai[tipo]; }
+
+  // Grava a carga: só as linhas sem erro, criando ou atualizando conforme a chave.
+  confirmImport=()=>{ const f=this.state.form; const tipo=f.impTipo; const cfg=this.IMPORTS[tipo];
+    if(!this.pode(cfg.perm)) return this.negado('Você não tem permissão para importar '+cfg.titulo+'.',cfg.perm);
+    const bons=(f.impRows||[]).filter(r=>r.acao!=='erro');
+    if(!bons.length) return this.err('Nenhuma linha válida para importar — corrija a planilha e carregue novamente.');
+    const nNovos=bons.filter(r=>r.acao==='novo').length, nAtu=bons.filter(r=>r.acao==='atualiza').length;
+    const nErro=(f.impRows||[]).length-bons.length;
+    this.setState(s=>{
+      if(tipo==='fornecedor'){ let seq=s.seq.forn; const lista=[...s.fornecedores];
+        bons.forEach(r=>{ const d=r.dados;
+          if(r.alvoId!=null){ const ix=lista.findIndex(x=>x.id===r.alvoId);
+            lista[ix]={...lista[ix],nome:d.nome,cnpj:d.cnpj,cidade:d.cidade,contato:d.contato,telefone:d.telefone,contatoNome:d.contatoNome,ativo:d.ativo}; }
+          else { lista.push({id:seq,nome:d.nome,cnpj:d.cnpj,cidade:d.cidade,contato:d.contato,telefone:d.telefone,contatoNome:d.contatoNome,ativo:d.ativo}); seq++; } });
+        return {fornecedores:lista,seq:{...s.seq,forn:seq},modal:null,form:{}}; }
+      if(tipo==='revenda'){ let seq=s.seq.rev; const lista=[...s.revendas];
+        const visPad=s.fornecedores.filter(x=>x.ativo).map(x=>x.id);
+        bons.forEach(r=>{ const d=r.dados;
+          const mail=d.email||('acesso@'+d.nome.toLowerCase().replace(/[^a-z]/g,'')+'.com.br');
+          if(r.alvoId!=null){ const ix=lista.findIndex(x=>x.id===r.alvoId);
+            lista[ix]={...lista[ix],nome:d.nome,cnpj:d.cnpj,cidade:d.cidade,telefone:d.telefone,ativo:d.ativo,email:d.email||lista[ix].email}; }
+          else { lista.push({id:seq,nome:d.nome,cnpj:d.cnpj,cidade:d.cidade,telefone:d.telefone,ativo:d.ativo,
+            visibilidade:[...visPad],prodBloq:[],email:mail,ultimoAcesso:'— nunca acessou —'}); seq++; } });
+        return {revendas:lista,seq:{...s.seq,rev:seq},modal:null,form:{}}; }
+      let seq=s.seq.prod; const lista=[...s.produtos];
+      const fotoPad=['img/prd-new-1.png','img/prd-new-2.png','img/prd-new-3.png'];
+      bons.forEach(r=>{ const d=r.dados;
+        if(r.alvoId!=null){ const ix=lista.findIndex(x=>x.id===r.alvoId);
+          lista[ix]={...lista[ix],descricao:d.descricao,unidade:d.unidade,categoria:d.categoria,preco:d.preco,
+            fornecedorId:d.fornecedorIds[0],fornecedorIds:[...d.fornecedorIds],ativo:d.ativo}; }
+        else { lista.push({id:seq,codigo:d.codigo||('PRD-0'+seq),descricao:d.descricao,unidade:d.unidade,categoria:d.categoria,
+          preco:d.preco,fornecedorId:d.fornecedorIds[0],fornecedorIds:[...d.fornecedorIds],ativo:d.ativo,fotos:[...fotoPad]}); seq++; } });
+      return {produtos:lista,seq:{...s.seq,prod:seq},modal:null,form:{}}; });
+    this.audit('Importação de '+cfg.titulo+' por planilha',
+      (f.impArq||'planilha')+' · '+nNovos+' incluído(s) · '+nAtu+' atualizado(s)'+(nErro?' · '+nErro+' linha(s) com erro ignorada(s)':''));
+    this.toast(nNovos+' '+cfg.titulo+' incluído(s)'+(nAtu?' e '+nAtu+' atualizado(s)':'')+' pela planilha.','ok');
+    setTimeout(()=>this._flushPersist(),0); };
   // ── Inventário de estoque ────────────────────────────────────────────────
   _invAtual(){ const inv=this.state.inventarios||[]; return inv.length?inv.reduce((a,b)=>(b.ts||0)>(a.ts||0)?b:a):null; }
   _consumoDesde(ts){ const cons={}; this.state.pedidos.forEach(p=>p.itens.forEach(i=>{
@@ -7400,6 +7738,26 @@ class Component extends DCLogic {
     const validadeDica=M==='proposta'
       ? this._dicaData(S.form.validade,s=>this._erroValidade(s),'Opcional — até quando a proposta vale, no formato dd/mm/aaaa.')
       : {txt:'',cor:'#a89f90',tem:false};
+    // importação de cadastros por planilha (prévia antes de gravar)
+    const impTipo=S.form.impTipo||'fornecedor';
+    const impCfg=this.IMPORTS[impTipo]||this.IMPORTS.fornecedor;
+    const impRows=S.form.impRows||[];
+    const ACIMP={novo:['#e9f3ea','#2f6b39','Incluir'],atualiza:['#e9eef8','#33568f','Atualizar existente'],erro:['#fbeae7','#a33a2b','Linha com erro — será ignorada']};
+    const impN=a=>impRows.filter(r=>r.acao===a).length;
+    const impInfo={titulo:impCfg.titulo,arquivo:S.form.impArq||'',chaveLabel:impCfg.chaveLabel,
+      temErroArq:!!S.form.impErro,erroArq:S.form.impErro||'',temLinhas:impRows.length>0,
+      kpis:[{label:'linhas lidas',val:String(impRows.length),bg:'#faf7f0',bd:'#eae3d6',fg:'#272525'},
+        {label:'a incluir',val:String(impN('novo')),bg:'#f4f9f4',bd:'#cfe0d1',fg:'#2f6b39'},
+        {label:'a atualizar',val:String(impN('atualiza')),bg:'#f2f5fb',bd:'#cfd9ea',fg:'#33568f'},
+        {label:'com erro',val:String(impN('erro')),bg:impN('erro')?'#fdf1ee':'#faf7f0',bd:impN('erro')?'#f0cdc5':'#eae3d6',fg:impN('erro')?'#a33a2b':'#a89f90'}],
+      rows:impRows.map(r=>{ const c=ACIMP[r.acao]||ACIMP.erro;
+        return {n:String(r.n),chave:r.chave,rotulo:r.rotulo,detalhe:r.detalhe,
+          acBg:c[0],acFg:c[1],acLabel:c[2],temErro:r.acao==='erro',errosTxt:(r.erros||[]).join(' · '),
+          linhaBg:r.acao==='erro'?'#fefaf9':'transparent'};}),
+      podeGravar:impN('novo')+impN('atualiza')>0,
+      btnLabel:'Gravar '+(impN('novo')+impN('atualiza'))+' registro(s)',
+      rodape:impN('erro')?('As '+impN('erro')+' linha(s) em vermelho não serão gravadas — corrija-as na planilha e carregue de novo para completar a carga.')
+        :'Todas as linhas estão válidas e serão gravadas ao confirmar.'};
     // categorias do catálogo (tela + modal)
     const GRUPOS=this._cats();
     const totProdGrupo=S.produtos.length||1;
@@ -7489,6 +7847,14 @@ class Component extends DCLogic {
       prazoAtalhos:[7,15,30].map(n=>({label:'+'+n+' dias',set:this.setPrazoEm(n)})),convAviso,
       validadeDica,validadeBd:validadeDica.cor==='#a33a2b'?'#e2a79a':(validadeDica.cor==='#2f6b39'?'#bcd8c0':'#ddd5c7'),
       validadeAtalhos:[30,60].map(n=>({label:'+'+n+' dias',set:this.setValidadeEm(n)})),
+      // importação de cadastros por planilha
+      impModeloForn:this.baixarModeloCad('fornecedor',false),impAtuaisForn:this.baixarModeloCad('fornecedor',true),
+      impClicarForn:this.clicarImport('fornecedor'),impCarregarForn:this.carregarImport('fornecedor'),
+      impModeloProd:this.baixarModeloCad('produto',false),impAtuaisProd:this.baixarModeloCad('produto',true),
+      impClicarProd:this.clicarImport('produto'),impCarregarProd:this.carregarImport('produto'),
+      impModeloRev:this.baixarModeloCad('revenda',false),impAtuaisRev:this.baixarModeloCad('revenda',true),
+      impClicarRev:this.clicarImport('revenda'),impCarregarRev:this.carregarImport('revenda'),
+      mImport:M==='importcad',impInfo,confirmImport:this.confirmImport,
       // categorias do catálogo
       sGrupos:isLoja&&scr==='grupos'&&pode('cadastros.produtos'),
       grupoRows,grupoKpis,grupoStOpts,grupoVazio:grupoRows.length===0,
