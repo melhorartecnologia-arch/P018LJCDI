@@ -258,6 +258,24 @@ export const TEMPLATES = {
       p(`Olá${v.fornecedorNome ? ', ' + esc(v.fornecedorNome) : ''}. Registramos o pagamento de royalties da competência ${b(v.competencia)}.`) +
       linhas([['Competência', v.competencia], ['Valor', v.valor], ['Data do pagamento', v.data], ['Comprovante', v.comprovante]]), 'Royalties'),
   }),
+
+  // ── Acesso de usuários ────────────────────────────────────────────────
+  // Credenciais do primeiro login, enviadas na criação do usuário (quando o
+  // administrador opta pelo envio) ou em um reenvio com nova senha inicial.
+  // Todo envio fica registrado no histórico do usuário e na auditoria.
+  usuario_credenciais: (v) => ({
+    subject: v.reenvio
+      ? 'Seus novos dados de acesso à Plataforma Cidade Imperial'
+      : 'Seu acesso à Plataforma Cidade Imperial',
+    html: layout(v.reenvio ? 'Novos dados de acesso' : 'Bem-vindo(a) à Plataforma Cidade Imperial',
+      p(v.reenvio
+        ? `Olá${v.nome ? ', ' + b(v.nome) : ''}. A senha da sua conta foi redefinida pela Loja. Use os dados abaixo para entrar na plataforma.`
+        : `Olá${v.nome ? ', ' + b(v.nome) : ''}! Uma conta de acesso foi criada para você na Plataforma Cidade Imperial. Use os dados abaixo para o seu primeiro login.`) +
+      linhas([['Endereço da plataforma', v.url], ['E-mail (login)', v.email], ['Senha inicial', v.senha],
+        ['Perfil de acesso', v.perfil], v.vinculo ? ['Vínculo', v.vinculo] : null]) +
+      p('Por segurança, <b>troque a senha assim que entrar pela primeira vez</b> e não compartilhe estes dados com outras pessoas. Este acesso é pessoal e todas as ações realizadas na plataforma ficam registradas na trilha de auditoria.') +
+      p('Se você não esperava este e-mail, avise a Loja Cidade Imperial para que o acesso seja bloqueado.'), 'Acesso'),
+  }),
 }
 
 export function renderTemplate(evento, vars = {}) {

@@ -2522,6 +2522,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
           <th style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Perfil</th>
           <th style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Vínculo</th>
           <th style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Permissões</th>
+          <th style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Dados de acesso</th>
           <th style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Último acesso</th>
           <th style="text-align:left;padding:10px 18px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Situação</th>
         </tr></thead>
@@ -2533,6 +2534,12 @@ input::placeholder,textarea::placeholder{color:#b0a795}
               <td style="padding:11px 10px;font-size:12.5px;color:#8a8378;border-bottom:1px solid #f5f1e8">{{u.vinculo}}</td>
               <td style="padding:11px 10px;border-bottom:1px solid #f5f1e8">
                 <div onClick="{{u.permissoes}}" title="Abrir editor de permissões" style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:#8f682a;border:1px solid #e6cf9e;background:#faf3e4;border-radius:8px;padding:4px 10px;cursor:pointer" style-hover="background:#f5ebd2">⚙ {{u.overTxt}}</div>
+              </td>
+              <td style="padding:11px 10px;border-bottom:1px solid #f5f1e8">
+                <div style="display:flex;align-items:center;gap:7px">
+                  <div onClick="{{u.verEnvios}}" title="Ver o histórico de envios de acesso deste usuário" style="display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;color:{{u.envFg}};border:1px solid {{u.envBd}};background:{{u.envBg}};border-radius:8px;padding:4px 9px;cursor:pointer;white-space:nowrap">✉ {{u.envTxt}}</div>
+                  <span onClick="{{u.enviarAcesso}}" title="Redefinir a senha inicial e enviar os dados de acesso por e-mail" style="font-size:11.5px;font-weight:600;color:#8f682a;cursor:pointer;padding:3px 4px;white-space:nowrap">Enviar</span>
+                </div>
               </td>
               <td style="padding:11px 10px;font-size:11.5px;color:#8a8378;border-bottom:1px solid #f5f1e8">{{u.ultimo}}</td>
               <td style="padding:11px 18px;border-bottom:1px solid #f5f1e8">
@@ -3503,11 +3510,98 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <div style="font-size:11px;color:#b0a795;margin-top:6px">Com 2 ou mais revendas, o usuário ganha o seletor de contexto no topo — opera em nome de cada revenda e vê a visão consolidada do grupo.</div>
       </sc-if>
       <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px"><sc-if value="{{usrEditando}}" hint-placeholder-val="{{false}}">Nova senha (deixe em branco para manter)</sc-if><sc-if value="{{usrNovo}}" hint-placeholder-val="{{true}}">Senha inicial</sc-if></div>
-      <input type="password" value="{{form.senha}}" onChange="{{fxSenhaU}}" placeholder="••••••••" style="width:100%;box-sizing:border-box;padding:10px 13px;border:1px solid #ddd5c7;border-radius:9px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
+      <div style="display:flex;gap:9px;align-items:center">
+        <input type="password" value="{{form.senha}}" onChange="{{fxSenhaU}}" placeholder="••••••••" style="flex:1;min-width:0;box-sizing:border-box;padding:10px 13px;border:1px solid #ddd5c7;border-radius:9px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
+        <div onClick="{{gerarSenhaAcesso}}" title="Gerar uma senha inicial" style="border:1px solid #e5ddcd;color:#6b6459;border-radius:9px;padding:10px 12px;font-size:12px;font-weight:600;cursor:pointer;background:#fff;white-space:nowrap;flex:none" style-hover="background:#f7f3ea">⟳ Gerar</div>
+      </div>
+      <sc-if value="{{usrPodeEnviar}}" hint-placeholder-val="{{true}}">
+        <div style="display:flex;align-items:flex-start;gap:11px;border:1px solid {{usrEnvBd}};background:{{usrEnvFundo}};border-radius:10px;padding:12px 13px;margin-top:14px">
+          <div onClick="{{toggleEnviarAcesso}}" title="Enviar os dados de acesso por e-mail" style="width:36px;height:20px;border-radius:11px;background:{{usrEnvSw}};position:relative;cursor:pointer;flex:none;transition:background .15s;margin-top:1px">
+            <div style="position:absolute;top:2px;left:{{usrEnvX}};width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:left .15s"></div>
+          </div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:12.5px;font-weight:600;color:#272525">{{usrEnvTitulo}}</div>
+            <div style="font-size:11px;color:#8a8378;line-height:1.5;margin-top:3px">{{usrEnvSub}}</div>
+            <sc-if value="{{usrEnvAviso}}" hint-placeholder-val="{{false}}"><div style="font-size:11px;font-weight:600;color:#a33a2b;line-height:1.5;margin-top:5px">⚠ O envio de e-mail (SMTP) está desativado — a tentativa fica registrada no histórico, mas nenhuma mensagem sai. Ative em Configurações Técnicas › Configuração de e-mail.</div></sc-if>
+          </div>
+        </div>
+      </sc-if>
       <sc-if value="{{form.erro}}" hint-placeholder-val="{{false}}"><div style="color:#a33a2b;font-size:12.5px;margin-top:11px">{{form.erro}}</div></sc-if>
       <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:18px">
         <div onClick="{{mClose}}" style="border:1px solid #e5ddcd;color:#6b6459;border-radius:8px;padding:9px 15px;font-size:13px;font-weight:600;cursor:pointer;background:#fff" style-hover="background:#f7f3ea">Cancelar</div>
-        <div onClick="{{salvarUsuario}}" style="background:#B38335;color:#fff;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#9a6f2b">Salvar usuário</div>
+        <div onClick="{{salvarUsuario}}" style="background:#B38335;color:#fff;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#9a6f2b">{{usrSalvarLabel}}</div>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{mAcessoEnv}}" hint-placeholder-val="{{false}}">
+  <div style="position:fixed;inset:0;background:rgba(39,37,37,.45);display:flex;align-items:center;justify-content:center;z-index:50">
+    <div style="background:#fff;border-radius:14px;width:460px;max-width:92vw;max-height:88vh;overflow-y:auto;padding:22px 24px;box-shadow:0 18px 50px rgba(39,37,37,.25)">
+      <div style="font-size:16px;font-weight:700;margin-bottom:2px">Enviar dados de acesso</div>
+      <div style="font-size:12.5px;color:#8a8378;margin-bottom:14px">{{envUsr.nome}} · {{envUsr.email}} · {{envUsr.papelLabel}}</div>
+      <div style="background:#faf7f0;border:1px solid #e8e1d2;border-radius:10px;padding:11px 13px;font-size:12px;color:#6b6459;line-height:1.55">A senha original não fica guardada — apenas o seu resumo criptográfico. Por isso o reenvio define uma <b>nova senha inicial</b>, que passa a valer imediatamente para este usuário.</div>
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:14px 0 5px">Nova senha inicial</div>
+      <div style="display:flex;gap:9px;align-items:center">
+        <input value="{{form.senha}}" onChange="{{fxSenhaU}}" style="flex:1;min-width:0;box-sizing:border-box;padding:10px 13px;border:1px solid #ddd5c7;border-radius:9px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525;font-family:monospace;letter-spacing:.04em">
+        <div onClick="{{gerarSenhaAcesso}}" title="Gerar outra senha" style="border:1px solid #e5ddcd;color:#6b6459;border-radius:9px;padding:10px 12px;font-size:12px;font-weight:600;cursor:pointer;background:#fff;white-space:nowrap;flex:none" style-hover="background:#f7f3ea">⟳ Gerar</div>
+      </div>
+      <sc-if value="{{envSmtpOff}}" hint-placeholder-val="{{false}}"><div style="font-size:11.5px;font-weight:600;color:#a33a2b;line-height:1.5;margin-top:11px">⚠ O envio de e-mail (SMTP) está desativado — a senha será redefinida e a tentativa registrada, mas nenhuma mensagem será enviada.</div></sc-if>
+      <sc-if value="{{form.erro}}" hint-placeholder-val="{{false}}"><div style="color:#a33a2b;font-size:12.5px;margin-top:11px">{{form.erro}}</div></sc-if>
+      <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:18px">
+        <div onClick="{{mClose}}" style="border:1px solid #e5ddcd;color:#6b6459;border-radius:8px;padding:9px 15px;font-size:13px;font-weight:600;cursor:pointer;background:#fff" style-hover="background:#f7f3ea">Cancelar</div>
+        <div onClick="{{confirmEnvioAcesso}}" style="background:#B38335;color:#fff;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#9a6f2b">Redefinir e enviar por e-mail</div>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{mEnvios}}" hint-placeholder-val="{{false}}">
+  <div style="position:fixed;inset:0;background:rgba(39,37,37,.45);display:flex;align-items:center;justify-content:center;z-index:50">
+    <div style="background:#fff;border-radius:14px;width:640px;max-width:94vw;max-height:88vh;overflow-y:auto;padding:22px 24px;box-shadow:0 18px 50px rgba(39,37,37,.25)">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px">
+        <div>
+          <div style="font-size:16px;font-weight:700">Histórico de envios de acesso</div>
+          <div style="font-size:12.5px;color:#8a8378;margin-top:2px">{{envUsr.nome}} · {{envUsr.email}} · registro completo para rastreabilidade</div>
+        </div>
+        <div onClick="{{mClose}}" title="Fechar" style="font-size:20px;line-height:1;color:#a89f90;cursor:pointer;padding:2px 9px;border-radius:8px;flex:none" style-hover="background:#f7f3ea">×</div>
+      </div>
+      <sc-if value="{{envVazio}}" hint-placeholder-val="{{false}}">
+        <div style="border:1px dashed #e5ddcd;border-radius:11px;padding:26px;text-align:center;font-size:13px;color:#a89f90">Nenhum envio de dados de acesso registrado para este usuário.</div>
+      </sc-if>
+      <sc-if value="{{envTem}}" hint-placeholder-val="{{true}}">
+        <div style="border:1px solid #eae3d6;border-radius:11px;overflow:hidden">
+          <table style="width:100%;border-collapse:collapse">
+            <thead><tr>
+              <th style="text-align:left;padding:9px 14px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Data e hora</th>
+              <th style="text-align:left;padding:9px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Destinatário</th>
+              <th style="text-align:left;padding:9px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Motivo</th>
+              <th style="text-align:left;padding:9px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Enviado por</th>
+              <th style="text-align:left;padding:9px 14px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Resultado</th>
+            </tr></thead>
+            <tbody>
+              <sc-for list="{{envRows}}" as="e" hint-placeholder-count="3">
+                <tr>
+                  <td style="padding:10px 14px;font-size:12px;white-space:nowrap;border-bottom:1px solid #f5f1e8">{{e.quando}}</td>
+                  <td style="padding:10px 10px;font-size:12px;border-bottom:1px solid #f5f1e8">{{e.destinatario}}</td>
+                  <td style="padding:10px 10px;font-size:12px;color:#6b6459;border-bottom:1px solid #f5f1e8">{{e.motivo}}</td>
+                  <td style="padding:10px 10px;font-size:12px;color:#6b6459;border-bottom:1px solid #f5f1e8">{{e.por}}</td>
+                  <td style="padding:10px 14px;border-bottom:1px solid #f5f1e8">
+                    <span style="font-size:11px;font-weight:600;border-radius:6px;padding:2px 8px;background:{{e.eBg}};color:{{e.eFg}}">{{e.eLabel}}</span>
+                    <div style="font-size:10.5px;color:#a89f90;margin-top:3px">{{e.detalhe}}</div>
+                  </td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+      </sc-if>
+      <div style="font-size:11.5px;color:#b0a795;margin-top:12px">Os mesmos eventos ficam registrados na trilha de Segurança &amp; Auditoria, no módulo Usuários.</div>
+      <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:16px">
+        <sc-if value="{{envPodeEnviar}}" hint-placeholder-val="{{true}}">
+          <div onClick="{{envReenviar}}" style="border:1px solid #e6cf9e;color:#8f682a;background:#faf3e4;border-radius:8px;padding:9px 15px;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#f5ebd2">✉ Enviar acesso novamente</div>
+        </sc-if>
+        <div onClick="{{mClose}}" style="background:#272525;color:#fff;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#3a3735">Fechar</div>
       </div>
     </div>
   </div>
@@ -3624,7 +3718,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
 </sc-if>
 
 <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
-  <div style="position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:#a33a2b;color:#fff;font-size:13px;font-weight:600;border-radius:10px;padding:12px 20px;box-shadow:0 10px 30px rgba(39,37,37,.35);z-index:80;max-width:80vw;text-align:center">⛔ {{toast}}</div>
+  <div style="position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:{{toastBg}};color:#fff;font-size:13px;font-weight:600;border-radius:10px;padding:12px 20px;box-shadow:0 10px 30px rgba(39,37,37,.35);z-index:80;max-width:80vw;text-align:center">{{toastIcone}} {{toast}}</div>
 </sc-if>
 
 <sc-if value="{{temLb}}" hint-placeholder-val="{{false}}">
@@ -3879,7 +3973,7 @@ class Component extends DCLogic {
     if(re(/login|logout|acesso negado|sessão/)) modulo='Segurança';
     let sev='info';
     if(re(/rejei|cancelamento|recusad|falha|negado|encerramento|em atraso/)) sev='alerta';
-    if(re(/falha de login|acesso negado|permiss|cadastro de usuário|edição de usuário|inativação de usuário|alteração de royalty|análise fiscal por ia|smtp|configuração de e-mail/)) sev='critico';
+    if(re(/falha de login|acesso negado|permiss|cadastro de usuário|edição de usuário|inativação de usuário|credenciais de acesso|senha redefinida|alteração de royalty|análise fiscal por ia|smtp|configuração de e-mail/)) sev='critico';
     return {modulo,sev}; }
   audit(acao,detalhe,extra){ const u=this.usuarioAtual(); const c=this._audClass(acao);
     this.setState(s=>({auditoria:[{quando:this.ts(),ts:Date.now(),usuario:this.userName(),email:u?u.email:null,papel:u?u.papel:null,modulo:c.modulo,sev:c.sev,acao,detalhe,...(extra||{})},...s.auditoria].slice(0,400)})); }
@@ -4559,19 +4653,24 @@ class Component extends DCLogic {
       "titulo": "Gerenciar contas de acesso e permissões",
       "resumo": "Tela do Administrador Técnico para criar usuários por perfil (Administrador, Loja, Fornecedor, Revenda) e ajustar permissões individuais de granularidade fina.",
       "passos": [
-        "Clique em \"+ Novo usuário\" para criar uma conta: informe nome, e-mail (login), o perfil de acesso e a senha inicial; para Fornecedor e Revenda, selecione também o vínculo.",
+        "Clique em \"+ Novo usuário\" para criar uma conta: informe nome, e-mail (login), o perfil de acesso e a senha inicial; para Fornecedor e Revenda, selecione também o vínculo. Use \"⟳ Gerar\" para criar uma senha inicial forte automaticamente.",
+        "Antes de salvar, responda à pergunta \"Enviar por e-mail os dados de acesso para o primeiro login?\": com o interruptor ligado (padrão), o usuário recebe o endereço da plataforma, o e-mail de login e a senha inicial assim que a conta é criada; desligado, nenhum e-mail sai e você entrega a senha por outro meio.",
+        "Na coluna \"Dados de acesso\", o selo mostra quantos envios já foram feitos para aquele usuário — clique nele para abrir o \"Histórico de envios de acesso\", com data e hora, destinatário, motivo, quem enviou e o resultado de cada envio.",
+        "Para reenviar o acesso, clique em \"Enviar\" na linha do usuário: como a senha original não fica guardada, o sistema propõe uma nova senha inicial (que você pode gerar novamente), redefine a senha e envia o e-mail.",
         "Use o campo \"Buscar por nome ou e-mail…\" e o seletor \"Todos os perfis\" para localizar contas na lista.",
         "Na coluna \"Permissões\", o selo \"⚙ padrão do perfil\" indica que o usuário segue o padrão; \"personalizada(s)\" mostra quantas permissões foram ajustadas individualmente.",
         "Clique no selo \"⚙\" para abrir o editor de permissões: cada chave do sistema (receber pedidos, decidir cotações, faturar, cobrar royalties, exportar…) tem um interruptor permitir/negar.",
         "No editor, a linha mostra a origem de cada permissão — \"padrão do perfil\" ou \"personalizada\" (com o padrão entre parênteses); use \"↺ Restaurar padrão do perfil\" para limpar os ajustes.",
-        "Use \"Editar\" para alterar nome, e-mail, perfil, vínculo ou redefinir a senha (deixe em branco para manter a atual).",
+        "Use \"Editar\" para alterar nome, e-mail, perfil, vínculo ou redefinir a senha (deixe em branco para manter a atual); ao digitar uma nova senha, a plataforma pergunta se deve enviá-la por e-mail ao usuário.",
         "Use \"Inativar\"/\"Reativar\" para bloquear ou devolver o acesso — um usuário inativo não consegue entrar na plataforma."
       ],
       "dicas": [
         "Usuários do perfil Revenda podem ser vinculados a VÁRIAS revendas do mesmo grupo econômico — basta marcar mais de uma revenda no cadastro; o usuário ganha o seletor de contexto e a visão consolidada do grupo.",
         "O sistema exige ao menos um Administrador Técnico ativo — o último admin não pode ser inativado nem rebaixado.",
         "As permissões personalizadas sobrepõem o padrão do perfil apenas para aquele usuário; os demais continuam no padrão.",
-        "Cada alteração de permissão fica registrada na trilha de auditoria (Segurança & Auditoria)."
+        "Cada alteração de permissão fica registrada na trilha de auditoria (Segurança & Auditoria).",
+        "TODO envio de dados de acesso fica registrado — no histórico do próprio usuário e na trilha de auditoria (módulo Usuários, severidade crítica) — com data e hora, destinatário, motivo, quem enviou e o resultado. Tentativas com o envio de e-mail desativado também ficam registradas como \"Não enviado\".",
+        "O envio depende da \"Configuração de e-mail (SMTP)\" estar ativa; com o envio desativado, a plataforma avisa na hora e registra a tentativa sem disparar a mensagem."
       ]
     },
     "inv": {
@@ -5464,7 +5563,7 @@ class Component extends DCLogic {
   _soVinculados(citens){ const fid=this._fidForn(); if(!fid) return {itens:citens,ocultos:0};
     const vis=(citens||[]).filter(it=>{ const p=this.state.produtos.find(x=>x.id===it.produtoId); return p&&this._pTemForn(p,fid); });
     return {itens:vis,ocultos:(citens||[]).length-vis.length}; }
-  toast(msg){ clearTimeout(this._toastT); this.setState({toast:msg}); this._toastT=setTimeout(()=>this.setState({toast:null}),5000); }
+  toast(msg,tipo){ clearTimeout(this._toastT); this.setState({toast:msg,toastTipo:tipo||'erro'}); this._toastT=setTimeout(()=>this.setState({toast:null}),5000); }
   _bloqueioTerceiro(p,onde){ const me=(this.state.fornecedores.find(x=>x.id===this.state.fornAtivo)||{}).nome||this.userName();
     this.audit('Acesso bloqueado a produto de terceiro',((p&&p.codigo)||'produto')+' · tentativa de '+me+(onde?' — '+onde:'')+' (RF55)');
     this.toast('Acesso bloqueado: '+((p&&p.codigo)||'este produto')+' não está vinculado ao seu cadastro — a tentativa foi registrada na auditoria.');
@@ -5856,6 +5955,62 @@ class Component extends DCLogic {
     this.audit('Logout realizado',u?(u.email+' · sessão encerrada pelo usuário'):'sessão encerrada');
     this.setState({logado:false,usuario:null,role:null,scr:null,selPed:null,selCot:null,modal:null,form:{},loginSenha:''});
     setTimeout(()=>this._flushPersist(),0); };
+  // ── Envio das credenciais de primeiro acesso (rastreável por usuário) ───
+  // Toda tentativa de envio — feita ou não — vira uma linha no histórico do
+  // usuário (u.enviosAcesso) e um registro na trilha de auditoria.
+  ENV_ST={enviando:['#fdf3e0','#8a5a12','Enviando…'],enviado:['#e9f3ea','#2f6b39','Enviado'],
+    nao_enviado:['#efedea','#6b665e','Não enviado'],falha:['#fbeae7','#a33a2b','Falha no envio']};
+  _envChip(st){ const c=this.ENV_ST[st]||this.ENV_ST.nao_enviado; return {eBg:c[0],eFg:c[1],eLabel:c[2]}; }
+  _gerarSenha(){ const mai='ABCDEFGHJKLMNPQRSTUVWXYZ',min='abcdefghijkmnopqrstuvwxyz',dig='23456789';
+    const pick=s=>s[Math.floor(Math.random()*s.length)];
+    return pick(mai)+Array.from({length:4},()=>pick(min)).join('')+Array.from({length:3},()=>pick(dig)).join(''); }
+  _plataformaUrl(){ try{ return window.location.origin; }catch(e){ return ''; } }
+  _vinculoUsr(u){ if(u.papel==='fornecedor'){ const f=this.state.fornecedores.find(x=>x.id===u.fornecedorId); return f?f.nome:''; }
+    if(u.papel==='revenda') return this._minhasRevs(u).map(id=>{ const r=this.state.revendas.find(x=>x.id===id); return r?r.nome:''; }).filter(Boolean).join(' · ');
+    return ''; }
+  _regEnvio(uid,e){ this.setState(s=>({usuarios:s.usuarios.map(u=>u.id===uid?{...u,enviosAcesso:[e,...(u.enviosAcesso||[])].slice(0,50)}:u)})); }
+  _patchEnvio(uid,eid,patch){ this.setState(s=>({usuarios:s.usuarios.map(u=>u.id!==uid?u:
+    {...u,enviosAcesso:(u.enviosAcesso||[]).map(e=>e.id===eid?{...e,...patch}:e)})})); }
+  enviarAcessoUsuario(u,senha,motivo){
+    const cfg=this.state.configEmail||{}; const eid='env-'+Date.now()+'-'+(this._envSeq=(this._envSeq||0)+1);
+    const base={id:eid,quando:this.ts(),ts:Date.now(),destinatario:u.email,por:this.userName(),motivo};
+    const det=u.nome+' · '+u.email+' · '+motivo;
+    if(!cfg.ativo){ this._regEnvio(u.id,{...base,status:'nao_enviado',detalhe:'Envio de e-mail (SMTP) desativado em Configurações Técnicas'});
+      this.audit('Credenciais de acesso não enviadas ao usuário',det+' · envio de e-mail (SMTP) desativado');
+      this.toast('Usuário salvo, mas o e-mail com os dados de acesso NÃO foi enviado — ative o envio de e-mail em Configurações Técnicas.'); return; }
+    this._regEnvio(u.id,{...base,status:'enviando',detalhe:'Envio em andamento'});
+    this.audit('Credenciais de acesso enviadas ao usuário',det);
+    fetch('/api/email/notify',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({evento:'usuario_credenciais',to:[u.email],vars:{nome:u.nome,email:u.email,senha,
+        perfil:this.PAPEIS[u.papel]||u.papel,vinculo:this._vinculoUsr(u),url:this._plataformaUrl(),
+        reenvio:motivo!=='Criação do usuário'}})})
+      .then(r=>r.json()).then(d=>{
+        if(d&&d.skipped){ this._patchEnvio(u.id,eid,{status:'nao_enviado',detalhe:String(d.skipped)});
+          this.audit('Credenciais de acesso não enviadas ao usuário',det+' · '+d.skipped); return; }
+        if(d&&d.ok){ this._patchEnvio(u.id,eid,{status:'enviado',detalhe:'Mensagem aceita pelo servidor de e-mail'});
+          this.toast('Dados de acesso enviados para '+u.email+'.','ok'); return; }
+        const er=(d&&(d.error||(((d.results||[]).find(x=>!x.ok)||{}).error)))||'falha no envio';
+        this._patchEnvio(u.id,eid,{status:'falha',detalhe:String(er)});
+        this.audit('Falha no envio das credenciais de acesso ao usuário',det+' · '+er);
+        this.toast('Falha ao enviar os dados de acesso: '+er); })
+      .catch(e=>{ this._patchEnvio(u.id,eid,{status:'falha',detalhe:e.message||String(e)});
+        this.audit('Falha no envio das credenciais de acesso ao usuário',det+' · '+(e.message||e));
+        this.toast('Falha ao enviar os dados de acesso.'); }); }
+  toggleEnviarAcesso=()=>this.setState(s=>({form:{...s.form,enviarAcesso:!s.form.enviarAcesso,erro:null}}));
+  gerarSenhaAcesso=()=>this.setState(s=>({form:{...s.form,senha:this._gerarSenha(),erro:null}}));
+  abrirEnvioAcesso(id){ this._aea=this._aea||{}; if(!this._aea[id]) this._aea[id]=()=>{
+    if(!this.pode('config.usuarios')) return this.negado('Você não tem permissão para gerenciar usuários.','config.usuarios');
+    this.setState({modal:'acessoenv',form:{usuarioId:id,senha:this._gerarSenha()}}); }; return this._aea[id]; }
+  verEnviosAcesso(id){ this._vea=this._vea||{}; if(!this._vea[id]) this._vea[id]=()=>this.setState({modal:'enviosacesso',form:{usuarioId:id}}); return this._vea[id]; }
+  // Reenvio: como só guardamos o hash, o acesso é reenviado com uma nova senha
+  // inicial — que passa a valer imediatamente para o usuário.
+  confirmEnvioAcesso=()=>{ if(!this.pode('config.usuarios')) return this.negado('Você não tem permissão para gerenciar usuários.','config.usuarios');
+    const f=this.state.form; const u=this.state.usuarios.find(x=>x.id===f.usuarioId); if(!u) return;
+    const senha=(f.senha||'').trim();
+    if(senha.length<6) return this.err('A senha inicial deve ter ao menos 6 caracteres.');
+    this.setState(s=>({usuarios:s.usuarios.map(x=>x.id===u.id?{...x,senhaHash:this.hashSenha(senha)}:x),modal:null,form:{}}));
+    this.audit('Senha redefinida para reenvio de acesso ao usuário',u.nome+' · '+u.email);
+    this.enviarAcessoUsuario(u,senha,'Reenvio de acesso'); };
   // CRUD de usuários (Configurações Técnicas › Usuários e permissões)
   setBuscaUsr=e=>this.setState({buscaUsr:e.target.value});
   setFiltroPapel=e=>this.setState({filtroPapel:e.target.value});
@@ -5875,13 +6030,19 @@ class Component extends DCLogic {
       this.setState(s=>({usuarios:s.usuarios.map(u=>u.id===f.editId?{...u,nome,email,papel,
         fornecedorId:papel==='fornecedor'?+f.fornecedorId:null,revendaId:papel==='revenda'?revIds[0]:null,revendaIds:papel==='revenda'?revIds:null,
         senhaHash:(f.senha||'').trim()?this.hashSenha(f.senha.trim()):u.senhaHash}:u),modal:null,form:{}}));
-      this.audit('Edição de usuário',nome+' · '+(this.PAPEIS[papel]||papel)+(papel==='revenda'?' · '+revIds.length+' revenda(s) vinculada(s)':'')+((f.senha||'').trim()?' · senha redefinida':'')); return; }
+      this.audit('Edição de usuário',nome+' · '+(this.PAPEIS[papel]||papel)+(papel==='revenda'?' · '+revIds.length+' revenda(s) vinculada(s)':'')+((f.senha||'').trim()?' · senha redefinida':''));
+      if((f.senha||'').trim()&&f.enviarAcesso) this.enviarAcessoUsuario({...old,nome,email,papel,
+        fornecedorId:papel==='fornecedor'?+f.fornecedorId:null,revendaId:papel==='revenda'?revIds[0]:null,revendaIds:papel==='revenda'?revIds:null},
+        f.senha.trim(),'Redefinição de senha'); return; }
     if(!(f.senha||'').trim()) return this.err('Defina a senha inicial do usuário.');
     const id=Math.max(0,...this.state.usuarios.map(u=>u.id))+1;
-    this.setState(s=>({usuarios:[...s.usuarios,{id,nome,email,papel,senhaHash:this.hashSenha(f.senha.trim()),
+    const enviar=!!f.enviarAcesso;
+    const novo={id,nome,email,papel,senhaHash:this.hashSenha(f.senha.trim()),
       fornecedorId:papel==='fornecedor'?+f.fornecedorId:null,revendaId:papel==='revenda'?revIds[0]:null,revendaIds:papel==='revenda'?revIds:null,
-      ativo:true,permissoes:{},ultimoAcesso:null,criadoEm:this.hoje()}],modal:null,form:{}}));
-    this.audit('Cadastro de usuário',nome+' · '+email+' · '+(this.PAPEIS[papel]||papel)); };
+      ativo:true,permissoes:{},ultimoAcesso:null,criadoEm:this.hoje(),enviosAcesso:[]};
+    this.setState(s=>({usuarios:[...s.usuarios,novo],modal:null,form:{}}));
+    this.audit('Cadastro de usuário',nome+' · '+email+' · '+(this.PAPEIS[papel]||papel)+(enviar?' · com envio dos dados de acesso por e-mail':' · sem envio dos dados de acesso'));
+    if(enviar) this.enviarAcessoUsuario(novo,f.senha.trim(),'Criação do usuário'); };
   toggleUsuario(id){ this._tu=this._tu||{}; if(!this._tu[id]) this._tu[id]=()=>{ if(!this.pode('config.usuarios')) return;
     const u=this.state.usuarios.find(x=>x.id===id); if(!u) return;
     if(u.ativo&&u.papel==='admin'&&this.state.usuarios.filter(x=>x.papel==='admin'&&x.ativo&&x.id!==id).length===0) return;
@@ -6967,8 +7128,15 @@ class Component extends DCLogic {
       .filter(u=>(S.filtroPapel==='todos'||u.papel===S.filtroPapel)&&(!busU||u.nome.toLowerCase().includes(busU)||u.email.toLowerCase().includes(busU)))
       .map(u=>{ const nOver=Object.keys(u.permissoes||{}).length;
         const vinculo=u.papel==='fornecedor'?(F(u.fornecedorId).nome||'—'):(u.papel==='revenda'?(this._minhasRevs(u).map(r2=>R(r2).nome).join(' · ')||'—'):'—');
+        const envs=u.enviosAcesso||[]; const ult=envs[0];
+        const envOk=envs.filter(e=>e.status==='enviado').length;
         return {id:u.id,nome:u.nome,email:u.email,papelLabel:this.PAPEIS[u.papel]||u.papel,vinculo,
           ...this.chip(u.ativo?'ativo':'inativo'),ultimo:u.ultimoAcesso||'— nunca acessou —',
+          envTxt:envs.length?(envs.length+' envio(s)'+(ult&&ult.status!=='enviado'?' · '+this._envChip(ult.status).eLabel.toLowerCase():'')):'nunca enviado',
+          envBg:envs.length?(envOk?'#eef4ee':'#fdf3e0'):'#faf7f0',
+          envFg:envs.length?(envOk?'#2f6b39':'#8a5a12'):'#a89f90',
+          envBd:envs.length?(envOk?'#cfe0d1':'#e6cf9e'):'#e8e1d2',
+          verEnvios:this.verEnviosAcesso(u.id),enviarAcesso:this.abrirEnvioAcesso(u.id),
           overTxt:nOver?nOver+' personalizada(s)':'padrão do perfil',temOver:nOver>0,
           souEu:u.id===S.usuario,
           editar:this.open('usuario',{editId:u.id,nome:u.nome,email:u.email,papel:u.papel,
@@ -6979,6 +7147,16 @@ class Component extends DCLogic {
       return {nome:r2.nome,toggle:this.toggleRevUsr(r2.id),bg:on?'#faf5e9':'#fff',bd:on?'#B38335':'#e8e1d2',fg:on?'#8f682a':'#6b6459',mark:on?'✓ ':''};}):[];
     const usrRevSel=String((S.form.revendaIds||[]).length)+' selecionada(s)';
     const papelFormOpts=Object.entries(this.PAPEIS).map(([v,label])=>({v,label}));
+    // envio de credenciais de acesso (modais de reenvio e de histórico)
+    const smtpOff=!(S.configEmail&&S.configEmail.ativo);
+    let envUsr={nome:'',email:'',papelLabel:''},envRows=[],envReenviar=null;
+    if((M==='acessoenv'||M==='enviosacesso')&&S.form.usuarioId){ const u=S.usuarios.find(x=>x.id===S.form.usuarioId);
+      if(u){ envUsr={nome:u.nome,email:u.email,papelLabel:this.PAPEIS[u.papel]||u.papel};
+        envRows=(u.enviosAcesso||[]).map(e=>({quando:e.quando,destinatario:e.destinatario,motivo:e.motivo,por:e.por,
+          detalhe:e.detalhe||'',...this._envChip(e.status)}));
+        envReenviar=this.abrirEnvioAcesso(u.id); } }
+    const usrNovoM=M==='usuario'&&!S.form.editId;
+    const usrEnvOn=!!S.form.enviarAcesso;
     // editor de permissões (modal)
     let permGrupos=[],permUsr={nome:'',papelLabel:'',temOver:false,restaurar:null};
     if(M==='permissoes'&&S.form.usuarioId){ const u=S.usuarios.find(x=>x.id===S.form.usuarioId);
@@ -7028,8 +7206,23 @@ class Component extends DCLogic {
       sUsuarios:isLoja&&scr==='usuarios'&&pode('config.usuarios'),
       usrRows,papelOpts,papelFormOpts,usrRevRows,usrRevSel,buscaUsr:S.buscaUsr,setBuscaUsr:this.setBuscaUsr,
       filtroPapel:S.filtroPapel,setFiltroPapel:this.setFiltroPapel,
-      novoUsuario:this.open('usuario',{papel:'loja'}),salvarUsuario:this.salvarUsuario,
-      mUsr:M==='usuario',usrEditando:!!S.form.editId,usrNovo:M==='usuario'&&!S.form.editId,mPerms:M==='permissoes',permGrupos,permUsr,
+      novoUsuario:this.open('usuario',{papel:'loja',enviarAcesso:true}),salvarUsuario:this.salvarUsuario,
+      mUsr:M==='usuario',usrEditando:!!S.form.editId,usrNovo:usrNovoM,mPerms:M==='permissoes',permGrupos,permUsr,
+      // pergunta e histórico de envio dos dados de primeiro acesso
+      usrPodeEnviar:usrNovoM||!!(S.form.senha||'').trim(),
+      usrEnvSw:usrEnvOn?'#2f6b39':'#d9d2c4',usrEnvX:usrEnvOn?'17px':'3px',
+      usrEnvBd:usrEnvOn?'#cfe0d1':'#e8e1d2',usrEnvFundo:usrEnvOn?'#f4f9f4':'#faf7f0',
+      usrEnvTitulo:usrNovoM?'Enviar por e-mail os dados de acesso para o primeiro login?':'Enviar por e-mail a nova senha de acesso?',
+      usrEnvSub:usrEnvOn
+        ?('Ao salvar, '+(S.form.email||'o usuário')+' recebe o endereço da plataforma, o e-mail de login e a senha inicial. O envio fica registrado no histórico do usuário e na auditoria.')
+        :'Nenhum e-mail será enviado — entregue a senha inicial ao usuário por outro meio. A decisão fica registrada na auditoria.',
+      usrEnvAviso:usrEnvOn&&smtpOff,
+      usrSalvarLabel:(usrEnvOn&&!smtpOff)?'Salvar e enviar acesso':'Salvar usuário',
+      gerarSenhaAcesso:this.gerarSenhaAcesso,toggleEnviarAcesso:this.toggleEnviarAcesso,
+      mAcessoEnv:M==='acessoenv',mEnvios:M==='enviosacesso',envUsr,envRows,
+      envVazio:M==='enviosacesso'&&envRows.length===0,envTem:envRows.length>0,
+      envReenviar,envPodeEnviar:!!envReenviar&&pode('config.usuarios'),envSmtpOff:smtpOff,
+      confirmEnvioAcesso:this.confirmEnvioAcesso,
       // inventário de estoque
       sInv:isLoja&&scr==='inv'&&pode('inventario.ver'),
       invSaldoRows,invHistRows,temInvLanc:(S.inventarios||[]).length>0,
@@ -7095,6 +7288,7 @@ class Component extends DCLogic {
       exportRelPedidos:this.exportRelPedidos,exportRelFat:this.exportRelFat,
       // fornecedor
       fMeNome:fMe.nome||'',fPctStr,fPedRows,fCotRows,fFatRows,fRoyRows,toast:S.toast||'',
+      toastBg:S.toastTipo==='ok'?'#2f6b39':'#a33a2b',toastIcone:S.toastTipo==='ok'?'✓':'⛔',
       fVisCards:(S.fPedVis||'cards')!=='lista',fVisLista:S.fPedVis==='lista',
       fPedVisCards:this.setFPedVis('cards'),fPedVisLista:this.setFPedVis('lista'),
       fVisCardsBg:(S.fPedVis||'cards')!=='lista'?'#272525':'#fff',fVisCardsFg:(S.fPedVis||'cards')!=='lista'?'#fff':'#6b6459',
