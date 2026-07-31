@@ -399,7 +399,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
             <div style="display:flex;flex-direction:column;gap:9px">
               <div onClick="{{pd.estoqueFn}}" style="text-align:center;background:#fff;color:#1f6b5e;border:1px solid #bcd9d3;border-radius:9px;padding:10px 0;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#eef6f4">Atender com estoque da Loja…</div>
               <div onClick="{{pd.diretoFn}}" style="text-align:center;background:#272525;color:#fff;border-radius:9px;padding:10px 0;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#3d3a3a">Envio direto a um fornecedor…</div>
-              <div onClick="{{pd.cotarFn}}" style="text-align:center;background:#B38335;color:#fff;border-radius:9px;padding:10px 0;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#9a6f2b">Abrir cotação (2+ fornecedores)…</div>
+              <div onClick="{{pd.cotarFn}}" style="text-align:center;background:#B38335;color:#fff;border-radius:9px;padding:10px 0;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#9a6f2b">Abrir cotação…</div>
             </div>
           </div>
         </sc-if>
@@ -413,7 +413,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
     <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-bottom:18px">
       <div>
         <div style="font-size:21px;font-weight:700;margin:2px 0 3px">Cotações</div>
-        <div style="font-size:13px;color:#8a8378">Processo opcional acionado pela Loja — convide 2+ fornecedores e compare propostas</div>
+        <div style="font-size:13px;color:#8a8378">Processo opcional acionado pela Loja — convide um ou mais fornecedores e compare propostas</div>
       </div>
       <sc-if value="{{podeCotAbrir}}" hint-placeholder-val="{{true}}"><div onClick="{{novaCotacao}}" style="background:#B38335;color:#fff;border-radius:9px;padding:10px 16px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:#9a6f2b">+ Nova cotação</div></sc-if>
     </div>
@@ -3129,7 +3129,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
   <div style="position:fixed;inset:0;background:rgba(39,37,37,.45);display:flex;align-items:center;justify-content:center;z-index:50">
     <div style="background:#fff;border-radius:14px;width:480px;max-width:92vw;max-height:86vh;overflow-y:auto;padding:22px 24px;box-shadow:0 18px 50px rgba(39,37,37,.25)">
       <div style="font-size:16px;font-weight:700">Abrir cotação</div>
-      <div style="font-size:12.5px;color:#8a8378;margin-top:2px">RF20–RF23 · RF57 — selecione 2+ fornecedores homologados; ajuste a quantidade por item e acompanhe o total estimado</div>
+      <div style="font-size:12.5px;color:#8a8378;margin-top:2px">RF20–RF23 · RF57 — selecione um ou mais fornecedores homologados; ajuste a quantidade por item e acompanhe o total estimado</div>
       <div style="font-size:12px;font-weight:600;color:#6b6459;margin:14px 0 5px">Pedido de origem</div>
       <select value="{{form.pedidoId}}" onChange="{{setPedidoCot}}" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
         <option value="">Selecione um pedido com itens aprovados…</option>
@@ -3163,12 +3163,13 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         </div>
         <sc-if value="{{cotEstim.inval}}" hint-placeholder-val="{{false}}"><div style="color:#a33a2b;font-size:11.5px;margin-top:5px">Há quantidade inválida em item selecionado — informe um valor entre 1 e a quantidade aprovada; o item fora da faixa não entra no total.</div></sc-if>
       </sc-if>
-      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 6px">Fornecedores convidados (mínimo 2) <span style="font-weight:400;color:#a89f90">— vinculados aos produtos cotados</span></div>
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 6px">Fornecedores convidados <span style="font-weight:400;color:#a89f90">— um ou mais, entre os vinculados aos produtos cotados</span></div>
       <div style="display:flex;flex-wrap:wrap;gap:8px">
         <sc-for list="{{convRows}}" as="cv" hint-placeholder-count="3">
           <div onClick="{{cv.toggle}}" style="font-size:12.5px;font-weight:600;border-radius:8px;padding:8px 12px;cursor:pointer;background:{{cv.bg}};color:{{cv.fg}};border:1px solid {{cv.bd}}">{{cv.mark}}{{cv.nome}}</div>
         </sc-for>
       </div>
+      <sc-if value="{{convAviso.tem}}" hint-placeholder-val="{{true}}"><div style="font-size:11px;color:{{convAviso.cor}};margin-top:7px;line-height:1.45">{{convAviso.txt}}</div></sc-if>
       <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Data limite para propostas</div>
       <input value="{{form.prazo}}" onChange="{{fxPrazo}}" inputmode="numeric" maxlength="10" placeholder="dd/mm/aaaa" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid {{prazoBd}};border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
       <sc-if value="{{prazoDica.tem}}" hint-placeholder-val="{{true}}"><div style="font-size:11px;color:{{prazoDica.cor}};margin-top:5px;line-height:1.45">{{prazoDica.txt}}</div></sc-if>
@@ -4338,7 +4339,7 @@ class Component extends DCLogic {
         "Os botões 'Receber' e 'Rejeitar' na lista só aparecem nas linhas com status 'Pendente'; pedidos já decididos não mostram essas ações.",
         "A rejeição sempre exige uma justificativa — sem ela o sistema não conclui a operação, e o texto informado fica visível para a revenda.",
         "O botão 'Receber' da lista libera o pedido inteiro de uma vez; quando quiser tratar os itens de formas diferentes, abra o 'Detalhe do pedido' clicando na linha.",
-        "No detalhe, as opções de atendimento — 'Atender com estoque da Loja…', 'Envio direto a um fornecedor…' e 'Abrir cotação (2+ fornecedores)…' — só ficam disponíveis depois que os itens são aprovados e podem ser combinadas no mesmo pedido."
+        "No detalhe, as opções de atendimento — 'Atender com estoque da Loja…', 'Envio direto a um fornecedor…' e 'Abrir cotação…' — só ficam disponíveis depois que os itens são aprovados e podem ser combinadas no mesmo pedido."
       ]
     },
     "peddet": {
@@ -4351,7 +4352,7 @@ class Component extends DCLogic {
         "Enquanto o pedido aguarda decisão, aparece à direita o painel \"Análise da Loja\". Para decidir o pedido inteiro de uma vez, clique em \"Recebimento de Pedidos\" (recebe todos os itens pendentes) ou em \"Rejeitar…\".",
         "Para decidir item a item, use os botões \"Receber\" e \"Rejeitar\" que aparecem na coluna \"Situação do item\", em cada linha que ainda estiver pendente.",
         "Ao clicar em qualquer \"Rejeitar\" (do pedido ou de um item), abre-se uma janela para escrever a justificativa. Ela é obrigatória e fica visível para a revenda; sem o motivo, a rejeição não é concluída.",
-        "Depois de receber, surge o painel \"Decisão de atendimento — por item\". Escolha \"Atender com estoque da Loja…\", \"Envio direto a um fornecedor…\" ou \"Abrir cotação (2+ fornecedores)…\"; na janela que abrir, marque os itens e confirme.",
+        "Depois de receber, surge o painel \"Decisão de atendimento — por item\". Escolha \"Atender com estoque da Loja…\", \"Envio direto a um fornecedor…\" ou \"Abrir cotação…\"; na janela que abrir, marque os itens e confirme.",
         "No bloco \"Informações\" (à direita), confira a Revenda e o Fornecedor de destino. Se houver \"Cotação vinculada\", clique no código dela (ex.: COT-008 →) para abrir a cotação.",
         "Acompanhe cada ação no bloco \"Trilha do pedido — data, hora e usuário\", que registra o que foi feito, por quem e quando.",
         "Quando o fornecedor anexa arquivos durante o atendimento, eles aparecem no quadro \"Documentos do atendimento\", com nome, data e autor — clique no nome para baixar."
@@ -4360,19 +4361,19 @@ class Component extends DCLogic {
         "A justificativa é obrigatória ao rejeitar, seja o pedido todo ou um item, e fica visível para a revenda; tenha o motivo pronto antes de clicar em \"Rejeitar\".",
         "Um mesmo pedido pode combinar os três caminhos de atendimento (estoque, envio direto e cotação); cada ação vale só para os itens que você marcar na janela — e você pode informar uma quantidade parcial por item: o saldo continua aprovado para outro caminho.",
         "No 'Envio direto a um fornecedor…' só aparecem como destino os fornecedores vinculados a todos os itens selecionados; na cotação, os convidáveis são os fornecedores vinculados aos produtos cotados.",
-        "\"Abrir cotação\" exige convidar 2 ou mais fornecedores homologados e definir a data limite para o envio das propostas.",
+        "\"Abrir cotação\" exige convidar ao menos um fornecedor homologado e definir a data limite para o envio das propostas. Com um único convidado a cotação registra preço, frete e condições, mas não há comparação de propostas — a janela avisa disso ao selecionar.",
         "Os painéis \"Análise da Loja\" e \"Decisão de atendimento\" só aparecem na fase certa: o primeiro enquanto o pedido aguarda decisão; o segundo depois que ele é aprovado."
       ]
     },
     "cot": {
       "rotina": "Cotações",
       "titulo": "Como abrir e conduzir uma cotação",
-      "resumo": "Tela da Loja para cotar os itens de um pedido com 2 ou mais fornecedores, acompanhar as propostas recebidas e escolher a vencedora. É um processo opcional, usado quando a Loja quer comparar preços e condições antes de fechar.",
+      "resumo": "Tela da Loja para cotar os itens de um pedido com um ou mais fornecedores, acompanhar as propostas recebidas e escolher a vencedora. É um processo opcional, usado quando a Loja quer registrar ou comparar preços e condições antes de fechar.",
       "passos": [
         "Clique em \"+ Nova cotação\" (botão dourado no canto superior direito) para abrir a janela \"Abrir cotação\".",
         "No campo \"Pedido de origem\", escolha um pedido da lista (só aparecem pedidos com itens aprovados) e, em \"Itens a cotar\", clique nos itens que quer incluir (não precisa ser o pedido inteiro).",
         "Ajuste a \"Quantidade neste caminho\" de cada item selecionado, se quiser cotar menos que o aprovado — o pedido de origem não muda e a barra \"Total estimado da cotação\" recalcula o valor automaticamente a cada alteração; a quantidade cotada fica registrada na cotação e é a que os fornecedores convidados enxergam.",
-        "Em \"Fornecedores convidados (mínimo 2)\", clique para marcar pelo menos dois fornecedores — a lista mostra apenas os fornecedores vinculados aos produtos cotados —, preencha a \"Data limite para propostas\" (formato dd/mm/aaaa) e clique em \"Abrir cotação e notificar\".",
+        "Em \"Fornecedores convidados\", clique para marcar um ou mais fornecedores — a lista mostra apenas os vinculados aos produtos cotados. A linha logo abaixo confirma a escolha: com dois ou mais, as propostas serão comparadas; com um só, aparece o aviso de que não haverá comparação. Depois preencha a \"Data limite para propostas\" (formato dd/mm/aaaa) e clique em \"Abrir cotação e notificar\".",
         "De volta à lista, use o seletor \"Todos os status\" (no canto direito) para filtrar por \"Aguardando propostas\", \"Encerradas\" ou \"Canceladas\".",
         "Acompanhe o andamento pelos cards do topo (Em andamento, Taxa de resposta, Economia obtida, Cotações no histórico) e pela barra de progresso da coluna \"Propostas\" de cada linha.",
         "Clique sobre a linha da cotação na tabela (colunas Cotação, Pedido de origem, Convidados, Propostas, Prazo limite e Status) para abrir o detalhe.",
@@ -5472,7 +5473,7 @@ class Component extends DCLogic {
     return {form:{...s.form,convidados:on?c.filter(x=>x!==fid):[...c,fid],erro:null}}; }); return this._tc[fid]; }
   confirmCotacao=()=>{ if(!this.pode('cotacoes.abrir')) return this.negado('Você não tem permissão para abrir cotações.','cotacoes.abrir'); const f=this.state.form; const conv=f.convidados||[];
     if(!f.pedidoId) return this.err('Selecione o pedido de origem (RF20).');
-    if(conv.length<2) return this.err('Selecione dois ou mais fornecedores homologados (RF21).');
+    if(!conv.length) return this.err('Selecione ao menos um fornecedor homologado para cotar (RF21).');
     const erPz=this._erroPrazo(f.prazo,'o envio das propostas'); if(erPz) return this.err(erPz);
     const ped=this.state.pedidos.find(p=>p.id===f.pedidoId);
     const sel=(f.sel&&f.sel.length?f.sel:ped.itens.map((i,ix)=>i.st==='aprovado'?ix:-1).filter(ix=>ix>=0));
@@ -5488,8 +5489,8 @@ class Component extends DCLogic {
     const nomes=this.state.fornecedores.filter(x=>conv.includes(x.id)).map(x=>x.nome).join(', ');
     this.setState(s=>({cotacoes:[{id,pedidoId:f.pedidoId,itens:itensCot,vencItens:{},convidados:[...conv],prazo:f.prazo,status:'aguardando propostas',propostas:[],vencedorId:null,justificativa:null,motivoCancel:null,historico:[{quando:this.ts(),usuario:this.userName(),acao:'Cotação aberta ('+itensCot.length+' item(ns) · '+totQ+' unidade(s)) · convidados notificados: '+nomes}]},...s.cotacoes],seq:{...s.seq,cot:n+1},modal:null,form:{},scr:'cot'}));
     this.updPed(f.pedidoId,p=>{p.itens=novo;
-      p.trilha.push(this.tr('Cotação '+id+' aberta para '+alocados.length+' item(ns) · '+totQ+' unidade(s) com '+conv.length+' fornecedores'+(parcial?' — quantidade parcial; o saldo permanece aprovado':'')));return p;});
-    this.audit('Abertura de cotação',id+' · pedido '+f.pedidoId+' · '+alocados.length+' item(ns) · '+totQ+' un'+(parcial?' (parcial)':''));
+      p.trilha.push(this.tr('Cotação '+id+' aberta para '+alocados.length+' item(ns) · '+totQ+' unidade(s) com '+(conv.length===1?'1 fornecedor':conv.length+' fornecedores')+(parcial?' — quantidade parcial; o saldo permanece aprovado':'')));return p;});
+    this.audit('Abertura de cotação',id+' · pedido '+f.pedidoId+' · '+alocados.length+' item(ns) · '+totQ+' un'+(parcial?' (parcial)':'')+(conv.length===1?' · fornecedor único (sem comparação de propostas)':' · '+conv.length+' fornecedores'));
     const _ilC=itensCot.map(it=>{ const pp=this._prodInfo(it.produtoId); return {codigo:pp.codigo||'',descricao:pp.descricao||('Produto '+it.produtoId),qtd:it.qtd,unidade:pp.unidade||'',valor:this.fmt(it.qtd*it.preco)}; });
     conv.forEach(cf=>this.notificar('cotacao_convite',this._fornEmail(cf),{cotacao:id,fornecedorNome:this._fornNome(cf),prazo:f.prazo,itensLista:_ilC})); };
   // ——— Rodadas de negociação (Ata 5.4) ———
@@ -7389,6 +7390,12 @@ class Component extends DCLogic {
     const prazoDica=(M==='cotacao'||M==='rodada')
       ? this._dicaPrazo(S.form.prazo,M==='rodada'?'as contrapropostas':'o envio das propostas')
       : {txt:'',cor:'#a89f90',tem:false};
+    // convidados da cotação: um fornecedor é permitido, mas sem comparação
+    const nConvM=((S.form.convidados)||[]).length;
+    const convAviso=M!=='cotacao'?{txt:'',cor:'#a89f90',tem:false}
+      :(nConvM===0?{txt:'Selecione ao menos um fornecedor — com dois ou mais você compara preços e condições.',cor:'#a89f90',tem:true}
+      :(nConvM===1?{txt:'⚠ Fornecedor único: a cotação registra preço, frete e condições, mas não haverá comparação de propostas. Convide outro fornecedor para comparar.',cor:'#8a5a12',tem:true}
+      :{txt:'✓ '+nConvM+' fornecedores convidados — as propostas serão comparadas no mapa da cotação.',cor:'#2f6b39',tem:true}));
     // validade da proposta (opcional, mas quando preenchida tem de ser data)
     const validadeDica=M==='proposta'
       ? this._dicaData(S.form.validade,s=>this._erroValidade(s),'Opcional — até quando a proposta vale, no formato dd/mm/aaaa.')
@@ -7479,7 +7486,7 @@ class Component extends DCLogic {
       mostraSelForn,mostraSelRev,mostraSelGrupo,ctxGrupoVal,ctxGrupoOpts,setRevContexto:this.setRevContexto,rpedGrupo,grpKpis,catGrupo,aceiteInfo,mAceite:S.modal==='aceiterev',confirmAceiteRev:this.confirmAceiteRev,fxMotivoRec:this.fx('motivoRec'),recDocInfo,mRecDoc:S.modal==='recusadoc',mReenvDoc:S.modal==='reenviodoc',confirmRecusaDoc:this.confirmRecusaDoc,confirmReenvioDoc:this.confirmReenvioDoc,fxMotivoDoc:this.fx('motivoDoc'),
       // data limite da cotação/rodada: máscara dd/mm/aaaa, dica e atalhos
       prazoDica,prazoBd:prazoDica.cor==='#a33a2b'?'#e2a79a':(prazoDica.cor==='#2f6b39'?'#bcd8c0':'#ddd5c7'),
-      prazoAtalhos:[7,15,30].map(n=>({label:'+'+n+' dias',set:this.setPrazoEm(n)})),
+      prazoAtalhos:[7,15,30].map(n=>({label:'+'+n+' dias',set:this.setPrazoEm(n)})),convAviso,
       validadeDica,validadeBd:validadeDica.cor==='#a33a2b'?'#e2a79a':(validadeDica.cor==='#2f6b39'?'#bcd8c0':'#ddd5c7'),
       validadeAtalhos:[30,60].map(n=>({label:'+'+n+' dias',set:this.setValidadeEm(n)})),
       // categorias do catálogo
