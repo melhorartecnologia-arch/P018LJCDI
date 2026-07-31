@@ -304,6 +304,43 @@
       "ativo": false
     }
   ],
+  "categorias": [
+    {
+      "id": 1,
+      "nome": "Chope",
+      "descricao": "Chopes em barril, por estilo e volume",
+      "ativo": true,
+      "criadoEm": "01/01/2026"
+    },
+    {
+      "id": 2,
+      "nome": "Cerveja",
+      "descricao": "Cervejas em garrafa, lata e long neck",
+      "ativo": true,
+      "criadoEm": "01/01/2026"
+    },
+    {
+      "id": 3,
+      "nome": "Acessórios",
+      "descricao": "Copos, growlers, barris e itens de apoio ao ponto de venda",
+      "ativo": true,
+      "criadoEm": "01/01/2026"
+    },
+    {
+      "id": 4,
+      "nome": "Insumos",
+      "descricao": "CO₂, bolachas e demais insumos de operação",
+      "ativo": true,
+      "criadoEm": "01/01/2026"
+    },
+    {
+      "id": 5,
+      "nome": "Outros",
+      "descricao": "Itens ainda sem grupo definido no catálogo",
+      "ativo": true,
+      "criadoEm": "01/01/2026"
+    }
+  ],
   "revendas": [
     {
       "id": 1,

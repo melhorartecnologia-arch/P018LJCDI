@@ -1141,6 +1141,99 @@ input::placeholder,textarea::placeholder{color:#b0a795}
   </div>
 </sc-if>
 
+<sc-if value="{{sGrupos}}" hint-placeholder-val="{{false}}">
+  <div data-screen-label="Categorias de produtos" style="animation:fadeUp .25s ease">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-bottom:18px">
+      <div>
+        <div style="font-size:21px;font-weight:700;margin:2px 0 3px">Categorias de produtos</div>
+        <div style="font-size:13px;color:#8a8378">Grupos que organizam o catálogo — usados no cadastro do produto, nos filtros da lista e nos relatórios de vendas</div>
+      </div>
+      <sc-if value="{{podeCadProd}}" hint-placeholder-val="{{true}}">
+        <div onClick="{{novaCategoria}}" style="background:#B38335;color:#fff;border-radius:9px;padding:10px 16px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;flex:none" style-hover="background:#9a6f2b">+ Nova categoria</div>
+      </sc-if>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px">
+      <sc-for list="{{grupoKpis}}" as="k" hint-placeholder-count="4">
+        <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:14px 16px">
+          <div style="font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#a89f90">{{k.label}}</div>
+          <div style="font-size:21px;font-weight:700;margin:6px 0 2px">{{k.val}}</div>
+          <div style="font-size:11.5px;color:#8a8378">{{k.sub}}</div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display:flex;gap:10px;margin-bottom:14px">
+      <input value="{{buscaGrupo}}" onChange="{{setBuscaGrupo}}" placeholder="Buscar categoria por nome ou descrição…" style="flex:1;padding:10px 14px;border:1px solid #e5ddcd;border-radius:9px;font:inherit;font-size:13px;background:#fff;outline:none;color:#272525">
+      <select value="{{filtroGrupoSt}}" onChange="{{setFiltroGrupoSt}}" style="padding:10px 12px;border:1px solid #e5ddcd;border-radius:9px;font:inherit;font-size:12.5px;font-weight:600;color:#272525;background:#fff;outline:none;cursor:pointer">
+        <sc-for list="{{grupoStOpts}}" as="o" hint-placeholder-count="3"><option value="{{o.v}}">{{o.label}}</option></sc-for>
+      </select>
+    </div>
+    <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;overflow:hidden">
+      <table style="width:100%;border-collapse:collapse">
+        <thead><tr>
+          <th style="text-align:left;padding:10px 18px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Categoria</th>
+          <th style="text-align:right;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Produtos</th>
+          <th style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Participação no catálogo</th>
+          <th style="text-align:left;padding:10px 18px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Situação</th>
+        </tr></thead>
+        <tbody>
+          <sc-for list="{{grupoRows}}" as="c" hint-placeholder-count="5">
+            <tr>
+              <td style="padding:11px 18px;border-bottom:1px solid #f5f1e8">
+                <div style="font-size:13px;font-weight:600">{{c.nome}}</div>
+                <div style="font-size:11.5px;color:#a89f90">{{c.descricao}}</div>
+              </td>
+              <td style="padding:11px 10px;border-bottom:1px solid #f5f1e8;text-align:right">
+                <div style="font-size:13px;font-weight:600">{{c.nProd}}</div>
+                <div style="font-size:10.5px;color:#a89f90">{{c.nAtivosTxt}}</div>
+              </td>
+              <td style="padding:11px 10px;border-bottom:1px solid #f5f1e8">
+                <div style="display:flex;align-items:center;gap:9px">
+                  <div style="flex:1;height:7px;background:#f1ece2;border-radius:4px;overflow:hidden;min-width:60px"><div style="width:{{c.pctW}}%;height:100%;background:linear-gradient(90deg,#cfa055,#B38335)"></div></div>
+                  <span style="font-size:11.5px;color:#8a8378;white-space:nowrap;width:34px;text-align:right">{{c.pctTxt}}</span>
+                </div>
+              </td>
+              <td style="padding:11px 18px;border-bottom:1px solid #f5f1e8">
+                <div style="display:flex;align-items:center;gap:8px">
+                  <span style="font-size:11px;font-weight:600;border-radius:6px;padding:2px 8px;background:{{c.stBg}};color:{{c.stFg}}">{{c.stLabel}}</span>
+                  <sc-if value="{{podeCadProd}}" hint-placeholder-val="{{true}}">
+                    <span onClick="{{c.editar}}" style="font-size:11.5px;font-weight:600;color:#4a453d;border:1px solid #e5ddcd;border-radius:7px;padding:3px 9px;cursor:pointer;background:#fff" style-hover="background:#f7f3ea">Editar</span>
+                    <span onClick="{{c.toggle}}" style="font-size:11.5px;font-weight:600;color:#8a8378;cursor:pointer;padding:3px 4px">{{c.toggleLabel}}</span>
+                  </sc-if>
+                </div>
+              </td>
+            </tr>
+          </sc-for>
+        </tbody>
+      </table>
+    </div>
+    <sc-if value="{{grupoVazio}}" hint-placeholder-val="{{false}}">
+      <div style="border:1px dashed #e5ddcd;border-radius:11px;padding:26px;text-align:center;font-size:13px;color:#a89f90;margin-top:14px">Nenhuma categoria encontrada para esta busca.</div>
+    </sc-if>
+    <div style="font-size:11.5px;color:#b0a795;margin-top:12px">Categorias não são excluídas, apenas inativadas: uma categoria inativa deixa de ser oferecida no cadastro de produtos, mas os produtos já classificados nela continuam como estão e seguem aparecendo nos filtros e relatórios. Renomear uma categoria reclassifica automaticamente todos os produtos que a usam.</div>
+  </div>
+</sc-if>
+
+<sc-if value="{{mGrupo}}" hint-placeholder-val="{{false}}">
+  <div style="position:fixed;inset:0;background:rgba(39,37,37,.45);display:flex;align-items:center;justify-content:center;z-index:50">
+    <div style="background:#fff;border-radius:14px;width:460px;max-width:92vw;max-height:88vh;overflow-y:auto;padding:22px 24px;box-shadow:0 18px 50px rgba(39,37,37,.25)">
+      <div style="font-size:16px;font-weight:700;margin-bottom:2px">{{grupoModalTitulo}}</div>
+      <div style="font-size:12.5px;color:#8a8378;margin-bottom:14px">Grupo do catálogo — organiza os produtos homologados e alimenta os filtros e relatórios</div>
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:10px 0 5px">Nome da categoria</div>
+      <input value="{{form.nome}}" onChange="{{fxNomeCat}}" placeholder="ex.: Chope, Cerveja, Acessórios…" style="width:100%;box-sizing:border-box;padding:10px 13px;border:1px solid #ddd5c7;border-radius:9px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Descrição <span style="font-weight:400;color:#a89f90">(opcional)</span></div>
+      <input value="{{form.descricao}}" onChange="{{fxDescricao}}" placeholder="O que entra neste grupo" style="width:100%;box-sizing:border-box;padding:10px 13px;border:1px solid #ddd5c7;border-radius:9px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
+      <sc-if value="{{grupoRenomeia}}" hint-placeholder-val="{{false}}">
+        <div style="font-size:11.5px;color:#8f682a;background:#fdf6e7;border:1px solid #f0e2c4;border-radius:8px;padding:9px 11px;margin-top:12px;line-height:1.5">{{grupoRenomeiaTxt}}</div>
+      </sc-if>
+      <sc-if value="{{form.erro}}" hint-placeholder-val="{{false}}"><div style="color:#a33a2b;font-size:12.5px;margin-top:11px">{{form.erro}}</div></sc-if>
+      <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:18px">
+        <div onClick="{{mClose}}" style="border:1px solid #e5ddcd;color:#6b6459;border-radius:8px;padding:9px 15px;font-size:13px;font-weight:600;cursor:pointer;background:#fff" style-hover="background:#f7f3ea">Cancelar</div>
+        <div onClick="{{salvarCategoria}}" style="background:#B38335;color:#fff;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#9a6f2b">Salvar categoria</div>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
 <sc-if value="{{sRev}}" hint-placeholder-val="{{false}}">
   <div data-screen-label="Revendas" style="animation:fadeUp .25s ease">
     <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-bottom:18px">
@@ -2782,8 +2875,9 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <input value="{{form.unidade}}" onChange="{{fxUnidade}}" placeholder="Barril, Caixa…" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
         <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Categoria</div>
         <select value="{{form.categoria}}" onChange="{{fxCategoria}}" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525;cursor:pointer">
-          <option value="Chope">Chope</option><option value="Cerveja">Cerveja</option><option value="Acessórios">Acessórios</option><option value="Insumos">Insumos</option><option value="Outros">Outros</option>
-        </select></div>
+          <sc-for list="{{catOpts}}" as="o" hint-placeholder-count="5"><option value="{{o.v}}">{{o.label}}</option></sc-for>
+        </select>
+        <sc-if value="{{catSemAtiva}}" hint-placeholder-val="{{false}}"><div style="font-size:10.5px;color:#a33a2b;margin-top:4px;line-height:1.45">Nenhuma categoria ativa — cadastre em Cadastros › Categorias de produtos.</div></sc-if></div>
         <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Preço estimado (R$)</div>
         <input value="{{form.preco}}" onChange="{{fxPreco}}" placeholder="0,00" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
       </div>
@@ -3751,10 +3845,11 @@ input::placeholder,textarea::placeholder{color:#b0a795}
 class Component extends DCLogic {
   // ── Persistência full-stack (API Node.js + PostgreSQL) ──────────────────
   // Coleções persistentes; todo o resto do estado é de sessão/UI.
-  _persistKeys=['seq','fornecedores','contratos','produtos','revendas','pedidos','cotacoes','faturamentos','pagamentos','auditoria','configEmail','configPlataforma','usuarios','inventarios'];
+  _persistKeys=['seq','fornecedores','contratos','produtos','revendas','pedidos','cotacoes','faturamentos','pagamentos','auditoria','configEmail','configPlataforma','usuarios','inventarios','categorias'];
   _hydrate(){ this._hydrating=true;
     fetch('/api/state').then(r=>r.ok?r.json():null).then(d=>{ if(d&&typeof d==='object'){ const patch={}; this._persistKeys.forEach(k=>{ if(d[k]!==undefined) patch[k]=d[k]; });
       if(Array.isArray(patch.usuarios)&&!patch.usuarios.length) delete patch.usuarios; // banco antigo sem usuários: mantém os iniciais
+      if(Array.isArray(patch.categorias)&&!patch.categorias.length) delete patch.categorias; // idem para as categorias do catálogo
       this.setState(patch); } })
       .catch(()=>{}).finally(()=>{ this._hydrating=false; }); }
   setState(update,cb){ super.setState(update,cb); if(!this._hydrating) this._schedulePersist(); }
@@ -3773,6 +3868,14 @@ class Component extends DCLogic {
       {id:3,nome:'Carlos Mota (analista)',email:'carlos@cidadeimperial.com.br',senhaHash:'1b37f53827b438',papel:'loja',fornecedorId:null,revendaId:null,ativo:true,permissoes:{'pedidos.aprovar':false,'pedidos.rejeitar':false,'pedidos.atender':false,'royalties.pagar':false},ultimoAcesso:null,criadoEm:'15/03/2026'},
       {id:4,nome:'Distribuidora Serra Verde',email:'comercial@serraverde.com.br',senhaHash:'16cda9748c5e68',papel:'fornecedor',fornecedorId:1,revendaId:null,ativo:true,permissoes:{},ultimoAcesso:'07/07/2026 10:02',criadoEm:'01/02/2026'},
       {id:5,nome:'Bar do Imperador',email:'compras@bardoimperador.com.br',senhaHash:'11717ff2d26463',papel:'revenda',fornecedorId:null,revendaId:1,ativo:true,permissoes:{},ultimoAcesso:'09/07/2026 08:14',criadoEm:'01/02/2026'}
+    ],
+    buscaGrupo:'', filtroGrupoSt:'todas',
+    categorias:[
+      {id:1,nome:'Chope',descricao:'Chopes em barril, por estilo e volume',ativo:true,criadoEm:'01/01/2026'},
+      {id:2,nome:'Cerveja',descricao:'Cervejas em garrafa, lata e long neck',ativo:true,criadoEm:'01/01/2026'},
+      {id:3,nome:'Acessórios',descricao:'Copos, growlers, barris e itens de apoio ao ponto de venda',ativo:true,criadoEm:'01/01/2026'},
+      {id:4,nome:'Insumos',descricao:'CO₂, bolachas e demais insumos de operação',ativo:true,criadoEm:'01/01/2026'},
+      {id:5,nome:'Outros',descricao:'Itens ainda sem grupo definido no catálogo',ativo:true,criadoEm:'01/01/2026'}
     ],
     inventarios:[
       {id:1,data:'01/07/2026',ts:1782864000000,usuario:'Ana Ribeiro (Loja)',obs:'Inventário mensal de julho',itens:{1:10,2:6,3:8,4:40,5:30,6:15,7:12,8:25,9:50,10:4}}
@@ -4301,6 +4404,7 @@ class Component extends DCLogic {
       ],
       "dicas": [
         "Na janela de cadastro/edição do produto, envie múltiplas imagens (PNG/JPG, até 5 MB cada) com pré-visualização imediata, clique em uma imagem para marcá-la como PRINCIPAL — é ela que aparece no catálogo das revendas — e use o × para remover: a imagem substituída não se perde, fica no painel \"Histórico de imagens\" do detalhe do produto.",
+        "A \"Categoria\" oferecida no cadastro vem de \"Cadastros › Categorias de produtos\" — é lá que se cria, altera ou inativa um grupo do catálogo.",
         "Combine a busca por código/descrição com os filtros de fornecedor, status (ativo/inativo) e categoria — o contador dourado mostra quantos produtos correspondem (ex.: \"3 de 10 produto(s)\") e o botão \"✕ Limpar busca e filtros\" restaura a lista completa.",
         "Na lista \"Fornecedores / contratos\" só aparecem fornecedores ativos; use o campo \"Buscar fornecedor por nome…\" para filtrar e clique nos nomes para marcar ou desmarcar — todo produto precisa de ao menos um fornecedor vinculado.",
         "Inativar não exclui o produto: ele apenas sai do catálogo das revendas e pode ser reativado a qualquer momento pelo mesmo link.",
@@ -4673,6 +4777,28 @@ class Component extends DCLogic {
         "O envio depende da \"Configuração de e-mail (SMTP)\" estar ativa; com o envio desativado, a plataforma avisa na hora e registra a tentativa sem disparar a mensagem."
       ]
     },
+    "grupos": {
+      "rotina": "Categorias de produtos",
+      "titulo": "Criar, alterar e inativar as categorias do catálogo",
+      "resumo": "Tela da Loja para manter os grupos que organizam o catálogo. As categorias cadastradas aqui são as que aparecem no cadastro de produtos, nos filtros da lista de produtos e nos relatórios de vendas.",
+      "passos": [
+        "No menu lateral, em \"Cadastros\", abra \"Categorias de produtos\".",
+        "Confira os quatro indicadores do topo: \"Categorias ativas\", \"Produtos classificados\", \"Maior grupo\" e \"Fora do cadastro\" (produtos com uma categoria que não está cadastrada).",
+        "Clique em \"+ Nova categoria\" para criar um grupo: informe o nome (até 40 caracteres, sem repetir um já existente) e, se quiser, uma descrição do que entra nele.",
+        "Na lista, cada linha mostra o nome, a descrição, quantos produtos usam a categoria (e quantos deles estão ativos) e a participação dela no catálogo, com barra de proporção.",
+        "Use \"Editar\" para mudar o nome ou a descrição. Ao digitar um nome diferente, a janela avisa quantos produtos serão reclassificados — ao salvar, todos passam a usar o novo nome, no catálogo, nos filtros e nos relatórios.",
+        "Use \"Inativar\" para tirar a categoria do cadastro de produtos: ela deixa de ser oferecida em novos produtos, mas os que já usam continuam classificados nela e seguem aparecendo nos filtros e relatórios. \"Reativar\" devolve a categoria à seleção.",
+        "Use a busca por nome ou descrição e o seletor de situação (\"Todas\", \"Somente ativas\", \"Somente inativas\") para localizar categorias.",
+        "Ao cadastrar ou editar um produto em \"Produtos homologados\", o campo \"Categoria\" lista as categorias ativas — e mantém a categoria atual do produto mesmo que ela tenha sido inativada."
+      ],
+      "dicas": [
+        "Categorias não são excluídas, apenas inativadas — assim o histórico de pedidos, faturamentos e relatórios continua íntegro.",
+        "O nome da categoria é único (sem diferenciar maiúsculas de minúsculas); a plataforma recusa duplicidade.",
+        "Renomear é seguro: a mudança propaga para todos os produtos daquela categoria em uma única operação, registrada na auditoria.",
+        "O indicador \"Fora do cadastro\" aponta produtos com categorias antigas que não estão na lista — cadastre a categoria com o mesmo nome para trazê-la de volta ao controle.",
+        "Todas as ações (criação, alteração, inativação e reativação) ficam registradas em Segurança & Auditoria, no módulo Cadastros."
+      ]
+    },
     "inv": {
       "rotina": "Inventário de estoque",
       "titulo": "Lançar inventário e acompanhar saldos",
@@ -4843,6 +4969,53 @@ class Component extends DCLogic {
   limparRelFiltros=()=>this.setState({relComp:'todas',relRevF:'0',relFornF:'0',relStF:'todos'});
   // ——— Relatório de venda por produtos (Ata 5.13) ———
   _pCat(p){ return (p&&p.categoria)||'Outros'; }
+  // ── Categorias do catálogo (grupos de produtos) ────────────────────────
+  // O produto guarda o NOME da categoria; renomear propaga para os produtos,
+  // de modo que catálogo, filtros, relatórios e exportações seguem coerentes.
+  _cats(){ return [...(this.state.categorias||[])].sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR')); }
+  _catAtiva(nome){ const c=(this.state.categorias||[]).find(x=>x.nome===nome); return !c||c.ativo; }
+  _nProdCat(nome,soAtivos){ return this.state.produtos.filter(p=>this._pCat(p)===nome&&(!soAtivos||p.ativo)).length; }
+  // Nomes oferecidos no cadastro de produto: as ativas + a atual do produto
+  // (mesmo inativa), para que editar um produto não troque sua categoria.
+  _catOpts(atual){ const nomes=this._cats().filter(c=>c.ativo).map(c=>c.nome);
+    if(atual&&!nomes.includes(atual)) nomes.push(atual+' (inativa)');
+    return nomes.map(n=>({v:n.replace(' (inativa)',''),label:n})); }
+  // Nomes para filtros: as cadastradas + as que ainda existirem só nos produtos.
+  _catFiltro(){ return [...new Set([...(this.state.categorias||[]).map(c=>c.nome),...this.state.produtos.map(p=>this._pCat(p))])].sort((a,b)=>a.localeCompare(b,'pt-BR')); }
+  _catPadrao(){ const at=this._cats().filter(c=>c.ativo); const o=at.find(c=>c.nome==='Outros'); return o?o.nome:(at[0]?at[0].nome:''); }
+  setBuscaGrupo=e=>this.setState({buscaGrupo:e.target.value});
+  setFiltroGrupoSt=e=>this.setState({filtroGrupoSt:e.target.value});
+  novaCategoria=()=>{ if(!this.pode('cadastros.produtos')) return this.negado('Você não tem permissão para gerenciar categorias.','cadastros.produtos');
+    this.setState({modal:'categoria',form:{nome:'',descricao:''}}); };
+  editarCategoria(id){ this._ec2=this._ec2||{}; if(!this._ec2[id]) this._ec2[id]=()=>{
+    if(!this.pode('cadastros.produtos')) return this.negado('Você não tem permissão para gerenciar categorias.','cadastros.produtos');
+    const c=(this.state.categorias||[]).find(x=>x.id===id); if(!c) return;
+    this.setState({modal:'categoria',form:{editId:id,nome:c.nome,descricao:c.descricao||''}}); }; return this._ec2[id]; }
+  salvarCategoria=()=>{ if(!this.pode('cadastros.produtos')) return this.negado('Você não tem permissão para gerenciar categorias.','cadastros.produtos');
+    const f=this.state.form; const nome=(f.nome||'').trim(), descricao=(f.descricao||'').trim();
+    if(!nome) return this.err('Informe o nome da categoria.');
+    if(nome.length>40) return this.err('O nome da categoria deve ter no máximo 40 caracteres.');
+    const dup=(this.state.categorias||[]).find(c=>c.nome.toLowerCase()===nome.toLowerCase()&&c.id!==f.editId);
+    if(dup) return this.err('Já existe uma categoria com este nome.');
+    if(f.editId){ const old=(this.state.categorias||[]).find(c=>c.id===f.editId); if(!old) return;
+      const renomeou=old.nome!==nome; const nProd=renomeou?this._nProdCat(old.nome):0;
+      this.setState(s=>({categorias:s.categorias.map(c=>c.id===f.editId?{...c,nome,descricao}:c),
+        produtos:renomeou?s.produtos.map(p=>this._pCat(p)===old.nome?{...p,categoria:nome}:p):s.produtos,
+        modal:null,form:{}}));
+      this.audit('Alteração de categoria de produtos',old.nome+(renomeou?' → '+nome+' · '+nProd+' produto(s) reclassificado(s)':'')+(old.descricao!==descricao?' · descrição atualizada':''));
+      if(renomeou&&nProd) this.toast(nProd+' produto(s) passaram a usar a categoria "'+nome+'".','ok');
+      return; }
+    const id=Math.max(0,...(this.state.categorias||[]).map(c=>c.id))+1;
+    this.setState(s=>({categorias:[...(s.categorias||[]),{id,nome,descricao,ativo:true,criadoEm:this.hoje()}],modal:null,form:{}}));
+    this.audit('Cadastro de categoria de produtos',nome+(descricao?' · '+descricao:'')); };
+  toggleCategoria(id){ this._tc2=this._tc2||{}; if(!this._tc2[id]) this._tc2[id]=()=>{
+    if(!this.pode('cadastros.produtos')) return this.negado('Você não tem permissão para gerenciar categorias.','cadastros.produtos');
+    const c=(this.state.categorias||[]).find(x=>x.id===id); if(!c) return;
+    const nAtivos=this._nProdCat(c.nome,true);
+    this.setState(s=>({categorias:s.categorias.map(x=>x.id===id?{...x,ativo:!x.ativo}:x)}));
+    this.audit(c.ativo?'Inativação de categoria de produtos':'Reativação de categoria de produtos',
+      c.nome+(c.ativo?' · '+nAtivos+' produto(s) ativo(s) mantêm a categoria, que deixa de ser oferecida em novos cadastros':' · volta a ser oferecida no cadastro de produtos'));
+    if(c.ativo&&nAtivos) this.toast('Categoria "'+c.nome+'" inativada — '+nAtivos+' produto(s) ativo(s) continuam classificados nela.'); }; return this._tc2[id]; }
   setRelAba(v){ this._sra=this._sra||{}; if(!this._sra[v]) this._sra[v]=()=>this.setState({relAba:v}); return this._sra[v]; }
   setRvpK(k){ this._srv=this._srv||{}; if(!this._srv[k]) this._srv[k]=e=>this.setState({[k]:e.target.value,rvpDrill:null}); return this._srv[k]; }
   setRvpVis(v){ this._srvv=this._srvv||{}; if(!this._srvv[v]) this._srvv[v]=()=>this.setState({rvpVis:v}); return this._srvv[v]; }
@@ -6108,7 +6281,7 @@ class Component extends DCLogic {
         pode('faturamento.ver')&&mk('fat','Faturamento'),
         pode('inventario.ver')&&mk('inv','Inventário de estoque')]},
       {label:'Cadastros',items:[pode('cadastros.fornecedores')&&mk('forn','Fornecedores & Contratos'),
-        pode('cadastros.produtos')&&mk('prod','Produtos homologados'),pode('cadastros.produtos')&&mk('depara','De/Para Produto × Fornecedor'),pode('cadastros.revendas')&&mk('rev','Revendas')]},
+        pode('cadastros.produtos')&&mk('prod','Produtos homologados'),pode('cadastros.produtos')&&mk('grupos','Categorias de produtos'),pode('cadastros.produtos')&&mk('depara','De/Para Produto × Fornecedor'),pode('cadastros.revendas')&&mk('rev','Revendas')]},
       {label:'Financeiro',items:[pode('royalties.ver')&&mk('roy','Royalties & Fechamento')]},
       {label:'Gestão',items:[pode('relatorios.ver')&&mk('rel','Relatórios'),pode('auditoria.ver')&&mk('seg','Segurança & Auditoria')]},
       {label:'Configurações Técnicas',items:[pode('config.email')&&mk('cfgemail','Configuração de e-mail'),
@@ -6549,7 +6722,7 @@ class Component extends DCLogic {
         ...this.chip(p.ativo?'ativo':'inativo'),toggle:this.toggleProd(p.id),toggleLabel:p.ativo?'Inativar':'Ativar'}));
     const fornFilterOpts=[{id:'0',nome:'Todos os fornecedores'},...S.fornecedores.map(f=>({id:String(f.id),nome:f.nome}))];
     // RF52 — contador de resultados, filtro de categoria e limpar filtros
-    const prodCatFilterOpts=[{v:'todas',label:'Todas as categorias'},...[...new Set(S.produtos.map(p=>this._pCat(p)))].sort().map(c=>({v:c,label:c}))];
+    const prodCatFilterOpts=[{v:'todas',label:'Todas as categorias'},...this._catFiltro().map(c=>({v:c,label:c+(this._catAtiva(c)?'':' (inativa)')}))];
     const prodFiltroAtivo=!!(b||S.filtroForn!=='0'||S.filtroStatusProd!=='todos'||(S.filtroCatProd||'todas')!=='todas');
     const prodCount=prodRows.length+' de '+S.produtos.length+' produto(s)'+(prodFiltroAtivo?' — busca/filtros aplicados':'');
     const prodVazio=prodRows.length===0;
@@ -6748,7 +6921,7 @@ class Component extends DCLogic {
       rvpProd:S.rvpProd,setRvpProd:this.setRvpK('rvpProd'),rvpProdOpts:[{v:'0',label:'Todos os produtos'},...S.produtos.map(p=>({v:String(p.id),label:p.codigo+' · '+p.descricao}))],
       rvpRev:S.rvpRev,setRvpRev:this.setRvpK('rvpRev'),rvpRevOpts:[{v:'0',label:'Todas as revendas'},...S.revendas.map(r2=>({v:String(r2.id),label:r2.nome}))],
       rvpForn:S.rvpForn,setRvpForn:this.setRvpK('rvpForn'),rvpFornOpts:[{v:'0',label:'Todos os fornecedores'},...S.fornecedores.map(f2=>({v:String(f2.id),label:f2.nome}))],
-      rvpCat:S.rvpCat,setRvpCat:this.setRvpK('rvpCat'),rvpCatOpts:[{v:'todas',label:'Todas as categorias'},...[...new Set(S.produtos.map(p=>this._pCat(p)))].map(c=>({v:c,label:c}))],
+      rvpCat:S.rvpCat,setRvpCat:this.setRvpK('rvpCat'),rvpCatOpts:[{v:'todas',label:'Todas as categorias'},...this._catFiltro().map(c=>({v:c,label:c+(this._catAtiva(c)?'':' (inativa)')}))],
       rvpFiltroAtivo,limparRvp:this.limparRvp,exportVendasProduto:this.exportVendasProduto,
       rvpVisTabela:(S.rvpVis||'tabela')!=='grafico',rvpVisGraf:S.rvpVis==='grafico',
       rvpVisTabelaFn:this.setRvpVis('tabela'),rvpVisGrafFn:this.setRvpVis('grafico'),
@@ -7147,6 +7320,35 @@ class Component extends DCLogic {
       return {nome:r2.nome,toggle:this.toggleRevUsr(r2.id),bg:on?'#faf5e9':'#fff',bd:on?'#B38335':'#e8e1d2',fg:on?'#8f682a':'#6b6459',mark:on?'✓ ':''};}):[];
     const usrRevSel=String((S.form.revendaIds||[]).length)+' selecionada(s)';
     const papelFormOpts=Object.entries(this.PAPEIS).map(([v,label])=>({v,label}));
+    // categorias do catálogo (tela + modal)
+    const GRUPOS=this._cats();
+    const totProdGrupo=S.produtos.length||1;
+    const busGrupo=(S.buscaGrupo||'').toLowerCase();
+    const grupoRows=GRUPOS
+      .filter(c=>(S.filtroGrupoSt==='todas'||(S.filtroGrupoSt==='ativas'?c.ativo:!c.ativo))
+        &&(!busGrupo||c.nome.toLowerCase().includes(busGrupo)||(c.descricao||'').toLowerCase().includes(busGrupo)))
+      .map(c=>{ const n=this._nProdCat(c.nome), nA=this._nProdCat(c.nome,true); const pct=Math.round(n/totProdGrupo*100);
+        return {id:c.id,nome:c.nome,descricao:c.descricao||'— sem descrição —',
+          nProd:String(n),nAtivosTxt:n?(nA+' ativo(s)'):'nenhum produto',
+          pctW:String(Math.max(n?3:0,pct)),pctTxt:pct+'%',
+          ...this.chip(c.ativo?'ativo':'inativo'),
+          editar:this.editarCategoria(c.id),toggle:this.toggleCategoria(c.id),toggleLabel:c.ativo?'Inativar':'Reativar'};});
+    const grupoAtivasN=GRUPOS.filter(c=>c.ativo).length;
+    const semGrupoN=S.produtos.filter(p=>!GRUPOS.some(c=>c.nome===this._pCat(p))).length;
+    const grupoMaior=[...GRUPOS].map(c=>({n:c.nome,q:this._nProdCat(c.nome)})).sort((a,b)=>b.q-a.q)[0];
+    const grupoKpis=[
+      {label:'Categorias ativas',val:String(grupoAtivasN),sub:GRUPOS.length+' cadastrada(s) no total'},
+      {label:'Produtos classificados',val:String(S.produtos.length-semGrupoN),sub:'de '+S.produtos.length+' produto(s) do catálogo'},
+      {label:'Maior grupo',val:grupoMaior&&grupoMaior.q?grupoMaior.n:'—',sub:grupoMaior&&grupoMaior.q?(grupoMaior.q+' produto(s)'):'nenhum produto classificado'},
+      {label:'Fora do cadastro',val:String(semGrupoN),sub:semGrupoN?'produto(s) com categoria não cadastrada':'todo o catálogo usa categorias cadastradas'}];
+    const grupoStOpts=[{v:'todas',label:'Todas as situações'},{v:'ativas',label:'Somente ativas'},{v:'inativas',label:'Somente inativas'}];
+    let grupoRenomeia=false,grupoRenomeiaTxt='';
+    if(M==='categoria'&&S.form.editId){ const cAt=GRUPOS.find(c=>c.id===S.form.editId);
+      const nv=(S.form.nome||'').trim();
+      if(cAt&&nv&&nv!==cAt.nome){ const nR=this._nProdCat(cAt.nome);
+        grupoRenomeia=true;
+        grupoRenomeiaTxt=nR?('Ao salvar, '+nR+' produto(s) hoje em "'+cAt.nome+'" passam a usar "'+nv+'" — no catálogo, nos filtros e nos relatórios.')
+          :('Nenhum produto usa "'+cAt.nome+'" hoje; a renomeação não afeta o catálogo.'); } }
     // envio de credenciais de acesso (modais de reenvio e de histórico)
     const smtpOff=!(S.configEmail&&S.configEmail.ativo);
     let envUsr={nome:'',email:'',papelLabel:''},envRows=[],envReenviar=null;
@@ -7202,6 +7404,14 @@ class Component extends DCLogic {
       // shell
       roleBtns,temRoleBtns:roleBtns.length>0,isLoja,isForn,isRev,navGroups,userIni,userNome,userPapel,
       mostraSelForn,mostraSelRev,mostraSelGrupo,ctxGrupoVal,ctxGrupoOpts,setRevContexto:this.setRevContexto,rpedGrupo,grpKpis,catGrupo,aceiteInfo,mAceite:S.modal==='aceiterev',confirmAceiteRev:this.confirmAceiteRev,fxMotivoRec:this.fx('motivoRec'),recDocInfo,mRecDoc:S.modal==='recusadoc',mReenvDoc:S.modal==='reenviodoc',confirmRecusaDoc:this.confirmRecusaDoc,confirmReenvioDoc:this.confirmReenvioDoc,fxMotivoDoc:this.fx('motivoDoc'),
+      // categorias do catálogo
+      sGrupos:isLoja&&scr==='grupos'&&pode('cadastros.produtos'),
+      grupoRows,grupoKpis,grupoStOpts,grupoVazio:grupoRows.length===0,
+      buscaGrupo:S.buscaGrupo||'',setBuscaGrupo:this.setBuscaGrupo,filtroGrupoSt:S.filtroGrupoSt||'todas',setFiltroGrupoSt:this.setFiltroGrupoSt,
+      novaCategoria:this.novaCategoria,salvarCategoria:this.salvarCategoria,fxNomeCat:this.fx('nome'),
+      mGrupo:M==='categoria',grupoModalTitulo:S.form.editId?'Editar categoria':'Nova categoria',
+      grupoRenomeia,grupoRenomeiaTxt,
+      catOpts:this._catOpts(M==='produto'?(S.form.categoria||''):''),catSemAtiva:grupoAtivasN===0,
       // usuários e permissões
       sUsuarios:isLoja&&scr==='usuarios'&&pode('config.usuarios'),
       usrRows,papelOpts,papelFormOpts,usrRevRows,usrRevSel,buscaUsr:S.buscaUsr,setBuscaUsr:this.setBuscaUsr,
@@ -7271,7 +7481,7 @@ class Component extends DCLogic {
       prodKpis,pdd,filtroStatusProd:S.filtroStatusProd,setFiltroStatusProd:this.setFiltroStatusProd,filtroCatProd:S.filtroCatProd||'todas',setFiltroCatProd:this.setFiltroCatProd,prodCatFilterOpts,prodCount,prodFiltroAtivo,prodVazio,limparProdFiltros:this.limparProdFiltros,prodModalTitulo,prodModalBtn,
       revKpis,rd,buscaRev:S.buscaRev,setBuscaRev:this.setBuscaRev,revModalTitulo,revModalBtn,fxEmail:this.fx('email'),
       busca:S.busca,setBusca:this.setBusca,filtroForn:S.filtroForn,setFiltroForn:this.setFiltroForn,
-      novoForn:this.open('fornecedor',{}),novoProduto:this.open('produto',{fornecedorIds:[],buscaForn:'',unidade:'',categoria:'Outros'}),novaRevenda:this.open('revenda',{}),
+      novoForn:this.open('fornecedor',{}),novoProduto:this.open('produto',{fornecedorIds:[],buscaForn:'',unidade:'',categoria:this._catPadrao()}),novaRevenda:this.open('revenda',{}),
       // faturamento / royalties
       fatRows,aguardFat,temAguardFat:aguardFat.length>0,royGroups,royKpis,royParc,recebRows,recebTot,exportRecebiveis:this.exportRecebiveis,...royVals,
       mCob:M==='cobranca'&&!!cobInfo,cobInfo:cobInfo||{rows:[]},emitirCobranca:this.emitirCobranca,

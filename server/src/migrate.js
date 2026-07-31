@@ -35,6 +35,15 @@ export async function migrate() {
         console.log('[migrate] usuários iniciais semeados em banco existente')
       }
     }
+    // Idem para as categorias do catálogo, criadas depois dos primeiros bancos.
+    const nc = await query('SELECT COUNT(*)::int AS n FROM categorias')
+    if (nc.rows[0].n === 0) {
+      const seed = JSON.parse(await readFile(resolve(dbDir, 'seed.json'), 'utf8'))
+      if (Array.isArray(seed.categorias) && seed.categorias.length) {
+        await saveState({ categorias: seed.categorias })
+        console.log('[migrate] categorias iniciais semeadas em banco existente')
+      }
+    }
   }
 }
 

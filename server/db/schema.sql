@@ -124,6 +124,14 @@ CREATE TABLE IF NOT EXISTS usuarios (
   data      JSONB NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS categorias (
+  id        INTEGER PRIMARY KEY,
+  ord       INTEGER NOT NULL,
+  nome      TEXT,
+  ativo     BOOLEAN,
+  data      JSONB NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS config_email (
   id    INTEGER PRIMARY KEY DEFAULT 1,
   data  JSONB NOT NULL,

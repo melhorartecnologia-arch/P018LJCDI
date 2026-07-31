@@ -51,6 +51,11 @@ const ARRAY_TABLES = [
     columns: ['id', 'ord', 'nome', 'email', 'papel', 'ativo', 'data'],
     row: (o, i) => [o.id, i, o.nome, o.email, o.papel, o.ativo, o],
   },
+  {
+    name: 'categorias',
+    columns: ['id', 'ord', 'nome', 'ativo', 'data'],
+    row: (o, i) => [o.id, i, o.nome, o.ativo, o],
+  },
 ]
 
 const ARRAY_KEYS = ARRAY_TABLES.map((t) => t.name)
