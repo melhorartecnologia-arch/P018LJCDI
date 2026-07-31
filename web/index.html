@@ -3366,7 +3366,13 @@ input::placeholder,textarea::placeholder{color:#b0a795}
       <input value="{{form.prazoEntrega}}" onChange="{{fxPrazoEntrega}}" placeholder="Ex.: 5 dias úteis" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
         <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Validade da proposta</div>
-        <input value="{{form.validade}}" onChange="{{fxValidade}}" placeholder="dd/mm/aaaa" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
+        <input value="{{form.validade}}" onChange="{{fxValidade}}" inputmode="numeric" maxlength="10" placeholder="dd/mm/aaaa" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid {{validadeBd}};border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
+        <sc-if value="{{validadeDica.tem}}" hint-placeholder-val="{{true}}"><div style="font-size:11px;color:{{validadeDica.cor}};margin-top:5px;line-height:1.45">{{validadeDica.txt}}</div></sc-if>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:7px">
+          <sc-for list="{{validadeAtalhos}}" as="va" hint-placeholder-count="3">
+            <div onClick="{{va.set}}" title="Preencher a validade da proposta" style="font-size:11px;font-weight:600;color:#8f682a;border:1px solid #e6cf9e;background:#faf3e4;border-radius:7px;padding:4px 9px;cursor:pointer" style-hover="background:#f5ebd2">{{va.label}}</div>
+          </sc-for>
+        </div></div>
         <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Condições de pagamento</div>
         <input value="{{form.condicoes}}" onChange="{{fxCondicoes}}" placeholder="Ex.: boleto 28 dias" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
       </div>
@@ -4205,6 +4211,7 @@ class Component extends DCLogic {
   _hoje0(){ const h=new Date(); h.setHours(0,0,0,0); return h; }
   _maisDias(n){ const d=new Date(); d.setDate(d.getDate()+n); return d.toLocaleDateString('pt-BR'); }
   setPrazoEm(n){ this._spz=this._spz||{}; if(!this._spz[n]) this._spz[n]=()=>this.setState(s=>({form:{...s.form,prazo:this._maisDias(n),erro:null}})); return this._spz[n]; }
+  setValidadeEm(n){ this._svl=this._svl||{}; if(!this._svl[n]) this._svl[n]=()=>this.setState(s=>({form:{...s.form,validade:this._maisDias(n),erro:null}})); return this._svl[n]; }
   _diasAte(d){ return Math.round((d-this._hoje0())/86400000); }
   // Valida a data limite de uma cotação/rodada; devolve a mensagem de erro ou null.
   _erroPrazo(v,oque){ const s=String(v||'').trim(); const alvo=oque||'as propostas';
@@ -4215,14 +4222,24 @@ class Component extends DCLogic {
     if(d<this._hoje0()) return 'A data limite não pode ser anterior a hoje ('+this.hoje()+').';
     if(this._diasAte(d)>730) return 'A data limite está muito distante — informe uma data até 2 anos a partir de hoje.';
     return null; }
-  // Texto de apoio exibido sob o campo, enquanto o usuário digita.
-  _dicaPrazo(v,oque){ const s=String(v||'').trim();
-    if(!s) return {txt:'Formato dd/mm/aaaa — ex.: '+this.hoje()+'.',cor:'#a89f90',tem:true};
+  // Valida a validade da proposta (RF24). Campo opcional: só critica se preenchido.
+  _erroValidade(v){ const s=String(v||'').trim();
+    if(!s) return null;
+    if(!/^\d{2}\/\d{2}\/\d{4}$/.test(s)) return 'A validade da proposta deve ser uma data no formato dd/mm/aaaa — ex.: '+this.hoje()+'.';
+    const d=this._dataBR(s);
+    if(!d) return 'A validade "'+s+'" não existe no calendário — confira dia, mês e ano.';
+    if(d<this._hoje0()) return 'A validade da proposta não pode ser anterior a hoje ('+this.hoje()+') — a proposta já estaria vencida.';
+    if(this._diasAte(d)>730) return 'A validade da proposta está muito distante — informe uma data até 2 anos a partir de hoje.';
+    return null; }
+  // Texto de apoio exibido sob um campo de data, enquanto o usuário digita.
+  _dicaData(v,erroFn,vazioTxt){ const s=String(v||'').trim();
+    if(!s) return {txt:vazioTxt||('Formato dd/mm/aaaa — ex.: '+this.hoje()+'.'),cor:'#a89f90',tem:true};
     if(s.replace(/\D/g,'').length<8) return {txt:'Continue preenchendo no formato dd/mm/aaaa.',cor:'#a89f90',tem:true};
-    const er=this._erroPrazo(s,oque); if(er) return {txt:er,cor:'#a33a2b',tem:true};
+    const er=erroFn(s); if(er) return {txt:er,cor:'#a33a2b',tem:true};
     const d=this._dataBR(s), n=this._diasAte(d);
     const ext=d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
     return {txt:'✓ '+ext.charAt(0).toUpperCase()+ext.slice(1)+(n===0?' · hoje é o último dia':' · em '+n+' dia'+(n>1?'s':'')),cor:'#2f6b39',tem:true}; }
+  _dicaPrazo(v,oque){ return this._dicaData(v,s=>this._erroPrazo(s,oque)); }
   // Máscara de telefone BR: (XX) XXXX-XXXX ou (XX) XXXXX-XXXX (Ata 5.8)
   fxTelefone=e=>{ const d=String(e.target.value||'').replace(/\D/g,'').slice(0,11);
     let v=d; if(d.length>2) v='('+d.slice(0,2)+') '+d.slice(2);
@@ -4665,7 +4682,7 @@ class Component extends DCLogic {
         "Para responder, clique no botão dourado à direita do cartão — \"Enviar proposta…\" (ou \"Editar proposta…\", se já tiver enviado antes; em rodadas de renegociação, \"Enviar contraproposta…\").",
         "Na janela que abre (\"Proposta —\" seguida do código da cotação), informe o valor em \"Preço unitário por item (R$)\" para cada item; o \"Total da proposta\" é calculado automaticamente.",
         "No bloco \"Frete\", escolha a modalidade (CIF — frete do fornecedor, FOB — frete da revenda, ou Outros), informe o valor do frete (0,00 significa incluso) e a transportadora — o quadro \"Composição da proposta\" mostra produtos + frete = total em tempo real.",
-        "Preencha \"Prazo de entrega\" (ex.: 5 dias úteis), \"Validade da proposta\" (data no formato dd/mm/aaaa), as \"Condições de pagamento\" (ex.: boleto 28 dias) e as \"Condições de entrega\" (ex.: entrega no CD em até 48h).",
+        "Preencha \"Prazo de entrega\" (texto livre, ex.: 5 dias úteis), \"Validade da proposta\" (data — o campo aceita só dígitos e monta dd/mm/aaaa sozinho, com os atalhos \"+30\" e \"+60 dias\"; é opcional, mas se preenchido tem de ser uma data que exista no calendário e não esteja vencida), as \"Condições de pagamento\" (ex.: boleto 28 dias) e as \"Condições de entrega\" (ex.: entrega no CD em até 48h).",
         "Em \"Anexos da proposta\" você pode adicionar até 5 arquivos (catálogo, planilha de frete, tabela de preço…) — formatos PDF, Excel, Word, imagem ou XML, com até 5 MB cada; os anexos ficam visíveis para a Loja no mapa comparativo.",
         "Clique no botão dourado \"Enviar proposta\" para registrar (o botão continua com esse nome mesmo quando você está editando uma proposta já enviada), ou em \"Cancelar\" para fechar sem salvar.",
         "Em cotações já encerradas, leia a mensagem de resultado no próprio cartão (ex.: \"Sua proposta venceu\" ou \"Você venceu X de Y item(ns)\")."
@@ -5656,6 +5673,7 @@ class Component extends DCLogic {
     const itens={...((prev&&prev.itens)||{})}; let totAlvo=0;
     for(const it of alvo){ const u=this.num(f['ip'+it.produtoId]); if(!u) return this.err('Informe o preço unitário de todos os itens (RF24).'); itens[it.produtoId]=u; totAlvo+=u*it.qtd; }
     if(!f.prazoEntrega) return this.err('Informe o prazo de entrega (RF24).');
+    const erVal=this._erroValidade(f.validade); if(erVal) return this.err(erVal);
     const freteMod=f.freteMod||'CIF'; const freteValor=Math.round((this.num(f.freteValor)||0)*100)/100;
     if(freteValor<0) return this.err('Valor do frete inválido.');
     if(f.propBusy) return;
@@ -7371,6 +7389,10 @@ class Component extends DCLogic {
     const prazoDica=(M==='cotacao'||M==='rodada')
       ? this._dicaPrazo(S.form.prazo,M==='rodada'?'as contrapropostas':'o envio das propostas')
       : {txt:'',cor:'#a89f90',tem:false};
+    // validade da proposta (opcional, mas quando preenchida tem de ser data)
+    const validadeDica=M==='proposta'
+      ? this._dicaData(S.form.validade,s=>this._erroValidade(s),'Opcional — até quando a proposta vale, no formato dd/mm/aaaa.')
+      : {txt:'',cor:'#a89f90',tem:false};
     // categorias do catálogo (tela + modal)
     const GRUPOS=this._cats();
     const totProdGrupo=S.produtos.length||1;
@@ -7458,6 +7480,8 @@ class Component extends DCLogic {
       // data limite da cotação/rodada: máscara dd/mm/aaaa, dica e atalhos
       prazoDica,prazoBd:prazoDica.cor==='#a33a2b'?'#e2a79a':(prazoDica.cor==='#2f6b39'?'#bcd8c0':'#ddd5c7'),
       prazoAtalhos:[7,15,30].map(n=>({label:'+'+n+' dias',set:this.setPrazoEm(n)})),
+      validadeDica,validadeBd:validadeDica.cor==='#a33a2b'?'#e2a79a':(validadeDica.cor==='#2f6b39'?'#bcd8c0':'#ddd5c7'),
+      validadeAtalhos:[30,60].map(n=>({label:'+'+n+' dias',set:this.setValidadeEm(n)})),
       // categorias do catálogo
       sGrupos:isLoja&&scr==='grupos'&&pode('cadastros.produtos'),
       grupoRows,grupoKpis,grupoStOpts,grupoVazio:grupoRows.length===0,
@@ -7577,7 +7601,7 @@ class Component extends DCLogic {
       fxRoyalty:this.fx('royalty'),fxInicio:this.fx('inicio'),fxFim:this.fx('fim'),fxFornecedorId:this.fx('fornecedorId'),fxRevendaId:this.fx('revendaId'),
       fxCodigo:this.fx('codigo'),fxDescricao:this.fx('descricao'),fxUnidade:this.fx('unidade'),fxPreco:this.fx('preco'),fxBuscaForn:this.fx('buscaForn'),fxTelefone:this.fxTelefone,fxContatoNome:this.fx('contatoNome'),fxCategoria:this.fx('categoria'),
       fxJustif:this.fx('justif'),fxPedidoId:this.fx('pedidoId'),fxPrazo:this.fxData('prazo'),
-      fxPrecoP:this.fx('precoP'),fxPrazoEntrega:this.fx('prazoEntrega'),fxValidade:this.fx('validade'),fxCondicoes:this.fx('condicoes'),
+      fxPrecoP:this.fx('precoP'),fxPrazoEntrega:this.fx('prazoEntrega'),fxValidade:this.fxData('validade'),fxCondicoes:this.fx('condicoes'),
       fxValorFat:this.fx('valorFat'),fxDataPg:this.fx('dataPg'),fxValorPg:this.fx('valorPg'),fxComprovante:this.fx('comprovante'),fxMotivo:this.fx('motivo'),fxVenc:this.fx('venc'),
       setAnexoFat:this.setAnexoFat,fatAnexoNome:S.form.anexoNome||'',temFatAnexo:!!S.form.anexoB64,
       fatBusy:!!S.form.fatBusy,fatNaoBusy:!S.form.fatBusy,fatBtnBg:S.form.fatBusy?'#c9b78f':'#B38335',
