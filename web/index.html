@@ -3170,7 +3170,13 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         </sc-for>
       </div>
       <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Data limite para propostas</div>
-      <input value="{{form.prazo}}" onChange="{{fxPrazo}}" placeholder="dd/mm/aaaa" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
+      <input value="{{form.prazo}}" onChange="{{fxPrazo}}" inputmode="numeric" maxlength="10" placeholder="dd/mm/aaaa" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid {{prazoBd}};border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
+      <sc-if value="{{prazoDica.tem}}" hint-placeholder-val="{{true}}"><div style="font-size:11px;color:{{prazoDica.cor}};margin-top:5px;line-height:1.45">{{prazoDica.txt}}</div></sc-if>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">
+        <sc-for list="{{prazoAtalhos}}" as="pa" hint-placeholder-count="3">
+          <div onClick="{{pa.set}}" title="Preencher a data limite" style="font-size:11px;font-weight:600;color:#8f682a;border:1px solid #e6cf9e;background:#faf3e4;border-radius:7px;padding:4px 9px;cursor:pointer" style-hover="background:#f5ebd2">{{pa.label}}</div>
+        </sc-for>
+      </div>
       <sc-if value="{{form.erro}}" hint-placeholder-val="{{false}}"><div style="color:#a33a2b;font-size:12.5px;margin-top:12px">{{form.erro}}</div></sc-if>
       <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:18px">
         <div onClick="{{mClose}}" style="border:1px solid #ddd5c7;border-radius:8px;padding:9px 15px;font-size:13px;font-weight:600;cursor:pointer;color:#6b6459" style-hover="background:#f7f3ea">Cancelar</div>
@@ -3268,7 +3274,13 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         </sc-for>
       </div>
       <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Data limite para as contrapropostas</div>
-      <input value="{{form.prazo}}" onChange="{{fxPrazo}}" placeholder="dd/mm/aaaa" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
+      <input value="{{form.prazo}}" onChange="{{fxPrazo}}" inputmode="numeric" maxlength="10" placeholder="dd/mm/aaaa" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid {{prazoBd}};border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
+      <sc-if value="{{prazoDica.tem}}" hint-placeholder-val="{{true}}"><div style="font-size:11px;color:{{prazoDica.cor}};margin-top:5px;line-height:1.45">{{prazoDica.txt}}</div></sc-if>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">
+        <sc-for list="{{prazoAtalhos}}" as="pa" hint-placeholder-count="3">
+          <div onClick="{{pa.set}}" title="Preencher a data limite" style="font-size:11px;font-weight:600;color:#8f682a;border:1px solid #e6cf9e;background:#faf3e4;border-radius:7px;padding:4px 9px;cursor:pointer" style-hover="background:#f5ebd2">{{pa.label}}</div>
+        </sc-for>
+      </div>
       <sc-if value="{{form.erro}}" hint-placeholder-val="{{false}}"><div style="color:#a33a2b;font-size:12.5px;margin-top:12px">{{form.erro}}</div></sc-if>
       <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:18px">
         <div onClick="{{mClose}}" style="border:1px solid #ddd5c7;border-radius:8px;padding:9px 15px;font-size:13px;font-weight:600;cursor:pointer;color:#6b6459" style-hover="background:#f7f3ea">Cancelar</div>
@@ -4176,6 +4188,41 @@ class Component extends DCLogic {
   err(msg){ this.setState(s=>({form:{...s.form,erro:msg}})); }
 
   fx(f){ this._fx=this._fx||{}; if(!this._fx[f]) this._fx[f]=e=>{const v=e.target.value; this.setState(s=>({form:{...s.form,[f]:v,erro:null}}));}; return this._fx[f]; }
+  // Máscara de data brasileira: aceita só dígitos e monta dd/mm/aaaa.
+  fxData(campo){ this._fxd=this._fxd||{}; if(!this._fxd[campo]) this._fxd[campo]=e=>{
+    const dg=String(e.target.value||'').replace(/\D/g,'').slice(0,8);
+    let v=dg;
+    if(dg.length>4) v=dg.slice(0,2)+'/'+dg.slice(2,4)+'/'+dg.slice(4);
+    else if(dg.length>2) v=dg.slice(0,2)+'/'+dg.slice(2);
+    this.setState(s=>({form:{...s.form,[campo]:v,erro:null}})); }; return this._fxd[campo]; }
+  // Data brasileira estrita: valida o calendário de verdade. O construtor de
+  // Date normaliza (31/02 vira 03/03), então comparamos os componentes.
+  _dataBR(str){ const m=String(str||'').trim().match(/^(\d{2})\/(\d{2})\/(\d{4})$/); if(!m) return null;
+    const dia=+m[1], mes=+m[2], ano=+m[3];
+    if(mes<1||mes>12||dia<1||dia>31||ano<2000||ano>2100) return null;
+    const d=new Date(ano,mes-1,dia); d.setHours(0,0,0,0);
+    return (d.getDate()===dia&&d.getMonth()===mes-1&&d.getFullYear()===ano)?d:null; }
+  _hoje0(){ const h=new Date(); h.setHours(0,0,0,0); return h; }
+  _maisDias(n){ const d=new Date(); d.setDate(d.getDate()+n); return d.toLocaleDateString('pt-BR'); }
+  setPrazoEm(n){ this._spz=this._spz||{}; if(!this._spz[n]) this._spz[n]=()=>this.setState(s=>({form:{...s.form,prazo:this._maisDias(n),erro:null}})); return this._spz[n]; }
+  _diasAte(d){ return Math.round((d-this._hoje0())/86400000); }
+  // Valida a data limite de uma cotação/rodada; devolve a mensagem de erro ou null.
+  _erroPrazo(v,oque){ const s=String(v||'').trim(); const alvo=oque||'as propostas';
+    if(!s) return 'Defina a data limite para '+alvo+' (RF22).';
+    if(!/^\d{2}\/\d{2}\/\d{4}$/.test(s)) return 'Informe a data limite no formato dd/mm/aaaa — ex.: '+this.hoje()+'.';
+    const d=this._dataBR(s);
+    if(!d) return 'A data limite "'+s+'" não existe no calendário — confira dia, mês e ano.';
+    if(d<this._hoje0()) return 'A data limite não pode ser anterior a hoje ('+this.hoje()+').';
+    if(this._diasAte(d)>730) return 'A data limite está muito distante — informe uma data até 2 anos a partir de hoje.';
+    return null; }
+  // Texto de apoio exibido sob o campo, enquanto o usuário digita.
+  _dicaPrazo(v,oque){ const s=String(v||'').trim();
+    if(!s) return {txt:'Formato dd/mm/aaaa — ex.: '+this.hoje()+'.',cor:'#a89f90',tem:true};
+    if(s.replace(/\D/g,'').length<8) return {txt:'Continue preenchendo no formato dd/mm/aaaa.',cor:'#a89f90',tem:true};
+    const er=this._erroPrazo(s,oque); if(er) return {txt:er,cor:'#a33a2b',tem:true};
+    const d=this._dataBR(s), n=this._diasAte(d);
+    const ext=d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    return {txt:'✓ '+ext.charAt(0).toUpperCase()+ext.slice(1)+(n===0?' · hoje é o último dia':' · em '+n+' dia'+(n>1?'s':'')),cor:'#2f6b39',tem:true}; }
   // Máscara de telefone BR: (XX) XXXX-XXXX ou (XX) XXXXX-XXXX (Ata 5.8)
   fxTelefone=e=>{ const d=String(e.target.value||'').replace(/\D/g,'').slice(0,11);
     let v=d; if(d.length>2) v='('+d.slice(0,2)+') '+d.slice(2);
@@ -5409,7 +5456,7 @@ class Component extends DCLogic {
   confirmCotacao=()=>{ if(!this.pode('cotacoes.abrir')) return this.negado('Você não tem permissão para abrir cotações.','cotacoes.abrir'); const f=this.state.form; const conv=f.convidados||[];
     if(!f.pedidoId) return this.err('Selecione o pedido de origem (RF20).');
     if(conv.length<2) return this.err('Selecione dois ou mais fornecedores homologados (RF21).');
-    if(!f.prazo) return this.err('Defina a data limite para envio das propostas (RF22).');
+    const erPz=this._erroPrazo(f.prazo,'o envio das propostas'); if(erPz) return this.err(erPz);
     const ped=this.state.pedidos.find(p=>p.id===f.pedidoId);
     const sel=(f.sel&&f.sel.length?f.sel:ped.itens.map((i,ix)=>i.st==='aprovado'?ix:-1).filter(ix=>ix>=0));
     if(!sel.length) return this.err('Selecione ao menos um item aprovado para cotar.');
@@ -5492,7 +5539,7 @@ class Component extends DCLogic {
     const itensSel=f.rodItens||[]; const convSel=f.rodConv||[];
     if(!itensSel.length) return this.err('Selecione ao menos um item para renegociar.');
     if(!convSel.length) return this.err('Selecione ao menos um fornecedor participante da rodada.');
-    if(!f.prazo) return this.err('Defina a data limite para as contrapropostas.');
+    const erPzR=this._erroPrazo(f.prazo,'as contrapropostas'); if(erPzR) return this.err(erPzR);
     const n=this._cotRod(c)+1;
     const nomes=this.state.fornecedores.filter(x=>convSel.includes(x.id)).map(x=>x.nome).join(', ');
     const nomesIt=(c.itens||[]).filter(it=>itensSel.includes(it.produtoId)).map(it=>(this._prodInfo(it.produtoId).descricao||('Produto '+it.produtoId))).join(', ');
@@ -7320,6 +7367,10 @@ class Component extends DCLogic {
       return {nome:r2.nome,toggle:this.toggleRevUsr(r2.id),bg:on?'#faf5e9':'#fff',bd:on?'#B38335':'#e8e1d2',fg:on?'#8f682a':'#6b6459',mark:on?'✓ ':''};}):[];
     const usrRevSel=String((S.form.revendaIds||[]).length)+' selecionada(s)';
     const papelFormOpts=Object.entries(this.PAPEIS).map(([v,label])=>({v,label}));
+    // data limite (cotação e rodada) — dica calculada ao vivo sob o campo
+    const prazoDica=(M==='cotacao'||M==='rodada')
+      ? this._dicaPrazo(S.form.prazo,M==='rodada'?'as contrapropostas':'o envio das propostas')
+      : {txt:'',cor:'#a89f90',tem:false};
     // categorias do catálogo (tela + modal)
     const GRUPOS=this._cats();
     const totProdGrupo=S.produtos.length||1;
@@ -7404,6 +7455,9 @@ class Component extends DCLogic {
       // shell
       roleBtns,temRoleBtns:roleBtns.length>0,isLoja,isForn,isRev,navGroups,userIni,userNome,userPapel,
       mostraSelForn,mostraSelRev,mostraSelGrupo,ctxGrupoVal,ctxGrupoOpts,setRevContexto:this.setRevContexto,rpedGrupo,grpKpis,catGrupo,aceiteInfo,mAceite:S.modal==='aceiterev',confirmAceiteRev:this.confirmAceiteRev,fxMotivoRec:this.fx('motivoRec'),recDocInfo,mRecDoc:S.modal==='recusadoc',mReenvDoc:S.modal==='reenviodoc',confirmRecusaDoc:this.confirmRecusaDoc,confirmReenvioDoc:this.confirmReenvioDoc,fxMotivoDoc:this.fx('motivoDoc'),
+      // data limite da cotação/rodada: máscara dd/mm/aaaa, dica e atalhos
+      prazoDica,prazoBd:prazoDica.cor==='#a33a2b'?'#e2a79a':(prazoDica.cor==='#2f6b39'?'#bcd8c0':'#ddd5c7'),
+      prazoAtalhos:[7,15,30].map(n=>({label:'+'+n+' dias',set:this.setPrazoEm(n)})),
       // categorias do catálogo
       sGrupos:isLoja&&scr==='grupos'&&pode('cadastros.produtos'),
       grupoRows,grupoKpis,grupoStOpts,grupoVazio:grupoRows.length===0,
@@ -7522,7 +7576,7 @@ class Component extends DCLogic {
       fxNome:this.fx('nome'),fxCnpj:this.fx('cnpj'),fxCidade:this.fx('cidade'),fxContato:this.fx('contato'),
       fxRoyalty:this.fx('royalty'),fxInicio:this.fx('inicio'),fxFim:this.fx('fim'),fxFornecedorId:this.fx('fornecedorId'),fxRevendaId:this.fx('revendaId'),
       fxCodigo:this.fx('codigo'),fxDescricao:this.fx('descricao'),fxUnidade:this.fx('unidade'),fxPreco:this.fx('preco'),fxBuscaForn:this.fx('buscaForn'),fxTelefone:this.fxTelefone,fxContatoNome:this.fx('contatoNome'),fxCategoria:this.fx('categoria'),
-      fxJustif:this.fx('justif'),fxPedidoId:this.fx('pedidoId'),fxPrazo:this.fx('prazo'),
+      fxJustif:this.fx('justif'),fxPedidoId:this.fx('pedidoId'),fxPrazo:this.fxData('prazo'),
       fxPrecoP:this.fx('precoP'),fxPrazoEntrega:this.fx('prazoEntrega'),fxValidade:this.fx('validade'),fxCondicoes:this.fx('condicoes'),
       fxValorFat:this.fx('valorFat'),fxDataPg:this.fx('dataPg'),fxValorPg:this.fx('valorPg'),fxComprovante:this.fx('comprovante'),fxMotivo:this.fx('motivo'),fxVenc:this.fx('venc'),
       setAnexoFat:this.setAnexoFat,fatAnexoNome:S.form.anexoNome||'',temFatAnexo:!!S.form.anexoB64,
