@@ -249,6 +249,8 @@ input::placeholder,textarea::placeholder{color:#b0a795}
                     <div style="font-size:10px;font-weight:600;color:#8f682a;margin-top:4px;white-space:nowrap">{{p.etapaTxt}}</div>
                     <sc-if value="{{p.aguarda}}" hint-placeholder-val="{{false}}"><div style="font-size:10.5px;color:#b0a795;margin-top:4px">criado {{p.aguarda}}</div></sc-if>
                     <sc-if value="{{p.temSaldoAlerta}}" hint-placeholder-val="{{false}}"><div style="margin-top:4px"><span style="font-size:10px;font-weight:700;border-radius:6px;padding:2px 7px;background:{{p.saldoBg}};color:{{p.saldoFg}};white-space:nowrap">◈ {{p.saldoLabel}}</span></div></sc-if>
+                    <sc-if value="{{p.podeReceb}}" hint-placeholder-val="{{false}}"><div onClick="{{p.recebFn}}" title="Confirmar que o material do pedido foi recebido" style="display:inline-block;background:#2f6b39;color:#fff;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px;white-space:nowrap" style-hover="background:#265730">&#10003; Confirmar recebimento…</div></sc-if>
+                <sc-if value="{{p.temReceb}}" hint-placeholder-val="{{false}}"><div title="{{p.recebTitulo}}" style="display:inline-block;font-size:10.5px;font-weight:700;border-radius:6px;padding:2px 8px;background:#e9f3ea;color:#2f6b39;margin-top:6px;white-space:nowrap">&#10003; {{p.recebSelo}}</div></sc-if>
                   </div>
                   <sc-if value="{{p.pendente}}" hint-placeholder-val="{{false}}">
                     <div style="display:flex;gap:6px;flex:none">
@@ -346,6 +348,15 @@ input::placeholder,textarea::placeholder{color:#b0a795}
                 <span style="font-size:11.5px;color:#a89f90;white-space:nowrap">{{ax.quando}} · {{ax.autor}}</span>
               </div>
             </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{pd.temBlocoReceb}}" hint-placeholder-val="{{false}}">
+          <div style="background:#fff;border:1px solid {{pd.recebBd}};border-left:3px solid {{pd.recebFg}};border-radius:12px;padding:15px 18px;margin-bottom:14px">
+            <div style="font-size:14px;font-weight:700;margin-bottom:3px;color:{{pd.recebFg}}">{{pd.recebTitulo2}}</div>
+            <div style="font-size:12.5px;color:#6b6459;line-height:1.55">{{pd.recebTxt}}</div>
+            <sc-if value="{{pd.podeReceb}}" hint-placeholder-val="{{false}}">
+              <div onClick="{{pd.recebFn}}" style="display:inline-block;background:#2f6b39;color:#fff;border-radius:9px;padding:9px 15px;font-size:13px;font-weight:700;cursor:pointer;margin-top:11px" style-hover="background:#265730">&#10003; Confirmar recebimento do material…</div>
+            </sc-if>
           </div>
         </sc-if>
         <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:16px 18px">
@@ -1285,6 +1296,32 @@ input::placeholder,textarea::placeholder{color:#b0a795}
       <div style="border:1px dashed #e5ddcd;border-radius:11px;padding:26px;text-align:center;font-size:13px;color:#a89f90;margin-top:14px">Nenhuma categoria encontrada para esta busca.</div>
     </sc-if>
     <div style="font-size:11.5px;color:#b0a795;margin-top:12px">Categorias não são excluídas, apenas inativadas: uma categoria inativa deixa de ser oferecida no cadastro de produtos, mas os produtos já classificados nela continuam como estão e seguem aparecendo nos filtros e relatórios. Renomear uma categoria reclassifica automaticamente todos os produtos que a usam.</div>
+  </div>
+</sc-if>
+
+<sc-if value="{{mReceb}}" hint-placeholder-val="{{false}}">
+  <div style="position:fixed;inset:0;background:rgba(39,37,37,.45);display:flex;align-items:center;justify-content:center;z-index:55">
+    <div style="background:#fff;border-radius:14px;width:480px;max-width:92vw;max-height:86vh;overflow-y:auto;padding:22px 24px;box-shadow:0 18px 50px rgba(39,37,37,.25)">
+      <div style="font-size:16px;font-weight:700">Confirmar recebimento do material — {{recebInfo.pedidoId}}</div>
+      <div style="font-size:12.5px;color:#8a8378;margin-top:2px">{{recebInfo.sub}}</div>
+      <div style="background:#faf7f0;border:1px solid #eee7d8;border-radius:9px;padding:11px 13px;margin-top:13px">
+        <div style="font-size:12px;color:#6b6459;margin-bottom:7px"><b style="color:#272525">Itens entregues</b> · confira antes de confirmar</div>
+        <sc-for list="{{recebInfo.itens}}" as="ri" hint-placeholder-count="2">
+          <div style="display:flex;justify-content:space-between;gap:10px;font-size:12.5px;padding:4px 0;border-top:1px dashed #eee7d8">
+            <span>{{ri.label}}</span><span style="color:#8a8378;white-space:nowrap">{{ri.qtdTxt}}</span>
+          </div>
+        </sc-for>
+        <div style="font-size:11.5px;color:#8a8378;margin-top:8px">{{recebInfo.origemTxt}}</div>
+      </div>
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:13px 0 5px">Observação do recebimento <span style="font-weight:400;color:#a89f90">— opcional · avarias, divergências, quem recebeu</span></div>
+      <textarea value="{{form.obs}}" onChange="{{fxObsReceb}}" rows="3" placeholder="Ex.: material conferido e sem avarias; recebido por João no depósito." style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13px;background:#fff;outline:none;color:#272525;resize:vertical;line-height:1.5"></textarea>
+      <div style="font-size:11px;color:#6d4a10;background:#fdf6e7;border:1px solid #f0e2c4;border-radius:8px;padding:8px 11px;margin-top:11px;line-height:1.5">{{recebInfo.aviso}}</div>
+      <sc-if value="{{form.erro}}" hint-placeholder-val="{{false}}"><div style="color:#a33a2b;font-size:12.5px;margin-top:12px">{{form.erro}}</div></sc-if>
+      <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:18px">
+        <div onClick="{{mClose}}" style="border:1px solid #ddd5c7;border-radius:8px;padding:9px 15px;font-size:13px;font-weight:600;cursor:pointer;color:#6b6459" style-hover="background:#f7f3ea">Cancelar</div>
+        <div onClick="{{confirmRecebimento}}" style="background:#2f6b39;color:#fff;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#265730">Confirmar recebimento</div>
+      </div>
+    </div>
   </div>
 </sc-if>
 
@@ -2685,6 +2722,8 @@ input::placeholder,textarea::placeholder{color:#b0a795}
               <td style="padding:11px 18px;border-bottom:1px solid #f5f1e8">
                 <span style="font-size:11.5px;font-weight:600;border-radius:7px;padding:3px 9px;background:{{p.stBg}};color:{{p.stFg}};white-space:nowrap">{{p.stLabel}}</span>
                 <sc-if value="{{p.temAceite}}" hint-placeholder-val="{{false}}"><div onClick="{{p.aprovarNeg}}" style="display:inline-block;background:#B38335;color:#fff;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px;white-space:nowrap" style-hover="background:#9a6f2b">Aprovação comercial…</div></sc-if>
+<sc-if value="{{p.podeReceb}}" hint-placeholder-val="{{false}}"><div onClick="{{p.recebFn}}" title="Confirmar que o material do pedido foi recebido" style="display:inline-block;background:#2f6b39;color:#fff;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px;white-space:nowrap" style-hover="background:#265730">&#10003; Confirmar recebimento…</div></sc-if>
+                <sc-if value="{{p.temReceb}}" hint-placeholder-val="{{false}}"><div title="{{p.recebTitulo}}" style="display:inline-block;font-size:10.5px;font-weight:700;border-radius:6px;padding:2px 8px;background:#e9f3ea;color:#2f6b39;margin-top:6px;white-space:nowrap">&#10003; {{p.recebSelo}}</div></sc-if>
                 <sc-if value="{{p.temJustif}}" hint-placeholder-val="{{false}}"><div style="font-size:11.5px;color:#a33a2b;margin-top:3px">{{p.justificativa}}</div></sc-if>
               </td>
             </tr>
@@ -4305,7 +4344,7 @@ class Component extends DCLogic {
   itemTotal(i){ return i.precoNeg!=null?i.precoNeg:i.qtd*i.preco; }
   pedTotal(p){ return p.itens.filter(i=>i.st!=='rejeitado').reduce((a,i)=>a+this.itemTotal(i),0); }
   // ——— RF49: workflow de etapas do pedido (Ata 5.11) ———
-  ETAPAS_PED=['Recebimento / aprovação','Cotação / decisão de atendimento','Seleção do vencedor','Aceite comercial da revenda','Encaminhamento ao fornecedor','Confirmação pelo fornecedor','Produção / atendimento','Faturamento','Conclusão'];
+  ETAPAS_PED=['Recebimento / aprovação','Cotação / decisão de atendimento','Seleção do vencedor','Aceite comercial da revenda','Encaminhamento ao fornecedor','Confirmação pelo fornecedor','Produção / atendimento','Faturamento','Entrega — aguardando confirmação','Conclusão'];
   _etapaLabel(n){ return n>0?this.ETAPAS_PED[n-1]:'Rejeitado'; }
   _etapaItemIdx(p,i){ const st=i.st||'pendente';
     if(st==='rejeitado') return 0;
@@ -4315,13 +4354,16 @@ class Component extends DCLogic {
       return (c&&this._propsEfetivas(c).length)?3:2; }
     if(st==='aceite') return 4;
     if(st==='direto') return ((p.confForn||{})[i.fornecedorId])?7:6;
-    if(st==='estoque') return 9;
+    // Faturado/atendido pelo estoque = entregue: o pedido só conclui depois da
+    // confirmação de recebimento do material (pela revenda ou pela Loja).
+    if(st==='estoque') return this._recebido(p)?10:9;
     if(st==='faturado'){ const f=this.state.faturamentos.find(x=>x.pedidoId===p.id&&x.fornecedorId===i.fornecedorId);
-      return (f&&f.docStatus==='recusado')?8:9; }
+      if(f&&f.docStatus==='recusado') return 8;
+      return this._recebido(p)?10:9; }
     return 1; }
   _etapaPedIdx(p){ const es=(p.itens||[]).map(i=>this._etapaItemIdx(p,i)).filter(e=>e>0);
     return es.length?Math.min(...es):0; }
-  _etapaTxt(p){ const n=this._etapaPedIdx(p); return n>0?('Etapa '+n+'/9 · '+this._etapaLabel(n)):'Pedido rejeitado'; }
+  _etapaTxt(p){ const n=this._etapaPedIdx(p); return n>0?('Etapa '+n+'/10 · '+this._etapaLabel(n)):'Pedido rejeitado'; }
 
   get role(){ return this.state.role ?? (this.props.perfilInicial ?? 'loja'); }
   get scr(){ return this.state.scr ?? ({loja:'dash',fornecedor:'fped',revenda:'cat'})[this.role]; }
@@ -4614,10 +4656,12 @@ class Component extends DCLogic {
         "Para receber um pedido de uma só vez, clique no botão dourado 'Receber', que aparece na coluna Status apenas nas linhas pendentes — ele confirma o recebimento de todos os itens que ainda estão pendentes.",
         "Para recusar, clique em 'Rejeitar' na mesma linha: abre uma janela em que você precisa escrever a justificativa (obrigatória) e confirmar em 'Rejeitar pedido'; essa justificativa fica visível para a revenda.",
         "Para decidir item por item ou definir como o pedido será atendido (estoque da Loja, envio direto a um fornecedor ou cotação), clique sobre a linha para abrir a tela 'Detalhe do pedido'.",
-        "Na coluna 'Conversa', clique no balão 💬 para abrir o canal de comunicação daquele pedido com a revenda — dúvidas, ocorrências e observações. O balão fica roxo com o número de mensagens novas quando a revenda escreve; abrir a conversa marca tudo como lido."
+        "Na coluna 'Conversa', clique no balão 💬 para abrir o canal de comunicação daquele pedido com a revenda — dúvidas, ocorrências e observações. O balão fica roxo com o número de mensagens novas quando a revenda escreve; abrir a conversa marca tudo como lido.",
+        "Quando o pedido chega à etapa 9 (entregue — faturado ou atendido pelo estoque), aparece o botão verde 'Confirmar recebimento…' na coluna Status: use-o quando a Loja fizer a conferência do material em nome da revenda. Confirmado, a linha passa a exibir o selo '✓ Recebido em…' e o pedido vai para a etapa 10."
       ],
       "dicas": [
-        "Workflow de etapas (RF49): cada pedido mostra \"Etapa N/9\" com a nomenclatura do estágio real (Recebimento/aprovação → Cotação → Seleção → Aceite da revenda → Encaminhamento → Confirmação pelo fornecedor → Produção → Faturamento → Conclusão); o novo seletor \"Todas as etapas\" filtra a lista pela etapa atual e o detalhe exibe a linha do tempo completa com a etapa destacada — toda transição fica na trilha e na auditoria com data, usuário e de/para.",
+        "Workflow de etapas (RF49): cada pedido mostra \"Etapa N/10\" com a nomenclatura do estágio real (Recebimento/aprovação → Cotação → Seleção → Aceite da revenda → Encaminhamento → Confirmação pelo fornecedor → Produção → Faturamento → Entrega aguardando confirmação → Conclusão); o seletor \"Todas as etapas\" filtra a lista pela etapa atual e o detalhe exibe a linha do tempo completa com a etapa destacada — toda transição fica na trilha e na auditoria com data, usuário e de/para.",
+        "O pedido NÃO conclui sozinho depois de faturado: ele para na etapa 9 até alguém confirmar que o material chegou. A confirmação é da revenda, mas a Loja também pode fazê-la — nesse caso fica registrado na trilha que foi a Loja quem confirmou.",
         "Os botões 'Receber' e 'Rejeitar' na lista só aparecem nas linhas com status 'Pendente'; pedidos já decididos não mostram essas ações.",
         "A rejeição sempre exige uma justificativa — sem ela o sistema não conclui a operação, e o texto informado fica visível para a revenda.",
         "O botão 'Receber' da lista libera o pedido inteiro de uma vez; quando quiser tratar os itens de formas diferentes, abra o 'Detalhe do pedido' clicando na linha.",
@@ -4640,6 +4684,7 @@ class Component extends DCLogic {
         "Em qualquer uma das três janelas, cada item selecionado traz o campo de quantidade com os botões − e +: a Loja decide quanto vai por aquele caminho, de 1 até a quantidade que a revenda pediu. Na cotação o rótulo é \"Quantidade a cotar\" e o total estimado recalcula a cada alteração.",
         "No bloco \"Informações\" (à direita), confira a Revenda e o Fornecedor de destino. Se houver \"Cotação vinculada\", clique no código dela (ex.: COT-008 →) para abrir a cotação.",
         "Acompanhe cada ação no bloco \"Trilha do pedido — data, hora e usuário\", que registra o que foi feito, por quem e quando.",
+        "Depois de faturado (ou atendido pelo estoque), surge o painel de recebimento: em âmbar enquanto aguarda a confirmação, com o botão verde \"Confirmar recebimento do material…\"; em verde depois de confirmado, mostrando quando, por quem e a observação registrada.",
         "Quando o fornecedor anexa arquivos durante o atendimento, eles aparecem no quadro \"Documentos do atendimento\", com nome, data e autor — clique no nome para baixar.",
         "Logo abaixo do cabeçalho fica o botão 💬 da conversa do pedido, com o total de mensagens. Clique para conversar com a revenda a qualquer momento — dúvidas, ocorrências e observações ficam guardadas no próprio pedido."
       ],
@@ -5068,10 +5113,12 @@ class Component extends DCLogic {
         "Acompanhe a etiqueta colorida na coluna \"Status\", que indica a situação do pedido (pendente, recebido, em cotação, rejeitado ou faturado, como explica o texto logo abaixo do título da tela).",
         "Quando o fornecedor fatura, os documentos do faturamento aparecem na coluna \"Fornecedor (faturamento)\" como etiquetas verdes — \"📎 NF …\" para a nota fiscal e \"📎 Boleto …\" para o boleto — clique para baixar cada arquivo.",
         "Quando um pedido é rejeitado, aparece um texto em vermelho logo abaixo da etiqueta de status, com a justificativa informada pela Loja.",
-        "Na coluna \"Conversa\", clique no balão 💬 para falar com a Loja Cidade Imperial sobre aquele pedido: dúvidas, ocorrências, observações. Escreva a mensagem e clique em \"Enviar\" — a Loja é avisada por e-mail na hora."
+        "Na coluna \"Conversa\", clique no balão 💬 para falar com a Loja Cidade Imperial sobre aquele pedido: dúvidas, ocorrências, observações. Escreva a mensagem e clique em \"Enviar\" — a Loja é avisada por e-mail na hora.",
+        "Quando o material do pedido chegar, clique no botão verde \"✓ Confirmar recebimento…\": confira os itens na janela, registre uma observação se houver avaria ou divergência e confirme. O pedido passa para a etapa 10 (Conclusão) e a Loja é avisada por e-mail."
       ],
       "dicas": [
-        "Workflow de etapas (RF49): cada pedido mostra \"Etapa N/9\" com o mesmo estágio que a Loja enxerga; use o seletor \"Todas as etapas\" para filtrar e acompanhe as transições na trilha do pedido.",
+        "Workflow de etapas (RF49): cada pedido mostra \"Etapa N/10\" com o mesmo estágio que a Loja enxerga; use o seletor \"Todas as etapas\" para filtrar e acompanhe as transições na trilha do pedido.",
+        "A última etapa depende de você: o pedido faturado fica na etapa 9 até a confirmação de recebimento do material. Se você não confirmar, a Loja pode confirmar no seu lugar — e fica registrado que foi ela.",
         "Quando a Loja fecha uma negociação em cotação, o pedido fica \"Aguardando aceite da revenda\" e o botão dourado \"Aprovação comercial…\" aparece na linha: é onde você vê os valores negociados e o frete e ACEITA ou RECUSA por item (motivo obrigatório na recusa) — itens recusados voltam à negociação em nova rodada.",
         "Usuário de grupo econômico (vinculado a 2+ revendas): o seletor dourado no topo troca a revenda ativa SEM novo login e a opção \"Grupo — visão consolidada\" mostra os pedidos de todas as revendas juntos, com indicadores agregados e a revenda identificada em cada linha.",
         "Esta tela serve apenas para acompanhar; para criar um novo pedido, abra a tela \"Catálogo de produtos\" (menu \"Compras\"), adicione os produtos e clique em \"Enviar pedido para análise\".",
@@ -6143,6 +6190,55 @@ class Component extends DCLogic {
     this.audit('Exportação de todos os cadastros',resumo.length+' cadastro(s) · '+tot+' registro(s) · .xlsx');
     this.toast('Exportados '+resumo.length+' cadastros ('+tot+' registros) em uma pasta de trabalho.','ok'); };
 
+  // ══ Confirmação de recebimento do material ═══════════════════════════════
+  // Depois de faturado (ou atendido pelo estoque da Loja), o pedido fica
+  // aguardando a confirmação de que o material chegou. Confirma quem recebeu —
+  // a revenda — ou a Loja Cidade Imperial, quando faz a conferência por ela.
+  _recebido(p){ return !!(p&&p.recebimento&&p.recebimento.quando); }
+  // Entregue = todos os itens ativos já faturados ou atendidos pelo estoque,
+  // sem documento fiscal recusado pendente.
+  _entregue(p){ const at=(p&&p.itens||[]).filter(i=>i.st!=='rejeitado');
+    if(!at.length) return false;
+    return at.every(i=>this._etapaItemIdx(p,i)>=9); }
+  _podeConfirmarReceb(p){ if(!p||this._recebido(p)||!this._entregue(p)) return false;
+    if(this.role==='revenda'){ const u=this.usuarioAtual();
+      const revs=(u&&u.papel==='revenda')?this._minhasRevs(u):[this.state.revAtivo];
+      return revs.includes(p.revendaId)&&!this.state.revGrupo&&this.pode('pedidos.confirmar_receb'); }
+    if(this.role==='loja'||this.role==='admin') return this.pode('pedidos.confirmar_receb');
+    return false; }
+  _recebInfo(p){ const r=(p&&p.recebimento)||null; if(!r) return '';
+    return 'Recebimento confirmado em '+r.quando+' por '+r.por+(r.obs?(' — '+r.obs):''); }
+  // Vals do botão/selo de recebimento, usados nas duas listas e no detalhe.
+  _recebCel(p){ const r=(p&&p.recebimento)||null;
+    return {podeReceb:this._podeConfirmarReceb(p),recebFn:this.abrirRecebimento(p.id),
+      temReceb:!!r,recebSelo:r?('Recebido em '+String(r.quando).split(' ')[0]):'',
+      recebTitulo:r?this._recebInfo(p):''}; }
+
+  abrirRecebimento(id){ this._arc=this._arc||{}; if(!this._arc[id]) this._arc[id]=(e)=>{
+    if(e&&e.stopPropagation) e.stopPropagation();
+    this.setState({modal:'recebimento',form:{pedidoId:id,obs:''}}); }; return this._arc[id]; }
+
+  confirmRecebimento=()=>{
+    const f=this.state.form; const id=f.pedidoId;
+    const ped=this.state.pedidos.find(p=>p.id===id); if(!ped) return;
+    if(!this._podeConfirmarReceb(ped)) return this.negado('Você não tem permissão para confirmar o recebimento do material.','pedidos.confirmar_receb');
+    const obs=String(f.obs||'').trim().slice(0,400);
+    const papel=this.role==='revenda'?'revenda':'loja';
+    const quem=this.userName();
+    const reg={quando:this.ts(),ts:Date.now(),por:quem,papel,obs};
+    this.updPed(id,p=>{ p.recebimento=reg;
+      p.trilha.push(this.tr('Recebimento do material confirmado por '+quem+(papel==='loja'?' (pela Loja)':'')+(obs?' — '+obs:'')));
+      return p; });
+    this.audit('Recebimento de material confirmado',id+' · '+(papel==='loja'?'confirmado pela Loja':'confirmado pela revenda')+' · '+this._revNome(ped.revendaId)+(obs?' · '+obs:''));
+    // avisa o outro lado
+    const dest=papel==='loja'?this._revEmail(ped.revendaId):this._lojaEmail();
+    this.notificar('pedido_recebido',dest,{pedidoId:id,revendaNome:this._revNome(ped.revendaId),
+      por:quem,quando:reg.quando,origem:papel==='loja'?'a Loja Cidade Imperial':('a revenda '+this._revNome(ped.revendaId)),
+      observacao:obs,itensLista:this._itensPed(ped,i=>i.st!=='rejeitado')});
+    this.mClose();
+    this.toast('Recebimento do pedido '+id+' confirmado.','ok');
+    setTimeout(()=>this._flushPersist(),0); };
+
   // ══ Conversa por pedido (Loja × Revenda) ═════════════════════════════════
   // Todo pedido tem um canal de comunicação, aberto a qualquer momento do
   // ciclo e por qualquer um dos dois lados: dúvidas, ocorrências e
@@ -7047,7 +7143,8 @@ class Component extends DCLogic {
       ['pedidos.aprovar','Receber pedidos e itens',['admin','loja']],
       ['pedidos.rejeitar','Rejeitar pedidos e itens',['admin','loja']],
       ['pedidos.atender','Definir atendimento (estoque, envio direto, cotação)',['admin','loja']],
-      ['pedidos.criar','Criar pedidos no catálogo (revenda)',['admin','revenda']]]},
+      ['pedidos.criar','Criar pedidos no catálogo (revenda)',['admin','revenda']],
+      ['pedidos.confirmar_receb','Confirmar recebimento do material (entrega)',['admin','loja','revenda']]]},
     {mod:'Cotações',itens:[
       ['cotacoes.ver','Ver cotações e propostas',['admin','loja']],
       ['cotacoes.abrir','Abrir e cancelar cotações',['admin','loja']],
@@ -7434,7 +7531,7 @@ class Component extends DCLogic {
         &&(S.filtroRev==='0'||p.revendaId===+S.filtroRev)
         &&(!bp||p.id.toLowerCase().includes(bp)||R(p.revendaId).nome.toLowerCase().includes(bp)))
       .map(p=>{ const sres=p.status==='pendente'?this._saldoItens(p.itens):null; const schip=sres?this._saldoChip(sres):null;
-        return {...pedRow(p),...this._chatCel(p),etapaTxt:this._etapaTxt(p),pendente:p.status==='pendente'&&(this.pode('pedidos.aprovar')||this.pode('pedidos.rejeitar')),aguarda:p.status==='pendente'?idade(p.data):'',
+        return {...pedRow(p),...this._chatCel(p),...this._recebCel(p),etapaTxt:this._etapaTxt(p),pendente:p.status==='pendente'&&(this.pode('pedidos.aprovar')||this.pode('pedidos.rejeitar')),aguarda:p.status==='pendente'?idade(p.data):'',
         temSaldoAlerta:!!schip,saldoLabel:schip?schip.label:'',saldoBg:schip?schip.bg:'',saldoFg:schip?schip.fg:'',
         aprovarFn:this.aprovar(p.id),rejeitarFn:this.open('rejeitar',{pedidoId:p.id})};});
     const valMes=PEDS.filter(p=>p.data.endsWith('/'+this.compAtual().replace('/','/'))||p.data.slice(3)===this.compAtual()).reduce((a,p)=>a+(p.total),0);
@@ -7468,7 +7565,8 @@ class Component extends DCLogic {
             confN?('confirmado: '+Object.values(p.confForn).map(c2=>c2.usuario).join(', ')):'aguardando o fornecedor',
             'em produção ou atendimento',
             fatPed?(fatPed.id+' · '+fatPed.data):'documento fiscal do fornecedor',
-            'itens atendidos e documentos ok'];
+            (p.recebimento?'material recebido':'material entregue — aguardando confirmação'),
+            (p.recebimento?('recebido em '+p.recebimento.quando+' por '+p.recebimento.por):'após a confirmação do recebimento')];
           steps=this.ETAPAS_PED.map((lb,ix)=>{ const nE=ix+1;
             let stE=nE<eAtual?'done':(nE===eAtual?'current':'pending');
             if(nE<eAtual){ if((nE===2||nE===3)&&!temCot) stE='skipped'; if(nE===4&&!temNeg) stE='skipped';
@@ -7477,7 +7575,16 @@ class Component extends DCLogic {
         steps=steps.map((s,i)=>({...s,temLinha:i>0}));
         const cotIds=[...new Set(p.itens.filter(i=>i.cotacaoId&&i.st==='cotacao').map(i=>i.cotacaoId))];
         const dt=destTxt(p);
-        pd={id:p.id,steps,data:p.data,...this._chatCel(p),...this.chip(p.status),etapaTxt:this._etapaTxt(p),revNome:R(p.revendaId).nome,revCidade:R(p.revendaId).cidade||'',revContato:((R(p.revendaId).telefone&&R(p.revendaId).telefone!=='—')?('📞 '+R(p.revendaId).telefone+' · '):'')+(R(p.revendaId).email||''),
+        const _rcb=p.recebimento||null; const _entr=this._entregue(p); const _pdRec=this._podeConfirmarReceb(p);
+        pd={id:p.id,steps,data:p.data,...this._chatCel(p),...this._recebCel(p),
+          temBlocoReceb:_entr||!!_rcb,
+          recebBd:_rcb?'#cfe0d1':'#e6cf9e',recebFg:_rcb?'#2f6b39':'#8f682a',
+          recebTitulo2:_rcb?'✓ Material recebido':'Aguardando confirmação de recebimento',
+          recebTxt:_rcb?this._recebInfo(p)
+            :('O pedido está entregue (faturado ou atendido pelo estoque da Loja) e aguarda a confirmação de que o material chegou. '
+              +(_pdRec?'Confirme abaixo — a revenda também pode confirmar pela tela "Meus pedidos".'
+                      :'A confirmação é feita pela revenda, na tela "Meus pedidos", ou por um usuário da Loja com a permissão de confirmar recebimento.')),
+          ...this.chip(p.status),etapaTxt:this._etapaTxt(p),revNome:R(p.revendaId).nome,revCidade:R(p.revendaId).cidade||'',revContato:((R(p.revendaId).telefone&&R(p.revendaId).telefone!=='—')?('📞 '+R(p.revendaId).telefone+' · '):'')+(R(p.revendaId).email||''),
           fornDest:dt==='—'?'— ainda não definido —':dt,
           temCot:cotIds.length>0,cotId:cotIds.join(', '),verCot:cotIds.length?this.openCot(cotIds[0]):null,
           itens:p.itens.map((i,ix)=>{const pr=P(i.produtoId); const st=i.st||'pendente';
@@ -8122,7 +8229,7 @@ class Component extends DCLogic {
     const revsCtx=(isRev&&S.revGrupo&&uAtual)?this._minhasRevs(uAtual):[rid];
     const rpedGrupo=isRev&&S.revGrupo&&revsCtx.length>1;
     const rPedRows=PEDS.filter(p=>revsCtx.includes(p.revendaId)&&((S.filtroEtapaRev||'0')==='0'||this._etapaPedIdx(p)===+S.filtroEtapaRev)).map(p=>({id:p.id,data:p.data,revTag:rpedGrupo?(R(p.revendaId).nome||''):'',
-      etapaTxt:this._etapaTxt(p),...this._chatCel(p),
+      etapaTxt:this._etapaTxt(p),...this._chatCel(p),...this._recebCel(p),
       fotos:p.itens.map(i=>({src:this.fotosDe(P(i.produtoId))[0],ver:this.verFoto(i.produtoId)})),
       itensN:p.itens.length+(p.itens.length===1?' item':' itens'),totalFmt:this._revTotalFmt(p),
       fornNome:destTxt(p),...this.chip(p.status),
@@ -8541,6 +8648,21 @@ class Component extends DCLogic {
       pedRows,stOpts,filtroStatus:S.filtroStatus,setFiltroStatus:this.setFiltroStatus,pd,
       // conversa por pedido
       ...this._chatVals(),fxTextoChat:this.fx('texto'),enviarMensagemChat:this.enviarMensagemChat,
+      // confirmação de recebimento do material
+      mReceb:M==='recebimento',fxObsReceb:this.fx('obs'),confirmRecebimento:this.confirmRecebimento,
+      recebInfo:(()=>{ const pR=(M==='recebimento'&&S.form.pedidoId)?S.pedidos.find(x=>x.id===S.form.pedidoId):null;
+        if(!pR) return {pedidoId:'',sub:'',itens:[],origemTxt:'',aviso:''};
+        const ent=pR.itens.filter(i=>i.st!=='rejeitado');
+        const fornsR=[...new Set(ent.filter(i=>i.fornecedorId).map(i=>F(i.fornecedorId).nome))];
+        const temEst=ent.some(i=>i.st==='estoque');
+        return {pedidoId:pR.id,
+          sub:'Etapa 9/10 — confirme que o material chegou para o pedido concluir. Revenda '+(R(pR.revendaId).nome||'—')+'.',
+          itens:ent.map(i=>{ const pr=P(i.produtoId);
+            return {label:(pr.codigo||'')+' · '+(pr.descricao||''),qtdTxt:'×'+i.qtd+' '+(pr.unidade||'')}; }),
+          origemTxt:'Entregue por: '+([...fornsR,...(temEst?['Estoque da Loja']:[])].join(' · ')||'—'),
+          aviso:this.role==='revenda'
+            ? 'Ao confirmar, o pedido passa para a etapa 10 (Conclusão) e a Loja Cidade Imperial é avisada por e-mail. Se houver avaria ou divergência, descreva na observação — e use a conversa do pedido para tratar o caso.'
+            : 'Você está confirmando o recebimento em nome da revenda '+(R(pR.revendaId).nome||'')+'. Ao confirmar, o pedido passa para a etapa 10 (Conclusão), a revenda é avisada por e-mail e o registro fica na trilha e na auditoria com o seu nome.'}; })(),
       pedKpis,buscaPed:S.buscaPed,setBuscaPed:this.setBuscaPed,filtroRev:S.filtroRev,setFiltroRev:this.setFiltroRev,revFilterOpts,
       etapaOpts,filtroEtapa:S.filtroEtapa||'0',setFiltroEtapa:this.setFiltroEtapa,filtroEtapaRev:S.filtroEtapaRev||'0',setFiltroEtapaRev:this.setFiltroEtapaRev,
       // cotações

@@ -164,6 +164,20 @@ export const TEMPLATES = {
       itensDe(v, 'Itens atendidos'), 'Pedido'),
   }),
 
+  pedido_recebido: (v) => ({
+    subject: `Recebimento confirmado — pedido ${v.pedidoId}`,
+    html: layout('Material recebido',
+      p(`O recebimento do material do pedido ${b(v.pedidoId)} foi confirmado por ${b(v.por)}, ${esc(v.origem)}.`) +
+      linhas([['Pedido', v.pedidoId], ['Revenda', v.revendaNome], ['Confirmado por', v.por], ['Quando', v.quando]]) +
+      (v.observacao
+        ? '<div style="border-left:3px solid #2f6b39;background:#eef5ef;padding:12px 16px;margin:4px 0 14px;border-radius:0 8px 8px 0">' +
+          '<div style="font-size:12px;font-weight:700;color:#2f6b39;margin-bottom:4px">Observação do recebimento</div>' +
+          '<div style="font-size:14px;line-height:1.6;color:#272525;white-space:pre-wrap">' + esc(v.observacao) + '</div></div>'
+        : '') +
+      itensDe(v, 'Itens do pedido') +
+      p('Com a confirmação, o pedido chega à etapa 10 (Conclusão) e o ciclo se encerra.'), 'Pedido'),
+  }),
+
   // ── Cotações ──────────────────────────────────────────────────────────
   cotacao_rodada: (v) => ({
     subject: `Nova rodada de negociação na cotação ${v.cotacao}`,
