@@ -2816,13 +2816,13 @@ input::placeholder,textarea::placeholder{color:#b0a795}
     <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-bottom:16px">
       <div>
         <div style="font-size:21px;font-weight:700;margin:2px 0 3px">Inventário de estoque</div>
-        <div style="font-size:13px;color:#8a8378">Contagens do estoque da Loja em datas de lançamento · o saldo alimenta os alertas de disponibilidade nos pedidos</div>
+        <div style="font-size:13px;color:#8a8378">O último inventário lançado é a posição de estoque da Loja · o saldo alimenta os alertas de disponibilidade nos pedidos</div>
       </div>
       <sc-if value="{{podeInvVer}}" hint-placeholder-val="{{true}}">
       <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:14px 18px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap">
         <div>
           <div style="font-size:14px;font-weight:700;margin-bottom:2px">Exportar o saldo de estoque</div>
-          <div style="font-size:12px;color:#8a8378">Saldo atual por produto em Excel — contagem do último inventário, consumido desde então e saldo disponível.</div>
+          <div style="font-size:12px;color:#8a8378">Posição de estoque por produto em Excel — o saldo do último inventário lançado, com a data da contagem.</div>
         </div>
         <div onClick="{{expInv}}" title="Baixar em Excel" style="border:1px solid #cfd9ea;color:#33568f;background:#f2f5fb;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;flex:none" style-hover="background:#e7edf7">⬇ Exportar saldo</div>
       </div>
@@ -2849,13 +2849,13 @@ input::placeholder,textarea::placeholder{color:#b0a795}
     </sc-if>
     <sc-if value="{{temInvAtual}}" hint-placeholder-val="{{true}}">
       <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;overflow:hidden;margin-bottom:14px">
-        <div style="padding:13px 18px;border-bottom:1px solid #f1ece2;font-size:14px;font-weight:700">Saldo atual por produto <span style="font-size:11.5px;font-weight:500;color:#a89f90">· base: inventário de {{invAtualData}} − atendimentos com estoque desde então</span></div>
+        <div style="padding:13px 18px;border-bottom:1px solid #f1ece2;font-size:14px;font-weight:700">Saldo atual por produto <span style="font-size:11.5px;font-weight:500;color:#a89f90">· posição do inventário de {{invAtualData}}</span></div>
         <table style="width:100%;border-collapse:collapse">
           <thead><tr>
             <th style="text-align:left;padding:9px 18px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Produto</th>
             <th style="text-align:left;padding:9px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Fornecedor</th>
             <th style="text-align:right;padding:9px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Contagem</th>
-            <th style="text-align:right;padding:9px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Consumido</th>
+            <th title="Informativo: saídas atendidas com estoque da Loja depois do lançamento — não são abatidas do saldo" style="text-align:right;padding:9px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Atendido desde o lançamento</th>
             <th style="text-align:right;padding:9px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Saldo</th>
             <th style="text-align:left;padding:9px 18px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Situação</th>
           </tr></thead>
@@ -2865,7 +2865,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
                 <td style="padding:9px 18px;font-size:12.5px;border-bottom:1px solid #f5f1e8"><div style="display:flex;align-items:center;gap:9px"><sc-if value="{{v.foto}}" hint-placeholder-val="{{false}}"><img loading="lazy" src="{{v.foto}}" alt="{{v.descricao}}" onClick="{{v.ver}}" style="width:30px;height:30px;object-fit:cover;border-radius:7px;border:1px solid #eae3d6;flex:none;cursor:zoom-in"></sc-if><span><b>{{v.codigo}}</b> · {{v.descricao}} <span style="color:#b0a795;font-size:11px">({{v.unidade}})</span></span></div></td>
                 <td style="padding:9px 10px;font-size:12.5px;color:#8a8378;border-bottom:1px solid #f5f1e8">{{v.fornNome}}</td>
                 <td style="padding:9px 10px;font-size:12.5px;text-align:right;border-bottom:1px solid #f5f1e8">{{v.contagem}}</td>
-                <td style="padding:9px 10px;font-size:12.5px;color:#8a8378;text-align:right;border-bottom:1px solid #f5f1e8">{{v.consumido}}</td>
+                <td title="Informativo — não abate o saldo" style="padding:9px 10px;font-size:12.5px;color:#a89f90;text-align:right;border-bottom:1px solid #f5f1e8">{{v.consumido}}</td>
                 <td style="padding:9px 10px;font-size:13px;font-weight:700;text-align:right;border-bottom:1px solid #f5f1e8">{{v.saldo}}</td>
                 <td style="padding:9px 18px;border-bottom:1px solid #f5f1e8"><span style="font-size:11px;font-weight:600;border-radius:6px;padding:2px 8px;background:{{v.sBg}};color:{{v.sFg}}">{{v.sLabel}}</span></td>
               </tr>
@@ -5046,7 +5046,7 @@ class Component extends DCLogic {
         "Clique em \"+ Lançar inventário\" para registrar uma contagem: informe a \"Data do inventário\", uma observação opcional e a quantidade contada de cada produto (o formulário vem pré-preenchido com o saldo atual).",
         "Para fazer o inventário por planilha: em \"Carga por planilha padrão\", informe a \"Data para o modelo\" (padrão: hoje) e baixe um dos modelos — \"⬇ Todos os produtos\" (quantidades em branco), \"⬇ Produtos do último inventário\" (pré-preenchidos) ou \"⬇ Somente cabeçalho\".",
         "Preencha as quantidades no Excel e clique em \"⬆ Carregar planilha preenchida…\" — a janela de lançamento abre já preenchida para você revisar e confirmar.",
-        "Confira a tabela \"Saldo atual por produto\": a coluna \"Contagem\" mostra o último inventário, \"Consumido\" o que já foi atendido com estoque desde o lançamento, e \"Saldo\" o disponível.",
+        "Confira a tabela \"Saldo atual por produto\": o \"Saldo\" é a quantidade do último inventário lançado — é ele que vale como posição de estoque. A coluna \"Atendido desde o lançamento\" é apenas informativa: mostra o quanto já saiu por atendimento com estoque da Loja depois da contagem, SEM abater o saldo, para você perceber quando a posição está envelhecendo e vale carregar um arquivo novo.",
         "A coluna \"Situação\" resume cada produto: \"Com saldo\", \"Saldo baixo\" ou \"Sem saldo\".",
         "Acompanhe o \"Histórico de lançamentos\" com data, responsável, observação e totais de cada inventário.",
         "Na tela de Pedidos, os pedidos pendentes exibem o alerta automático de saldo (◈ \"Estoque cobre os itens\", \"Estoque cobre parcialmente\" ou \"Sem saldo em estoque\").",
@@ -5940,10 +5940,10 @@ class Component extends DCLogic {
     // inventário: saldo por produto a partir do último lançamento
     const inv=this._invAtual();
     const cols=[C('Código',14),C('Descrição',40),C('Unidade',14),C('Fornecedores',40),
-      C('Contagem do inventário',22),C('Consumido desde',16),C('Saldo',10),C('Data do inventário',18)];
+      C('Saldo em estoque',16),C('Atendido desde o lançamento (informativo)',34),C('Data do inventário',18)];
     const linhas=S.produtos.filter(p=>p.ativo).map(p=>{ const sp=this._saldoProduto(p.id);
       return [p.codigo,p.descricao,p.unidade||'',this._pForns(p).map(id=>this._fornNome(id)).join('; '),
-        sp.temInv?sp.contagem:'',sp.temInv?sp.consumido:'',sp.temInv?sp.saldo:'',inv?inv.data:'— sem inventário lançado —'];});
+        sp.temInv?sp.saldo:'',sp.temInv?sp.consumido:'',inv?inv.data:'— sem inventário lançado —'];});
     return {cols,linhas};
   }
 
@@ -5989,18 +5989,24 @@ class Component extends DCLogic {
     this.toast('Exportados '+resumo.length+' cadastros ('+tot+' registros) em uma pasta de trabalho.','ok'); };
   // ── Inventário de estoque ────────────────────────────────────────────────
   _invAtual(){ const inv=this.state.inventarios||[]; return inv.length?inv.reduce((a,b)=>(b.ts||0)>(a.ts||0)?b:a):null; }
+  // Saídas atendidas com estoque da Loja depois do lançamento. NÃO abatem o
+  // saldo — servem só para indicar o quanto a contagem pode ter envelhecido.
   _consumoDesde(ts){ const cons={}; this.state.pedidos.forEach(p=>p.itens.forEach(i=>{
       if(i.st==='estoque'&&(i.estoqueTs||0)>ts) cons[i.produtoId]=(cons[i.produtoId]||0)+i.qtd; })); return cons; }
+  // O saldo É a última contagem carregada: o inventário mais recente é a
+  // verdade sobre o estoque, como num arquivo de posição vindo do ERP.
+  // Para atualizar o saldo, lança-se um novo inventário (na tela ou por planilha).
   _saldoProduto(pid){ const inv=this._invAtual(); if(!inv) return {temInv:false,contagem:0,consumido:0,saldo:0};
     const contagem=+((inv.itens||{})[pid]||0); const consumido=(this._consumoDesde(inv.ts||0))[pid]||0;
-    return {temInv:true,contagem,consumido,saldo:Math.max(0,contagem-consumido)}; }
+    return {temInv:true,contagem,consumido,saldo:contagem}; }
   // Resumo de saldo para uma lista de itens de pedido: 'total' | 'parcial' | 'sem' | null (sem inventário)
   _saldoItens(itens){ const inv=this._invAtual(); if(!inv) return null;
-    const cons=this._consumoDesde(inv.ts||0); const pend={};
+    const pend={};
     let cobertos=0,relevantes=0;
     for(const i of itens){ if(i.st==='rejeitado') continue; relevantes++;
       const contagem=+((inv.itens||{})[i.produtoId]||0);
-      const disp=Math.max(0,contagem-(cons[i.produtoId]||0)-(pend[i.produtoId]||0));
+      // reserva o que os itens anteriores do próprio pedido já consumiriam
+      const disp=Math.max(0,contagem-(pend[i.produtoId]||0));
       if(disp>=i.qtd) cobertos++;
       pend[i.produtoId]=(pend[i.produtoId]||0)+Math.min(disp,i.qtd); }
     if(!relevantes) return null;
@@ -7226,7 +7232,7 @@ class Component extends DCLogic {
           totalFmt:this.fmt(p.total),temNeg:p.itens.some(i=>i.precoNeg!=null),negFmt:this.fmt(p.total),
           justificativa:p.justificativa||'',temJustif:!!p.justificativa,
           trilha:[...p.trilha].reverse(),
-          invBase:(this._invAtual()?'base: inventário de '+this._invAtual().data:''),
+          invBase:(this._invAtual()?'posição do inventário de '+this._invAtual().data:''),
           temInvInfo:!!this._invAtual()&&p.itens.some(i=>i.st==='pendente'||i.st==='aprovado'),
           estoqueRows:(this._invAtual()?p.itens.filter(i=>i.st==='pendente'||i.st==='aprovado').map(i=>{ const pr2=P(i.produtoId); const sp=this._saldoProduto(i.produtoId);
             const ok=sp.saldo>=i.qtd; const parc=!ok&&sp.saldo>0;
@@ -8129,7 +8135,7 @@ class Component extends DCLogic {
     const invAtual=this._invAtual();
     const invConsumo=invAtual?this._consumoDesde(invAtual.ts||0):{};
     const invSaldoRows=S.produtos.filter(x=>x.ativo).map(pr=>{ const contagem=invAtual?+((invAtual.itens||{})[pr.id]||0):0;
-      const consumido=invConsumo[pr.id]||0; const saldo=Math.max(0,contagem-consumido);
+      const consumido=invConsumo[pr.id]||0; const saldo=contagem; // o arquivo é a posição de estoque
       const st=saldo>0?(saldo<=3?'baixo':'ok'):'zerado';
       return {codigo:pr.codigo,descricao:pr.descricao,unidade:pr.unidade,fornNome:F(pr.fornecedorId).nome,
         contagem:String(contagem),consumido:String(consumido),saldo:String(saldo),
