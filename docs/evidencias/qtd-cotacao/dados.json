@@ -1,0 +1,12 @@
+{
+  "pedido": "PED-0044",
+  "cotacao": "COT-009",
+  "itemQtdPedido": 2,
+  "itemQtdCotada": 12,
+  "item2QtdPedido": 3,
+  "item2QtdCotada": 40,
+  "excedente": 47,
+  "guardaQtdPedido": true,
+  "totalPedidoAntes": 1528,
+  "totalPedidoDepois": 1528
+}
