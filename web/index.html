@@ -3322,9 +3322,14 @@ input::placeholder,textarea::placeholder{color:#b0a795}
             <sc-if value="{{si.sel}}" hint-placeholder-val="{{false}}">
               <sc-if value="{{si.podeDividir}}" hint-placeholder-val="{{false}}">
                 <div style="display:flex;align-items:center;gap:7px;margin-top:7px;padding-top:7px;border-top:1px dashed #e8e1d2;flex-wrap:wrap">
-                  <span style="font-size:11.5px;color:#6b6459;font-weight:600">Quantidade neste caminho:</span>
-                  <input value="{{si.qtdVal}}" onChange="{{si.setQtd}}" title="Quantidade a atender por este caminho" style="width:56px;padding:5px 8px;border:1px solid #ddd5c7;border-radius:7px;font:inherit;font-size:12.5px;text-align:center;outline:none;background:#fff;color:#272525">
+                  <span style="font-size:11.5px;color:#6b6459;font-weight:600">{{si.qtdRot}}</span>
+                  <div style="display:flex;align-items:center;gap:0;flex:none">
+                    <div onClick="{{si.menos}}" title="Diminuir uma unidade" style="width:26px;height:28px;display:flex;align-items:center;justify-content:center;border:1px solid #ddd5c7;border-right:none;border-radius:7px 0 0 7px;background:#fff;color:{{si.menosFg}};font-size:15px;font-weight:700;cursor:pointer;user-select:none" style-hover="background:#f7f3ea">−</div>
+                    <input value="{{si.qtdVal}}" onChange="{{si.setQtd}}" inputmode="numeric" maxlength="5" title="{{si.qtdTitle}}" style="width:52px;height:28px;box-sizing:border-box;padding:5px 6px;border:1px solid {{si.qtdBd}};border-radius:0;font:inherit;font-size:12.5px;font-weight:600;text-align:center;outline:none;background:{{si.qtdBg}};color:#272525">
+                    <div onClick="{{si.mais}}" title="Aumentar uma unidade" style="width:26px;height:28px;display:flex;align-items:center;justify-content:center;border:1px solid #ddd5c7;border-left:none;border-radius:0 7px 7px 0;background:#fff;color:{{si.maisFg}};font-size:15px;font-weight:700;cursor:pointer;user-select:none" style-hover="background:#f7f3ea">+</div>
+                  </div>
                   <span style="font-size:11px;color:#a89f90">de {{si.qtdMax}} {{si.unid}} · o saldo permanece aprovado para outro caminho</span>
+                  <sc-if value="{{si.qtdErro}}" hint-placeholder-val="{{false}}"><span style="font-size:11px;font-weight:700;color:#a33a2b">{{si.qtdErro}}</span></sc-if>
                   <sc-if value="{{si.temSaldo}}" hint-placeholder-val="{{false}}"><span style="font-size:11px;font-weight:700;color:{{si.saldoFg}}">◈ {{si.saldoTxt}}</span></sc-if>
                 </div>
               </sc-if>
@@ -3371,10 +3376,15 @@ input::placeholder,textarea::placeholder{color:#b0a795}
             <sc-if value="{{si.sel}}" hint-placeholder-val="{{false}}">
               <sc-if value="{{si.podeDividir}}" hint-placeholder-val="{{false}}">
                 <div style="display:flex;align-items:center;gap:7px;margin-top:7px;padding-top:7px;border-top:1px dashed #e8e1d2;flex-wrap:wrap">
-                  <span style="font-size:11.5px;color:#6b6459;font-weight:600">Quantidade neste caminho:</span>
-                  <input value="{{si.qtdVal}}" onChange="{{si.setQtd}}" title="Quantidade a atender por este caminho" style="width:56px;padding:5px 8px;border:1px solid #ddd5c7;border-radius:7px;font:inherit;font-size:12.5px;text-align:center;outline:none;background:#fff;color:#272525">
+                  <span style="font-size:11.5px;color:#6b6459;font-weight:600">{{si.qtdRot}}</span>
+                  <div style="display:flex;align-items:center;gap:0;flex:none">
+                    <div onClick="{{si.menos}}" title="Diminuir uma unidade" style="width:26px;height:28px;display:flex;align-items:center;justify-content:center;border:1px solid #ddd5c7;border-right:none;border-radius:7px 0 0 7px;background:#fff;color:{{si.menosFg}};font-size:15px;font-weight:700;cursor:pointer;user-select:none" style-hover="background:#f7f3ea">−</div>
+                    <input value="{{si.qtdVal}}" onChange="{{si.setQtd}}" inputmode="numeric" maxlength="5" title="{{si.qtdTitle}}" style="width:52px;height:28px;box-sizing:border-box;padding:5px 6px;border:1px solid {{si.qtdBd}};border-radius:0;font:inherit;font-size:12.5px;font-weight:600;text-align:center;outline:none;background:{{si.qtdBg}};color:#272525">
+                    <div onClick="{{si.mais}}" title="Aumentar uma unidade" style="width:26px;height:28px;display:flex;align-items:center;justify-content:center;border:1px solid #ddd5c7;border-left:none;border-radius:0 7px 7px 0;background:#fff;color:{{si.maisFg}};font-size:15px;font-weight:700;cursor:pointer;user-select:none" style-hover="background:#f7f3ea">+</div>
+                  </div>
                   <span style="font-size:11px;color:#a89f90">de {{si.qtdMax}} {{si.unid}} · o saldo permanece aprovado para outro caminho</span>
-                  <span style="font-size:11.5px;font-weight:700;color:#8f682a">= {{si.subFmt}}</span>
+                  <sc-if value="{{si.qtdErro}}" hint-placeholder-val="{{false}}"><span style="font-size:11px;font-weight:700;color:#a33a2b">{{si.qtdErro}}</span></sc-if>
+                  <sc-if value="{{si.qOk}}" hint-placeholder-val="{{true}}"><span style="font-size:11.5px;font-weight:700;color:#8f682a">= {{si.subFmt}}</span></sc-if>
                   <sc-if value="{{si.temSaldo}}" hint-placeholder-val="{{false}}"><span style="font-size:11px;font-weight:700;color:{{si.saldoFg}}">◈ {{si.saldoTxt}}</span></sc-if>
                 </div>
               </sc-if>
@@ -3428,9 +3438,14 @@ input::placeholder,textarea::placeholder{color:#b0a795}
             <sc-if value="{{si.sel}}" hint-placeholder-val="{{false}}">
               <sc-if value="{{si.podeDividir}}" hint-placeholder-val="{{false}}">
                 <div style="display:flex;align-items:center;gap:7px;margin-top:7px;padding-top:7px;border-top:1px dashed #e8e1d2;flex-wrap:wrap">
-                  <span style="font-size:11.5px;color:#6b6459;font-weight:600">Quantidade neste caminho:</span>
-                  <input value="{{si.qtdVal}}" onChange="{{si.setQtd}}" title="Quantidade a atender por este caminho" style="width:56px;padding:5px 8px;border:1px solid #ddd5c7;border-radius:7px;font:inherit;font-size:12.5px;text-align:center;outline:none;background:#fff;color:#272525">
+                  <span style="font-size:11.5px;color:#6b6459;font-weight:600">{{si.qtdRot}}</span>
+                  <div style="display:flex;align-items:center;gap:0;flex:none">
+                    <div onClick="{{si.menos}}" title="Diminuir uma unidade" style="width:26px;height:28px;display:flex;align-items:center;justify-content:center;border:1px solid #ddd5c7;border-right:none;border-radius:7px 0 0 7px;background:#fff;color:{{si.menosFg}};font-size:15px;font-weight:700;cursor:pointer;user-select:none" style-hover="background:#f7f3ea">−</div>
+                    <input value="{{si.qtdVal}}" onChange="{{si.setQtd}}" inputmode="numeric" maxlength="5" title="{{si.qtdTitle}}" style="width:52px;height:28px;box-sizing:border-box;padding:5px 6px;border:1px solid {{si.qtdBd}};border-radius:0;font:inherit;font-size:12.5px;font-weight:600;text-align:center;outline:none;background:{{si.qtdBg}};color:#272525">
+                    <div onClick="{{si.mais}}" title="Aumentar uma unidade" style="width:26px;height:28px;display:flex;align-items:center;justify-content:center;border:1px solid #ddd5c7;border-left:none;border-radius:0 7px 7px 0;background:#fff;color:{{si.maisFg}};font-size:15px;font-weight:700;cursor:pointer;user-select:none" style-hover="background:#f7f3ea">+</div>
+                  </div>
                   <span style="font-size:11px;color:#a89f90">de {{si.qtdMax}} {{si.unid}} · o saldo permanece aprovado para outro caminho</span>
+                  <sc-if value="{{si.qtdErro}}" hint-placeholder-val="{{false}}"><span style="font-size:11px;font-weight:700;color:#a33a2b">{{si.qtdErro}}</span></sc-if>
                   <sc-if value="{{si.temSaldo}}" hint-placeholder-val="{{false}}"><span style="font-size:11px;font-weight:700;color:{{si.saldoFg}}">◈ {{si.saldoTxt}}</span></sc-if>
                 </div>
               </sc-if>
@@ -4421,6 +4436,15 @@ class Component extends DCLogic {
   err(msg){ this.setState(s=>({form:{...s.form,erro:msg}})); }
 
   fx(f){ this._fx=this._fx||{}; if(!this._fx[f]) this._fx[f]=e=>{const v=e.target.value; this.setState(s=>({form:{...s.form,[f]:v,erro:null}}));}; return this._fx[f]; }
+  // Quantidade a atender/cotar: só dígitos, para o campo não aceitar texto.
+  fxQtd(campo){ this._fxq=this._fxq||{}; if(!this._fxq[campo]) this._fxq[campo]=e=>{
+    const v=String(e.target.value||'').replace(/\D/g,'').slice(0,5).replace(/^0+(?=\d)/,'');
+    this.setState(s=>({form:{...s.form,[campo]:v,erro:null}})); }; return this._fxq[campo]; }
+  // Passo de uma unidade, sempre dentro de 1..max — evita digitar errado.
+  passoQtd(campo,passo,max){ this._pq=this._pq||{}; const k=campo+':'+passo+':'+max; if(!this._pq[k]) this._pq[k]=()=>{
+    this.setState(s=>{ const raw=s.form[campo]; const at=(raw==null||raw==='')?max:(parseInt(String(raw).replace(/\D/g,''),10)||0);
+      const novo=Math.max(1,Math.min(max,at+passo));
+      return {form:{...s.form,[campo]:String(novo),erro:null}}; }); }; return this._pq[k]; }
   // Máscara de data brasileira: aceita só dígitos e monta dd/mm/aaaa.
   fxData(campo){ this._fxd=this._fxd||{}; if(!this._fxd[campo]) this._fxd[campo]=e=>{
     const dg=String(e.target.value||'').replace(/\D/g,'').slice(0,8);
@@ -4593,6 +4617,7 @@ class Component extends DCLogic {
         "Para decidir item a item, use os botões \"Receber\" e \"Rejeitar\" que aparecem na coluna \"Situação do item\", em cada linha que ainda estiver pendente.",
         "Ao clicar em qualquer \"Rejeitar\" (do pedido ou de um item), abre-se uma janela para escrever a justificativa. Ela é obrigatória e fica visível para a revenda; sem o motivo, a rejeição não é concluída.",
         "Depois de receber, surge o painel \"Decisão de atendimento — por item\". Escolha \"Atender com estoque da Loja…\", \"Envio direto a um fornecedor…\" ou \"Abrir cotação…\"; na janela que abrir, marque os itens e confirme.",
+        "Em qualquer uma das três janelas, cada item selecionado traz o campo de quantidade com os botões − e +: a Loja decide quanto vai por aquele caminho, de 1 até a quantidade que a revenda pediu. Na cotação o rótulo é \"Quantidade a cotar\" e o total estimado recalcula a cada alteração.",
         "No bloco \"Informações\" (à direita), confira a Revenda e o Fornecedor de destino. Se houver \"Cotação vinculada\", clique no código dela (ex.: COT-008 →) para abrir a cotação.",
         "Acompanhe cada ação no bloco \"Trilha do pedido — data, hora e usuário\", que registra o que foi feito, por quem e quando.",
         "Quando o fornecedor anexa arquivos durante o atendimento, eles aparecem no quadro \"Documentos do atendimento\", com nome, data e autor — clique no nome para baixar.",
@@ -4601,6 +4626,7 @@ class Component extends DCLogic {
       "dicas": [
         "A justificativa é obrigatória ao rejeitar, seja o pedido todo ou um item, e fica visível para a revenda; tenha o motivo pronto antes de clicar em \"Rejeitar\".",
         "Um mesmo pedido pode combinar os três caminhos de atendimento (estoque, envio direto e cotação); cada ação vale só para os itens que você marcar na janela — e você pode informar uma quantidade parcial por item: o saldo continua aprovado para outro caminho.",
+        "O campo de quantidade só aceita números e fica em vermelho, com o motivo ao lado, quando o valor sai da faixa — o teto é a quantidade que a revenda pediu, porque cotar acima disso mudaria o pedido dela.",
         "No 'Envio direto a um fornecedor…' só aparecem como destino os fornecedores vinculados a todos os itens selecionados; na cotação, os convidáveis são os fornecedores vinculados aos produtos cotados.",
         "\"Abrir cotação\" exige convidar ao menos um fornecedor homologado e definir a data limite para o envio das propostas. Com um único convidado a cotação registra preço, frete e condições, mas não há comparação de propostas — a janela avisa disso ao selecionar.",
         "Os painéis \"Análise da Loja\" e \"Decisão de atendimento\" só aparecem na fase certa: o primeiro enquanto o pedido aguarda decisão; o segundo depois que ele é aprovado.",
@@ -5600,7 +5626,7 @@ class Component extends DCLogic {
   // aprovado para seguir outro caminho: estoque, envio direto ou cotação).
   _lerQtds(ped,sel){ const f=this.state.form; const qtds={};
     for(const ix of sel){ const it=ped.itens[ix]; if(!it) continue;
-      const raw=f['q'+ix]; const q=(raw==null||String(raw).trim()==='')?it.qtd:parseInt(String(raw).replace(/\D/g,''),10);
+      const raw=f['q'+ix]; const q=(raw==null)?it.qtd:parseInt(String(raw).replace(/\D/g,''),10);
       const nomeP=(this._prodInfo(it.produtoId).descricao||'item');
       if(!q||q<1||q>it.qtd) return {erro:'Quantidade inválida para '+nomeP+': informe entre 1 e '+it.qtd+'.'};
       qtds[ix]=q; }
@@ -8166,11 +8192,17 @@ class Component extends DCLogic {
     let selItens=[];
     if((M==='direto'||M==='cotacao'||M==='estoque')&&S.form.pedidoId){ const p=PEDS.find(x=>x.id===S.form.pedidoId);
       if(p) selItens=p.itens.map((i,ix)=>({i,ix})).filter(x=>x.i.st==='aprovado').map(x=>{ const prod=P(x.i.produtoId); const on=(S.form.sel||[]).includes(x.ix);
-        const qRaw=S.form['q'+x.ix]; const qtdVal=(qRaw==null||qRaw==='')?String(x.i.qtd):String(qRaw);
+        const qRaw=S.form['q'+x.ix]; const qtdVal=(qRaw==null)?String(x.i.qtd):String(qRaw);
         const sp=this._saldoProduto(x.i.produtoId);
         const qN=parseInt(String(qtdVal).replace(/\D/g,''),10); const qOk=!!qN&&qN>=1&&qN<=x.i.qtd;
         return {label:(prod.codigo||'')+' · '+(prod.descricao||''),qtdTxt:'×'+x.i.qtd,valFmt:this.fmt(x.i.qtd*x.i.preco),toggle:this.toggleSel(x.ix),bg:on?'#faf5e9':'#fff',bd:on?'#B38335':'#e8e1d2',mark:on?'✓ ':'',
-          sel:on,qtdVal,qtdMax:String(x.i.qtd),unid:prod.unidade||'un',setQtd:this.fx('q'+x.ix),podeDividir:M==='cotacao'?true:x.i.qtd>1,
+          sel:on,qtdVal,qtdMax:String(x.i.qtd),unid:prod.unidade||'un',setQtd:this.fxQtd('q'+x.ix),podeDividir:M==='cotacao'?true:x.i.qtd>1,
+          qtdRot:M==='cotacao'?'Quantidade a cotar:':'Quantidade neste caminho:',
+          qtdTitle:(M==='cotacao'?'Quantidade a enviar para a cotação':'Quantidade a atender por este caminho')+' — de 1 a '+x.i.qtd,
+          qtdBd:qOk?'#ddd5c7':'#d99c8f',qtdBg:qOk?'#fff':'#fdf1ee',
+          qtdErro:qOk?'':(qN>x.i.qtd?('máximo '+x.i.qtd+' — é o que a revenda pediu'):'informe de 1 a '+x.i.qtd),
+          menos:this.passoQtd('q'+x.ix,-1,x.i.qtd),mais:this.passoQtd('q'+x.ix,1,x.i.qtd),
+          menosFg:(qOk&&qN>1)?'#8f682a':'#c9c0b0',maisFg:(qOk&&qN<x.i.qtd)?'#8f682a':'#c9c0b0',
           preco:x.i.preco,qN:qOk?qN:0,qOk,subFmt:qOk?this.fmt(qN*x.i.preco):'—',
           temSaldo:sp.temInv,saldoTxt:sp.temInv?('saldo em estoque: '+sp.saldo):'',saldoFg:sp.saldo>=x.i.qtd?'#2f6b39':(sp.saldo>0?'#8a5a12':'#a33a2b')};}); }
     // RF57 — total estimado da cotação recalculado em tempo real a partir das quantidades editadas
