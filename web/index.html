@@ -552,6 +552,9 @@ input::placeholder,textarea::placeholder{color:#b0a795}
     </div>
     <div style="font-size:13px;color:#8a8378;margin-bottom:4px">Pedido de origem <span onClick="{{cd.verPed}}" style="color:#8f682a;font-weight:600;cursor:pointer">{{cd.pedidoId}} ↗</span> — valor de referência {{cd.refFmt}} · prazo para propostas: {{cd.prazo}}</div>
     <div style="font-size:12.5px;color:#6b6459;margin-bottom:12px"><b style="color:#272525">Demanda cotada:</b> {{cd.demandaTxt}} <span style="color:#a89f90">— quantidade registrada na abertura (RF57), visível aos convidados</span></div>
+    <sc-if value="{{cd.temAcimaCot}}" hint-placeholder-val="{{false}}">
+      <div style="font-size:12px;color:#6d4a10;background:#fdf6e7;border:1px solid #f0e2c4;border-radius:9px;padding:9px 13px;margin-bottom:12px;line-height:1.55">▲ {{cd.acimaCotTxt}}</div>
+    </sc-if>
     <div style="display:flex;gap:8px;margin-bottom:14px">
       <sc-for list="{{cd.demandaFotos}}" as="ft" hint-placeholder-count="0"><sc-if value="{{ft.src}}" hint-placeholder-val="{{false}}"><img loading="lazy" src="{{ft.src}}" alt="{{ft.nome}}" title="{{ft.nome}} — clique para ampliar" onClick="{{ft.ver}}" style="width:52px;height:52px;object-fit:cover;border-radius:10px;border:1px solid #eae3d6;cursor:zoom-in"></sc-if></sc-for>
     </div>
@@ -3375,8 +3378,9 @@ input::placeholder,textarea::placeholder{color:#b0a795}
                     <input value="{{si.qtdVal}}" onChange="{{si.setQtd}}" inputmode="numeric" maxlength="5" title="{{si.qtdTitle}}" style="width:52px;height:28px;box-sizing:border-box;padding:5px 6px;border:1px solid {{si.qtdBd}};border-radius:0;font:inherit;font-size:12.5px;font-weight:600;text-align:center;outline:none;background:{{si.qtdBg}};color:#272525">
                     <div onClick="{{si.mais}}" title="Aumentar uma unidade" style="width:26px;height:28px;display:flex;align-items:center;justify-content:center;border:1px solid #ddd5c7;border-left:none;border-radius:0 7px 7px 0;background:#fff;color:{{si.maisFg}};font-size:15px;font-weight:700;cursor:pointer;user-select:none" style-hover="background:#f7f3ea">+</div>
                   </div>
-                  <span style="font-size:11px;color:#a89f90">de {{si.qtdMax}} {{si.unid}} · o saldo permanece aprovado para outro caminho</span>
+                  <span style="font-size:11px;color:#a89f90">{{si.qtdSub}}</span>
                   <sc-if value="{{si.qtdErro}}" hint-placeholder-val="{{false}}"><span style="font-size:11px;font-weight:700;color:#a33a2b">{{si.qtdErro}}</span></sc-if>
+                  <sc-if value="{{si.temAcima}}" hint-placeholder-val="{{false}}"><span style="font-size:11px;font-weight:700;color:#8f682a">▲ {{si.acimaTxt}}</span></sc-if>
                   <sc-if value="{{si.temSaldo}}" hint-placeholder-val="{{false}}"><span style="font-size:11px;font-weight:700;color:{{si.saldoFg}}">◈ {{si.saldoTxt}}</span></sc-if>
                 </div>
               </sc-if>
@@ -3413,7 +3417,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <option value="">Selecione um pedido com itens aprovados…</option>
         <sc-for list="{{pedAprovOpts}}" as="o" hint-placeholder-count="1"><option value="{{o.id}}">{{o.label}}</option></sc-for>
       </select>
-      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 6px">Itens a cotar (não precisa ser o pedido inteiro — nem a quantidade inteira de cada item)</div>
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 6px">Itens a cotar <span style="font-weight:400;color:#a89f90">— não precisa ser o pedido inteiro, e a quantidade pode ser menor ou maior que a pedida</span></div>
       <div style="display:flex;flex-direction:column;gap:6px">
         <sc-for list="{{selItens}}" as="si" hint-placeholder-count="1">
           <div style="border:1px solid {{si.bd}};background:{{si.bg}};border-radius:9px;padding:8px 12px;font-size:12.5px">
@@ -3429,8 +3433,9 @@ input::placeholder,textarea::placeholder{color:#b0a795}
                     <input value="{{si.qtdVal}}" onChange="{{si.setQtd}}" inputmode="numeric" maxlength="5" title="{{si.qtdTitle}}" style="width:52px;height:28px;box-sizing:border-box;padding:5px 6px;border:1px solid {{si.qtdBd}};border-radius:0;font:inherit;font-size:12.5px;font-weight:600;text-align:center;outline:none;background:{{si.qtdBg}};color:#272525">
                     <div onClick="{{si.mais}}" title="Aumentar uma unidade" style="width:26px;height:28px;display:flex;align-items:center;justify-content:center;border:1px solid #ddd5c7;border-left:none;border-radius:0 7px 7px 0;background:#fff;color:{{si.maisFg}};font-size:15px;font-weight:700;cursor:pointer;user-select:none" style-hover="background:#f7f3ea">+</div>
                   </div>
-                  <span style="font-size:11px;color:#a89f90">de {{si.qtdMax}} {{si.unid}} · o saldo permanece aprovado para outro caminho</span>
+                  <span style="font-size:11px;color:#a89f90">{{si.qtdSub}}</span>
                   <sc-if value="{{si.qtdErro}}" hint-placeholder-val="{{false}}"><span style="font-size:11px;font-weight:700;color:#a33a2b">{{si.qtdErro}}</span></sc-if>
+                  <sc-if value="{{si.temAcima}}" hint-placeholder-val="{{false}}"><span style="font-size:11px;font-weight:700;color:#8f682a">▲ {{si.acimaTxt}}</span></sc-if>
                   <sc-if value="{{si.qOk}}" hint-placeholder-val="{{true}}"><span style="font-size:11.5px;font-weight:700;color:#8f682a">= {{si.subFmt}}</span></sc-if>
                   <sc-if value="{{si.temSaldo}}" hint-placeholder-val="{{false}}"><span style="font-size:11px;font-weight:700;color:{{si.saldoFg}}">◈ {{si.saldoTxt}}</span></sc-if>
                 </div>
@@ -3444,7 +3449,8 @@ input::placeholder,textarea::placeholder{color:#b0a795}
           <span style="font-size:12px;color:#6b6459"><b>Total estimado da cotação</b> · {{cotEstim.itensN}} item(ns) · {{cotEstim.unids}} unidade(s) — recalculado a cada alteração</span>
           <span style="font-size:15px;font-weight:800;color:#8f682a">{{cotEstim.tot}}</span>
         </div>
-        <sc-if value="{{cotEstim.inval}}" hint-placeholder-val="{{false}}"><div style="color:#a33a2b;font-size:11.5px;margin-top:5px">Há quantidade inválida em item selecionado — informe um valor entre 1 e a quantidade aprovada; o item fora da faixa não entra no total.</div></sc-if>
+        <sc-if value="{{cotEstim.inval}}" hint-placeholder-val="{{false}}"><div style="color:#a33a2b;font-size:11.5px;margin-top:5px">Há quantidade inválida em item selecionado — informe ao menos 1; o item fora da faixa não entra no total.</div></sc-if>
+        <sc-if value="{{cotEstim.temAcima}}" hint-placeholder-val="{{false}}"><div style="font-size:11.5px;color:#6d4a10;background:#fdf6e7;border:1px solid #f0e2c4;border-radius:8px;padding:7px 10px;margin-top:6px;line-height:1.5">▲ {{cotEstim.acimaTxt}} O excedente serve para negociar preço de volume: os fornecedores cotam a quantidade maior, e o pedido da revenda continua com a quantidade original — é por ela que a revenda é faturada.</div></sc-if>
       </sc-if>
       <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 6px">Fornecedores convidados <span style="font-weight:400;color:#a89f90">— um ou mais, entre os vinculados aos produtos cotados</span></div>
       <div style="display:flex;flex-wrap:wrap;gap:8px">
@@ -3494,8 +3500,9 @@ input::placeholder,textarea::placeholder{color:#b0a795}
                     <input value="{{si.qtdVal}}" onChange="{{si.setQtd}}" inputmode="numeric" maxlength="5" title="{{si.qtdTitle}}" style="width:52px;height:28px;box-sizing:border-box;padding:5px 6px;border:1px solid {{si.qtdBd}};border-radius:0;font:inherit;font-size:12.5px;font-weight:600;text-align:center;outline:none;background:{{si.qtdBg}};color:#272525">
                     <div onClick="{{si.mais}}" title="Aumentar uma unidade" style="width:26px;height:28px;display:flex;align-items:center;justify-content:center;border:1px solid #ddd5c7;border-left:none;border-radius:0 7px 7px 0;background:#fff;color:{{si.maisFg}};font-size:15px;font-weight:700;cursor:pointer;user-select:none" style-hover="background:#f7f3ea">+</div>
                   </div>
-                  <span style="font-size:11px;color:#a89f90">de {{si.qtdMax}} {{si.unid}} · o saldo permanece aprovado para outro caminho</span>
+                  <span style="font-size:11px;color:#a89f90">{{si.qtdSub}}</span>
                   <sc-if value="{{si.qtdErro}}" hint-placeholder-val="{{false}}"><span style="font-size:11px;font-weight:700;color:#a33a2b">{{si.qtdErro}}</span></sc-if>
+                  <sc-if value="{{si.temAcima}}" hint-placeholder-val="{{false}}"><span style="font-size:11px;font-weight:700;color:#8f682a">▲ {{si.acimaTxt}}</span></sc-if>
                   <sc-if value="{{si.temSaldo}}" hint-placeholder-val="{{false}}"><span style="font-size:11px;font-weight:700;color:{{si.saldoFg}}">◈ {{si.saldoTxt}}</span></sc-if>
                 </div>
               </sc-if>
@@ -4681,7 +4688,8 @@ class Component extends DCLogic {
         "Para decidir item a item, use os botões \"Receber\" e \"Rejeitar\" que aparecem na coluna \"Situação do item\", em cada linha que ainda estiver pendente.",
         "Ao clicar em qualquer \"Rejeitar\" (do pedido ou de um item), abre-se uma janela para escrever a justificativa. Ela é obrigatória e fica visível para a revenda; sem o motivo, a rejeição não é concluída.",
         "Depois de receber, surge o painel \"Decisão de atendimento — por item\". Escolha \"Atender com estoque da Loja…\", \"Envio direto a um fornecedor…\" ou \"Abrir cotação…\"; na janela que abrir, marque os itens e confirme.",
-        "Em qualquer uma das três janelas, cada item selecionado traz o campo de quantidade com os botões − e +: a Loja decide quanto vai por aquele caminho, de 1 até a quantidade que a revenda pediu. Na cotação o rótulo é \"Quantidade a cotar\" e o total estimado recalcula a cada alteração.",
+        "Em qualquer uma das três janelas, cada item selecionado traz o campo de quantidade com os botões − e +: a Loja decide quanto vai por aquele caminho. Na cotação o rótulo é \"Quantidade a cotar\" e o total estimado recalcula a cada alteração.",
+        "Na COTAÇÃO a quantidade pode ser MAIOR que a do pedido — é como se cota um lote maior para conseguir preço melhor. O campo fica âmbar avisando quantas unidades estão acima, e o pedido da revenda continua com a quantidade original: é por ela que a revenda é faturada. No envio direto e no estoque o limite continua sendo a quantidade pedida.",
         "No bloco \"Informações\" (à direita), confira a Revenda e o Fornecedor de destino. Se houver \"Cotação vinculada\", clique no código dela (ex.: COT-008 →) para abrir a cotação.",
         "Acompanhe cada ação no bloco \"Trilha do pedido — data, hora e usuário\", que registra o que foi feito, por quem e quando.",
         "Depois de faturado (ou atendido pelo estoque), surge o painel de recebimento: em âmbar enquanto aguarda a confirmação, com o botão verde \"Confirmar recebimento do material…\"; em verde depois de confirmado, mostrando quando, por quem e a observação registrada.",
@@ -4691,7 +4699,8 @@ class Component extends DCLogic {
       "dicas": [
         "A justificativa é obrigatória ao rejeitar, seja o pedido todo ou um item, e fica visível para a revenda; tenha o motivo pronto antes de clicar em \"Rejeitar\".",
         "Um mesmo pedido pode combinar os três caminhos de atendimento (estoque, envio direto e cotação); cada ação vale só para os itens que você marcar na janela — e você pode informar uma quantidade parcial por item: o saldo continua aprovado para outro caminho.",
-        "O campo de quantidade só aceita números e fica em vermelho, com o motivo ao lado, quando o valor sai da faixa — o teto é a quantidade que a revenda pediu, porque cotar acima disso mudaria o pedido dela.",
+        "O campo de quantidade só aceita números e fica em vermelho quando o valor é inválido (menos de 1). Na cotação, valor acima do pedido é permitido e fica em âmbar, com o excedente somado no total estimado; nos demais caminhos, acima do pedido é recusado.",
+        "Quando a cotação sai acima do pedido, o detalhe da cotação mostra a quantidade cotada com a do pedido entre parênteses, o fornecedor vê o item marcado como \"volume de negociação\", e a trilha e a auditoria registram o fato.",
         "No 'Envio direto a um fornecedor…' só aparecem como destino os fornecedores vinculados a todos os itens selecionados; na cotação, os convidáveis são os fornecedores vinculados aos produtos cotados.",
         "\"Abrir cotação\" exige convidar ao menos um fornecedor homologado e definir a data limite para o envio das propostas. Com um único convidado a cotação registra preço, frete e condições, mas não há comparação de propostas — a janela avisa disso ao selecionar.",
         "O campo \"Observação para os fornecedores\" é opcional e vai junto do convite: use para dizer o que a Loja espera (preço, prazo, frete, embalagem). O texto entra no e-mail e fica visível para o fornecedor na hora de montar a proposta.",
@@ -5694,13 +5703,19 @@ class Component extends DCLogic {
   // Atendimento com quantidade parcial: lê as quantidades informadas e divide o
   // item quando a quantidade alocada é menor que a do pedido (o saldo permanece
   // aprovado para seguir outro caminho: estoque, envio direto ou cotação).
-  _lerQtds(ped,sel){ const f=this.state.form; const qtds={};
+  // semTeto=true (cotação): a Loja pode cotar mais do que a revenda pediu, para
+  // negociar preço de lote. Estoque e envio direto continuam limitados ao
+  // pedido — não se pode entregar o que não foi pedido.
+  _lerQtds(ped,sel,semTeto){ const f=this.state.form; const qtds={};
     for(const ix of sel){ const it=ped.itens[ix]; if(!it) continue;
       const raw=f['q'+ix]; const q=(raw==null)?it.qtd:parseInt(String(raw).replace(/\D/g,''),10);
       const nomeP=(this._prodInfo(it.produtoId).descricao||'item');
-      if(!q||q<1||q>it.qtd) return {erro:'Quantidade inválida para '+nomeP+': informe entre 1 e '+it.qtd+'.'};
+      if(!q||q<1) return {erro:'Quantidade inválida para '+nomeP+': informe ao menos 1.'};
+      if(q>this.QTD_MAX_COT) return {erro:'Quantidade muito alta para '+nomeP+': o limite por item é '+this.QTD_MAX_COT+'.'};
+      if(!semTeto&&q>it.qtd) return {erro:'Quantidade inválida para '+nomeP+': informe entre 1 e '+it.qtd+'.'};
       qtds[ix]=q; }
     return {qtds}; }
+  QTD_MAX_COT=99999;
   _splitAlocar(itens,sel,qtds,alloc){ const novo=[],alocados=[]; let parcial=false;
     itens.forEach((i,ix)=>{ if(sel.includes(ix)&&i.st==='aprovado'){ const q=qtds[ix];
         if(q<i.qtd){ parcial=true; const a={...i,qtd:q,...alloc}; novo.push(a); alocados.push(a); novo.push({...i,qtd:i.qtd-q}); }
@@ -6488,17 +6503,24 @@ class Component extends DCLogic {
     const vincSet=new Set(); sel.forEach(ix=>this._pForns(this.state.produtos.find(x=>x.id===ped.itens[ix].produtoId)||{}).forEach(v=>vincSet.add(v)));
     const foraVinc=conv.filter(cf=>!vincSet.has(cf));
     if(foraVinc.length) return this.err('Só é possível convidar fornecedores vinculados aos produtos cotados: remova '+this.state.fornecedores.filter(x=>foraVinc.includes(x.id)).map(x=>x.nome).join(', ')+'.');
-    const lq=this._lerQtds(ped,sel); if(lq.erro) return this.err(lq.erro);
+    const lq=this._lerQtds(ped,sel,true); if(lq.erro) return this.err(lq.erro);
     const n=this.state.seq.cot; const id='COT-00'+n;
     const {novo,alocados,parcial}=this._splitAlocar(ped.itens,sel,lq.qtds,{st:'cotacao',cotacaoId:id});
-    const itensCot=alocados.map(i=>({produtoId:i.produtoId,qtd:i.qtd,preco:i.preco}));
-    const totQ=alocados.reduce((a,i)=>a+i.qtd,0);
+    // A cotação leva a quantidade digitada. Quando ela é maior que a do pedido,
+    // o excedente é volume de negociação: guarda-se também a quantidade pedida,
+    // e o pedido da revenda NÃO é alterado.
+    const itensCot=sel.map(ix=>{ const it=ped.itens[ix]; const q=lq.qtds[ix];
+      const e={produtoId:it.produtoId,qtd:q,preco:it.preco};
+      if(q>it.qtd) e.qtdPedido=it.qtd;
+      return e; });
+    const nAcima=itensCot.filter(i=>i.qtdPedido!=null).length;
+    const totQ=itensCot.reduce((a,i)=>a+i.qtd,0);
     const nomes=this.state.fornecedores.filter(x=>conv.includes(x.id)).map(x=>x.nome).join(', ');
     const obsC=String(f.obsRod||'').trim().slice(0,600);
-    this.setState(s=>({cotacoes:[{id,pedidoId:f.pedidoId,itens:itensCot,vencItens:{},convidados:[...conv],prazo:f.prazo,status:'aguardando propostas',propostas:[],vencedorId:null,justificativa:null,motivoCancel:null,obs:obsC,historico:[{quando:this.ts(),usuario:this.userName(),acao:'Cotação aberta ('+itensCot.length+' item(ns) · '+totQ+' unidade(s)) · convidados notificados: '+nomes+(obsC?' · observação enviada aos fornecedores: "'+obsC+'"':'')}]},...s.cotacoes],seq:{...s.seq,cot:n+1},modal:null,form:{},scr:'cot'}));
+    this.setState(s=>({cotacoes:[{id,pedidoId:f.pedidoId,itens:itensCot,vencItens:{},convidados:[...conv],prazo:f.prazo,status:'aguardando propostas',propostas:[],vencedorId:null,justificativa:null,motivoCancel:null,obs:obsC,historico:[{quando:this.ts(),usuario:this.userName(),acao:'Cotação aberta ('+itensCot.length+' item(ns) · '+totQ+' unidade(s)) · convidados notificados: '+nomes+(nAcima?' · '+nAcima+' item(ns) cotado(s) acima da quantidade do pedido (volume de negociação)':'')+(obsC?' · observação enviada aos fornecedores: "'+obsC+'"':'')}]},...s.cotacoes],seq:{...s.seq,cot:n+1},modal:null,form:{},scr:'cot'}));
     this.updPed(f.pedidoId,p=>{p.itens=novo;
-      p.trilha.push(this.tr('Cotação '+id+' aberta para '+alocados.length+' item(ns) · '+totQ+' unidade(s) com '+(conv.length===1?'1 fornecedor':conv.length+' fornecedores')+(parcial?' — quantidade parcial; o saldo permanece aprovado':'')));return p;});
-    this.audit('Abertura de cotação',id+' · pedido '+f.pedidoId+' · '+alocados.length+' item(ns) · '+totQ+' un'+(parcial?' (parcial)':'')+(conv.length===1?' · fornecedor único (sem comparação de propostas)':' · '+conv.length+' fornecedores'));
+      p.trilha.push(this.tr('Cotação '+id+' aberta para '+alocados.length+' item(ns) · '+totQ+' unidade(s) com '+(conv.length===1?'1 fornecedor':conv.length+' fornecedores')+(parcial?' — quantidade parcial; o saldo permanece aprovado':'')+(nAcima?' — '+nAcima+' item(ns) cotado(s) acima do pedido para negociar volume; o pedido da revenda não muda':'')));return p;});
+    this.audit('Abertura de cotação',id+' · pedido '+f.pedidoId+' · '+alocados.length+' item(ns) · '+totQ+' un'+(parcial?' (parcial)':'')+(nAcima?' (acima do pedido em '+nAcima+' item(ns))':'')+(conv.length===1?' · fornecedor único (sem comparação de propostas)':' · '+conv.length+' fornecedores'));
     const _ilC=itensCot.map(it=>{ const pp=this._prodInfo(it.produtoId); return {codigo:pp.codigo||'',descricao:pp.descricao||('Produto '+it.produtoId),qtd:it.qtd,unidade:pp.unidade||'',valor:this.fmt(it.qtd*it.preco)}; });
     conv.forEach(cf=>this.notificar('cotacao_convite',this._fornEmail(cf),{cotacao:id,fornecedorNome:this._fornNome(cf),prazo:f.prazo,itensLista:_ilC,observacao:obsC})); };
   // ——— Rodadas de negociação (Ata 5.4) ———
@@ -7696,7 +7718,12 @@ class Component extends DCLogic {
           verPed:this.openPed(c.pedidoId),
           refFmt:this.fmt(refTot),
           demandaFotos:citens.map(i=>({src:this.fotosDe(P(i.produtoId))[0],nome:P(i.produtoId).descricao||'',ver:this.verFoto(i.produtoId)})),
-          demandaTxt:citens.map(i=>((P(i.produtoId).codigo||'')+' '+(P(i.produtoId).descricao||'')).trim()+' ×'+i.qtd).join(' · '),
+          demandaTxt:citens.map(i=>((P(i.produtoId).codigo||'')+' '+(P(i.produtoId).descricao||'')).trim()+' ×'+i.qtd+(i.qtdPedido!=null?(' (pedido: '+i.qtdPedido+')'):'')).join(' · '),
+          temAcimaCot:citens.some(i=>i.qtdPedido!=null),
+          acimaCotTxt:(()=>{ const ac=citens.filter(i=>i.qtdPedido!=null);
+            if(!ac.length) return '';
+            const ex=ac.reduce((a,i)=>a+(i.qtd-i.qtdPedido),0);
+            return ac.length+(ac.length===1?' item foi cotado':' itens foram cotados')+' acima da quantidade do pedido, somando '+ex+' unidade(s) a mais — volume de negociação. O pedido da revenda continua com a quantidade original e é por ela que ela é faturada.'; })(),
           convChips:c.convidados.map(cf=>{const recebida=props.some(p=>p.fornecedorId===cf);
             return {nome:F(cf).nome,tag:recebida?'proposta recebida':'aguardando',bg:recebida?'#e9f3ea':'#fdf3e0',fg:recebida?'#2f6b39':'#8a5a12',
               pendente:aguardando&&!recebida&&this.pode('cotacoes.lembrar'),lembrar:this.lembrarCot(c.id,cf),
@@ -8308,8 +8335,9 @@ class Component extends DCLogic {
         let totP=0,okP=true;
         const itensP=citens.map(it=>{ const pr=P(it.produtoId); const v=S.form['ip'+it.produtoId]||'';
           const u=this.num(v); if(u) totP+=u*it.qtd; else okP=false;
-          return {label:(pr.codigo||'')+' · '+(pr.descricao||''),qtdTxt:'×'+it.qtd+' '+(pr.unidade||''),refFmt:this.fmt(it.preco),
-            val:v,fx:this.fx('ip'+it.produtoId)};});
+          return {label:(pr.codigo||'')+' · '+(pr.descricao||''),
+            qtdTxt:'×'+it.qtd+' '+(pr.unidade||'')+(it.qtdPedido!=null?' · volume de negociação':''),
+            refFmt:this.fmt(it.preco),val:v,fx:this.fx('ip'+it.produtoId)};});
         const fvP=Math.round((this.num(S.form.freteValor)||0)*100)/100;
         propInfo={cotId:c.id,prazo:c.prazo,obsLoja:this._obsRodada(c),temObsLoja:!!this._obsRodada(c),
           obsLojaRot:'O que a Loja espera nesta '+(rodP>1?('rodada '+rodP):'cotação'),rodadaTag:rodP>1?'Contraproposta — rodada '+rodP+' · revise os preços dos itens em renegociação':'',temRodadaTag:rodP>1,itensTxt:citens.map(i=>P(i.produtoId).descricao+' ×'+i.qtd).join(', '),
@@ -8336,23 +8364,34 @@ class Component extends DCLogic {
       if(p) selItens=p.itens.map((i,ix)=>({i,ix})).filter(x=>x.i.st==='aprovado').map(x=>{ const prod=P(x.i.produtoId); const on=(S.form.sel||[]).includes(x.ix);
         const qRaw=S.form['q'+x.ix]; const qtdVal=(qRaw==null)?String(x.i.qtd):String(qRaw);
         const sp=this._saldoProduto(x.i.produtoId);
-        const qN=parseInt(String(qtdVal).replace(/\D/g,''),10); const qOk=!!qN&&qN>=1&&qN<=x.i.qtd;
+        const semTeto=M==='cotacao'; const maxQ=semTeto?this.QTD_MAX_COT:x.i.qtd;
+        const qN=parseInt(String(qtdVal).replace(/\D/g,''),10); const qOk=!!qN&&qN>=1&&qN<=maxQ;
+        const acima=qOk&&qN>x.i.qtd;
         return {label:(prod.codigo||'')+' · '+(prod.descricao||''),qtdTxt:'×'+x.i.qtd,valFmt:this.fmt(x.i.qtd*x.i.preco),toggle:this.toggleSel(x.ix),bg:on?'#faf5e9':'#fff',bd:on?'#B38335':'#e8e1d2',mark:on?'✓ ':'',
           sel:on,qtdVal,qtdMax:String(x.i.qtd),unid:prod.unidade||'un',setQtd:this.fxQtd('q'+x.ix),podeDividir:M==='cotacao'?true:x.i.qtd>1,
           qtdRot:M==='cotacao'?'Quantidade a cotar:':'Quantidade neste caminho:',
-          qtdTitle:(M==='cotacao'?'Quantidade a enviar para a cotação':'Quantidade a atender por este caminho')+' — de 1 a '+x.i.qtd,
-          qtdBd:qOk?'#ddd5c7':'#d99c8f',qtdBg:qOk?'#fff':'#fdf1ee',
-          qtdErro:qOk?'':(qN>x.i.qtd?('máximo '+x.i.qtd+' — é o que a revenda pediu'):'informe de 1 a '+x.i.qtd),
-          menos:this.passoQtd('q'+x.ix,-1,x.i.qtd),mais:this.passoQtd('q'+x.ix,1,x.i.qtd),
-          menosFg:(qOk&&qN>1)?'#8f682a':'#c9c0b0',maisFg:(qOk&&qN<x.i.qtd)?'#8f682a':'#c9c0b0',
+          qtdTitle:semTeto?('Quantidade a enviar para a cotação — pode ser maior que a do pedido ('+x.i.qtd+')')
+                          :('Quantidade a atender por este caminho — de 1 a '+x.i.qtd),
+          qtdBd:qOk?(acima?'#e6cf9e':'#ddd5c7'):'#d99c8f',qtdBg:qOk?(acima?'#faf3e4':'#fff'):'#fdf1ee',
+          qtdErro:qOk?'':(semTeto?('informe de 1 a '+this.QTD_MAX_COT):(qN>x.i.qtd?('máximo '+x.i.qtd+' — é o que a revenda pediu'):'informe de 1 a '+x.i.qtd)),
+          temAcima:acima,acimaTxt:acima?('+'+(qN-x.i.qtd)+' acima do pedido — volume para negociar; o pedido da revenda não muda'):'',
+          qtdSub:acima?('o pedido da revenda é de '+x.i.qtd+' '+(prod.unidade||'un'))
+                :((qOk&&qN<x.i.qtd)?('de '+x.i.qtd+' '+(prod.unidade||'un')+' · o saldo permanece aprovado para outro caminho')
+                                   :('de '+x.i.qtd+' '+(prod.unidade||'un'))),
+          menos:this.passoQtd('q'+x.ix,-1,maxQ),mais:this.passoQtd('q'+x.ix,1,maxQ),
+          menosFg:(qOk&&qN>1)?'#8f682a':'#c9c0b0',maisFg:(qOk&&qN<maxQ)?'#8f682a':'#c9c0b0',
           preco:x.i.preco,qN:qOk?qN:0,qOk,subFmt:qOk?this.fmt(qN*x.i.preco):'—',
           temSaldo:sp.temInv,saldoTxt:sp.temInv?('saldo em estoque: '+sp.saldo):'',saldoFg:sp.saldo>=x.i.qtd?'#2f6b39':(sp.saldo>0?'#8a5a12':'#a33a2b')};}); }
     // RF57 — total estimado da cotação recalculado em tempo real a partir das quantidades editadas
-    let cotEstim={tem:false,tot:'',itensN:'0',unids:'0',inval:false};
+    let cotEstim={tem:false,tot:'',itensN:'0',unids:'0',inval:false,temAcima:false,acimaTxt:''};
     if(M==='cotacao'&&S.form.pedidoId){ const selOn=selItens.filter(si=>si.sel);
+      const acimaOn=selOn.filter(si=>si.temAcima);
+      const exced=acimaOn.reduce((a,si)=>a+(si.qN-(+si.qtdMax||0)),0);
       cotEstim={tem:selOn.length>0,inval:selOn.some(si=>!si.qOk),
         tot:this.fmt(selOn.reduce((a,si)=>a+si.qN*si.preco,0)),
-        itensN:String(selOn.length),unids:String(selOn.reduce((a,si)=>a+si.qN,0))}; }
+        itensN:String(selOn.length),unids:String(selOn.reduce((a,si)=>a+si.qN,0)),
+        temAcima:acimaOn.length>0,
+        acimaTxt:acimaOn.length?(acimaOn.length+(acimaOn.length===1?' item está':' itens estão')+' acima do pedido, somando '+exced+' unidade(s) a mais.'):''}; }
     // RF53 — complementação cadastral: lista do fornecedor e dados do modal de ficha
     const _fvt=v=>(v==null||v==='')?'—':(typeof v==='number'?String(v).replace('.',','):String(v));
     const fprodRows=isForn?S.produtos.filter(p=>this._pTemForn(p,fid)).map(p=>{ const fi=this._ficha(p); const ok53=this._fichaCompleta(p);
