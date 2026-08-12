@@ -264,7 +264,7 @@ export const TEMPLATES = {
   pedido_mensagem: (v) => ({
     subject: `Nova mensagem no pedido ${v.pedidoId}`,
     html: layout('Nova mensagem no pedido',
-      p(`${b(v.autor)}, por ${esc(v.origem)}, enviou uma mensagem na conversa do pedido ${b(v.pedidoId)}.`) +
+      p(`${b(v.autor)}, ${esc(v.origem)}, enviou uma mensagem na conversa do pedido ${b(v.pedidoId)}.`) +
       linhas([['Pedido', v.pedidoId], ['Revenda', v.revendaNome], ['Enviada por', v.autor], ['Quando', v.quando]]) +
       '<div style="border-left:3px solid #B38335;background:#faf7f0;padding:12px 16px;margin:4px 0 14px;font-size:14px;line-height:1.6;color:#272525;white-space:pre-wrap">' +
       esc(v.mensagem) + '</div>' +

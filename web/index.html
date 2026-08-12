@@ -6105,13 +6105,13 @@ class Component extends DCLogic {
       conversa:[...(p.conversa||[]),msg],
       chatVisto:{...(p.chatVisto||{}),[papel]:agora}}),
       form:{...s.form,texto:'',erro:null}}));
-    if(primeira) this.updPed(id,p=>{p.trilha.push(this.tr('Conversa aberta no pedido por '+(papel==='loja'?'a Loja':'a revenda')));return p;});
+    if(primeira) this.updPed(id,p=>{p.trilha.push(this.tr('Conversa aberta no pedido '+(papel==='loja'?'pela Loja':'pela revenda')));return p;});
     this.audit('Mensagem no pedido',id+' · '+(papel==='loja'?'Loja → revenda':'Revenda → Loja')+' · '+(texto.length>80?texto.slice(0,80)+'…':texto));
     // avisa o outro lado por e-mail
     const dest=papel==='loja'?this._revEmail(ped.revendaId):this._lojaEmail();
     this.notificar('pedido_mensagem',dest,{pedidoId:id,
       revendaNome:this._revNome(ped.revendaId),autor:this.userName(),
-      origem:papel==='loja'?'a Loja Cidade Imperial':('a revenda '+this._revNome(ped.revendaId)),
+      origem:papel==='loja'?'pela Loja Cidade Imperial':('pela revenda '+this._revNome(ped.revendaId)),
       mensagem:texto,quando:msg.quando});
     setTimeout(()=>this._flushPersist(),0); };
 
@@ -6141,8 +6141,11 @@ class Component extends DCLogic {
         vazio:ms.length===0,
         vazioTxt:'Use esta conversa para dúvidas, ocorrências e observações deste pedido. Tudo o que for escrito aqui fica registrado junto do pedido, e '+outro+' recebe um aviso por e-mail.',
         msgs:ms.map(m=>{ const meu=m.papel===papel;
+          // "Revenda X · Fulano" — sem repetir o nome quando o usuário é a própria revenda
+          const base=m.papel==='loja'?'Loja Cidade Imperial':('Revenda '+revNome);
+          const nm=String(m.autor||'').replace(/\s*\([^)]*\)\s*$/,'').trim();
           return {texto:m.texto,quando:m.quando,
-            autor:(m.papel==='loja'?'Loja Cidade Imperial':('Revenda '+revNome))+' · '+m.autor+(meu?' (você)':''),
+            autor:base+((nm&&!base.toLowerCase().includes(nm.toLowerCase()))?(' · '+nm):'')+(meu?' (você)':''),
             align:meu?'flex-end':'flex-start',txtAlign:meu?'right':'left',
             bg:meu?'#f5efe3':'#fff',bd:meu?'#e5d9bd':'#eae3d6',
             radius:meu?'12px 12px 3px 12px':'12px 12px 12px 3px',
