@@ -234,7 +234,8 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <tbody>
           <sc-for list="{{pedRows}}" as="p" hint-placeholder-count="6">
             <tr onClick="{{p.open}}" style="cursor:pointer" style-hover="background:#faf7f0">
-              <td style="padding:11px 18px;font-size:13px;font-weight:600;border-bottom:1px solid #f5f1e8">{{p.id}}<div style="font-size:11px;font-weight:400;color:#a89f90">{{p.data}}</div></td>
+              <td style="padding:11px 18px;font-size:13px;font-weight:600;border-bottom:1px solid #f5f1e8">{{p.id}}<div style="font-size:11px;font-weight:400;color:#a89f90">{{p.data}}</div>
+                <div onClick="{{p.pdfFn}}" title="Gerar o documento completo do pedido em PDF" style="display:inline-flex;align-items:center;gap:4px;margin-top:5px;border:1px solid #ddd5c7;background:#fff;color:#6b6459;border-radius:7px;padding:3px 8px;font-size:10.5px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="background:#f7f3ea">&#128196; PDF</div></td>
               <td style="padding:11px 10px;font-size:13px;border-bottom:1px solid #f5f1e8">{{p.revNome}}</td>
               <td style="padding:11px 10px;border-bottom:1px solid #f5f1e8"><div style="display:flex;align-items:center"><sc-for list="{{p.fotos}}" as="ft" hint-placeholder-count="0"><sc-if value="{{ft.src}}" hint-placeholder-val="{{false}}"><img loading="lazy" src="{{ft.src}}" alt="item" onClick="{{ft.ver}}" title="Clique para ampliar" style="width:32px;height:32px;object-fit:cover;border-radius:8px;border:2px solid #fff;margin-right:-8px;box-shadow:0 1px 3px rgba(39,37,37,.18);cursor:zoom-in"></sc-if></sc-for><span style="font-size:12px;color:#8a8378;margin-left:16px;white-space:nowrap">{{p.itensN}}</span></div></td>
               <td style="padding:11px 10px;font-size:13px;border-bottom:1px solid #f5f1e8">{{p.fornDest}}</td>
@@ -277,7 +278,10 @@ input::placeholder,textarea::placeholder{color:#b0a795}
       <span title="Etapa atual do workflow do pedido (RF49)" style="font-size:12px;font-weight:700;border-radius:7px;padding:4px 10px;background:#faf5e9;border:1px solid #ecdcbc;color:#8f682a">{{pd.etapaTxt}}</span>
     </div>
     <div style="font-size:13px;color:#8a8378;margin-bottom:12px">Criado em {{pd.data}} · {{pd.revNome}} — {{pd.revCidade}}</div>
-    <div onClick="{{pd.chatFn}}" title="Abrir a conversa deste pedido com a revenda" style="display:inline-flex;align-items:center;gap:7px;border:1px solid {{pd.chatBd}};background:{{pd.chatBg}};color:{{pd.chatFg}};border-radius:9px;padding:8px 14px;font-size:12.5px;font-weight:700;cursor:pointer;margin-bottom:16px" style-hover="filter:brightness(.97)">💬 {{pd.chatLabel}}</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
+      <div onClick="{{pd.chatFn}}" title="Abrir a conversa deste pedido com a revenda" style="display:inline-flex;align-items:center;gap:7px;border:1px solid {{pd.chatBd}};background:{{pd.chatBg}};color:{{pd.chatFg}};border-radius:9px;padding:8px 14px;font-size:12.5px;font-weight:700;cursor:pointer" style-hover="filter:brightness(.97)">💬 {{pd.chatLabel}}</div>
+      <div onClick="{{pd.pdfFn}}" title="Gerar o documento completo do pedido em PDF" style="display:inline-flex;align-items:center;gap:7px;border:1px solid #ddd5c7;background:#fff;color:#6b6459;border-radius:9px;padding:8px 14px;font-size:12.5px;font-weight:700;cursor:pointer" style-hover="background:#f7f3ea">&#128196; Documento do pedido (PDF)</div>
+    </div>
     <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:18px 22px;margin-bottom:14px">
       <div style="display:flex;align-items:flex-start;overflow-x:auto;padding-bottom:4px">
         <sc-for list="{{pd.steps}}" as="s" hint-placeholder-count="4">
@@ -2704,7 +2708,8 @@ input::placeholder,textarea::placeholder{color:#b0a795}
             <tr>
               <td style="padding:11px 18px;font-size:13px;font-weight:600;border-bottom:1px solid #f5f1e8">{{p.id}}<div style="font-size:11px;font-weight:400;color:#a89f90">{{p.data}}</div>
                 <div style="font-size:10px;font-weight:600;color:#8f682a;margin-top:3px;white-space:nowrap">{{p.etapaTxt}}</div>
-                <sc-if value="{{p.revTag}}" hint-placeholder-val="{{false}}"><div style="margin-top:3px"><span style="font-size:10px;font-weight:700;color:#5d3f96;background:#f3eefa;border:1px solid #ddd0ee;border-radius:6px;padding:1px 7px;white-space:nowrap">🏪 {{p.revTag}}</span></div></sc-if></td>
+                <sc-if value="{{p.revTag}}" hint-placeholder-val="{{false}}"><div style="margin-top:3px"><span style="font-size:10px;font-weight:700;color:#5d3f96;background:#f3eefa;border:1px solid #ddd0ee;border-radius:6px;padding:1px 7px;white-space:nowrap">🏪 {{p.revTag}}</span></div></sc-if>
+                <div onClick="{{p.pdfFn}}" title="Gerar o documento completo do pedido em PDF" style="display:inline-flex;align-items:center;gap:4px;margin-top:5px;border:1px solid #ddd5c7;background:#fff;color:#6b6459;border-radius:7px;padding:3px 8px;font-size:10.5px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="background:#f7f3ea">&#128196; PDF</div></td>
               <td style="padding:11px 10px;border-bottom:1px solid #f5f1e8"><div style="display:flex;align-items:center"><sc-for list="{{p.fotos}}" as="ft" hint-placeholder-count="0"><sc-if value="{{ft.src}}" hint-placeholder-val="{{false}}"><img loading="lazy" src="{{ft.src}}" alt="item" onClick="{{ft.ver}}" title="Clique para ampliar" style="width:32px;height:32px;object-fit:cover;border-radius:8px;border:2px solid #fff;margin-right:-8px;box-shadow:0 1px 3px rgba(39,37,37,.18);cursor:zoom-in"></sc-if></sc-for><span style="font-size:12px;color:#8a8378;margin-left:16px;white-space:nowrap">{{p.itensN}}</span></div></td>
               <td style="padding:11px 10px;font-size:13px;border-bottom:1px solid #f5f1e8">{{p.fornNome}}
                 <sc-if value="{{p.temFatDocs}}" hint-placeholder-val="{{false}}">
@@ -4664,7 +4669,8 @@ class Component extends DCLogic {
         "Para recusar, clique em 'Rejeitar' na mesma linha: abre uma janela em que você precisa escrever a justificativa (obrigatória) e confirmar em 'Rejeitar pedido'; essa justificativa fica visível para a revenda.",
         "Para decidir item por item ou definir como o pedido será atendido (estoque da Loja, envio direto a um fornecedor ou cotação), clique sobre a linha para abrir a tela 'Detalhe do pedido'.",
         "Na coluna 'Conversa', clique no balão 💬 para abrir o canal de comunicação daquele pedido com a revenda — dúvidas, ocorrências e observações. O balão fica roxo com o número de mensagens novas quando a revenda escreve; abrir a conversa marca tudo como lido.",
-        "Quando o pedido chega à etapa 9 (entregue — faturado ou atendido pelo estoque), aparece o botão verde 'Confirmar recebimento…' na coluna Status: use-o quando a Loja fizer a conferência do material em nome da revenda. Confirmado, a linha passa a exibir o selo '✓ Recebido em…' e o pedido vai para a etapa 10."
+        "Quando o pedido chega à etapa 9 (entregue — faturado ou atendido pelo estoque), aparece o botão verde 'Confirmar recebimento…' na coluna Status: use-o quando a Loja fizer a conferência do material em nome da revenda. Confirmado, a linha passa a exibir o selo '✓ Recebido em…' e o pedido vai para a etapa 10.",
+        "Na coluna 'Pedido', abaixo do número, fique com o botão '📄 PDF': ele monta o documento completo do pedido numa nova aba — fotos e descrição dos itens, quantidades, preços de referência e negociados, condições comerciais, prazo e forma de pagamento, data de entrega, faturamento com as notas, conversa e trilha. Na janela do navegador use Ctrl+P (⌘+P no Mac) e escolha 'Salvar como PDF' para guardar ou enviar o arquivo."
       ],
       "dicas": [
         "Workflow de etapas (RF49): cada pedido mostra \"Etapa N/10\" com a nomenclatura do estágio real (Recebimento/aprovação → Cotação → Seleção → Aceite da revenda → Encaminhamento → Confirmação pelo fornecedor → Produção → Faturamento → Entrega aguardando confirmação → Conclusão); o seletor \"Todas as etapas\" filtra a lista pela etapa atual e o detalhe exibe a linha do tempo completa com a etapa destacada — toda transição fica na trilha e na auditoria com data, usuário e de/para.",
@@ -4674,7 +4680,9 @@ class Component extends DCLogic {
         "O botão 'Receber' da lista libera o pedido inteiro de uma vez; quando quiser tratar os itens de formas diferentes, abra o 'Detalhe do pedido' clicando na linha.",
         "No detalhe, as opções de atendimento — 'Atender com estoque da Loja…', 'Envio direto a um fornecedor…' e 'Abrir cotação…' — só ficam disponíveis depois que os itens são aprovados e podem ser combinadas no mesmo pedido.",
         "A conversa existe em TODO pedido, do momento em que ele é criado até depois de faturado, e pode ser iniciada tanto pela Loja quanto pela revenda. Cada mensagem enviada avisa o outro lado por e-mail, entra na auditoria e a abertura da conversa fica registrada na trilha do pedido — nada se perde em e-mail ou aplicativo à parte.",
-        "O menu lateral mostra um contador roxo 💬 ao lado de 'Pedidos' com o total de mensagens não lidas de todos os pedidos."
+        "O menu lateral mostra um contador roxo 💬 ao lado de 'Pedidos' com o total de mensagens não lidas de todos os pedidos.",
+        "O documento em PDF é gerado a partir dos dados do pedido no momento do clique — não é um arquivo guardado. Sempre que abrir de novo, ele sai atualizado com a etapa, os valores e os documentos mais recentes; cada emissão fica registrada na auditoria.",
+        "A revenda tem o mesmo botão '📄 PDF' na tela 'Meus pedidos', com o mesmo documento — a diferença é que ela não vê o comparativo de propostas dos fornecedores nem os valores ainda não negociados com ela."
       ]
     },
     "peddet": {
@@ -4694,7 +4702,8 @@ class Component extends DCLogic {
         "Acompanhe cada ação no bloco \"Trilha do pedido — data, hora e usuário\", que registra o que foi feito, por quem e quando.",
         "Depois de faturado (ou atendido pelo estoque), surge o painel de recebimento: em âmbar enquanto aguarda a confirmação, com o botão verde \"Confirmar recebimento do material…\"; em verde depois de confirmado, mostrando quando, por quem e a observação registrada.",
         "Quando o fornecedor anexa arquivos durante o atendimento, eles aparecem no quadro \"Documentos do atendimento\", com nome, data e autor — clique no nome para baixar.",
-        "Logo abaixo do cabeçalho fica o botão 💬 da conversa do pedido, com o total de mensagens. Clique para conversar com a revenda a qualquer momento — dúvidas, ocorrências e observações ficam guardadas no próprio pedido."
+        "Logo abaixo do cabeçalho fica o botão 💬 da conversa do pedido, com o total de mensagens. Clique para conversar com a revenda a qualquer momento — dúvidas, ocorrências e observações ficam guardadas no próprio pedido.",
+        "Ao lado da conversa fica o botão '📄 Documento do pedido (PDF)'. Ele abre numa nova aba a ficha completa do pedido — partes e destino, situação e prazos, condições comerciais negociadas, itens com foto e ficha fiscal, cotação vinculada com as propostas recebidas, faturamento, anexos, conversa e trilha. Para salvar ou enviar, use Ctrl+P (⌘+P no Mac) e escolha 'Salvar como PDF'."
       ],
       "dicas": [
         "A justificativa é obrigatória ao rejeitar, seja o pedido todo ou um item, e fica visível para a revenda; tenha o motivo pronto antes de clicar em \"Rejeitar\".",
@@ -4705,7 +4714,9 @@ class Component extends DCLogic {
         "\"Abrir cotação\" exige convidar ao menos um fornecedor homologado e definir a data limite para o envio das propostas. Com um único convidado a cotação registra preço, frete e condições, mas não há comparação de propostas — a janela avisa disso ao selecionar.",
         "O campo \"Observação para os fornecedores\" é opcional e vai junto do convite: use para dizer o que a Loja espera (preço, prazo, frete, embalagem). O texto entra no e-mail e fica visível para o fornecedor na hora de montar a proposta.",
         "Os painéis \"Análise da Loja\" e \"Decisão de atendimento\" só aparecem na fase certa: o primeiro enquanto o pedido aguarda decisão; o segundo depois que ele é aprovado.",
-        "A conversa do pedido não tem fase: ela pode ser aberta em qualquer etapa e por qualquer um dos dois lados. Ao enviar uma mensagem, a revenda recebe um aviso por e-mail com o texto e o número do pedido."
+        "A conversa do pedido não tem fase: ela pode ser aberta em qualquer etapa e por qualquer um dos dois lados. Ao enviar uma mensagem, a revenda recebe um aviso por e-mail com o texto e o número do pedido.",
+        "O documento em PDF acompanha a fase do pedido: blocos sem informação simplesmente não são impressos. Um pedido ainda pendente sai com partes, itens e trilha; depois da cotação ganha as condições negociadas e o comparativo de propostas; depois do faturamento, as notas, o boleto e a confirmação de recebimento.",
+        "O mesmo documento está na lista de pedidos, pelo botão '📄 PDF' de cada linha — útil quando você quer emitir vários seguidos sem abrir cada pedido."
       ]
     },
     "cot": {
@@ -5123,7 +5134,8 @@ class Component extends DCLogic {
         "Quando o fornecedor fatura, os documentos do faturamento aparecem na coluna \"Fornecedor (faturamento)\" como etiquetas verdes — \"📎 NF …\" para a nota fiscal e \"📎 Boleto …\" para o boleto — clique para baixar cada arquivo.",
         "Quando um pedido é rejeitado, aparece um texto em vermelho logo abaixo da etiqueta de status, com a justificativa informada pela Loja.",
         "Na coluna \"Conversa\", clique no balão 💬 para falar com a Loja Cidade Imperial sobre aquele pedido: dúvidas, ocorrências, observações. Escreva a mensagem e clique em \"Enviar\" — a Loja é avisada por e-mail na hora.",
-        "Quando o material do pedido chegar, clique no botão verde \"✓ Confirmar recebimento…\": confira os itens na janela, registre uma observação se houver avaria ou divergência e confirme. O pedido passa para a etapa 10 (Conclusão) e a Loja é avisada por e-mail."
+        "Quando o material do pedido chegar, clique no botão verde \"✓ Confirmar recebimento…\": confira os itens na janela, registre uma observação se houver avaria ou divergência e confirme. O pedido passa para a etapa 10 (Conclusão) e a Loja é avisada por e-mail.",
+        "Na coluna 'Pedido', abaixo do código, clique em '📄 PDF' para abrir o documento completo do pedido numa nova aba: fotos e descrição de cada item, quantidades, valores, condições comerciais negociadas, prazo e forma de pagamento, data prevista de entrega, notas fiscais e boleto, conversa e trilha. Para guardar ou encaminhar, use Ctrl+P (⌘+P no Mac) e escolha 'Salvar como PDF'."
       ],
       "dicas": [
         "Workflow de etapas (RF49): cada pedido mostra \"Etapa N/10\" com o mesmo estágio que a Loja enxerga; use o seletor \"Todas as etapas\" para filtrar e acompanhe as transições na trilha do pedido.",
@@ -5134,7 +5146,9 @@ class Component extends DCLogic {
         "Todo pedido novo começa como \"pendente\" e só muda depois que a Loja o analisa; a coluna \"Fornecedor (faturamento)\" só é preenchida quando a Loja encaminha o pedido a um fornecedor ou encerra a cotação.",
         "A coluna \"Fornecedor (faturamento)\" pode mostrar \"Estoque da Loja\" quando o pedido é atendido pelo próprio estoque da Loja.",
         "A conversa está disponível em todos os pedidos, a qualquer momento, e pode ser iniciada por você ou pela Loja. O balão fica roxo com o número de mensagens novas quando a Loja responde, e o menu \"Meus pedidos\" mostra o total de não lidas.",
-        "Todo o histórico da conversa fica guardado junto do pedido — ao contrário do e-mail ou do aplicativo de mensagens, ninguém precisa procurar depois quem disse o quê."
+        "Todo o histórico da conversa fica guardado junto do pedido — ao contrário do e-mail ou do aplicativo de mensagens, ninguém precisa procurar depois quem disse o quê.",
+        "O documento em PDF é montado na hora, com a situação atual do pedido — vale a pena gerar de novo depois do faturamento, quando ele já sai com as notas fiscais e o boleto listados.",
+        "Enquanto um item ainda não tem valor negociado com você, o documento mostra 'a definir' no lugar do preço: o PDF nunca antecipa um valor que ainda não foi acordado."
       ]
     },
     "cfgemail": {
@@ -6205,6 +6219,242 @@ class Component extends DCLogic {
     this.audit('Exportação de todos os cadastros',resumo.length+' cadastro(s) · '+tot+' registro(s) · .xlsx');
     this.toast('Exportados '+resumo.length+' cadastros ('+tot+' registros) em uma pasta de trabalho.','ok'); };
 
+
+  // ══ Documento do pedido em PDF ═══════════════════════════════════════════
+  // Monta um documento A4 completo do pedido — dados das partes, itens com
+  // foto e ficha fiscal, valores, condições comerciais, datas, cotação,
+  // faturamento, recebimento, conversa e trilha — abre numa janela e manda
+  // imprimir. O navegador salva em PDF. Sem dependência externa.
+  _pdfEsc(s){ return String(s==null?'':s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+  _pdfUrl(u){ try{ return new URL(String(u||''),location.href).href; }catch(e){ return ''; } }
+  _pdfLinhas(pares){ const ok=pares.filter(x=>x&&x[1]!=null&&x[1]!==''&&x[1]!=='—');
+    if(!ok.length) return '';
+    return '<table class="kv">'+ok.map(([k,v])=>'<tr><td class="k">'+this._pdfEsc(k)+'</td><td class="v">'+this._pdfEsc(v)+'</td></tr>').join('')+'</table>'; }
+  _pdfBloco(tit,corpo,sub){ if(!corpo) return '';
+    return '<section class="bl"><h2>'+this._pdfEsc(tit)+(sub?'<span class="sub">'+this._pdfEsc(sub)+'</span>':'')+'</h2>'+corpo+'</section>'; }
+
+  // Valor visível: a revenda só enxerga item já negociado ou faturado.
+  _pdfPodeValor(i){ return this.role!=='revenda'||this._itemNegociado(i); }
+
+  _pdfDoc(p){
+    const E=s=>this._pdfEsc(s);
+    const F=id=>this.state.fornecedores.find(x=>x.id===id)||{};
+    const R=this.state.revendas.find(x=>x.id===p.revendaId)||{};
+    const cfgP=this.state.configPlataforma||{};
+    const cot=this.state.cotacoes.find(c=>c.id===(p.itens.find(i=>i.cotacaoId)||{}).cotacaoId);
+    const fats=this.state.faturamentos.filter(f=>f.pedidoId===p.id);
+    const etapa=this._etapaPedIdx(p); const ch=this.chip(p.status);
+    const forns=[...new Set(p.itens.filter(i=>i.fornecedorId).map(i=>i.fornecedorId))];
+    const temEstoque=p.itens.some(i=>i.st==='estoque');
+    const propV=cot?this._propsEfetivas(cot).find(x=>x.fornecedorId===cot.vencedorId):null;
+
+    // ── Itens ──────────────────────────────────────────────────────────────
+    const linhasItens=p.itens.map((i,ix)=>{ const pr=this._prodInfo(i.produtoId); const fi=this._ficha(pr);
+      const cI=this.chip(i.st||'pendente'); const podeV=this._pdfPodeValor(i);
+      const sub=i.precoNeg!=null?i.precoNeg:i.qtd*i.preco;
+      const foto=this._pdfUrl(this.fotosDe(pr)[0]);
+      const fichaTxt=[fi.ncm?('NCM '+fi.ncm):'',fi.ean?('EAN '+fi.ean):'',
+        fi.pesoBruto?('peso bruto '+fi.pesoBruto+' kg'):'',fi.pesoLiquido?('peso líquido '+fi.pesoLiquido+' kg'):'',
+        (fi.altura&&fi.largura&&fi.comprimento)?('dimensões '+fi.altura+'×'+fi.largura+'×'+fi.comprimento+' '+(fi.unidadeMedida||'cm')):''
+      ].filter(Boolean).join(' · ');
+      const dest=i.st==='estoque'?'Estoque da Loja':(i.fornecedorId?F(i.fornecedorId).nome:'—');
+      return '<tr>'
+        +'<td class="c">'+(ix+1)+'</td>'
+        +'<td class="foto">'+(foto?('<img src="'+foto+'" alt="">'):'')+'</td>'
+        +'<td><b>'+E(pr.codigo||'')+'</b> · '+E(pr.descricao||'')
+          +'<div class="mini">'+E([pr.categoria||'',pr.unidade?('unidade: '+pr.unidade):''].filter(Boolean).join(' · '))+'</div>'
+          +(fichaTxt?('<div class="mini">'+E(fichaTxt)+'</div>'):'')
+          +(i.justif?('<div class="mini vermelho">Justificativa: '+E(i.justif)+'</div>'):'')+'</td>'
+        +'<td class="c">'+E(i.qtd)+'</td>'
+        +'<td class="r">'+(podeV?E(this.fmt(i.preco)):'—')+'</td>'
+        +'<td class="r">'+(podeV?(i.precoNeg!=null?E(this.fmt(i.precoNeg/(i.qtd||1))):'—'):'—')+'</td>'
+        +'<td class="r"><b>'+(podeV?E(this.fmt(sub)):'a definir')+'</b></td>'
+        +'<td>'+E(cI.stLabel)+'</td>'
+        +'<td>'+E(dest)+'</td></tr>'; }).join('');
+
+    const ativos=p.itens.filter(i=>i.st!=='rejeitado');
+    const totRef=p.itens.reduce((a,i)=>a+i.qtd*i.preco,0);
+    const totNeg=ativos.every(i=>i.precoNeg!=null)?ativos.reduce((a,i)=>a+i.precoNeg,0):null;
+    const totFat=fats.reduce((a,f)=>a+f.valor,0);
+    const podeTot=this.role!=='revenda'||!this._revOcultar(ativos);
+
+    // ── Blocos ─────────────────────────────────────────────────────────────
+    const parte=(tit,pares)=>'<div class="parte"><div class="pt">'+E(tit)+'</div>'+(this._pdfLinhas(pares)||'<div class="mini">—</div>')+'</div>';
+
+    const blocoPartes='<div class="partes">'
+      +parte('Emitente do pedido',[['Loja','Loja Cidade Imperial'],['Empresa','Cervejaria Cidade Imperial'],
+        ['Plataforma',cfgP.url||location.origin],['E-mail',(this.state.configEmail||{}).emailLoja||'']])
+      +parte('Revenda (comprador)',[['Razão social',R.nome],['CNPJ',R.cnpj],['Cidade/UF',R.cidade],
+        ['Telefone',R.telefone],['E-mail',R.email]])
+      +parte('Destino do atendimento',[
+        ...(forns.length?forns.map((fid,k)=>['Fornecedor'+(forns.length>1?(' '+(k+1)):''),F(fid).nome+(F(fid).cnpj?(' · '+F(fid).cnpj):'')]):[]),
+        ...(temEstoque?[['Estoque','Atendido pelo estoque da Loja']]:[]),
+        ...(forns.length===1?[['Contato',F(forns[0]).contatoNome||''],['E-mail',F(forns[0]).contato||''],['Telefone',F(forns[0]).telefone||'']]:[]),
+        ...(!forns.length&&!temEstoque?[['Situação','ainda não definido']]:[])])
+      +'</div>';
+
+    const blocoDatas=this._pdfLinhas([
+      ['Pedido criado em',p.data],
+      ['Situação atual',ch.stLabel],
+      ['Etapa do workflow','Etapa '+etapa+' de '+this.ETAPAS_PED.length+' · '+this._etapaLabel(etapa)],
+      ['Prazo para propostas (cotação)',cot?cot.prazo:''],
+      ['Prazo de entrega informado',propV?propV.prazoEntrega:''],
+      ['Validade da proposta',propV?propV.validade:''],
+      ['Faturado em',fats.length?fats.map(f=>f.data).join(', '):''],
+      ['Recebimento do material',p.recebimento?(p.recebimento.quando+' · por '+p.recebimento.por):(etapa>=9?'aguardando confirmação':'')],
+      ['Observação do recebimento',p.recebimento?p.recebimento.obs:''],
+    ]);
+
+    // Condições comerciais: da proposta vencedora quando houve cotação; sem
+    // cotação (envio direto ou estoque), o que existe é o contrato do
+    // fornecedor — e o documento diz isso, em vez de sair em branco.
+    const ctrD=forns.length===1?this.state.contratos.find(x=>x.fornecedorId===forns[0]&&x.vigente):null;
+    const blocoCond=propV?(this._pdfLinhas([
+        ['Origem das condições','Proposta vencedora da cotação '+(cot?cot.id:'')],
+        ['Fornecedor da proposta',F(propV.fornecedorId).nome],
+        ['Condições de pagamento',propV.condicoes],
+        ['Prazo de entrega',propV.prazoEntrega],
+        ['Condições de entrega',propV.condEntrega],
+        ['Frete — modalidade',propV.freteMod||'CIF'],
+        ['Frete — valor',propV.freteValor?this.fmt(propV.freteValor):'incluso'],
+        ['Transportadora',propV.transportadora],
+        ['Validade da proposta',propV.validade],
+      ])+(propV.anexos&&propV.anexos.length?('<div class="mini">Anexos da proposta: '+E(propV.anexos.map(a=>a.nome).join(' · '))+'</div>'):''))
+      :((ctrD||temEstoque)?(this._pdfLinhas([
+        ['Origem das condições',temEstoque&&!ctrD?'Atendimento pelo estoque da Loja':'Contrato vigente do fornecedor — este pedido não passou por cotação'],
+        ...(ctrD?[['Contrato',ctrD.numero],
+          ['Vigência',(ctrD.inicio||'')+' a '+(ctrD.fim||'')],
+          ['Dia acordado de pagamento',ctrD.diaPagamento?('todo dia '+ctrD.diaPagamento):''],
+          ['Royalty do contrato',String(ctrD.royalty).replace('.',',')+'%']]:[]),
+      ])+'<div class="mini">Prazo de entrega e condições de pagamento específicos são registrados na proposta da cotação. Este pedido foi atendido sem cotação, por isso não há proposta com essas condições.</div>')
+      :'<div class="mini">Este pedido ainda não tem condições comerciais registradas — elas aparecem aqui quando houver proposta de cotação ou contrato vigente do fornecedor de destino.</div>');
+
+    const blocoTotais='<table class="tot">'
+      +'<tr><td>Total de referência (preços do catálogo)</td><td class="r">'+(podeTot?E(this.fmt(totRef)):'—')+'</td></tr>'
+      +(totNeg!=null?('<tr><td>Total negociado em cotação</td><td class="r">'+(podeTot?E(this.fmt(totNeg)):'—')+'</td></tr>'):'')
+      +(totNeg!=null&&podeTot?('<tr class="eco"><td>Economia sobre a referência</td><td class="r">'+E(this.fmt(totRef-totNeg))+'</td></tr>'):'')
+      +(fats.length?('<tr><td>Total faturado</td><td class="r">'+E(this.fmt(totFat))+'</td></tr>'):'')
+      +'<tr class="big"><td>'+(fats.length?'Valor faturado do pedido':(totNeg!=null?'Valor negociado do pedido':'Valor do pedido (referência)'))+'</td>'
+      +'<td class="r">'+(this.role==='revenda'?E(this._revTotalFmt(p))
+        :E(this.fmt(fats.length?totFat:(totNeg!=null?totNeg:p.total))))+'</td></tr>'
+      +'</table>';
+
+    let blocoCot='';
+    if(cot){ const props=this._propsEfetivas(cot); const eco=this._ecoCot(cot);
+      blocoCot=this._pdfLinhas([
+        ['Cotação',cot.id],['Situação',this.chip(cot.status).stLabel],
+        ['Prazo para propostas',cot.prazo],['Rodadas de negociação',String(this._cotRod(cot))],
+        ['Fornecedores convidados',(cot.convidados||[]).map(f=>F(f).nome).join(', ')],
+        ['Propostas recebidas',String(props.length)],
+        ['Vencedora',cot.vencedorId?F(cot.vencedorId).nome:(Object.keys(cot.vencItens||{}).length?'itens divididos entre fornecedores':'')],
+        ['Justificativa da escolha',cot.justificativa],
+        ['Observação enviada aos fornecedores',this._obsRodada(cot)],
+        ['Economia apurada',eco?this.fmt(eco.total):''],
+      ])
+      +(props.length&&this.role!=='revenda'?('<table class="dt"><thead><tr><th>Fornecedor</th><th class="r">Proposta</th><th class="r">Frete</th><th class="r">Total c/ frete</th><th>Prazo</th><th>Condições</th></tr></thead><tbody>'
+        +props.slice().sort((a,b)=>this._totCF(a)-this._totCF(b)).map(x=>'<tr><td>'+E(F(x.fornecedorId).nome)+(cot.vencedorId===x.fornecedorId?' <b>(vencedora)</b>':'')+'</td>'
+          +'<td class="r">'+E(this.fmt(x.preco))+'</td><td class="r">'+E(x.freteValor?this.fmt(x.freteValor):'incluso')+'</td>'
+          +'<td class="r"><b>'+E(this.fmt(this._totCF(x)))+'</b></td><td>'+E(x.prazoEntrega||'—')+'</td><td>'+E(x.condicoes||'—')+'</td></tr>').join('')
+        +'</tbody></table>'):''); }
+
+    const blocoFat=fats.length?('<table class="dt"><thead><tr><th>Documento</th><th>Data</th><th>Competência</th><th>Fornecedor</th><th class="r">Valor</th>'
+      +(this.role!=='revenda'?'<th class="r">Royalty</th>':'')+'<th>Anexos</th></tr></thead><tbody>'
+      +fats.map(f=>'<tr><td><b>'+E(f.id)+'</b></td><td>'+E(f.data)+'</td><td>'+E(f.competencia)+'</td><td>'+E(F(f.fornecedorId).nome)+'</td>'
+        +'<td class="r">'+E(this.fmt(f.valor))+'</td>'
+        +(this.role!=='revenda'?('<td class="r">'+E(String(f.royaltyPct).replace('.',',')+'% · '+this.fmt(f.royaltyValor))+'</td>'):'')
+        +'<td class="mini">'+E([f.anexoNome||'',...((f.anexosExtras||[]).map(a=>a.nome))].filter(Boolean).join(' · ')||'—')
+        +(f.docStatus==='recusado'?' — DOCUMENTO RECUSADO':'')+'</td></tr>').join('')+'</tbody></table>'):'';
+
+    const anexos=(p.anexosAtend||[]);
+    const blocoAnexos=anexos.length?('<ul class="lst">'+anexos.map(a=>'<li>'+E(a.nome)+' <span class="mini">· '+E(a.quando||'')+' · '+E(a.autor||'')+'</span></li>').join('')+'</ul>'):'';
+
+    const msgs=this._chatMsgs(p);
+    const blocoConversa=msgs.length?('<table class="dt"><thead><tr><th>Quando</th><th>Autor</th><th>Mensagem</th></tr></thead><tbody>'
+      +msgs.map(m=>'<tr><td class="nw">'+E(m.quando)+'</td><td class="nw">'+E((m.papel==='loja'?'Loja':'Revenda')+' · '+m.autor)+'</td><td>'+E(m.texto)+'</td></tr>').join('')
+      +'</tbody></table>'):'';
+
+    const blocoTrilha='<table class="dt"><thead><tr><th>Quando</th><th>Usuário</th><th>Ação</th></tr></thead><tbody>'
+      +[...(p.trilha||[])].reverse().map(h=>'<tr><td class="nw">'+E(h.quando)+'</td><td class="nw">'+E(h.usuario)+'</td><td>'+E(h.acao)+'</td></tr>').join('')
+      +'</tbody></table>';
+
+    const quem=this.userName(); const agora=this.ts();
+    const fim='<\/'+'script>';
+    return '<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">'
+      +'<title>Pedido '+E(p.id)+' — Cidade Imperial</title><style>'
+      +'@page{size:A4;margin:12mm 10mm 16mm}'
+      +'*{margin:0;padding:0;box-sizing:border-box}'
+      +'body{font-family:Arial,Helvetica,sans-serif;color:#272525;font-size:10px;line-height:1.45}'
+      +'.cab{display:flex;align-items:flex-start;gap:12px;border-bottom:2px solid #B38335;padding-bottom:10px;margin-bottom:12px}'
+      +'.logo{width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,#cfa055,#B38335 60%,#8a6428);color:#fff;font-family:Georgia,serif;font-weight:700;font-size:17px;display:flex;align-items:center;justify-content:center;flex:none}'
+      +'.marca{font-family:Georgia,serif;font-weight:700;font-size:13px;letter-spacing:.1em}'
+      +'.marca small{display:block;font-family:Arial;font-size:8px;letter-spacing:.14em;color:#8a8378;font-weight:400;margin-top:2px}'
+      +'.tit{margin-left:auto;text-align:right}'
+      +'.tit b{display:block;font-size:19px;letter-spacing:-.2px}'
+      +'.tit .st{display:inline-block;font-size:9px;font-weight:700;border-radius:5px;padding:2px 8px;background:#faf3e4;color:#8f682a;margin-top:3px}'
+      +'.tit .dt{font-size:8.5px;color:#8a8378;margin-top:3px}'
+      +'h2{font-size:11px;font-weight:700;color:#fff;background:#3a3227;border-radius:5px;padding:5px 9px;margin:0 0 6px;break-after:avoid}'
+      +'h2 .sub{float:right;font-weight:400;font-size:9px;color:#e3bf7e}'
+      +'.bl{margin-bottom:11px;break-inside:auto}'
+      +'.partes{display:flex;gap:8px}'
+      +'.parte{flex:1;border:1px solid #eae3d6;border-radius:6px;padding:7px 9px;background:#fffdf9}'
+      +'.pt{font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#8f682a;margin-bottom:4px}'
+      +'table{width:100%;border-collapse:collapse}'
+      +'.kv td{padding:2px 0;vertical-align:top}'
+      +'.kv .k{color:#8a8378;width:42%;padding-right:6px}'
+      +'.kv .v{font-weight:600}'
+      +'.dt{font-size:9px;border:1px solid #eae3d6;border-radius:6px;overflow:hidden}'
+      +'.dt th{background:#faf7f0;text-align:left;padding:5px 6px;font-size:8px;text-transform:uppercase;letter-spacing:.05em;color:#8a8378;border-bottom:1px solid #eae3d6}'
+      +'.dt td{padding:5px 6px;border-bottom:1px solid #f2ede3;vertical-align:top}'
+      +'.dt tr{break-inside:avoid}'
+      +'.itens{font-size:9px;border:1px solid #eae3d6;border-radius:6px;overflow:hidden}'
+      +'.itens th{background:#faf7f0;text-align:left;padding:5px 6px;font-size:8px;text-transform:uppercase;letter-spacing:.05em;color:#8a8378;border-bottom:1px solid #eae3d6}'
+      +'.itens td{padding:6px;border-bottom:1px solid #f2ede3;vertical-align:top}'
+      +'.itens tr{break-inside:avoid}'
+      +'.itens img{width:52px;height:52px;object-fit:cover;border-radius:5px;border:1px solid #eae3d6;display:block}'
+      +'.foto{width:60px}.c{text-align:center}.r{text-align:right;white-space:nowrap}.nw{white-space:nowrap}'
+      +'.mini{font-size:8px;color:#8a8378;margin-top:2px;line-height:1.4}'
+      +'.vermelho{color:#a33a2b}'
+      +'.tot{margin-top:7px;font-size:10px;border:1px solid #eae3d6;border-radius:6px;overflow:hidden}'
+      +'.tot td{padding:5px 9px;border-bottom:1px solid #f2ede3}'
+      +'.tot .eco td{color:#2f6b39;font-weight:700}'
+      +'.tot .big td{background:#faf3e4;font-size:13px;font-weight:700;color:#8f682a;border-bottom:none}'
+      +'.lst{margin-left:14px}.lst li{margin:2px 0}'
+      +'.rod{position:fixed;bottom:-11mm;left:0;right:0;font-size:7.5px;color:#a89f90;border-top:1px solid #eae3d6;padding-top:3px;display:flex;justify-content:space-between}'
+      +'</style></head><body>'
+      +'<div class="cab"><div class="logo">CI</div>'
+      +'<div><div class="marca">CIDADE IMPERIAL<small>PLATAFORMA DA LOJA</small></div></div>'
+      +'<div class="tit"><b>Pedido '+E(p.id)+'</b>'
+      +'<span class="st">'+E(ch.stLabel)+' · etapa '+etapa+'/'+this.ETAPAS_PED.length+'</span>'
+      +'<div class="dt">Criado em '+E(p.data)+' · documento emitido em '+E(agora)+'</div></div></div>'
+      +this._pdfBloco('Partes e destino',blocoPartes)
+      +this._pdfBloco('Situação, prazos e datas',blocoDatas)
+      +this._pdfBloco('Condições comerciais negociadas',blocoCond)
+      +this._pdfBloco('Itens do pedido',
+        '<table class="itens"><thead><tr><th class="c">#</th><th>Foto</th><th>Produto</th><th class="c">Qtd</th>'
+        +'<th class="r">Preço ref.</th><th class="r">Preço neg. (un.)</th><th class="r">Subtotal</th><th>Situação</th><th>Destino</th></tr></thead>'
+        +'<tbody>'+linhasItens+'</tbody></table>'+blocoTotais,
+        p.itens.length+(p.itens.length===1?' item':' itens'))
+      +this._pdfBloco('Cotação vinculada',blocoCot)
+      +this._pdfBloco('Faturamento e documentos fiscais',blocoFat)
+      +this._pdfBloco('Anexos do atendimento',blocoAnexos)
+      +this._pdfBloco('Conversa do pedido',blocoConversa,msgs.length+(msgs.length===1?' mensagem':' mensagens'))
+      +this._pdfBloco('Trilha completa do pedido',blocoTrilha)
+      +'<div class="rod"><span>Plataforma Cidade Imperial · pedido '+E(p.id)+' · revenda '+E(R.nome||'')+'</span>'
+      +'<span>Emitido por '+E(quem)+' em '+E(agora)+'</span></div>'
+      +'<script>window.addEventListener("load",function(){setTimeout(function(){window.focus();window.print();},350);});'+fim
+      +'</body></html>'; }
+
+  gerarPdfPedido(id){ this._gpdf=this._gpdf||{}; if(!this._gpdf[id]) this._gpdf[id]=(e)=>{
+    if(e&&e.stopPropagation) e.stopPropagation();
+    const p=this.state.pedidos.find(x=>x.id===id); if(!p) return;
+    let w=null;
+    try{ w=window.open('','_blank'); }catch(err){ w=null; }
+    if(!w) return this.toast('Não foi possível abrir a janela do documento — libere os pop-ups deste site e tente de novo.');
+    w.document.open(); w.document.write(this._pdfDoc(p)); w.document.close();
+    this.audit('Documento do pedido gerado',id+' · '+this._revNome(p.revendaId)+' · '+p.itens.length+' item(ns)');
+    this.toast('Documento do pedido '+id+' aberto — use "Salvar como PDF" na janela de impressão.','ok');
+  }; return this._gpdf[id]; }
+
   // ══ Confirmação de recebimento do material ═══════════════════════════════
   // Depois de faturado (ou atendido pelo estoque da Loja), o pedido fica
   // aguardando a confirmação de que o material chegou. Confirma quem recebeu —
@@ -6224,6 +6474,7 @@ class Component extends DCLogic {
   _recebInfo(p){ const r=(p&&p.recebimento)||null; if(!r) return '';
     return 'Recebimento confirmado em '+r.quando+' por '+r.por+(r.obs?(' — '+r.obs):''); }
   // Vals do botão/selo de recebimento, usados nas duas listas e no detalhe.
+  _pdfCel(p){ return {pdfFn:this.gerarPdfPedido(p.id)}; }
   _recebCel(p){ const r=(p&&p.recebimento)||null;
     return {podeReceb:this._podeConfirmarReceb(p),recebFn:this.abrirRecebimento(p.id),
       temReceb:!!r,recebSelo:r?('Recebido em '+String(r.quando).split(' ')[0]):'',
@@ -7553,7 +7804,7 @@ class Component extends DCLogic {
         &&(S.filtroRev==='0'||p.revendaId===+S.filtroRev)
         &&(!bp||p.id.toLowerCase().includes(bp)||R(p.revendaId).nome.toLowerCase().includes(bp)))
       .map(p=>{ const sres=p.status==='pendente'?this._saldoItens(p.itens):null; const schip=sres?this._saldoChip(sres):null;
-        return {...pedRow(p),...this._chatCel(p),...this._recebCel(p),etapaTxt:this._etapaTxt(p),pendente:p.status==='pendente'&&(this.pode('pedidos.aprovar')||this.pode('pedidos.rejeitar')),aguarda:p.status==='pendente'?idade(p.data):'',
+        return {...pedRow(p),...this._chatCel(p),...this._recebCel(p),...this._pdfCel(p),etapaTxt:this._etapaTxt(p),pendente:p.status==='pendente'&&(this.pode('pedidos.aprovar')||this.pode('pedidos.rejeitar')),aguarda:p.status==='pendente'?idade(p.data):'',
         temSaldoAlerta:!!schip,saldoLabel:schip?schip.label:'',saldoBg:schip?schip.bg:'',saldoFg:schip?schip.fg:'',
         aprovarFn:this.aprovar(p.id),rejeitarFn:this.open('rejeitar',{pedidoId:p.id})};});
     const valMes=PEDS.filter(p=>p.data.endsWith('/'+this.compAtual().replace('/','/'))||p.data.slice(3)===this.compAtual()).reduce((a,p)=>a+(p.total),0);
@@ -7598,7 +7849,7 @@ class Component extends DCLogic {
         const cotIds=[...new Set(p.itens.filter(i=>i.cotacaoId&&i.st==='cotacao').map(i=>i.cotacaoId))];
         const dt=destTxt(p);
         const _rcb=p.recebimento||null; const _entr=this._entregue(p); const _pdRec=this._podeConfirmarReceb(p);
-        pd={id:p.id,steps,data:p.data,...this._chatCel(p),...this._recebCel(p),
+        pd={id:p.id,steps,data:p.data,...this._chatCel(p),...this._recebCel(p),...this._pdfCel(p),
           temBlocoReceb:_entr||!!_rcb,
           recebBd:_rcb?'#cfe0d1':'#e6cf9e',recebFg:_rcb?'#2f6b39':'#8f682a',
           recebTitulo2:_rcb?'✓ Material recebido':'Aguardando confirmação de recebimento',
@@ -8256,7 +8507,7 @@ class Component extends DCLogic {
     const revsCtx=(isRev&&S.revGrupo&&uAtual)?this._minhasRevs(uAtual):[rid];
     const rpedGrupo=isRev&&S.revGrupo&&revsCtx.length>1;
     const rPedRows=PEDS.filter(p=>revsCtx.includes(p.revendaId)&&((S.filtroEtapaRev||'0')==='0'||this._etapaPedIdx(p)===+S.filtroEtapaRev)).map(p=>({id:p.id,data:p.data,revTag:rpedGrupo?(R(p.revendaId).nome||''):'',
-      etapaTxt:this._etapaTxt(p),...this._chatCel(p),...this._recebCel(p),
+      etapaTxt:this._etapaTxt(p),...this._chatCel(p),...this._recebCel(p),...this._pdfCel(p),
       fotos:p.itens.map(i=>({src:this.fotosDe(P(i.produtoId))[0],ver:this.verFoto(i.produtoId)})),
       itensN:p.itens.length+(p.itens.length===1?' item':' itens'),totalFmt:this._revTotalFmt(p),
       fornNome:destTxt(p),...this.chip(p.status),
