@@ -8,7 +8,8 @@
 #   2. faz backup do banco (aborta se não conseguir);
 #   3. anota o commit atual, para poder voltar;
 #   4. baixa a nova versão do branch configurado;
-#   5. instala dependências e recompila a interface;
+#   5. publica a interface por cópia (sem build) e instala dependências do
+#      servidor apenas se elas tiverem mudado;
 #   6. reinicia o processo no PM2 e espera o /api/health responder;
 #   7. em caso de falha, volta sozinho para o commit anterior.
 #
@@ -47,7 +48,8 @@ ao_sair() {
   if [ -n "$COMMIT_ANTES" ]; then
     printf '\n%sPara voltar à versão anterior:%s\n' "$AMARELO" "$ZERA"
     printf '  cd %s && git reset --hard %s\n' "$APP_DIR" "$COMMIT_ANTES"
-    printf '  npm --prefix server install --omit=dev && npm --prefix web install && npm --prefix web run build\n'
+    printf '  npm --prefix server install --omit=dev\n'
+    printf '  rm -rf web/dist && mkdir -p web/dist && cp -r web/public/. web/dist/ && cp web/index.html web/dist/\n'
     printf '  pm2 restart %s\n' "$APP_NAME"
   fi
   if [ -n "$BACKUP_ARQ" ]; then
@@ -59,7 +61,7 @@ ao_sair() {
 trap ao_sair EXIT
 
 # ── 1 · Pré-requisitos e estado atual ─────────────────────────────────────
-etapa "1/7 · Conferindo pré-requisitos e o estado atual"
+etapa "1/8 · Conferindo pré-requisitos e o estado atual"
 [ -d "$APP_DIR/.git" ] || { erro "$APP_DIR não é um clone do repositório."; exit 1; }
 for cmd in git node npm pm2 pg_dump curl; do
   command -v "$cmd" >/dev/null || { erro "Comando obrigatório não encontrado: $cmd"; exit 1; }
@@ -85,7 +87,7 @@ SAUDE_ANTES=$(curl -fsS --max-time 5 "$HEALTH_URL" 2>/dev/null || echo 'sem resp
 ok "Saúde antes da atualização: $SAUDE_ANTES"
 
 # ── 2 · Backup do banco ───────────────────────────────────────────────────
-etapa "2/7 · Backup do banco de dados"
+etapa "2/8 · Backup do banco de dados"
 DATABASE_URL=$(grep -E '^[[:space:]]*DATABASE_URL=' .env 2>/dev/null | tail -1 | cut -d= -f2- | tr -d '"'\''' || true)
 if [ -z "${DATABASE_URL:-}" ]; then
   aviso "DATABASE_URL não encontrada no .env — a aplicação deve estar no banco embutido (PGlite)."
@@ -110,7 +112,7 @@ else
 fi
 
 # ── 3 · Baixar a nova versão ──────────────────────────────────────────────
-etapa "3/7 · Baixando a nova versão do branch $BRANCH"
+etapa "3/8 · Baixando a nova versão do branch $BRANCH"
 git fetch origin "$BRANCH"
 NOVOS=$(git rev-list --count "HEAD..origin/$BRANCH")
 if [ "$NOVOS" -eq 0 ]; then
@@ -124,22 +126,45 @@ git checkout "$BRANCH" >/dev/null 2>&1 || true
 git merge --ff-only "origin/$BRANCH"
 ok "Atualizado para $(git rev-parse --short HEAD)"
 
-# ── 4 · Dependências e build da interface ─────────────────────────────────
-etapa "4/7 · Instalando dependências e recompilando a interface"
-npm --prefix server install --omit=dev --no-audit --no-fund
-npm --prefix web install --no-audit --no-fund
-npm --prefix web run build
-[ -s web/dist/index.html ] || { erro "web/dist/index.html não foi gerado — build da interface falhou."; exit 1; }
-ok "Interface recompilada ($(du -h web/dist/index.html | cut -f1))"
+# ── 4 · Dependências do servidor (só quando mudam) ────────────────────────
+etapa "4/8 · Dependências do servidor"
+if [ ! -d server/node_modules ]; then
+  aviso "server/node_modules ausente — instalando pela primeira vez."
+  npm --prefix server install --omit=dev --no-audit --no-fund
+  ok "Dependências instaladas"
+elif ! git diff --quiet "$COMMIT_ANTES" HEAD -- server/package.json server/package-lock.json; then
+  ok "package.json/lock do servidor mudaram nesta versão — reinstalando"
+  npm --prefix server install --omit=dev --no-audit --no-fund
+  ok "Dependências atualizadas"
+else
+  ok "Dependências do servidor inalteradas — nada a instalar"
+fi
+
+# ── 5 · Publicar a interface (cópia, sem build) ───────────────────────────
+# O "build" do Vite neste projeto é uma cópia: dist = web/index.html + tudo o
+# que está em web/public. Copiar dá exatamente o mesmo resultado, sem precisar
+# de node_modules na web nem de memória para o bundler.
+etapa "5/8 · Publicando a interface (sem build)"
+if grep -q 'type="module"' web/index.html; then
+  erro 'web/index.html passou a usar <script type="module"> — a cópia deixou de equivaler ao build.'
+  printf '  Rode o build de verdade nesta atualização:\n'
+  printf '  npm --prefix web install && npm --prefix web run build\n'
+  exit 1
+fi
+rm -rf web/dist && mkdir -p web/dist
+cp -r web/public/. web/dist/
+cp -f web/index.html web/dist/index.html
+cmp -s web/index.html web/dist/index.html || { erro "A cópia de web/index.html para web/dist falhou."; exit 1; }
+ok "Interface publicada ($(find web/dist -type f | wc -l) arquivos · $(du -sh web/dist | cut -f1))"
 
 # ── 5 · Reiniciar ─────────────────────────────────────────────────────────
-etapa "5/7 · Reiniciando a aplicação no PM2"
+etapa "6/8 · Reiniciando a aplicação no PM2"
 pm2 restart "$APP_NAME" --update-env
 pm2 save >/dev/null
 ok "Processo reiniciado"
 
 # ── 6 · Verificação de saúde ──────────────────────────────────────────────
-etapa "6/7 · Verificando a saúde da aplicação"
+etapa "7/8 · Verificando a saúde da aplicação"
 SAUDE=''
 for _ in $(seq 1 30); do
   SAUDE=$(curl -fsS --max-time 5 "$HEALTH_URL" 2>/dev/null || true)
@@ -157,7 +182,7 @@ case "$SAUDE" in
 esac
 
 # ── 7 · Resumo ────────────────────────────────────────────────────────────
-etapa "7/7 · Concluído"
+etapa "8/8 · Concluído"
 CONCLUIDO=1
 printf '\n'
 ok "Versão anterior: $(git rev-parse --short "$COMMIT_ANTES")"
@@ -168,5 +193,6 @@ printf '  · entrar com um usuário de cada perfil (Loja, fornecedor, revenda);\
 printf '  · abrir um pedido e o catálogo;\n'
 printf '  · conferir a tela que mudou nesta versão.\n\n'
 printf 'Para voltar a esta versão anterior, se precisar:\n'
-printf '  cd %s && git reset --hard %s && npm --prefix web run build && pm2 restart %s\n\n' \
-  "$APP_DIR" "$(git rev-parse --short "$COMMIT_ANTES")" "$APP_NAME"
+printf '  cd %s && git reset --hard %s\n' "$APP_DIR" "$(git rev-parse --short "$COMMIT_ANTES")"
+printf '  rm -rf web/dist && mkdir -p web/dist && cp -r web/public/. web/dist/ && cp web/index.html web/dist/\n'
+printf '  pm2 restart %s\n\n' "$APP_NAME"

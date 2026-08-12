@@ -23,12 +23,12 @@ S.push(passo(1, 'Antes de começar — o que esta atualização faz e não faz',
   <table class="tbl">
     <tr><th style="width:34%">O que é substituído</th><th>O que é preservado</th></tr>
     <tr><td>Código do servidor e da interface (<span class="mono">server/</span>, <span class="mono">web/</span>)</td><td>Todos os dados no PostgreSQL — pedidos, cotações, cadastros, auditoria</td></tr>
-    <tr><td>Dependências (<span class="mono">node_modules</span>) e o build da web (<span class="mono">web/dist</span>)</td><td>O arquivo <span class="mono">.env</span> (não é versionado — o <span class="mono">git pull</span> não o toca)</td></tr>
+    <tr><td>A pasta publicada da interface (<span class="mono">web/dist</span>), recriada por cópia</td><td>O arquivo <span class="mono">.env</span> (não é versionado — o <span class="mono">git pull</span> não o toca)</td></tr>
     <tr><td>Documentos gerados em <span class="mono">docs/</span></td><td>Configuração de SMTP e análise fiscal (ficam no banco, não no código)</td></tr>
     <tr><td>—</td><td>Certificado HTTPS, Nginx, PM2 e firewall</td></tr>
   </table>
   ${nota('<b>Quem executa.</b> O Administrador Técnico, com o mesmo usuário do sistema que fez a instalação (o dono de <span class="mono">' + DIR + '</span>) — normalmente <span class="mono">ubuntu</span> no Lightsail. Não rode os comandos como <span class="mono">root</span>: o PM2 é registrado por usuário e o processo deixaria de ser encontrado.')}
-  ${nota('<b>Janela.</b> A aplicação fica indisponível por poucos segundos, apenas no reinício do passo 7. O <span class="mono">npm install</span> e o build acontecem com o sistema no ar. Ainda assim, em homologação prefira fazer fora do horário de treinamento ou de teste do canal.')}`))
+  ${nota('<b>Janela e duração.</b> Sem build, a atualização inteira leva menos de um minuto e a aplicação fica indisponível por poucos segundos, apenas no reinício do passo 7. Ainda assim, em homologação prefira fazer fora do horário de treinamento ou de teste do canal.')}`))
 
 S.push(passo(2, 'Conectar na VPS por SSH', `
   <p>Pelo terminal, com a chave <span class="mono">.pem</span> baixada do Lightsail (ajuste o caminho e o IP):</p>
@@ -76,15 +76,22 @@ git rev-parse --short HEAD      # NOVA VERSÃO`)}
   ${nota('<span class="mono">--ff-only</span> é proposital: se o servidor tiver commits que não existem no repositório, o comando falha em vez de criar um merge silencioso. Se falhar, investigue antes de forçar.')}
   ${nota('Se a atualização vier de outro branch (por exemplo <span class="mono">main</span>, depois que a versão for promovida), troque o nome do branch nos três comandos e rode <span class="mono">git checkout main</span> antes do merge.')}`))
 
-S.push(passo(6, 'Instalar dependências e recompilar a interface', `
-  <p>Os dois passos são obrigatórios. O <span class="mono">web/dist</span> <b>não é versionado</b>: sem o build, o navegador continua servindo a interface antiga mesmo com o código novo no servidor.</p>
+S.push(passo(6, 'Publicar a interface — por cópia, sem build', `
+  <p>O <span class="mono">web/dist</span> <b>não é versionado</b>: o <span class="mono">git pull</span> traz o código novo, mas quem é servido ao navegador é o <span class="mono">dist</span>. Só que <b>não é preciso rodar o Vite no servidor</b>: neste projeto o build é uma cópia — o <span class="mono">dist</span> é o <span class="mono">web/index.html</span> mais tudo o que está em <span class="mono">web/public</span>, sem empacotamento nem renomeação de arquivo. Copiar produz um <span class="mono">dist</span> idêntico, byte a byte.</p>
   ${code(`cd ${DIR}
-npm --prefix server install --omit=dev
-npm --prefix web install
-npm --prefix web run build
+rm -rf web/dist && mkdir -p web/dist
+cp -r web/public/. web/dist/
+cp web/index.html web/dist/
 
-ls -lh web/dist/index.html      # data/hora devem ser de agora`)}
-  ${alerta('Se o build falhar por falta de memória (a instância de 512 MB do Lightsail é apertada), crie um arquivo de swap uma única vez:<br><span class="mono">sudo fallocate -l 2G /swapfile &amp;&amp; sudo chmod 600 /swapfile &amp;&amp; sudo mkswap /swapfile &amp;&amp; sudo swapon /swapfile</span><br>e torne permanente acrescentando <span class="mono">/swapfile none swap sw 0 0</span> ao <span class="mono">/etc/fstab</span>.')}`))
+# confira: os dois arquivos têm que ser iguais e a data, de agora
+cmp web/index.html web/dist/index.html && echo "interface publicada"
+ls -lh web/dist/index.html`)}
+  ${nota('Leva menos de um segundo, não usa memória e dispensa <span class="mono">node_modules</span> na pasta <span class="mono">web</span> — resolve de vez o build travando na instância pequena do Lightsail.')}
+  <p><b>Dependências do servidor.</b> Só reinstale quando elas mudarem de fato nesta versão:</p>
+  ${code(`git diff --name-only VERSAO_ANTERIOR HEAD -- server/package.json server/package-lock.json
+# se NÃO listar nada, pule o comando abaixo
+npm --prefix server install --omit=dev`)}
+  ${alerta('<b>Quando o build volta a ser necessário.</b> A cópia equivale ao build enquanto o <span class="mono">web/index.html</span> não usar <span class="mono">&lt;script type="module"&gt;</span> — é isso que faria o Vite empacotar e renomear arquivos. Verifique com <span class="mono">grep -c \'type="module"\' web/index.html</span>: o resultado precisa ser <b>0</b>. Se um dia der diferente de zero, aí sim rode <span class="mono">npm --prefix web install &amp;&amp; npm --prefix web run build</span> nessa atualização. O script da próxima seção faz essa verificação sozinho e interrompe se for o caso.')}`))
 
 S.push(passo(7, 'Reiniciar a aplicação', `
   ${code(`pm2 restart ${APP} --update-env
@@ -183,9 +190,14 @@ git fetch origin ${BRANCH}
 git log --oneline HEAD..origin/${BRANCH}
 git merge --ff-only origin/${BRANCH}
 
-# 4 · dependências e build (o build é obrigatório)
+# 4 · publicar a interface por cópia — SEM build
+rm -rf web/dist && mkdir -p web/dist
+cp -r web/public/. web/dist/ && cp web/index.html web/dist/
+cmp web/index.html web/dist/index.html && echo "interface publicada"
+
+# 4b · dependências do servidor: só se package.json/lock mudaram nesta versão
+git diff --name-only VERSAO_ANTERIOR HEAD -- server/package.json server/package-lock.json
 npm --prefix server install --omit=dev
-npm --prefix web install && npm --prefix web run build
 
 # 5 · reiniciar e verificar
 pm2 restart ${APP} --update-env && pm2 save
@@ -195,7 +207,7 @@ pm2 logs ${APP} --lines 30 --nostream`)}
 
   <div class="sec">ATUALIZAÇÃO PELO SCRIPT (RECOMENDADO)</div>
   <div class="passo">
-    <p>O repositório traz <span class="mono">scripts/atualizar-hml.sh</span>, que executa a mesma sequência com as travas que o procedimento manual depende da atenção do operador: aborta se houver alteração local no servidor, aborta se o backup sair vazio, confere o espaço em disco, espera o <span class="mono">/api/health</span> responder saudável depois do reinício e, se não responder, imprime o comando exato para voltar à versão anterior.</p>
+    <p>O repositório traz <span class="mono">scripts/atualizar-hml.sh</span>, que executa a mesma sequência com as travas que o procedimento manual depende da atenção do operador: aborta se houver alteração local no servidor, aborta se o backup sair vazio, confere o espaço em disco, publica a interface por cópia (sem build), reinstala as dependências do servidor <b>apenas</b> se o <span class="mono">package.json</span> tiver mudado nesta versão, verifica que a cópia ainda equivale ao build, espera o <span class="mono">/api/health</span> responder saudável depois do reinício e, se não responder, imprime os comandos exatos para voltar à versão anterior.</p>
     ${code(`cd ${DIR}
 git fetch origin ${BRANCH} && git merge --ff-only origin/${BRANCH}   # 1ª vez: para obter o script
 bash scripts/atualizar-hml.sh`)}
@@ -218,8 +230,8 @@ bash scripts/atualizar-hml.sh`)}
     <p><b>Só o código</b> — resolve quase todos os casos, porque a atualização não altera dados:</p>
     ${code(`cd ${DIR}
 git reset --hard COMMIT_ANOTADO_NO_PASSO_3
-npm --prefix server install --omit=dev
-npm --prefix web install && npm --prefix web run build
+rm -rf web/dist && mkdir -p web/dist
+cp -r web/public/. web/dist/ && cp web/index.html web/dist/
 pm2 restart ${APP}
 curl -s http://127.0.0.1:3000/api/health ; echo`)}
     <p><b>Código e dados</b> — só quando a nova versão tiver corrompido informação; restaurar o banco <b>descarta tudo o que foi feito depois do backup</b>:</p>
@@ -238,7 +250,7 @@ pm2 start ${APP}`)}
       <tr><td><b>A versão nova pede uma variável nova no .env</b></td><td>Edite o <span class="mono">.env</span> (<span class="mono">nano ${DIR}/.env</span>) antes do reinício e use <span class="mono">pm2 restart ${APP} --update-env</span>. O <span class="mono">.env</span> não é versionado, então o <span class="mono">git pull</span> nunca o sobrescreve — compare com o <span class="mono">.env.example</span> para ver o que surgiu de novo.</td></tr>
       <tr><td><b>A versão nova cria tabela ou coluna</b></td><td>Nada a fazer: o schema é reaplicado na subida, criando apenas o que falta e preservando os dados. Confira depois pelo <span class="mono">/api/health</span> e pelos logs.</td></tr>
       <tr><td><b>Mudança no Nginx (limites, cabeçalhos, rota)</b></td><td><span class="mono">sudo nano /etc/nginx/sites-available/cidadeimperial-hml</span>, depois <span class="mono">sudo nginx -t &amp;&amp; sudo systemctl reload nginx</span>. O <span class="mono">reload</span> não derruba conexões.</td></tr>
-      <tr><td><b>Atualização do Node.js</b></td><td>Instale a nova versão pelo NodeSource, rode <span class="mono">rm -rf server/node_modules web/node_modules</span>, reinstale as dependências, recompile a interface e reinicie o PM2.</td></tr>
+      <tr><td><b>Atualização do Node.js</b></td><td>Instale a nova versão pelo NodeSource, rode <span class="mono">rm -rf server/node_modules</span>, reinstale com <span class="mono">npm --prefix server install --omit=dev</span> e reinicie o PM2. A interface não depende do Node para ser publicada.</td></tr>
       <tr><td><b>Pacotes do sistema operacional</b></td><td><span class="mono">sudo apt update &amp;&amp; sudo apt upgrade -y</span> em janela separada da atualização da aplicação. Se pedir reboot, confirme depois que o PM2 voltou sozinho (<span class="mono">pm2 status</span>).</td></tr>
       <tr><td><b>Certificado HTTPS perto de vencer</b></td><td>A renovação é automática. Para conferir: <span class="mono">sudo certbot certificates</span> e <span class="mono">systemctl status certbot.timer</span>. Forçar: <span class="mono">sudo certbot renew --dry-run</span>.</td></tr>
       <tr><td><b>Quer descartar os dados e recomeçar do zero</b></td><td>Situação de homologação, não de produção: pare o app, apague e recrie o banco (<span class="mono">DROP DATABASE</span> / <span class="mono">CREATE DATABASE</span>), garanta <span class="mono">DB_SEED=true</span> no <span class="mono">.env</span> e suba de novo — a carga de demonstração volta.</td></tr>
@@ -250,9 +262,9 @@ pm2 start ${APP}`)}
     <table class="tbl">
       <tr><th style="width:32%">Sintoma</th><th>Causa provável e solução</th></tr>
       <tr><td>Erro 502 no navegador depois de atualizar</td><td>A aplicação não subiu. <span class="mono">pm2 logs ${APP} --lines 50</span> mostra o erro real; corrija e <span class="mono">pm2 restart ${APP}</span>.</td></tr>
-      <tr><td>A tela continua a antiga</td><td>Build não rodado ou cache do navegador. Confira a data de <span class="mono">web/dist/index.html</span>, refaça <span class="mono">npm --prefix web run build</span> e recarregue com <span class="mono">Ctrl+F5</span>.</td></tr>
+      <tr><td>A tela continua a antiga</td><td>A cópia do passo 6 não foi feita, ou é cache do navegador. Confira com <span class="mono">cmp web/index.html web/dist/index.html</span> (tem que ser igual) e a data de <span class="mono">web/dist/index.html</span>; depois recarregue com <span class="mono">Ctrl+F5</span>.</td></tr>
       <tr><td><span class="mono">git merge --ff-only</span> falha</td><td>O servidor tem commits próprios ou está em outro branch. <span class="mono">git log --oneline -5</span> e <span class="mono">git branch --show-current</span> mostram a situação; alinhe antes de forçar qualquer coisa.</td></tr>
-      <tr><td><span class="mono">npm install</span> ou o build travam</td><td>Memória insuficiente na instância. Crie o arquivo de swap indicado no passo 6.</td></tr>
+      <tr><td><span class="mono">npm install</span> do servidor trava</td><td>Memória insuficiente na instância. Crie um arquivo de swap uma única vez:<br><span class="mono">sudo fallocate -l 2G /swapfile &amp;&amp; sudo chmod 600 /swapfile &amp;&amp; sudo mkswap /swapfile &amp;&amp; sudo swapon /swapfile</span><br>e torne permanente com <span class="mono">/swapfile none swap sw 0 0</span> no <span class="mono">/etc/fstab</span>. Sem build da interface, isso raramente é necessário.</td></tr>
       <tr><td><span class="mono">/api/health</span> devolve <span class="mono">"ok":false</span></td><td>PostgreSQL fora do ar: <span class="mono">sudo systemctl status postgresql</span> e, se preciso, <span class="mono">sudo systemctl restart postgresql</span>.</td></tr>
       <tr><td><span class="mono">"driver":"pglite"</span> depois de atualizar</td><td><span class="mono">DATABASE_URL</span> ausente ou com erro no <span class="mono">.env</span> — a aplicação caiu no banco embutido e <b>não</b> está lendo os dados reais. Corrija e reinicie com <span class="mono">--update-env</span>.</td></tr>
       <tr><td><span class="mono">pm2: command not found</span></td><td>Você está com outro usuário (ou como <span class="mono">root</span>). Volte para o usuário dono de <span class="mono">${DIR}</span>.</td></tr>
@@ -269,8 +281,8 @@ pm2 start ${APP}`)}
          'git status limpo, sem alteração local no servidor',
          'Backup do banco gerado e com tamanho maior que zero',
          'Commits que entram na versão revisados (git log HEAD..origin)',
-         'Dependências instaladas nos dois pacotes (server e web)',
-         'Interface recompilada — data de web/dist/index.html é de agora',
+         'Interface publicada por cópia — cmp web/index.html web/dist/index.html sem diferença',
+         'Dependências do servidor reinstaladas apenas se o package.json mudou',
          'PM2 reiniciado e pm2 save executado',
          '/api/health devolvendo {"ok":true,"driver":"pg"}',
          'Logs sem erro nas últimas linhas',
