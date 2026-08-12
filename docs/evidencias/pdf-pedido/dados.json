@@ -1,0 +1,21 @@
+{
+  "pedido": "PED-0040",
+  "pendente": "PED-0044",
+  "pdfLojaKB": 143,
+  "blocos": 8,
+  "lojaVeComparativo": true,
+  "fotos": 2,
+  "linhasDoc": 87,
+  "blocosPendente": 5,
+  "blocosRevenda": 8,
+  "revendaVeComparativo": false,
+  "revendaVeContagemDePropostas": true,
+  "pdfRevendaKB": 141,
+  "pedidoSemNegociacao": "PED-0044",
+  "cotacao": "COT-007",
+  "itens": 2,
+  "totalPedido": 2256,
+  "mensagens": 2,
+  "recebidoEm": "12/08/2026 22:39",
+  "nf": "NF-1204"
+}
