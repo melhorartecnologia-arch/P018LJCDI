@@ -742,14 +742,24 @@ input::placeholder,textarea::placeholder{color:#b0a795}
       <div onClick="{{novoForn}}" style="background:#B38335;color:#fff;border-radius:9px;padding:10px 16px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:#9a6f2b">+ Novo fornecedor</div>
     </div>
     <sc-if value="{{podeCadForn}}" hint-placeholder-val="{{true}}">
+      <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:14px 18px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap">
+        <div>
+          <div style="font-size:14px;font-weight:700;margin-bottom:2px">Exportar contratos de royalty</div>
+          <div style="font-size:12px;color:#8a8378">Todos os contratos em Excel — percentual, vigência, dia acordado, gatilho de pagamento e parcelamento. Os contratos não entram por carga: o percentual de royalty é lançado contrato a contrato, com histórico.</div>
+        </div>
+        <div onClick="{{expContrato}}" title="Baixar em Excel" style="border:1px solid #cfd9ea;color:#33568f;background:#f2f5fb;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;flex:none" style-hover="background:#e7edf7">⬇ Exportar contratos</div>
+      </div>
+    </sc-if>
+<sc-if value="{{podeCadForn}}" hint-placeholder-val="{{true}}">
       <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:16px 18px;margin-bottom:14px">
-        <div style="font-size:14px;font-weight:700;margin-bottom:2px">Importar fornecedores por planilha</div>
-        <div style="font-size:12px;color:#8a8378;margin-bottom:12px">Baixe o modelo em Excel (.xlsx), preencha uma linha por registro e carregue o arquivo — você confere a prévia antes de gravar.</div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:2px">Importar e exportar fornecedores por planilha</div>
+        <div style="font-size:12px;color:#8a8378;margin-bottom:12px">Baixe o modelo em Excel (.xlsx), preencha uma linha por registro e carregue o arquivo — você confere a prévia antes de gravar. A exportação baixa a base completa, com os dados derivados.</div>
         <div style="display:flex;flex-wrap:wrap;gap:9px;align-items:center">
           <div onClick="{{impModeloForn}}" title="Modelo em branco com exemplos e instruções" style="border:1px solid #d9c193;color:#8f682a;background:#fff;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="background:#faf5e9">⬇ Baixar modelo</div>
           <div onClick="{{impAtuaisForn}}" title="Mesmo modelo, já preenchido com os cadastros existentes" style="border:1px solid #e5ddcd;color:#6b6459;background:#fff;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:#f7f3ea">⬇ Modelo com os cadastros atuais</div>
           <div onClick="{{impClicarForn}}" style="background:#272525;color:#fff;border-radius:8px;padding:8px 15px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="background:#3a3735">⬆ Carregar planilha preenchida…</div>
           <input id="imp-file-fornecedor" type="file" accept=".xlsx,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv" onChange="{{impCarregarForn}}" style="display:none">
+          <div onClick="{{expForn}}" title="Baixar todos os registros deste cadastro em Excel" style="border:1px solid #cfd9ea;color:#33568f;background:#f2f5fb;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="background:#e7edf7">⬇ Exportar XLSX</div>
         </div>
         <div style="font-size:11px;color:#b0a795;margin-top:9px">Nada é gravado sem a sua confirmação: a plataforma mostra linha a linha o que será incluído, o que será atualizado e o que tem erro. Até 500 linhas por carga · aceita .xlsx (recomendado) e CSV.</div>
       </div>
@@ -926,13 +936,14 @@ input::placeholder,textarea::placeholder{color:#b0a795}
     </div>
     <sc-if value="{{podeCadProd}}" hint-placeholder-val="{{true}}">
       <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:16px 18px;margin-bottom:14px">
-        <div style="font-size:14px;font-weight:700;margin-bottom:2px">Importar produtos homologados por planilha</div>
-        <div style="font-size:12px;color:#8a8378;margin-bottom:12px">Baixe o modelo em Excel (.xlsx), preencha uma linha por registro e carregue o arquivo — você confere a prévia antes de gravar.</div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:2px">Importar e exportar produtos homologados por planilha</div>
+        <div style="font-size:12px;color:#8a8378;margin-bottom:12px">Baixe o modelo em Excel (.xlsx), preencha uma linha por registro e carregue o arquivo — você confere a prévia antes de gravar. A exportação baixa a base completa, com os dados derivados.</div>
         <div style="display:flex;flex-wrap:wrap;gap:9px;align-items:center">
           <div onClick="{{impModeloProd}}" title="Modelo em branco com exemplos e instruções" style="border:1px solid #d9c193;color:#8f682a;background:#fff;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="background:#faf5e9">⬇ Baixar modelo</div>
           <div onClick="{{impAtuaisProd}}" title="Mesmo modelo, já preenchido com os cadastros existentes" style="border:1px solid #e5ddcd;color:#6b6459;background:#fff;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:#f7f3ea">⬇ Modelo com os cadastros atuais</div>
           <div onClick="{{impClicarProd}}" style="background:#272525;color:#fff;border-radius:8px;padding:8px 15px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="background:#3a3735">⬆ Carregar planilha preenchida…</div>
           <input id="imp-file-produto" type="file" accept=".xlsx,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv" onChange="{{impCarregarProd}}" style="display:none">
+          <div onClick="{{expProd}}" title="Baixar todos os registros deste cadastro em Excel" style="border:1px solid #cfd9ea;color:#33568f;background:#f2f5fb;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="background:#e7edf7">⬇ Exportar XLSX</div>
         </div>
         <div style="font-size:11px;color:#b0a795;margin-top:9px">Nada é gravado sem a sua confirmação: a plataforma mostra linha a linha o que será incluído, o que será atualizado e o que tem erro. Até 500 linhas por carga · aceita .xlsx (recomendado) e CSV.</div>
       </div>
@@ -1005,6 +1016,15 @@ input::placeholder,textarea::placeholder{color:#b0a795}
       </div>
       <div onClick="{{irProdutos}}" style="border:1px solid #e5ddcd;color:#8a8378;border-radius:9px;padding:10px 14px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;background:#fff" style-hover="background:#f7f3ea">← Produtos homologados</div>
     </div>
+        <sc-if value="{{podeCadProd}}" hint-placeholder-val="{{true}}">
+      <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:14px 18px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap">
+        <div>
+          <div style="font-size:14px;font-weight:700;margin-bottom:2px">Exportar o De/Para</div>
+          <div style="font-size:12px;color:#8a8378">Matriz produto × fornecedor em Excel, com uma coluna por fornecedor ativo. A carga dos vínculos entra pela planilha de produtos, na coluna "Fornecedores".</div>
+        </div>
+        <div onClick="{{expDepara}}" title="Baixar em Excel" style="border:1px solid #cfd9ea;color:#33568f;background:#f2f5fb;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;flex:none" style-hover="background:#e7edf7">⬇ Exportar De/Para</div>
+      </div>
+    </sc-if>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px">
       <sc-for list="{{deParaKpis}}" as="k" hint-placeholder-count="4">
         <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:14px 16px">
@@ -1178,6 +1198,20 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <div onClick="{{novaCategoria}}" style="background:#B38335;color:#fff;border-radius:9px;padding:10px 16px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;flex:none" style-hover="background:#9a6f2b">+ Nova categoria</div>
       </sc-if>
     </div>
+    <sc-if value="{{podeCadProd}}" hint-placeholder-val="{{true}}">
+      <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:16px 18px;margin-bottom:14px">
+        <div style="font-size:14px;font-weight:700;margin-bottom:2px">Importar e exportar categorias por planilha</div>
+        <div style="font-size:12px;color:#8a8378;margin-bottom:12px">Baixe o modelo em Excel (.xlsx), preencha uma linha por registro e carregue o arquivo — você confere a prévia antes de gravar. A exportação baixa a base completa, com os dados derivados.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:9px;align-items:center">
+          <div onClick="{{impModeloCat}}" title="Modelo em branco com exemplos e instruções" style="border:1px solid #d9c193;color:#8f682a;background:#fff;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="background:#faf5e9">⬇ Baixar modelo</div>
+          <div onClick="{{impAtuaisCat}}" title="Mesmo modelo, já preenchido com os cadastros existentes" style="border:1px solid #e5ddcd;color:#6b6459;background:#fff;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:#f7f3ea">⬇ Modelo com os cadastros atuais</div>
+          <div onClick="{{impClicarCat}}" style="background:#272525;color:#fff;border-radius:8px;padding:8px 15px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="background:#3a3735">⬆ Carregar planilha preenchida…</div>
+          <input id="imp-file-categoria" type="file" accept=".xlsx,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv" onChange="{{impCarregarCat}}" style="display:none">
+          <div onClick="{{expCat}}" title="Baixar todos os registros deste cadastro em Excel" style="border:1px solid #cfd9ea;color:#33568f;background:#f2f5fb;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="background:#e7edf7">⬇ Exportar XLSX</div>
+        </div>
+        <div style="font-size:11px;color:#b0a795;margin-top:9px">Nada é gravado sem a sua confirmação: a plataforma mostra linha a linha o que será incluído, o que será atualizado e o que tem erro. Até 500 linhas por carga · aceita .xlsx (recomendado) e CSV.</div>
+      </div>
+    </sc-if>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px">
       <sc-for list="{{grupoKpis}}" as="k" hint-placeholder-count="4">
         <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:14px 16px">
@@ -1333,13 +1367,14 @@ input::placeholder,textarea::placeholder{color:#b0a795}
     </div>
     <sc-if value="{{podeCadRev}}" hint-placeholder-val="{{true}}">
       <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:16px 18px;margin-bottom:14px">
-        <div style="font-size:14px;font-weight:700;margin-bottom:2px">Importar revendas por planilha</div>
-        <div style="font-size:12px;color:#8a8378;margin-bottom:12px">Baixe o modelo em Excel (.xlsx), preencha uma linha por registro e carregue o arquivo — você confere a prévia antes de gravar.</div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:2px">Importar e exportar revendas por planilha</div>
+        <div style="font-size:12px;color:#8a8378;margin-bottom:12px">Baixe o modelo em Excel (.xlsx), preencha uma linha por registro e carregue o arquivo — você confere a prévia antes de gravar. A exportação baixa a base completa, com os dados derivados.</div>
         <div style="display:flex;flex-wrap:wrap;gap:9px;align-items:center">
           <div onClick="{{impModeloRev}}" title="Modelo em branco com exemplos e instruções" style="border:1px solid #d9c193;color:#8f682a;background:#fff;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="background:#faf5e9">⬇ Baixar modelo</div>
           <div onClick="{{impAtuaisRev}}" title="Mesmo modelo, já preenchido com os cadastros existentes" style="border:1px solid #e5ddcd;color:#6b6459;background:#fff;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:#f7f3ea">⬇ Modelo com os cadastros atuais</div>
           <div onClick="{{impClicarRev}}" style="background:#272525;color:#fff;border-radius:8px;padding:8px 15px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="background:#3a3735">⬆ Carregar planilha preenchida…</div>
           <input id="imp-file-revenda" type="file" accept=".xlsx,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv" onChange="{{impCarregarRev}}" style="display:none">
+          <div onClick="{{expRev}}" title="Baixar todos os registros deste cadastro em Excel" style="border:1px solid #cfd9ea;color:#33568f;background:#f2f5fb;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="background:#e7edf7">⬇ Exportar XLSX</div>
         </div>
         <div style="font-size:11px;color:#b0a795;margin-top:9px">Nada é gravado sem a sua confirmação: a plataforma mostra linha a linha o que será incluído, o que será atualizado e o que tem erro. Até 500 linhas por carga · aceita .xlsx (recomendado) e CSV.</div>
       </div>
@@ -1700,6 +1735,15 @@ input::placeholder,textarea::placeholder{color:#b0a795}
       </sc-if>
     </div>
 
+    <sc-if value="{{podeRelExportar}}" hint-placeholder-val="{{true}}">
+      <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:14px 18px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap">
+        <div>
+          <div style="font-size:14px;font-weight:700;margin-bottom:2px">Exportar todos os cadastros</div>
+          <div style="font-size:12px;color:#8a8378">Uma pasta de trabalho com uma aba por cadastro — fornecedores, contratos, produtos, categorias, De/Para, revendas, usuários e estoque — mais um resumo com a contagem de cada um. Respeita as suas permissões.</div>
+        </div>
+        <div onClick="{{expTodos}}" title="Baixar a base completa em Excel" style="background:#272525;color:#fff;border-radius:9px;padding:10px 16px;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap;flex:none" style-hover="background:#3a3735">⬇ Exportar todos os cadastros</div>
+      </div>
+    </sc-if>
     <div style="display:flex;gap:4px;margin-bottom:16px;border-bottom:2px solid #eae3d6">
       <div onClick="{{relAbaGeralFn}}" style="font-size:13.5px;font-weight:700;padding:9px 16px;cursor:pointer;color:{{relTabGFg}};border-bottom:3px solid {{relTabGBd}};margin-bottom:-2px">Visão geral</div>
       <div onClick="{{relAbaProdFn}}" title="Relatório de venda por produtos — tabela e gráfico com drill-down" style="font-size:13.5px;font-weight:700;padding:9px 16px;cursor:pointer;color:{{relTabPFg}};border-bottom:3px solid {{relTabPBd}};margin-bottom:-2px">Venda por produtos</div>
@@ -1727,7 +1771,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
           <div onClick="{{exportVendasProduto}}" title="Baixa o recorte filtrado em Excel — abas Resumo por produto e Vendas detalhadas" style="background:#272525;color:#fff;border-radius:9px;padding:9px 14px;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="background:#3a3735">⬇ Exportar XLSX</div>
         </sc-if>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px">
         <sc-for list="{{rvpKpis}}" as="k" hint-placeholder-count="4">
           <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:13px 16px">
             <div style="font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#a89f90">{{k.label}}</div>
@@ -2703,6 +2747,20 @@ input::placeholder,textarea::placeholder{color:#b0a795}
       </div>
       <div onClick="{{novoUsuario}}" style="background:#B38335;color:#fff;border-radius:9px;padding:10px 16px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex:none" style-hover="background:#9a6f2b">+ Novo usuário</div>
     </div>
+    <sc-if value="{{podeCfgUsuarios}}" hint-placeholder-val="{{true}}">
+      <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:16px 18px;margin-bottom:14px">
+        <div style="font-size:14px;font-weight:700;margin-bottom:2px">Importar e exportar usuários por planilha</div>
+        <div style="font-size:12px;color:#8a8378;margin-bottom:12px">Baixe o modelo em Excel (.xlsx), preencha uma linha por registro e carregue o arquivo — você confere a prévia antes de gravar. A exportação baixa a base completa, com os dados derivados.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:9px;align-items:center">
+          <div onClick="{{impModeloUsr}}" title="Modelo em branco com exemplos e instruções" style="border:1px solid #d9c193;color:#8f682a;background:#fff;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="background:#faf5e9">⬇ Baixar modelo</div>
+          <div onClick="{{impAtuaisUsr}}" title="Mesmo modelo, já preenchido com os cadastros existentes" style="border:1px solid #e5ddcd;color:#6b6459;background:#fff;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:#f7f3ea">⬇ Modelo com os cadastros atuais</div>
+          <div onClick="{{impClicarUsr}}" style="background:#272525;color:#fff;border-radius:8px;padding:8px 15px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="background:#3a3735">⬆ Carregar planilha preenchida…</div>
+          <input id="imp-file-usuario" type="file" accept=".xlsx,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv" onChange="{{impCarregarUsr}}" style="display:none">
+          <div onClick="{{expUsr}}" title="Baixar todos os registros deste cadastro em Excel" style="border:1px solid #cfd9ea;color:#33568f;background:#f2f5fb;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="background:#e7edf7">⬇ Exportar XLSX</div>
+        </div>
+        <div style="font-size:11px;color:#b0a795;margin-top:9px">Nada é gravado sem a sua confirmação: a plataforma mostra linha a linha o que será incluído, o que será atualizado e o que tem erro. Até 500 linhas por carga · aceita .xlsx (recomendado) e CSV.</div>
+      </div>
+    </sc-if>
     <div style="display:flex;gap:10px;margin-bottom:14px">
       <input value="{{buscaUsr}}" onChange="{{setBuscaUsr}}" placeholder="Buscar por nome ou e-mail…" style="flex:1;padding:10px 14px;border:1px solid #e5ddcd;border-radius:9px;font:inherit;font-size:13px;background:#fff;outline:none;color:#272525">
       <select value="{{filtroPapel}}" onChange="{{setFiltroPapel}}" style="padding:10px 12px;border:1px solid #e5ddcd;border-radius:9px;font:inherit;font-size:12.5px;font-weight:600;color:#272525;background:#fff;outline:none;cursor:pointer">
@@ -2760,7 +2818,16 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <div style="font-size:21px;font-weight:700;margin:2px 0 3px">Inventário de estoque</div>
         <div style="font-size:13px;color:#8a8378">Contagens do estoque da Loja em datas de lançamento · o saldo alimenta os alertas de disponibilidade nos pedidos</div>
       </div>
-      <sc-if value="{{podeInvGerenciar}}" hint-placeholder-val="{{true}}">
+      <sc-if value="{{podeInvVer}}" hint-placeholder-val="{{true}}">
+      <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:14px 18px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap">
+        <div>
+          <div style="font-size:14px;font-weight:700;margin-bottom:2px">Exportar o saldo de estoque</div>
+          <div style="font-size:12px;color:#8a8378">Saldo atual por produto em Excel — contagem do último inventário, consumido desde então e saldo disponível.</div>
+        </div>
+        <div onClick="{{expInv}}" title="Baixar em Excel" style="border:1px solid #cfd9ea;color:#33568f;background:#f2f5fb;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;flex:none" style-hover="background:#e7edf7">⬇ Exportar saldo</div>
+      </div>
+    </sc-if>
+<sc-if value="{{podeInvGerenciar}}" hint-placeholder-val="{{true}}">
         <div onClick="{{abrirInventario}}" style="background:#B38335;color:#fff;border-radius:9px;padding:10px 16px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex:none" style-hover="background:#9a6f2b">+ Lançar inventário</div>
       </sc-if>
     </div>
@@ -5476,6 +5543,31 @@ class Component extends DCLogic {
              '"Fornecedores" aceita nomes ou CNPJs já cadastrados, separados por ponto e vírgula — é o De/Para (RF56). Cadastre os fornecedores antes dos produtos.',
              'Categoria precisa existir em Cadastros › Categorias de produtos; se não existir ou vier em branco, o produto fica em "Outros".',
              'As imagens não vêm pela planilha: o produto entra com a imagem padrão e você anexa as fotos depois.']},
+    categoria:{
+      titulo:'categorias de produtos', aba:'Categorias', arquivo:'modelo-categorias',
+      perm:'cadastros.produtos', chaveLabel:'Nome',
+      cols:[
+        {k:'nome',     rot:'Nome',            larg:26, obrig:true, ex:['Destilados','Não alcoólicos']},
+        {k:'descricao',rot:'Descrição',       larg:54, ex:['Gins, vodcas e whiskies do portfólio','Águas, sucos e refrigerantes']},
+        {k:'ativo',    rot:'Ativo (Sim/Não)', larg:16, ex:['Sim','Sim']}],
+      ajuda:['O nome é obrigatório e identifica a categoria: se já existir uma com o mesmo nome (ignorando maiúsculas), a linha ATUALIZA a descrição e a situação em vez de duplicar.',
+             'Renomear uma categoria NÃO se faz por aqui — a planilha casa pelo nome. Para renomear e reclassificar os produtos, use "Editar" na tela de Categorias de produtos.',
+             'Categoria inativa deixa de ser oferecida no cadastro de produtos, mas os produtos já classificados nela continuam como estão.']},
+    usuario:{
+      titulo:'usuários', aba:'Usuários', arquivo:'modelo-usuarios',
+      perm:'config.usuarios', chaveLabel:'E-mail',
+      cols:[
+        {k:'nome',   rot:'Nome completo',      larg:30, obrig:true, ex:['Marina Duarte','Rafael Nunes']},
+        {k:'email',  rot:'E-mail (login)',     larg:32, obrig:true, ex:['marina@bardoimperador.com.br','rafael@serraverde.com.br']},
+        {k:'papel',  rot:'Perfil',             larg:22, obrig:true, ex:['Revenda','Fornecedor']},
+        {k:'vinculo',rot:'Vínculo (separe por ;)',larg:44, ex:['Bar do Imperador; Choperia Alto da Serra','Distribuidora Serra Verde']},
+        {k:'senha',  rot:'Senha inicial',      larg:18, ex:['Kmqzr483','Xkpwq739']},
+        {k:'ativo',  rot:'Ativo (Sim/Não)',    larg:16, ex:['Sim','Sim']}],
+      ajuda:['Nome, e-mail e perfil são obrigatórios. O e-mail é o login e identifica o usuário: se já existir, a linha ATUALIZA o cadastro em vez de duplicar.',
+             'Perfil aceita: Administrador Técnico, Loja Cidade Imperial, Fornecedor ou Revenda (também aceita admin, loja, fornecedor, revenda).',
+             'Vínculo é obrigatório para Fornecedor (um) e Revenda (uma ou mais, separadas por ponto e vírgula, para grupo econômico). Use o nome exato do cadastro. Perfis Administrador e Loja não têm vínculo.',
+             'Senha inicial só é exigida em usuários novos; em branco na atualização, a senha atual é mantida. A senha NÃO é enviada por e-mail nesta carga — use "Enviar" na lista de usuários para mandar os dados de acesso e deixar o envio registrado.',
+             'As permissões entram no padrão do perfil; ajuste individualmente pelo editor "⚙" depois da carga.']},
     revenda:{
       titulo:'revendas', aba:'Revendas', arquivo:'modelo-revendas',
       perm:'cadastros.revendas', chaveLabel:'CNPJ',
@@ -5501,6 +5593,18 @@ class Component extends DCLogic {
     return d.slice(0,2)+'.'+d.slice(2,5)+'.'+d.slice(5,8)+'/'+d.slice(8,12)+'-'+d.slice(12); }
   _impNum(v){ if(typeof v==='number') return v; return this.num(v); }
   _impTxt(v){ return String(v==null?'':v).trim(); }
+  // Perfil aceito por rótulo ("Loja Cidade Imperial") ou por chave ("loja").
+  _impPapel(v){ const s=this._impTxt(v).toLowerCase();
+    if(!s) return null;
+    const porChave=Object.keys(this.PAPEIS).find(k=>k===s);
+    if(porChave) return porChave;
+    const porRotulo=Object.keys(this.PAPEIS).find(k=>this.PAPEIS[k].toLowerCase()===s);
+    if(porRotulo) return porRotulo;
+    if(/^admin/.test(s)) return 'admin';
+    if(/^loja/.test(s)) return 'loja';
+    if(/^fornec/.test(s)) return 'fornecedor';
+    if(/^revend/.test(s)) return 'revenda';
+    return null; }
 
   // Lê a matriz da planilha e devolve linhas normalizadas + erros por linha.
   _impLer(tipo,rows){
@@ -5549,6 +5653,48 @@ class Component extends DCLogic {
           telefone:this._impTxt(v.telefone)||'—',ativo:this._impSim(v.ativo)!==false,
           contato:this._impTxt(v.contato)||'—',contatoNome:this._impTxt(v.contatoNome),
           email:this._impTxt(v.email)};
+      } else if(tipo==='categoria'){
+        const nome=this._impTxt(v.nome);
+        if(!nome) erros.push('nome em branco');
+        if(nome.length>40) erros.push('nome com mais de 40 caracteres');
+        const ch=nome.toLowerCase();
+        if(ch&&vistos[ch]) erros.push('nome repetido na própria planilha (linha '+vistos[ch]+')');
+        else if(ch) vistos[ch]=l.n;
+        const ja=ch?(S.categorias||[]).find(c=>c.nome.toLowerCase()===ch):null;
+        out.chave=nome||'—'; out.rotulo=this._impTxt(v.descricao)||'— sem descrição —';
+        out.acao=erros.length?'erro':(ja?'atualiza':'novo'); out.alvoId=ja?ja.id:null;
+        out.detalhe=ja?(this._nProdCat(ja.nome)+' produto(s) já usam esta categoria'):'categoria nova, sem produtos';
+        out.dados={nome,descricao:this._impTxt(v.descricao),ativo:this._impSim(v.ativo)!==false};
+      } else if(tipo==='usuario'){
+        const nome=this._impTxt(v.nome), email=this._impTxt(v.email).toLowerCase();
+        if(!nome) erros.push('nome em branco');
+        if(!email) erros.push('e-mail em branco');
+        else if(!/.+@.+\..+/.test(email)) erros.push('e-mail inválido: "'+email+'"');
+        if(email&&vistos[email]) erros.push('e-mail repetido na própria planilha (linha '+vistos[email]+')');
+        else if(email) vistos[email]=l.n;
+        const papel=this._impPapel(v.papel);
+        if(!papel) erros.push('perfil não reconhecido: "'+this._impTxt(v.papel)+'"');
+        const ja=email?(S.usuarios||[]).find(u=>u.email.toLowerCase()===email):null;
+        // vínculo: fornecedor (um) ou revendas (uma ou mais), pelo nome cadastrado
+        const brutosV=this._impTxt(v.vinculo).split(/[;|]/).map(x=>x.trim()).filter(Boolean);
+        let fornecedorId=null, revendaIds=[]; const semV=[];
+        if(papel==='fornecedor'){
+          const alvo=brutosV[0]; const f=alvo?S.fornecedores.find(x=>x.nome.trim().toLowerCase()===alvo.toLowerCase()):null;
+          if(!alvo) erros.push('perfil Fornecedor exige o vínculo com um fornecedor');
+          else if(!f) semV.push(alvo); else fornecedorId=f.id;
+        } else if(papel==='revenda'){
+          if(!brutosV.length) erros.push('perfil Revenda exige ao menos uma revenda vinculada');
+          brutosV.forEach(b=>{ const r=S.revendas.find(x=>x.nome.trim().toLowerCase()===b.toLowerCase());
+            if(r){ if(!revendaIds.includes(r.id)) revendaIds.push(r.id); } else semV.push(b); });
+        }
+        if(semV.length) erros.push('vínculo não cadastrado: '+semV.join(', '));
+        const senha=this._impTxt(v.senha);
+        if(!ja&&!senha) erros.push('usuário novo exige a senha inicial');
+        if(senha&&senha.length<6) erros.push('senha inicial com menos de 6 caracteres');
+        out.chave=email||'—'; out.rotulo=nome||'—';
+        out.acao=erros.length?'erro':(ja?'atualiza':'novo'); out.alvoId=ja?ja.id:null;
+        out.detalhe=[papel?(this.PAPEIS[papel]||papel):'',brutosV.join(' · ')].filter(Boolean).join(' · ')||'—';
+        out.dados={nome,email,papel,fornecedorId,revendaIds,senha,ativo:this._impSim(v.ativo)!==false};
       } else {
         const desc=this._impTxt(v.descricao), cod=this._impTxt(v.codigo).toUpperCase();
         if(!desc) erros.push('descrição em branco');
@@ -5606,6 +5752,9 @@ class Component extends DCLogic {
     return this._bmc[k]; }
 
   _impAtuais(tipo){ const S=this.state;
+    if(tipo==='categoria') return this._cats().map(c=>({nome:c.nome,descricao:c.descricao||'',ativo:c.ativo?'Sim':'Não'}));
+    if(tipo==='usuario') return (S.usuarios||[]).map(u=>({nome:u.nome,email:u.email,
+      papel:this.PAPEIS[u.papel]||u.papel,vinculo:this._vinculoUsr(u).replace(/ · /g,'; '),senha:'',ativo:u.ativo?'Sim':'Não'}));
     if(tipo==='fornecedor') return S.fornecedores.map(f=>({nome:f.nome,cnpj:f.cnpj,cidade:f.cidade,contato:f.contato,telefone:f.telefone,contatoNome:f.contatoNome||'',ativo:f.ativo?'Sim':'Não'}));
     if(tipo==='revenda') return S.revendas.map(r=>({nome:r.nome,cnpj:r.cnpj,cidade:r.cidade,email:r.email,telefone:r.telefone,ativo:r.ativo?'Sim':'Não'}));
     return S.produtos.map(p=>({codigo:p.codigo,descricao:p.descricao,unidade:p.unidade,categoria:this._pCat(p),
@@ -5658,6 +5807,23 @@ class Component extends DCLogic {
           else { lista.push({id:seq,nome:d.nome,cnpj:d.cnpj,cidade:d.cidade,telefone:d.telefone,ativo:d.ativo,
             visibilidade:[...visPad],prodBloq:[],email:mail,ultimoAcesso:'— nunca acessou —'}); seq++; } });
         return {revendas:lista,seq:{...s.seq,rev:seq},modal:null,form:{}}; }
+      if(tipo==='categoria'){ let seq=Math.max(0,...(s.categorias||[]).map(c=>c.id))+1; const lista=[...(s.categorias||[])];
+        bons.forEach(r=>{ const d=r.dados;
+          if(r.alvoId!=null){ const ix=lista.findIndex(x=>x.id===r.alvoId);
+            lista[ix]={...lista[ix],descricao:d.descricao,ativo:d.ativo}; }
+          else { lista.push({id:seq,nome:d.nome,descricao:d.descricao,ativo:d.ativo,criadoEm:this.hoje()}); seq++; } });
+        return {categorias:lista,modal:null,form:{}}; }
+      if(tipo==='usuario'){ let seq=Math.max(0,...(s.usuarios||[]).map(u=>u.id))+1; const lista=[...(s.usuarios||[])];
+        bons.forEach(r=>{ const d=r.dados;
+          const vinc={fornecedorId:d.papel==='fornecedor'?d.fornecedorId:null,
+            revendaId:d.papel==='revenda'?d.revendaIds[0]:null,
+            revendaIds:d.papel==='revenda'?[...d.revendaIds]:null};
+          if(r.alvoId!=null){ const ix=lista.findIndex(x=>x.id===r.alvoId);
+            lista[ix]={...lista[ix],nome:d.nome,email:d.email,papel:d.papel,...vinc,ativo:d.ativo,
+              senhaHash:d.senha?this.hashSenha(d.senha):lista[ix].senhaHash}; }
+          else { lista.push({id:seq,nome:d.nome,email:d.email,papel:d.papel,senhaHash:this.hashSenha(d.senha),
+            ...vinc,ativo:d.ativo,permissoes:{},ultimoAcesso:null,criadoEm:this.hoje(),enviosAcesso:[]}); seq++; } });
+        return {usuarios:lista,modal:null,form:{}}; }
       let seq=s.seq.prod; const lista=[...s.produtos];
       const fotoPad=['img/prd-new-1.png','img/prd-new-2.png','img/prd-new-3.png'];
       bons.forEach(r=>{ const d=r.dados;
@@ -5671,6 +5837,156 @@ class Component extends DCLogic {
       (f.impArq||'planilha')+' · '+nNovos+' incluído(s) · '+nAtu+' atualizado(s)'+(nErro?' · '+nErro+' linha(s) com erro ignorada(s)':''));
     this.toast(nNovos+' '+cfg.titulo+' incluído(s)'+(nAtu?' e '+nAtu+' atualizado(s)':'')+' pela planilha.','ok');
     setTimeout(()=>this._flushPersist(),0); };
+
+  // ══ Exportação dos cadastros para Excel ═══════════════════════════════════
+  // Um motor só para todos os cadastros. Diferente do "modelo com os cadastros
+  // atuais" (que serve para reimportar), a exportação traz a visão completa:
+  // além dos campos editáveis, os dados derivados que a Loja usa para analisar
+  // — vínculos, contagens e valores. Números saem como número, não como texto.
+  _expPct(p){ return this.state.produtos.length?Math.round(p/this.state.produtos.length*100):0; }
+  _expCtrVig(fid){ return this.state.contratos.find(c=>c.fornecedorId===fid&&c.vigente)||null; }
+  _expFatsForn(fid){ return this.state.faturamentos.filter(f=>f.fornecedorId===fid); }
+  _expPedsRev(rid){ return this.state.pedidos.filter(p=>p.revendaId===rid); }
+  _expVendas(pid){ let q=0,v=0; this.state.pedidos.forEach(p=>p.itens.forEach(i=>{
+      if(i.produtoId===pid&&i.st!=='rejeitado'){ q+=i.qtd; v+=this.itemTotal(i); } })); return {q,v}; }
+  _expSN(b){ return b?'Sim':'Não'; }
+
+  EXPORTS={
+    fornecedor:{titulo:'fornecedores', aba:'Fornecedores', arquivo:'fornecedores',
+      perm:'cadastros.fornecedores'},
+    contrato:{titulo:'contratos de royalty', aba:'Contratos', arquivo:'contratos-royalty',
+      perm:'cadastros.fornecedores'},
+    produto:{titulo:'produtos homologados', aba:'Produtos', arquivo:'produtos-homologados',
+      perm:'cadastros.produtos'},
+    categoria:{titulo:'categorias de produtos', aba:'Categorias', arquivo:'categorias-produtos',
+      perm:'cadastros.produtos'},
+    depara:{titulo:'De/Para produto × fornecedor', aba:'De-Para', arquivo:'de-para-produto-fornecedor',
+      perm:'cadastros.produtos'},
+    revenda:{titulo:'revendas', aba:'Revendas', arquivo:'revendas',
+      perm:'cadastros.revendas'},
+    usuario:{titulo:'usuários e permissões', aba:'Usuários', arquivo:'usuarios',
+      perm:'config.usuarios'},
+    inventario:{titulo:'inventário de estoque', aba:'Estoque', arquivo:'inventario-estoque',
+      perm:'inventario.ver'}};
+
+  // Devolve {cols:[{rot,larg}], linhas:[[...]]} para o cadastro pedido.
+  _expDados(tipo){
+    const S=this.state;
+    const C=(rot,larg)=>({rot,larg});
+    if(tipo==='fornecedor'){
+      const cols=[C('Nome',34),C('CNPJ',21),C('Cidade/UF',20),C('E-mail de contato',30),C('Pessoa de contato',22),
+        C('Telefone',18),C('Situação',12),C('Contrato vigente',16),C('Royalty (%)',12),C('Produtos vinculados',18),
+        C('Pedidos atendidos',17),C('Faturado (R$)',15),C('Royalty gerado (R$)',18)];
+      const linhas=S.fornecedores.map(f=>{ const ct=this._expCtrVig(f.id); const fs=this._expFatsForn(f.id);
+        return [f.nome,f.cnpj,f.cidade||'',f.contato||'',f.contatoNome||'',f.telefone||'',f.ativo?'Ativo':'Inativo',
+          ct?ct.numero:'— sem contrato vigente —',ct?ct.royalty:'',
+          S.produtos.filter(p=>this._pTemForn(p,f.id)).length,fs.length,
+          Math.round(fs.reduce((a,x)=>a+x.valor,0)*100)/100,
+          Math.round(fs.reduce((a,x)=>a+x.royaltyValor,0)*100)/100];});
+      return {cols,linhas};
+    }
+    if(tipo==='contrato'){
+      const cols=[C('Número',16),C('Fornecedor',30),C('Royalty (%)',12),C('Início',12),C('Fim',12),C('Situação',12),
+        C('Dia acordado de pagamento',24),C('Gatilho de pagamento',30),C('Parcelas do royalty',18),C('Alterações registradas',20)];
+      const linhas=S.contratos.map(c=>[c.numero,this._fornNome(c.fornecedorId),c.royalty,c.inicio||'',c.fim||'',
+        c.vigente?'Vigente':'Encerrado',c.diaPagamento||'',this._gatilhoLabel(c.gatilho||'nf')+(c.gatilhoDesc?' — '+c.gatilhoDesc:''),
+        c.parcelas||1,(c.historico||[]).length]);
+      return {cols,linhas};
+    }
+    if(tipo==='produto'){
+      const cols=[C('Código',14),C('Descrição',40),C('Unidade',14),C('Categoria',18),C('Preço estimado (R$)',18),
+        C('Fornecedores',44),C('Nº de fornecedores',18),C('Situação',12),C('Imagens',10),
+        C('Saldo em estoque',16),C('Vendido (qtd)',14),C('Vendido (R$)',15)];
+      const linhas=S.produtos.map(p=>{ const v=this._expVendas(p.id); const sp=this._saldoProduto(p.id);
+        return [p.codigo,p.descricao,p.unidade||'',this._pCat(p),Math.round((p.preco||0)*100)/100,
+          this._pForns(p).map(id=>this._fornNome(id)).join('; '),this._pForns(p).length,
+          p.ativo?'Ativo':'Inativo',this.fotosDe(p).length,
+          sp.temInv?sp.saldo:'— sem inventário —',v.q,Math.round(v.v*100)/100];});
+      return {cols,linhas};
+    }
+    if(tipo==='categoria'){
+      const cols=[C('Nome',26),C('Descrição',54),C('Situação',12),C('Produtos',12),C('Produtos ativos',15),
+        C('Participação no catálogo (%)',26),C('Criada em',14)];
+      const linhas=this._cats().map(c=>{ const n=this._nProdCat(c.nome);
+        return [c.nome,c.descricao||'',c.ativo?'Ativo':'Inativo',n,this._nProdCat(c.nome,true),this._expPct(n),c.criadoEm||''];});
+      return {cols,linhas};
+    }
+    if(tipo==='depara'){
+      const fs=S.fornecedores.filter(f=>f.ativo);
+      const cols=[C('Código',14),C('Produto',40),...fs.map(f=>C(f.nome,22)),C('Total de vínculos',17)];
+      const linhas=S.produtos.map(p=>{ const v=this._pForns(p);
+        return [p.codigo,p.descricao,...fs.map(f=>v.includes(f.id)?'Sim':'Não'),v.length];});
+      return {cols,linhas};
+    }
+    if(tipo==='revenda'){
+      const cols=[C('Nome',34),C('CNPJ',21),C('Cidade/UF',20),C('E-mail de acesso',30),C('Telefone',18),C('Situação',12),
+        C('Fornecedores visíveis',44),C('Produtos bloqueados',18),C('Pedidos',10),C('Valor em pedidos (R$)',20),C('Último acesso',18)];
+      const linhas=S.revendas.map(r=>{ const ps=this._expPedsRev(r.id);
+        return [r.nome,r.cnpj,r.cidade||'',r.email||'',r.telefone||'',r.ativo?'Ativo':'Inativo',
+          (r.visibilidade||[]).map(id=>this._fornNome(id)).join('; '),(r.prodBloq||[]).length,ps.length,
+          Math.round(ps.reduce((a,p)=>a+this.pedTotal(p),0)*100)/100,r.ultimoAcesso||'— nunca acessou —'];});
+      return {cols,linhas};
+    }
+    if(tipo==='usuario'){
+      const cols=[C('Nome',30),C('E-mail (login)',32),C('Perfil',22),C('Vínculo',40),C('Situação',12),
+        C('Permissões personalizadas',24),C('Último acesso',18),C('Criado em',14),
+        C('Envios de acesso',16),C('Último envio',30)];
+      const linhas=(S.usuarios||[]).map(u=>{ const envs=u.enviosAcesso||[]; const ult=envs[0];
+        return [u.nome,u.email,this.PAPEIS[u.papel]||u.papel,this._vinculoUsr(u)||'—',u.ativo?'Ativo':'Inativo',
+          Object.keys(u.permissoes||{}).length,u.ultimoAcesso||'— nunca acessou —',u.criadoEm||'',
+          envs.length,ult?(ult.quando+' · '+this._envChip(ult.status).eLabel+' · '+ult.motivo):'— nunca enviado —'];});
+      return {cols,linhas};
+    }
+    // inventário: saldo por produto a partir do último lançamento
+    const inv=this._invAtual();
+    const cols=[C('Código',14),C('Descrição',40),C('Unidade',14),C('Fornecedores',40),
+      C('Contagem do inventário',22),C('Consumido desde',16),C('Saldo',10),C('Data do inventário',18)];
+    const linhas=S.produtos.filter(p=>p.ativo).map(p=>{ const sp=this._saldoProduto(p.id);
+      return [p.codigo,p.descricao,p.unidade||'',this._pForns(p).map(id=>this._fornNome(id)).join('; '),
+        sp.temInv?sp.contagem:'',sp.temInv?sp.consumido:'',sp.temInv?sp.saldo:'',inv?inv.data:'— sem inventário lançado —'];});
+    return {cols,linhas};
+  }
+
+  _expAba(wb,tipo){ const cfg=this.EXPORTS[tipo]; const {cols,linhas}=this._expDados(tipo);
+    const aoa=[cols.map(c=>c.rot),...linhas];
+    const ws=XLSX.utils.aoa_to_sheet(aoa);
+    ws['!cols']=cols.map(c=>({wch:c.larg}));
+    ws['!autofilter']={ref:XLSX.utils.encode_range({s:{r:0,c:0},e:{r:Math.max(1,aoa.length-1),c:cols.length-1}})};
+    ws['!freeze']={xSplit:0,ySplit:1};
+    XLSX.utils.book_append_sheet(wb,ws,cfg.aba);
+    return linhas.length; }
+
+  exportarCadastro(tipo){ this._exc=this._exc||{}; if(!this._exc[tipo]) this._exc[tipo]=()=>{
+    const cfg=this.EXPORTS[tipo];
+    if(!this.pode(cfg.perm)) return this.negado('Você não tem permissão para exportar '+cfg.titulo+'.',cfg.perm);
+    if(typeof XLSX==='undefined') return alert('Componente de planilha não carregado — recarregue a página.');
+    const wb=XLSX.utils.book_new();
+    const n=this._expAba(wb,tipo);
+    const d=new Date(); const carimbo=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    XLSX.writeFile(wb,'cidade-imperial-'+cfg.arquivo+'-'+carimbo+'.xlsx');
+    this.audit('Exportação de cadastro',cfg.titulo+' · '+n+' registro(s) · .xlsx');
+    this.toast(n+' registro(s) de '+cfg.titulo+' exportado(s) para Excel.','ok'); }; return this._exc[tipo]; }
+
+  // Pasta única com uma aba por cadastro — a fotografia completa da base.
+  exportarTodosCadastros=()=>{
+    if(!this.pode('relatorios.exportar')) return this.negado('Você não tem permissão para exportar.','relatorios.exportar');
+    if(typeof XLSX==='undefined') return alert('Componente de planilha não carregado — recarregue a página.');
+    const wb=XLSX.utils.book_new(); const resumo=[];
+    Object.keys(this.EXPORTS).forEach(tipo=>{ if(!this.pode(this.EXPORTS[tipo].perm)) return;
+      const n=this._expAba(wb,tipo); resumo.push([this.EXPORTS[tipo].titulo,this.EXPORTS[tipo].aba,n]); });
+    if(!resumo.length) return this.negado('Você não tem permissão para exportar nenhum cadastro.','relatorios.exportar');
+    const ws=XLSX.utils.aoa_to_sheet([['Exportação de cadastros — Plataforma Cidade Imperial'],
+      ['Gerado em',this.ts()],['Usuário',this.userName()],[],
+      ['Cadastro','Aba','Registros'],...resumo]);
+    ws['!cols']=[{wch:34},{wch:16},{wch:12}];
+    XLSX.utils.book_append_sheet(wb,ws,'Resumo');
+    // move o resumo para a frente
+    wb.SheetNames=['Resumo',...wb.SheetNames.filter(n2=>n2!=='Resumo')];
+    const d=new Date(); const carimbo=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    XLSX.writeFile(wb,'cidade-imperial-cadastros-'+carimbo+'.xlsx');
+    const tot=resumo.reduce((a,r)=>a+r[2],0);
+    this.audit('Exportação de todos os cadastros',resumo.length+' cadastro(s) · '+tot+' registro(s) · .xlsx');
+    this.toast('Exportados '+resumo.length+' cadastros ('+tot+' registros) em uma pasta de trabalho.','ok'); };
   // ── Inventário de estoque ────────────────────────────────────────────────
   _invAtual(){ const inv=this.state.inventarios||[]; return inv.length?inv.reduce((a,b)=>(b.ts||0)>(a.ts||0)?b:a):null; }
   _consumoDesde(ts){ const cons={}; this.state.pedidos.forEach(p=>p.itens.forEach(i=>{
@@ -7854,6 +8170,17 @@ class Component extends DCLogic {
       impClicarProd:this.clicarImport('produto'),impCarregarProd:this.carregarImport('produto'),
       impModeloRev:this.baixarModeloCad('revenda',false),impAtuaisRev:this.baixarModeloCad('revenda',true),
       impClicarRev:this.clicarImport('revenda'),impCarregarRev:this.carregarImport('revenda'),
+      impModeloCat:this.baixarModeloCad('categoria',false),impAtuaisCat:this.baixarModeloCad('categoria',true),
+      impClicarCat:this.clicarImport('categoria'),impCarregarCat:this.carregarImport('categoria'),
+      impModeloUsr:this.baixarModeloCad('usuario',false),impAtuaisUsr:this.baixarModeloCad('usuario',true),
+      impClicarUsr:this.clicarImport('usuario'),impCarregarUsr:this.carregarImport('usuario'),
+      // exportação dos cadastros para Excel
+      expForn:this.exportarCadastro('fornecedor'),expContrato:this.exportarCadastro('contrato'),
+      expProd:this.exportarCadastro('produto'),expCat:this.exportarCadastro('categoria'),
+      expDepara:this.exportarCadastro('depara'),expRev:this.exportarCadastro('revenda'),
+      expUsr:this.exportarCadastro('usuario'),expInv:this.exportarCadastro('inventario'),
+      expTodos:this.exportarTodosCadastros,
+      podeCfgUsuarios:pode('config.usuarios'),podeInvVer:pode('inventario.ver'),podeRelExportar:pode('relatorios.exportar'),
       mImport:M==='importcad',impInfo,confirmImport:this.confirmImport,
       // categorias do catálogo
       sGrupos:isLoja&&scr==='grupos'&&pode('cadastros.produtos'),
