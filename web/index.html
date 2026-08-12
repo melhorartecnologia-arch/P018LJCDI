@@ -2837,7 +2837,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <div style="font-size:12px;color:#8a8378;margin-bottom:12px">Baixe um modelo em Excel (.xlsx), preencha as quantidades e carregue a planilha para lançar o inventário.</div>
         <div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap">
           <span style="font-size:12px;font-weight:600;color:#6b6459">Data para o modelo:</span>
-          <input value="{{invTplData}}" onChange="{{setInvTplData}}" placeholder="dd/mm/aaaa" title="Data que sairá gravada no modelo baixado (padrão: hoje)" style="width:110px;padding:8px 10px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:12.5px;text-align:center;background:#fff;outline:none;color:#272525">
+          <input value="{{invTplData}}" onChange="{{setInvTplData}}" inputmode="numeric" maxlength="10" placeholder="dd/mm/aaaa" title="Data que sairá gravada no modelo baixado (padrão: hoje)" style="width:110px;padding:8px 10px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:12.5px;text-align:center;background:#fff;outline:none;color:#272525">
           <div onClick="{{baixarModeloTodos}}" title="Todos os produtos ativos com as quantidades em branco" style="border:1px solid #ddd5c7;color:#4a453d;background:#fff;border-radius:8px;padding:8px 13px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:#f7f3ea">⬇ Todos os produtos</div>
           <div onClick="{{baixarModeloUltimo}}" title="Somente os produtos que tinham quantidade no último inventário (pré-preenchidos)" style="border:1px solid #ddd5c7;color:#4a453d;background:#fff;border-radius:8px;padding:8px 13px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:#f7f3ea">⬇ Produtos do último inventário</div>
           <div onClick="{{baixarModeloVazio}}" title="Planilha sem registros, apenas com o cabeçalho" style="border:1px solid #ddd5c7;color:#4a453d;background:#fff;border-radius:8px;padding:8px 13px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:#f7f3ea">⬇ Somente cabeçalho</div>
@@ -2940,7 +2940,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Percentual de royalty (%)</div>
         <input value="{{form.royalty}}" onChange="{{fxRoyalty}}" placeholder="Ex.: 3" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
         <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Dia acordado de pagamento</div>
-        <input value="{{form.diaPag}}" onChange="{{fxDiaPag}}" placeholder="1 a 30 · opcional" title="Dia acordado de pagamento dos royalties (1 a 30, sem referência de mês)" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
+        <input value="{{form.diaPag}}" onChange="{{fxDiaPag}}" inputmode="numeric" maxlength="2" placeholder="1 a 30 · opcional" title="Dia acordado de pagamento dos royalties (1 a 30, sem referência de mês)" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
       </div>
       <div style="font-size:11px;color:#b0a795;margin-top:6px">Dia de 1 a 30, sem referência de mês (ex.: todo dia 15) — o vencimento sugerido das cobranças usa esse dia no mês seguinte ao gatilho; sem preencher, vale o padrão (dia 10).</div>
       <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Gatilho de pagamento do royalty</div>
@@ -2959,9 +2959,9 @@ input::placeholder,textarea::placeholder{color:#b0a795}
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
         <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Início da vigência</div>
-        <input value="{{form.inicio}}" onChange="{{fxInicio}}" placeholder="dd/mm/aaaa" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
+        <input value="{{form.inicio}}" onChange="{{fxInicio}}" inputmode="numeric" maxlength="10" placeholder="dd/mm/aaaa" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
         <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Fim da vigência</div>
-        <input value="{{form.fim}}" onChange="{{fxFim}}" placeholder="dd/mm/aaaa" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
+        <input value="{{form.fim}}" onChange="{{fxFim}}" inputmode="numeric" maxlength="10" placeholder="dd/mm/aaaa" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
       </div>
       <sc-if value="{{form.erro}}" hint-placeholder-val="{{false}}"><div style="color:#a33a2b;font-size:12.5px;margin-top:12px">{{form.erro}}</div></sc-if>
       <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:18px">
@@ -2981,7 +2981,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:14px 0 5px">Novo percentual (%)</div>
         <input value="{{form.royalty}}" onChange="{{fxRoyalty}}" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
         <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:14px 0 5px">Dia acordado de pagamento</div>
-        <input value="{{form.diaPag}}" onChange="{{fxDiaPag}}" placeholder="1 a 30 · opcional" title="Dia acordado de pagamento dos royalties (1 a 30, sem referência de mês)" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
+        <input value="{{form.diaPag}}" onChange="{{fxDiaPag}}" inputmode="numeric" maxlength="2" placeholder="1 a 30 · opcional" title="Dia acordado de pagamento dos royalties (1 a 30, sem referência de mês)" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
       </div>
       <div style="font-size:11px;color:#b0a795;margin-top:6px">Dia de 1 a 30, sem referência de mês — usado para sugerir o vencimento das cobranças; vazio volta ao padrão (dia 10).</div>
       <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Gatilho de pagamento do royalty</div>
@@ -3617,7 +3617,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
           <div><div style="font-size:11px;color:#a89f90;margin-bottom:2px">Fornecedor</div><div style="font-size:13.5px;font-weight:700">{{cobInfo.fornNome}}</div><div style="font-size:11.5px;color:#8a8378">{{cobInfo.cnpj}}</div></div>
           <div style="text-align:right"><div style="font-size:11px;color:#a89f90;margin-bottom:2px">Competência · Vencimento</div><div style="font-size:13.5px;font-weight:700">{{cobInfo.comp}}</div>
-            <sc-if value="{{cobInfo.podeEmitir}}" hint-placeholder-val="{{false}}"><input value="{{form.venc}}" onChange="{{fxVenc}}" placeholder="dd/mm/aaaa" title="Vencimento da cobrança" style="width:110px;box-sizing:border-box;margin-top:3px;padding:5px 8px;border:1px solid #ddd5c7;border-radius:7px;font:inherit;font-size:12px;text-align:right;background:#fff;outline:none;color:#a33a2b;font-weight:600"><div style="font-size:10px;color:#a89f90;margin-top:3px;max-width:200px">{{cobInfo.vencSugTxt}}</div></sc-if>
+            <sc-if value="{{cobInfo.podeEmitir}}" hint-placeholder-val="{{false}}"><input value="{{form.venc}}" onChange="{{fxVenc}}" inputmode="numeric" maxlength="10" placeholder="dd/mm/aaaa" title="Vencimento da cobrança" style="width:110px;box-sizing:border-box;margin-top:3px;padding:5px 8px;border:1px solid #ddd5c7;border-radius:7px;font:inherit;font-size:12px;text-align:right;background:#fff;outline:none;color:#a33a2b;font-weight:600"><div style="font-size:10px;color:#a89f90;margin-top:3px;max-width:200px">{{cobInfo.vencSugTxt}}</div></sc-if>
             <sc-if value="{{cobInfo.emitida}}" hint-placeholder-val="{{false}}"><div style="font-size:11.5px;color:#a33a2b;font-weight:600">vence em {{cobInfo.venc}}</div></sc-if>
           </div>
         </div>
@@ -3701,7 +3701,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
         <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:14px 0 5px">Data do pagamento</div>
-        <input value="{{form.dataPg}}" onChange="{{fxDataPg}}" placeholder="dd/mm/aaaa" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
+        <input value="{{form.dataPg}}" onChange="{{fxDataPg}}" inputmode="numeric" maxlength="10" placeholder="dd/mm/aaaa" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
         <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:14px 0 5px">Valor pago (R$)</div>
         <input value="{{form.valorPg}}" onChange="{{fxValorPg}}" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
       </div>
@@ -3736,7 +3736,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px">
         <div>
           <div style="font-size:12px;font-weight:600;color:#6b6459;margin:0 0 5px">Data do inventário</div>
-          <input value="{{form.dataInv}}" onChange="{{fxDataInv}}" placeholder="dd/mm/aaaa" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:9px;font:inherit;font-size:13px;background:#fff;outline:none;color:#272525">
+          <input value="{{form.dataInv}}" onChange="{{fxDataInv}}" inputmode="numeric" maxlength="10" placeholder="dd/mm/aaaa" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:9px;font:inherit;font-size:13px;background:#fff;outline:none;color:#272525">
         </div>
         <div>
           <div style="font-size:12px;font-weight:600;color:#6b6459;margin:0 0 5px">Observação (opcional)</div>
@@ -4048,7 +4048,7 @@ class Component extends DCLogic {
   state = {
     logado:false, loginRole:'loja', loginEmail:'', loginSenha:'', loginErro:null,
     role:null, scr:null, fornAtivo:1, revAtivo:1, revGrupo:false, ajudaStep:0, ajudaPlay:false, ajudaMax:false, toast:null,
-    usuario:null, buscaUsr:'', filtroPapel:'todos', invTplData:'',
+    usuario:null, buscaUsr:'', filtroPapel:'todos', invTplData:new Date().toLocaleDateString('pt-BR'),
     usuarios:[
       {id:1,nome:'Administrador Técnico',email:'admin@cidadeimperial.com.br',senhaHash:'108bf99ab7e362',papel:'admin',fornecedorId:null,revendaId:null,ativo:true,permissoes:{},ultimoAcesso:null,criadoEm:'01/01/2026'},
       {id:2,nome:'Ana Ribeiro',email:'ana@cidadeimperial.com.br',senhaHash:'1b37f53827b438',papel:'loja',fornecedorId:null,revendaId:null,ativo:true,permissoes:{},ultimoAcesso:'09/07/2026 08:00',criadoEm:'01/01/2026'},
@@ -4400,6 +4400,17 @@ class Component extends DCLogic {
     if(d<this._hoje0()) return 'A validade da proposta não pode ser anterior a hoje ('+this.hoje()+') — a proposta já estaria vencida.';
     if(this._diasAte(d)>730) return 'A validade da proposta está muito distante — informe uma data até 2 anos a partir de hoje.';
     return null; }
+  // Valida um campo de data que aceita qualquer período (vigência, pagamento,
+  // inventário): exige o formato brasileiro e uma data que exista no calendário.
+  _erroDataBR(v,rotulo){ const s=String(v||'').trim();
+    if(!s) return 'Informe '+rotulo+' no formato dd/mm/aaaa.';
+    if(!/^\d{2}\/\d{2}\/\d{4}$/.test(s)) return 'Informe '+rotulo+' no formato dd/mm/aaaa — ex.: '+this.hoje()+'.';
+    if(!this._dataBR(s)) return rotulo.charAt(0).toUpperCase()+rotulo.slice(1)+': a data "'+s+'" não existe no calendário — confira dia, mês e ano.';
+    return null; }
+  // Máscara de dia do mês (1 a 30) — não é data, mas também só aceita dígitos.
+  fxDia(campo){ this._fxdd=this._fxdd||{}; if(!this._fxdd[campo]) this._fxdd[campo]=e=>{
+    const v=String(e.target.value||'').replace(/\D/g,'').slice(0,2);
+    this.setState(s=>({form:{...s.form,[campo]:v,erro:null}})); }; return this._fxdd[campo]; }
   // Texto de apoio exibido sob um campo de data, enquanto o usuário digita.
   _dicaData(v,erroFn,vazioTxt){ const s=String(v||'').trim();
     if(!s) return {txt:vazioTxt||('Formato dd/mm/aaaa — ex.: '+this.hoje()+'.'),cor:'#a89f90',tem:true};
@@ -5348,7 +5359,9 @@ class Component extends DCLogic {
   salvarContrato=()=>{ if(!this.pode('cadastros.fornecedores')) return this.negado('Você não tem permissão para gerenciar contratos.','cadastros.fornecedores'); const f=this.state.form; const pct=this.num(f.royalty);
     if(!f.fornecedorId) return this.err('Selecione o fornecedor.');
     if(!pct) return this.err('Informe o percentual de royalty (RF03).');
-    if(!f.inicio||!f.fim) return this.err('Informe início e fim de vigência (RF03).');
+    const erIn=this._erroDataBR(f.inicio,'o início da vigência'); if(erIn) return this.err(erIn+' (RF03)');
+    const erFm=this._erroDataBR(f.fim,'o fim da vigência'); if(erFm) return this.err(erFm+' (RF03)');
+    if(this._dataBR(f.fim)<=this._dataBR(f.inicio)) return this.err('O fim da vigência deve ser posterior ao início (RF03).');
     const diaPg=String(f.diaPag||'').trim()?parseInt(String(f.diaPag).replace(/\D/g,''),10):null;
     if(String(f.diaPag||'').trim()&&(!diaPg||diaPg<1||diaPg>30)) return this.err('Dia acordado de pagamento inválido: informe um dia de 1 a 30, sem referência de mês (RF65).');
     const gat=f.gatilho||'nf'; const gatDesc=gat==='outro'?String(f.gatilhoDesc||'').trim():'';
@@ -6019,7 +6032,7 @@ class Component extends DCLogic {
     this.state.produtos.filter(x=>x.ativo).forEach(pr=>{ seed['iq'+pr.id]=String(this._saldoProduto(pr.id).saldo); });
     this.setState({modal:'inventario',form:seed}); };
   salvarInventario=()=>{ if(!this.pode('inventario.gerenciar')) return this.negado('Você não tem permissão para lançar inventário.','inventario.gerenciar');
-    const f=this.state.form; if(!f.dataInv||!/\d{2}\/\d{2}\/\d{4}/.test(f.dataInv)) return this.err('Informe a data do inventário (dd/mm/aaaa).');
+    const f=this.state.form; const erDI=this._erroDataBR(f.dataInv,'a data do inventário'); if(erDI) return this.err(erDI);
     const itens={}; let algum=false;
     for(const pr of this.state.produtos.filter(x=>x.ativo)){ const raw=f['iq'+pr.id];
       const q=(raw==null||String(raw).trim()==='')?0:parseInt(String(raw).replace(/\D/g,''),10);
@@ -6030,13 +6043,16 @@ class Component extends DCLogic {
     this.setState(st=>({inventarios:[...(st.inventarios||[]),{id,data:f.dataInv,ts:Date.now(),usuario:this.userName(),obs:(f.obs||'').trim(),itens}],modal:null,form:{}}));
     this.audit('Lançamento de inventário',f.dataInv+' · '+Object.keys(itens).length+' produto(s)'+(f.origemPlanilha?' · via planilha':'')); };
   // ── Carga de inventário por planilha (CSV padrão) ───────────────────────
-  setInvTplData=e=>this.setState({invTplData:e.target.value});
+  setInvTplData=e=>{ const dg=String(e.target.value||'').replace(/\D/g,'').slice(0,8);
+    let v=dg; if(dg.length>4) v=dg.slice(0,2)+'/'+dg.slice(2,4)+'/'+dg.slice(4);
+    else if(dg.length>2) v=dg.slice(0,2)+'/'+dg.slice(2);
+    this.setState({invTplData:v}); };
   _invTplLinhas(produtos,qtdFn,dataTpl){ const linhas=[["Data do inventário",dataTpl],["Observação",""],[],["Código","Produto","Unidade","Quantidade"]];
     produtos.forEach(pr=>linhas.push([pr.codigo,pr.descricao,pr.unidade,qtdFn(pr)])); return linhas; }
   baixarModeloInv(tipo){ this._bmi=this._bmi||{}; if(!this._bmi[tipo]) this._bmi[tipo]=()=>{
     if(typeof XLSX==='undefined') return alert('Componente de planilha não carregado — recarregue a página.');
     const dataTpl=(this.state.invTplData||'').trim()||this.hoje();
-    if(!/^\d{2}\/\d{2}\/\d{4}$/.test(dataTpl)) return alert('Informe a data do modelo no formato dd/mm/aaaa.');
+    if(!this._dataBR(dataTpl)) return alert('Informe a data do modelo como uma data válida no formato dd/mm/aaaa.');
     const ativos=this.state.produtos.filter(x=>x.ativo);
     let linhas,nome;
     if(tipo==='todos'){ linhas=this._invTplLinhas(ativos,()=>'',dataTpl); nome='modelo-inventario-todos-os-produtos.xlsx'; }
@@ -6678,7 +6694,7 @@ class Component extends DCLogic {
     this.audit('Exportação de previsão de recebíveis',nome+' · '+rows.length+' fechamento(s), filtros aplicados'); };
   emitirCobranca=()=>{ if(!this.pode('royalties.cobrar')) return; const chave=this.state.form.chave; if(!chave) return;
     const venc=(this.state.form.venc||'').trim();
-    if(!this._parseData(venc)) return this.err('Informe o vencimento da cobrança no formato dd/mm/aaaa (RF39/RF41).');
+    const erVc=this._erroDataBR(venc,'o vencimento da cobrança'); if(erVc) return this.err(erVc+' (RF39/RF41)');
     const _comp=chave.split('-')[0]; const fid=+chave.split('-')[1]; const f=this.state.fornecedores.find(x=>x.id===fid);
     const [mm,yy]=_comp.split('/'); const numero='COB-'+yy+mm+'-'+String(fid).padStart(2,'0');
     const _roy=this.state.faturamentos.filter(x=>x.competencia===_comp&&x.fornecedorId===fid).reduce((a,x)=>a+x.royaltyValor,0);
@@ -6715,7 +6731,7 @@ class Component extends DCLogic {
     this.notificar('royalty_comprovante',this._lojaEmail(),{competencia:chave.split('-')[0],fornecedorNome:me.nome,arquivo:f.compNome}); };
   confirmPagamento=async()=>{ if(!this.pode('royalties.pagar')) return this.negado('Você não tem permissão para registrar pagamentos.','royalties.pagar'); const f=this.state.form; const valor=this.num(f.valorPg); if(!valor) return this.err('Informe o valor pago.');
     if(!f.dataPg) return this.err('Informe a data do pagamento (RF40).');
-    if(!this._parseData(f.dataPg)) return this.err('Informe a data do pagamento no formato dd/mm/aaaa (RF40).');
+    const erPg=this._erroDataBR(f.dataPg,'a data do pagamento'); if(erPg) return this.err(erPg+' (RF40)');
     if(f.pagBusy) return;
     const chave=f.chave; const pgAnt=this.state.pagamentos[chave]||{};
     let arq={};
@@ -8222,8 +8238,8 @@ class Component extends DCLogic {
       invSaldoRows,invHistRows,temInvLanc:(S.inventarios||[]).length>0,
       invAtualData:invAtual?invAtual.data:'',temInvAtual:!!invAtual,
       podeInvGerenciar:pode('inventario.gerenciar'),abrirInventario:this.abrirInventario,
-      mInv:M==='inventario',invModalRows,salvarInventario:this.salvarInventario,fxDataInv:this.fx('dataInv'),fxObsInv:this.fx('obs'),
-      invTplData:S.invTplData||this.hoje(),setInvTplData:this.setInvTplData,
+      mInv:M==='inventario',invModalRows,salvarInventario:this.salvarInventario,fxDataInv:this.fxData('dataInv'),fxObsInv:this.fx('obs'),
+      invTplData:S.invTplData,setInvTplData:this.setInvTplData,
       baixarModeloTodos:this.baixarModeloInv('todos'),baixarModeloUltimo:this.baixarModeloInv('ultimo'),baixarModeloVazio:this.baixarModeloInv('vazio'),
       clicarUploadInv:this.clicarUploadInv,carregarPlanilha:this.carregarPlanilha,
       fxNomeU:this.fx('nome'),fxEmailU:this.fx('email'),fxSenhaU:this.fx('senha'),fxPapel:this.fx('papel'),
@@ -8304,18 +8320,18 @@ class Component extends DCLogic {
       // modals
       form:S.form,mClose:this.mClose,
       fxNome:this.fx('nome'),fxCnpj:this.fx('cnpj'),fxCidade:this.fx('cidade'),fxContato:this.fx('contato'),
-      fxRoyalty:this.fx('royalty'),fxInicio:this.fx('inicio'),fxFim:this.fx('fim'),fxFornecedorId:this.fx('fornecedorId'),fxRevendaId:this.fx('revendaId'),
+      fxRoyalty:this.fx('royalty'),fxInicio:this.fxData('inicio'),fxFim:this.fxData('fim'),fxFornecedorId:this.fx('fornecedorId'),fxRevendaId:this.fx('revendaId'),
       fxCodigo:this.fx('codigo'),fxDescricao:this.fx('descricao'),fxUnidade:this.fx('unidade'),fxPreco:this.fx('preco'),fxBuscaForn:this.fx('buscaForn'),fxTelefone:this.fxTelefone,fxContatoNome:this.fx('contatoNome'),fxCategoria:this.fx('categoria'),
       fxJustif:this.fx('justif'),fxPedidoId:this.fx('pedidoId'),fxPrazo:this.fxData('prazo'),
       fxPrecoP:this.fx('precoP'),fxPrazoEntrega:this.fx('prazoEntrega'),fxValidade:this.fxData('validade'),fxCondicoes:this.fx('condicoes'),
-      fxValorFat:this.fx('valorFat'),fxDataPg:this.fx('dataPg'),fxValorPg:this.fx('valorPg'),fxComprovante:this.fx('comprovante'),fxMotivo:this.fx('motivo'),fxVenc:this.fx('venc'),
+      fxValorFat:this.fx('valorFat'),fxDataPg:this.fxData('dataPg'),fxValorPg:this.fx('valorPg'),fxComprovante:this.fx('comprovante'),fxMotivo:this.fx('motivo'),fxVenc:this.fxData('venc'),
       setAnexoFat:this.setAnexoFat,fatAnexoNome:S.form.anexoNome||'',temFatAnexo:!!S.form.anexoB64,
       fatBusy:!!S.form.fatBusy,fatNaoBusy:!S.form.fatBusy,fatBtnBg:S.form.fatBusy?'#c9b78f':'#B38335',
       fatAnaliseOn:!!(S.configPlataforma&&S.configPlataforma.analiseFiscalIA),
       mForn:M==='fornecedor',mCtr:M==='contrato',mRoy:M==='royalty',mProd:M==='produto',mRev:M==='revenda',mFicha:M==='ficha',
       mRej:M==='rejeitar',mDir:M==='direto',mCot:M==='cotacao',mEst:M==='estoque',mJusV:M==='justifvenc',mCanC:M==='cancelarcot',
       mProp:M==='proposta',mRod:M==='rodada',mAnx:M==='anexoped',mFat:M==='faturar',mPag:M==='pagamento',mCompF:M==='compforn',
-      dirRows,convRows,dirVazio,prodFornRows,prodFornSel,prodFornVazio,propInfo,fatInfo,jvInfo,royInfo,rodInfo,confirmRodada:this.confirmRodada,formAnexos,temFormAnexos,anxInfo,addAnexosForm:this.addAnexosForm,confirmAnexosPed:this.confirmAnexosPed,fatExtras,temFatExtras,addAnexoFatExtra:this.addAnexoFatExtra,fxTipoDocExtra:this.fx('tipoDocExtra'),selItens,cotEstim,fprodRows,fprodVazio,fichaInfo,confirmFicha:this.confirmFicha,addFotoFicha:this.addFotoFicha,fxNcm:this.fxNcm,fxEan:this.fxEan,fxPesoBruto:this.fx('pesoBruto'),fxPesoLiquido:this.fx('pesoLiquido'),fxFreteMod:this.fx('freteMod'),fxFreteValor:this.fx('freteValor'),fxTransportadora:this.fx('transportadora'),fxCondEntrega:this.fx('condEntrega'),fxDiaPag:this.fx('diaPag'),fxGatilho:this.fx('gatilho'),fxGatilhoDesc:this.fx('gatilhoDesc'),fxParcelas:this.fx('parcelas'),gatOutro:(M==='contrato'||M==='royalty')&&S.form.gatilho==='outro',fxAltura:this.fx('altura'),fxLargura:this.fx('largura'),fxComprimento:this.fx('comprimento'),fxUnidadeMedida:this.fx('unidadeMedida'),fxObsFicha:this.fx('obs'),
+      dirRows,convRows,dirVazio,prodFornRows,prodFornSel,prodFornVazio,propInfo,fatInfo,jvInfo,royInfo,rodInfo,confirmRodada:this.confirmRodada,formAnexos,temFormAnexos,anxInfo,addAnexosForm:this.addAnexosForm,confirmAnexosPed:this.confirmAnexosPed,fatExtras,temFatExtras,addAnexoFatExtra:this.addAnexoFatExtra,fxTipoDocExtra:this.fx('tipoDocExtra'),selItens,cotEstim,fprodRows,fprodVazio,fichaInfo,confirmFicha:this.confirmFicha,addFotoFicha:this.addFotoFicha,fxNcm:this.fxNcm,fxEan:this.fxEan,fxPesoBruto:this.fx('pesoBruto'),fxPesoLiquido:this.fx('pesoLiquido'),fxFreteMod:this.fx('freteMod'),fxFreteValor:this.fx('freteValor'),fxTransportadora:this.fx('transportadora'),fxCondEntrega:this.fx('condEntrega'),fxDiaPag:this.fxDia('diaPag'),fxGatilho:this.fx('gatilho'),fxGatilhoDesc:this.fx('gatilhoDesc'),fxParcelas:this.fx('parcelas'),gatOutro:(M==='contrato'||M==='royalty')&&S.form.gatilho==='outro',fxAltura:this.fx('altura'),fxLargura:this.fx('largura'),fxComprimento:this.fx('comprimento'),fxUnidadeMedida:this.fx('unidadeMedida'),fxObsFicha:this.fx('obs'),
       confirmEstoque:this.confirmEstoque,setPedidoCot:this.setPedidoCot,
       prodModalFotos:(()=>{ if(M!=='produto') return [];
         const novasL=(S.form.fotosNovas||[]).map((n2,j2)=>({key:'n'+j2,src:'data:'+(n2.tipo||'image/png')+';base64,'+n2.b64,nova:true,rmH:this.rmFotoProdNova(j2)}));
