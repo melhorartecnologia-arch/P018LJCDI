@@ -42,6 +42,15 @@ const linhas = (pairs) =>
     .join('') +
   '</table>'
 
+// Observação escrita pela Loja ao enviar a rodada — o que ela espera que
+// melhore na proposta. Só aparece quando há texto.
+const obsLoja = (texto, titulo) =>
+  !texto || !String(texto).trim()
+    ? ''
+    : '<div style="border-left:3px solid #B38335;background:#faf7f0;padding:12px 16px;margin:4px 0 14px;border-radius:0 8px 8px 0">' +
+      '<div style="font-size:12px;font-weight:700;color:#8f682a;margin-bottom:4px">' + esc(titulo || 'O que a Loja espera nesta rodada') + '</div>' +
+      '<div style="font-size:14px;line-height:1.6;color:#272525;white-space:pre-wrap">' + esc(texto) + '</div></div>'
+
 // v() → valor escapado e em negrito para uso no meio de frases
 const b = (v) => '<b>' + esc(v) + '</b>'
 
@@ -160,6 +169,7 @@ export const TEMPLATES = {
     subject: `Nova rodada de negociação na cotação ${v.cotacao}`,
     html: layout(`Rodada ${esc(v.rodada || '2')} — contraproposta solicitada`,
       p(`Olá, ${b(v.fornecedorNome)}! A Loja Cidade Imperial abriu uma nova rodada de negociação na cotação ${b(v.cotacao)} e convida você a revisar seus preços e condições para os itens abaixo.`) +
+      obsLoja(v.observacao, `O que a Loja espera na rodada ${esc(v.rodada || '2')}`) +
       (v.itensLista ? tabelaItens(v.itensLista) : '') +
       linhas([['Cotação', v.cotacao], ['Rodada', v.rodada || '2'], ['Prazo para contrapropostas', v.prazo]]) +
       p('Sua proposta anterior permanece registrada no histórico; a contraproposta substitui os valores apenas para os itens em renegociação.'), 'Cotação'),
@@ -168,6 +178,7 @@ export const TEMPLATES = {
     subject: `Convite para cotação ${v.cotacao}`,
     html: layout('Convite para cotação',
       p(`Olá${v.fornecedorNome ? ', ' + esc(v.fornecedorNome) : ''}. Você foi convidado a enviar uma proposta para a cotação ${b(v.cotacao)}.`) +
+      obsLoja(v.observacao, 'O que a Loja espera nesta cotação') +
       linhas([['Cotação', v.cotacao], ['Prazo para propostas', v.prazo]]) + itensDe(v, 'Itens a cotar') +
       p('Acesse a plataforma para registrar a sua proposta (por item) antes do prazo.'), 'Cotação'),
   }),

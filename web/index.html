@@ -704,6 +704,12 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         </div>
       </div>
     </sc-if>
+    <sc-if value="{{cd.temObsAtual}}" hint-placeholder-val="{{false}}">
+      <div style="background:#fff;border:1px solid #eae3d6;border-left:3px solid #B38335;border-radius:12px;padding:14px 18px;margin-bottom:14px">
+        <div style="font-size:12px;font-weight:700;color:#8f682a;margin-bottom:4px">✎ {{cd.obsAtualRot}}</div>
+        <div style="font-size:13px;color:#4a453d;line-height:1.6;white-space:pre-wrap">{{cd.obsAtual}}</div>
+      </div>
+    </sc-if>
     <sc-if value="{{cd.temRodadas}}" hint-placeholder-val="{{false}}">
       <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:16px 18px;margin-bottom:14px">
         <div style="font-size:14px;font-weight:700;margin-bottom:2px">Rodadas de negociação</div>
@@ -715,6 +721,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
               <span style="font-size:11.5px;color:#a89f90">{{rv.info}}</span>
             </div>
             <div style="font-size:12px;color:#6b6459;margin-top:4px"><b>Itens:</b> {{rv.itensTxt}} · <b>Fornecedores convidados:</b> {{rv.fornsTxt}}</div>
+            <sc-if value="{{rv.temObs}}" hint-placeholder-val="{{false}}"><div style="font-size:12px;color:#4a453d;background:#faf7f0;border-left:3px solid #B38335;border-radius:0 7px 7px 0;padding:7px 11px;margin-top:6px;line-height:1.55;white-space:pre-wrap"><b style="color:#8f682a">Observação enviada:</b> {{rv.obs}}</div></sc-if>
             <sc-if value="{{rv.semProps}}" hint-placeholder-val="{{false}}"><div style="font-size:11.5px;color:#a89f90;margin-top:5px">Nenhuma proposta registrada nesta rodada até o momento.</div></sc-if>
             <sc-for list="{{rv.props}}" as="rp" hint-placeholder-count="0">
               <div style="display:flex;justify-content:space-between;gap:10px;font-size:12.5px;padding:5px 0;border-top:1px dashed #f1ece2;margin-top:5px">
@@ -2444,6 +2451,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
             </div>
             <div style="font-size:12.5px;color:#6b6459;margin-top:4px">{{c.itensTxt}}</div>
             <div style="font-size:12px;color:#a89f90;margin-top:2px">Minha proposta: <b style="color:#272525">{{c.minhaFmt}}</b><sc-if value="{{c.minhaFrete}}" hint-placeholder-val="{{false}}"><span> · frete: {{c.minhaFrete}}</span></sc-if></div>
+            <sc-if value="{{c.temObsLoja}}" hint-placeholder-val="{{false}}"><div style="font-size:12px;color:#4a453d;background:#faf7f0;border-left:3px solid #B38335;border-radius:0 7px 7px 0;padding:7px 11px;margin-top:6px;line-height:1.55;white-space:pre-wrap"><b style="color:#8f682a">A Loja pede:</b> {{c.obsLoja}}</div></sc-if>
             <sc-if value="{{c.foraRodada}}" hint-placeholder-val="{{false}}"><div style="font-size:11.5px;color:#8a5a12;margin-top:3px">Esta rodada de renegociação não inclui você — sua última proposta permanece válida.</div></sc-if>
             <sc-if value="{{c.temResultado}}" hint-placeholder-val="{{false}}">
               <div style="font-size:12.5px;font-weight:600;margin-top:3px;color:#2f6b39">{{c.resultado}}</div>
@@ -3406,6 +3414,9 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         </sc-for>
       </div>
       <sc-if value="{{convAviso.tem}}" hint-placeholder-val="{{true}}"><div style="font-size:11px;color:{{convAviso.cor}};margin-top:7px;line-height:1.45">{{convAviso.txt}}</div></sc-if>
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Observação para os fornecedores <span style="font-weight:400;color:#a89f90">— opcional · vai no e-mail e fica visível na proposta</span></div>
+      <textarea value="{{form.obsRod}}" onChange="{{fxObsRod}}" rows="3" placeholder="{{obsRodPh}}" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13px;background:#fff;outline:none;color:#272525;resize:vertical;line-height:1.5"></textarea>
+      <div style="font-size:11px;color:{{obsRodFg}};margin-top:5px;line-height:1.45">{{obsRodDica}}</div>
       <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Data limite para propostas</div>
       <input value="{{form.prazo}}" onChange="{{fxPrazo}}" inputmode="numeric" maxlength="10" placeholder="dd/mm/aaaa" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid {{prazoBd}};border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
       <sc-if value="{{prazoDica.tem}}" hint-placeholder-val="{{true}}"><div style="font-size:11px;color:{{prazoDica.cor}};margin-top:5px;line-height:1.45">{{prazoDica.txt}}</div></sc-if>
@@ -3515,6 +3526,9 @@ input::placeholder,textarea::placeholder{color:#b0a795}
           </div>
         </sc-for>
       </div>
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Observação para os fornecedores <span style="font-weight:400;color:#a89f90">— opcional · vai no e-mail e fica visível na proposta</span></div>
+      <textarea value="{{form.obsRod}}" onChange="{{fxObsRod}}" rows="3" placeholder="{{obsRodPh}}" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13px;background:#fff;outline:none;color:#272525;resize:vertical;line-height:1.5"></textarea>
+      <div style="font-size:11px;color:{{obsRodFg}};margin-top:5px;line-height:1.45">{{obsRodDica}}</div>
       <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Data limite para as contrapropostas</div>
       <input value="{{form.prazo}}" onChange="{{fxPrazo}}" inputmode="numeric" maxlength="10" placeholder="dd/mm/aaaa" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid {{prazoBd}};border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
       <sc-if value="{{prazoDica.tem}}" hint-placeholder-val="{{true}}"><div style="font-size:11px;color:{{prazoDica.cor}};margin-top:5px;line-height:1.45">{{prazoDica.txt}}</div></sc-if>
@@ -3570,6 +3584,12 @@ input::placeholder,textarea::placeholder{color:#b0a795}
       <div style="font-size:16px;font-weight:700">Proposta — {{propInfo.cotId}}</div>
       <div style="font-size:12.5px;color:#8a8378;margin-top:2px">RF24–RF25 — sua proposta é sigilosa; prazo limite: {{propInfo.prazo}}</div>
       <sc-if value="{{propInfo.temRodadaTag}}" hint-placeholder-val="{{false}}"><div style="font-size:12px;font-weight:700;color:#5d3f96;background:#efe6f5;border:1px solid #ddcbee;border-radius:8px;padding:7px 11px;margin-top:10px">{{propInfo.rodadaTag}}</div></sc-if>
+      <sc-if value="{{propInfo.temObsLoja}}" hint-placeholder-val="{{false}}">
+        <div style="background:#faf7f0;border:1px solid #eee7d8;border-left:3px solid #B38335;border-radius:9px;padding:10px 13px;margin-top:10px">
+          <div style="font-size:11.5px;font-weight:700;color:#8f682a;margin-bottom:3px">✎ {{propInfo.obsLojaRot}}</div>
+          <div style="font-size:12.5px;color:#4a453d;line-height:1.55;white-space:pre-wrap">{{propInfo.obsLoja}}</div>
+        </div>
+      </sc-if>
       <div style="background:#faf7f0;border:1px solid #eee7d8;border-radius:9px;padding:10px 13px;margin-top:12px">
         <div style="display:flex;gap:7px;margin-bottom:8px">
           <sc-for list="{{propInfo.fotos}}" as="ft" hint-placeholder-count="0"><sc-if value="{{ft.src}}" hint-placeholder-val="{{false}}"><img loading="lazy" src="{{ft.src}}" alt="item" onClick="{{ft.ver}}" title="Clique para ampliar" style="width:44px;height:44px;object-fit:cover;border-radius:8px;border:1px solid #eae3d6;cursor:zoom-in"></sc-if></sc-for>
@@ -4629,6 +4649,7 @@ class Component extends DCLogic {
         "O campo de quantidade só aceita números e fica em vermelho, com o motivo ao lado, quando o valor sai da faixa — o teto é a quantidade que a revenda pediu, porque cotar acima disso mudaria o pedido dela.",
         "No 'Envio direto a um fornecedor…' só aparecem como destino os fornecedores vinculados a todos os itens selecionados; na cotação, os convidáveis são os fornecedores vinculados aos produtos cotados.",
         "\"Abrir cotação\" exige convidar ao menos um fornecedor homologado e definir a data limite para o envio das propostas. Com um único convidado a cotação registra preço, frete e condições, mas não há comparação de propostas — a janela avisa disso ao selecionar.",
+        "O campo \"Observação para os fornecedores\" é opcional e vai junto do convite: use para dizer o que a Loja espera (preço, prazo, frete, embalagem). O texto entra no e-mail e fica visível para o fornecedor na hora de montar a proposta.",
         "Os painéis \"Análise da Loja\" e \"Decisão de atendimento\" só aparecem na fase certa: o primeiro enquanto o pedido aguarda decisão; o segundo depois que ele é aprovado.",
         "A conversa do pedido não tem fase: ela pode ser aberta em qualquer etapa e por qualquer um dos dois lados. Ao enviar uma mensagem, a revenda recebe um aviso por e-mail com o texto e o número do pedido."
       ]
@@ -4670,6 +4691,7 @@ class Component extends DCLogic {
         "Para dividir a compra por produto, use o bloco \"Adjudicação por item\" e clique em \"Escolher para este item\" no fornecedor desejado de cada item.",
         "Se a proposta escolhida não for a de menor preço, o sistema pede uma justificativa obrigatória; informe o motivo e confirme.",
         "Para renegociar, clique no botão dourado \"Nova rodada…\" (aparece quando há propostas recebidas): escolha os itens em renegociação, os fornecedores participantes e a nova data limite — os convidados são notificados e podem enviar contrapropostas; o comparativo passa a mostrar a evolução entre rodadas e a decisão pode ser tomada em qualquer rodada.",
+        "Em cada rodada há o campo \"Observação para os fornecedores\": escreva o que precisa melhorar (\"preço do 30L 8% abaixo\", \"frete CIF\", \"entrega em 5 dias\"). O texto vai no e-mail da rodada, aparece para o fornecedor quando ele monta a contraproposta, e fica guardado no quadro \"Rodadas de negociação\" — cada rodada com a sua observação.",
         "Para encerrar sem escolher vencedor, clique em \"Cancelar cotação…\", no topo do mapa comparativo, e informe o motivo do cancelamento.",
         "No fim da tela, consulte o \"Histórico completo da cotação (auditoria)\" para revisar todas as ações registradas, com data e responsável."
       ],
@@ -4957,6 +4979,7 @@ class Component extends DCLogic {
         "Clique nas miniaturas das fotos dos itens (passe o mouse e aparece \"Clique para ampliar\") para ver ampliada a imagem do que está sendo cotado.",
         "Confira o campo \"Minha proposta\": se aparecer \"— não enviada —\", você ainda não respondeu; se mostrar um valor, sua proposta já foi enviada.",
         "Para responder, clique no botão dourado à direita do cartão — \"Enviar proposta…\" (ou \"Editar proposta…\", se já tiver enviado antes; em rodadas de renegociação, \"Enviar contraproposta…\").",
+        "Quando a Loja escreve uma observação ao abrir a cotação ou a rodada, ela aparece no cartão em \"A Loja pede:\" e também dentro da janela da proposta — é o que a Loja espera que melhore nesta rodada.",
         "Na janela que abre (\"Proposta —\" seguida do código da cotação), informe o valor em \"Preço unitário por item (R$)\" para cada item; o \"Total da proposta\" é calculado automaticamente.",
         "No bloco \"Frete\", escolha a modalidade (CIF — frete do fornecedor, FOB — frete da revenda, ou Outros), informe o valor do frete (0,00 significa incluso) e a transportadora — o quadro \"Composição da proposta\" mostra produtos + frete = total em tempo real.",
         "Preencha \"Prazo de entrega\" (texto livre, ex.: 5 dias úteis), \"Validade da proposta\" (data — o campo aceita só dígitos e monta dd/mm/aaaa sozinho, com os atalhos \"+30\" e \"+60 dias\"; é opcional, mas se preenchido tem de ser uma data que exista no calendário e não esteja vencida), as \"Condições de pagamento\" (ex.: boleto 28 dias) e as \"Condições de entrega\" (ex.: entrega no CD em até 48h).",
@@ -6375,15 +6398,22 @@ class Component extends DCLogic {
     const itensCot=alocados.map(i=>({produtoId:i.produtoId,qtd:i.qtd,preco:i.preco}));
     const totQ=alocados.reduce((a,i)=>a+i.qtd,0);
     const nomes=this.state.fornecedores.filter(x=>conv.includes(x.id)).map(x=>x.nome).join(', ');
-    this.setState(s=>({cotacoes:[{id,pedidoId:f.pedidoId,itens:itensCot,vencItens:{},convidados:[...conv],prazo:f.prazo,status:'aguardando propostas',propostas:[],vencedorId:null,justificativa:null,motivoCancel:null,historico:[{quando:this.ts(),usuario:this.userName(),acao:'Cotação aberta ('+itensCot.length+' item(ns) · '+totQ+' unidade(s)) · convidados notificados: '+nomes}]},...s.cotacoes],seq:{...s.seq,cot:n+1},modal:null,form:{},scr:'cot'}));
+    const obsC=String(f.obsRod||'').trim().slice(0,600);
+    this.setState(s=>({cotacoes:[{id,pedidoId:f.pedidoId,itens:itensCot,vencItens:{},convidados:[...conv],prazo:f.prazo,status:'aguardando propostas',propostas:[],vencedorId:null,justificativa:null,motivoCancel:null,obs:obsC,historico:[{quando:this.ts(),usuario:this.userName(),acao:'Cotação aberta ('+itensCot.length+' item(ns) · '+totQ+' unidade(s)) · convidados notificados: '+nomes+(obsC?' · observação enviada aos fornecedores: "'+obsC+'"':'')}]},...s.cotacoes],seq:{...s.seq,cot:n+1},modal:null,form:{},scr:'cot'}));
     this.updPed(f.pedidoId,p=>{p.itens=novo;
       p.trilha.push(this.tr('Cotação '+id+' aberta para '+alocados.length+' item(ns) · '+totQ+' unidade(s) com '+(conv.length===1?'1 fornecedor':conv.length+' fornecedores')+(parcial?' — quantidade parcial; o saldo permanece aprovado':'')));return p;});
     this.audit('Abertura de cotação',id+' · pedido '+f.pedidoId+' · '+alocados.length+' item(ns) · '+totQ+' un'+(parcial?' (parcial)':'')+(conv.length===1?' · fornecedor único (sem comparação de propostas)':' · '+conv.length+' fornecedores'));
     const _ilC=itensCot.map(it=>{ const pp=this._prodInfo(it.produtoId); return {codigo:pp.codigo||'',descricao:pp.descricao||('Produto '+it.produtoId),qtd:it.qtd,unidade:pp.unidade||'',valor:this.fmt(it.qtd*it.preco)}; });
-    conv.forEach(cf=>this.notificar('cotacao_convite',this._fornEmail(cf),{cotacao:id,fornecedorNome:this._fornNome(cf),prazo:f.prazo,itensLista:_ilC})); };
+    conv.forEach(cf=>this.notificar('cotacao_convite',this._fornEmail(cf),{cotacao:id,fornecedorNome:this._fornNome(cf),prazo:f.prazo,itensLista:_ilC,observacao:obsC})); };
   // ——— Rodadas de negociação (Ata 5.4) ———
   _cotRod(c){ return (c&&c.rodada)?c.rodada:1; }
   _rodInfo(c,n){ return ((c&&c.rodadas)||[]).find(r=>r.n===n)||null; }
+  // Observação que a Loja escreveu ao enviar a rodada — a da rodada 1 fica na
+  // própria cotação, porque o registro da rodada 1 só é criado ao abrir a 2ª.
+  _obsRodada(c,n){ n=n||this._cotRod(c);
+    if(n<=1) return ((c&&c.obs)||'').trim();
+    const r=this._rodInfo(c,n); return ((r&&r.obs)||'').trim(); }
+  _obsRodTxt(c,n){ const o=this._obsRodada(c,n); return o?('Observação da Loja (rodada '+(n||this._cotRod(c))+'): '+o):''; }
   _rodItens(c){ const r=this._rodInfo(c,this._cotRod(c)); return (r&&r.itens&&r.itens.length)?r.itens:null; }
   _rodConv(c){ const r=this._rodInfo(c,this._cotRod(c)); return (r&&r.convidados&&r.convidados.length)?r.convidados:null; }
   // Propostas efetivas: funde, por fornecedor, as propostas de todas as rodadas
@@ -6446,18 +6476,18 @@ class Component extends DCLogic {
     if(!itensSel.length) return this.err('Selecione ao menos um item para renegociar.');
     if(!convSel.length) return this.err('Selecione ao menos um fornecedor participante da rodada.');
     const erPzR=this._erroPrazo(f.prazo,'as contrapropostas'); if(erPzR) return this.err(erPzR);
-    const n=this._cotRod(c)+1;
+    const n=this._cotRod(c)+1; const obsR=String(f.obsRod||'').trim().slice(0,600);
     const nomes=this.state.fornecedores.filter(x=>convSel.includes(x.id)).map(x=>x.nome).join(', ');
     const nomesIt=(c.itens||[]).filter(it=>itensSel.includes(it.produtoId)).map(it=>(this._prodInfo(it.produtoId).descricao||('Produto '+it.produtoId))).join(', ');
     this.updCot(f.cotId,x=>{
-      if(!(x.rodadas||[]).some(r=>r.n===1)) x.rodadas=[...(x.rodadas||[]),{n:1,itens:(x.itens||[]).map(i=>i.produtoId),convidados:[...x.convidados],prazo:x.prazo,abertaEm:(x.historico[0]||{}).quando||'',usuario:(x.historico[0]||{}).usuario||''}];
+      if(!(x.rodadas||[]).some(r=>r.n===1)) x.rodadas=[...(x.rodadas||[]),{n:1,itens:(x.itens||[]).map(i=>i.produtoId),convidados:[...x.convidados],prazo:x.prazo,obs:x.obs||'',abertaEm:(x.historico[0]||{}).quando||'',usuario:(x.historico[0]||{}).usuario||''}];
       x.rodada=n; x.prazo=f.prazo;
-      x.rodadas=[...(x.rodadas||[]),{n,itens:[...itensSel],convidados:[...convSel],prazo:f.prazo,abertaEm:this.ts(),usuario:this.userName()}];
-      x.historico.push({quando:this.ts(),usuario:this.userName(),acao:'Rodada '+n+' aberta — renegociação de '+itensSel.length+' item(ns) ('+nomesIt+') · fornecedores: '+nomes+' · prazo '+f.prazo});
+      x.rodadas=[...(x.rodadas||[]),{n,itens:[...itensSel],convidados:[...convSel],prazo:f.prazo,obs:obsR,abertaEm:this.ts(),usuario:this.userName()}];
+      x.historico.push({quando:this.ts(),usuario:this.userName(),acao:'Rodada '+n+' aberta — renegociação de '+itensSel.length+' item(ns) ('+nomesIt+') · fornecedores: '+nomes+' · prazo '+f.prazo+(obsR?' · observação enviada aos fornecedores: "'+obsR+'"':'')});
       return x;});
-    this.audit('Nova rodada de cotação',f.cotId+' · rodada '+n+' · '+itensSel.length+' item(ns) · '+convSel.length+' fornecedor(es)');
+    this.audit('Nova rodada de cotação',f.cotId+' · rodada '+n+' · '+itensSel.length+' item(ns) · '+convSel.length+' fornecedor(es)'+(obsR?' · com observação para os fornecedores':''));
     const _ilR=(c.itens||[]).filter(it=>itensSel.includes(it.produtoId)).map(it=>{ const pp=this._prodInfo(it.produtoId); return {codigo:pp.codigo||'',descricao:pp.descricao||('Produto '+it.produtoId),qtd:it.qtd,unidade:pp.unidade||'',valor:this.fmt(it.qtd*it.preco)}; });
-    convSel.forEach(cf=>this.notificar('cotacao_rodada',this._fornEmail(cf),{cotacao:f.cotId,fornecedorNome:this._fornNome(cf),rodada:String(n),prazo:f.prazo,itensLista:_ilR}));
+    convSel.forEach(cf=>this.notificar('cotacao_rodada',this._fornEmail(cf),{cotacao:f.cotId,fornecedorNome:this._fornNome(cf),rodada:String(n),prazo:f.prazo,itensLista:_ilR,observacao:obsR}));
     this.mClose(); };
   escolher(cotId,fid){ return ()=>{ const c=this.state.cotacoes.find(x=>x.id===cotId);
     const props=this._propsEfetivas(c);
@@ -7589,12 +7619,15 @@ class Component extends DCLogic {
           temPropostas:props.length>0,semPropostas:props.length===0,
           podeSelecionar:aguardando&&props.length>0&&this.pode('cotacoes.decidir'),podeCancelar:aguardando&&this.pode('cotacoes.abrir'),
           podeRodada:aguardando&&props.length>0&&this.pode('cotacoes.abrir'),
-          novaRodadaFn:this.open('rodada',{cotId:c.id,rodItens:citens.map(i=>i.produtoId),rodConv:[...c.convidados],prazo:''}),
+          novaRodadaFn:this.open('rodada',{cotId:c.id,rodItens:citens.map(i=>i.produtoId),rodConv:[...c.convidados],prazo:'',obsRod:''}),
           rodAtualTag:this._cotRod(c)>1?'Rodada '+this._cotRod(c):'',temRodTag:this._cotRod(c)>1,
+          obsAtual:this._obsRodada(c),temObsAtual:!!this._obsRodada(c),
+          obsAtualRot:'Observação enviada aos fornecedores na rodada '+this._cotRod(c),
           rodadasView:(c.rodadas&&c.rodadas.length?[...c.rodadas].sort((a,b)=>b.n-a.n):[]).map(r=>{
             const rProps=(c.propostas||[]).filter(p=>(p.rodada||1)===r.n);
             return {titulo:'Rodada '+r.n+(r.n===this._cotRod(c)?' (atual)':''),
               info:(r.abertaEm?('aberta em '+r.abertaEm+' por '+r.usuario+' · '):'')+'prazo '+r.prazo,
+              obs:this._obsRodada(c,r.n),temObs:!!this._obsRodada(c,r.n),
               itensTxt:(c.itens||[]).filter(it=>(r.itens||[]).includes(it.produtoId)).map(it=>P(it.produtoId).descricao||'').join(', '),
               fornsTxt:(r.convidados||[]).map(cf=>F(cf).nome).join(', '),
               props:rProps.map(p=>({fornNome:F(p.fornecedorId).nome,totFmt:this.fmt(p.preco),quando:p.quando,condicoes:(p.condicoes||'—')+((p.anexos&&p.anexos.length)?' · '+p.anexos.length+' anexo(s)':'')})),
@@ -8058,6 +8091,7 @@ class Component extends DCLogic {
       const seedP={cotId:c.id,prazoEntrega:own?own.prazoEntrega:'',validade:own?own.validade:'',condicoes:own?own.condicoes:'',freteMod:own?(own.freteMod||'CIF'):'CIF',freteValor:own&&own.freteValor?String(own.freteValor).replace('.',','):'',transportadora:own?(own.transportadora||''):'',condEntrega:own?(own.condEntrega||''):''};
       if(own&&own.itens) Object.keys(own.itens).forEach(k2=>{seedP['ip'+k2]=String(own.itens[k2]).replace('.',',');});
       return {id:c.id,prazo:c.prazo,...this.chip(c.status),
+        obsLoja:this._obsRodada(c),temObsLoja:!!this._obsRodada(c),
         itensTxt:citens.map(i=>P(i.produtoId).descricao+' ×'+i.qtd).join(', '),
         fotos:citens.map(i=>({src:this.fotosDe(P(i.produtoId))[0],ver:this.verFoto(i.produtoId)})),
         minhaFmt:own?this._compTxt(own):'— não enviada —',enviada:!!own,
@@ -8157,7 +8191,7 @@ class Component extends DCLogic {
       return {nome:f.nome,toggle:this.toggleFornProd(f.id),bg:on?'#faf5e9':'#fff',bd:on?'#B38335':'#e8e1d2',fg:on?'#8f682a':'#6b6459',mark:on?'✓ ':''};}):[];
     const prodFornSel=String((S.form.fornecedorIds||[]).length)+' selecionado(s)';
     const prodFornVazio=M==='produto'&&prodFornRows.length===0;
-    let propInfo={cotId:'',prazo:'',itensTxt:'',refFmt:'',fotos:[],itens:[],totalFmt:'—'};
+    let propInfo={cotId:'',prazo:'',itensTxt:'',refFmt:'',fotos:[],itens:[],totalFmt:'—',obsLoja:'',temObsLoja:false,obsLojaRot:''};
     if(M==='proposta'&&S.form.cotId){ const c=S.cotacoes.find(x=>x.id===S.form.cotId);
       if(c){ const ped=PEDS.find(p=>p.id===c.pedidoId)||{itens:[],total:0};
         const rodP=this._cotRod(c); const rodItensP=rodP>1?this._rodItens(c):null;
@@ -8170,7 +8204,8 @@ class Component extends DCLogic {
           return {label:(pr.codigo||'')+' · '+(pr.descricao||''),qtdTxt:'×'+it.qtd+' '+(pr.unidade||''),refFmt:this.fmt(it.preco),
             val:v,fx:this.fx('ip'+it.produtoId)};});
         const fvP=Math.round((this.num(S.form.freteValor)||0)*100)/100;
-        propInfo={cotId:c.id,prazo:c.prazo,rodadaTag:rodP>1?'Contraproposta — rodada '+rodP+' · revise os preços dos itens em renegociação':'',temRodadaTag:rodP>1,itensTxt:citens.map(i=>P(i.produtoId).descricao+' ×'+i.qtd).join(', '),
+        propInfo={cotId:c.id,prazo:c.prazo,obsLoja:this._obsRodada(c),temObsLoja:!!this._obsRodada(c),
+          obsLojaRot:'O que a Loja espera nesta '+(rodP>1?('rodada '+rodP):'cotação'),rodadaTag:rodP>1?'Contraproposta — rodada '+rodP+' · revise os preços dos itens em renegociação':'',temRodadaTag:rodP>1,itensTxt:citens.map(i=>P(i.produtoId).descricao+' ×'+i.qtd).join(', '),
           refFmt:this.fmt(citens.reduce((a,i)=>a+i.qtd*i.preco,0)),
           fotos:citens.map(i=>({src:this.fotosDe(P(i.produtoId))[0],ver:this.verFoto(i.produtoId)})),
           itens:itensP,totalFmt:okP?this.fmt(totP):'— complete os itens —',
@@ -8494,6 +8529,15 @@ class Component extends DCLogic {
       // dashboard
       kpis,recRows,barRows,
       // pedidos
+      // observação da Loja enviada junto com a rodada
+      fxObsRod:this.fx('obsRod'),
+      obsRodPh:M==='rodada'?'Ex.: precisamos de preço melhor no chopp 30L e prazo de entrega em até 5 dias úteis.'
+        :'Ex.: priorizem prazo de entrega curto; informem se há preço diferenciado para caixa fechada.',
+      obsRodDica:(()=>{ const q=String(S.form.obsRod||'').trim().length;
+        if(!q) return 'Em branco, o convite segue sem observação. Use para dizer o que a Loja espera — preço, prazo, frete, embalagem.';
+        if(q>600) return 'A observação passou de 600 caracteres — o texto será cortado em 600.';
+        return q+' de 600 caracteres · o texto vai no e-mail do convite e aparece para o fornecedor na hora de propor.'; })(),
+      obsRodFg:String(S.form.obsRod||'').trim().length>600?'#a33a2b':'#b0a795',
       pedRows,stOpts,filtroStatus:S.filtroStatus,setFiltroStatus:this.setFiltroStatus,pd,
       // conversa por pedido
       ...this._chatVals(),fxTextoChat:this.fx('texto'),enviarMensagemChat:this.enviarMensagemChat,
