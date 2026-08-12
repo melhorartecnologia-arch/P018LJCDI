@@ -120,7 +120,10 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <sc-for list="{{g.items}}" as="it" hint-placeholder-count="3">
           <div onClick="{{it.go}}" style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:13.5px;margin-bottom:2px;color:{{it.fg}};background:{{it.bg}};font-weight:{{it.fw}}" style-hover="background:#f5efe3">
             <span>{{it.label}}</span>
-            <sc-if value="{{it.temBadge}}" hint-placeholder-val="{{false}}"><span style="background:#B38335;color:#fff;font-size:10.5px;font-weight:700;border-radius:10px;padding:1px 7px">{{it.badge}}</span></sc-if>
+            <div style="display:flex;align-items:center;gap:5px;flex:none">
+              <sc-if value="{{it.temChat}}" hint-placeholder-val="{{false}}"><span title="Mensagens não lidas nas conversas dos pedidos" style="background:#5d3f96;color:#fff;font-size:10.5px;font-weight:700;border-radius:10px;padding:1px 7px;white-space:nowrap">&#128172; {{it.chatBadge}}</span></sc-if>
+              <sc-if value="{{it.temBadge}}" hint-placeholder-val="{{false}}"><span style="background:#B38335;color:#fff;font-size:10.5px;font-weight:700;border-radius:10px;padding:1px 7px">{{it.badge}}</span></sc-if>
+            </div>
           </div>
         </sc-for>
       </sc-for>
@@ -225,6 +228,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
           <th style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Itens</th>
           <th style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Fornecedor destino</th>
           <th style="text-align:right;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Total</th>
+          <th style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Conversa</th>
           <th style="text-align:left;padding:10px 18px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Status</th>
         </tr></thead>
         <tbody>
@@ -235,6 +239,9 @@ input::placeholder,textarea::placeholder{color:#b0a795}
               <td style="padding:11px 10px;border-bottom:1px solid #f5f1e8"><div style="display:flex;align-items:center"><sc-for list="{{p.fotos}}" as="ft" hint-placeholder-count="0"><sc-if value="{{ft.src}}" hint-placeholder-val="{{false}}"><img loading="lazy" src="{{ft.src}}" alt="item" onClick="{{ft.ver}}" title="Clique para ampliar" style="width:32px;height:32px;object-fit:cover;border-radius:8px;border:2px solid #fff;margin-right:-8px;box-shadow:0 1px 3px rgba(39,37,37,.18);cursor:zoom-in"></sc-if></sc-for><span style="font-size:12px;color:#8a8378;margin-left:16px;white-space:nowrap">{{p.itensN}}</span></div></td>
               <td style="padding:11px 10px;font-size:13px;border-bottom:1px solid #f5f1e8">{{p.fornDest}}</td>
               <td style="padding:11px 10px;font-size:13px;font-weight:600;text-align:right;border-bottom:1px solid #f5f1e8">{{p.totalFmt}}</td>
+              <td style="padding:11px 10px;border-bottom:1px solid #f5f1e8">
+                <div onClick="{{p.chatFn}}" title="{{p.chatTitulo}}" style="display:inline-flex;align-items:center;gap:5px;border:1px solid {{p.chatBd}};background:{{p.chatBg}};color:{{p.chatFg}};border-radius:8px;padding:4px 9px;font-size:11.5px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="filter:brightness(.97)">&#128172; {{p.chatBtn}}</div>
+              </td>
               <td style="padding:11px 18px;border-bottom:1px solid #f5f1e8">
                 <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
                   <div>
@@ -267,7 +274,8 @@ input::placeholder,textarea::placeholder{color:#b0a795}
       <span style="font-size:12px;font-weight:600;border-radius:7px;padding:4px 10px;background:{{pd.stBg}};color:{{pd.stFg}}">{{pd.stLabel}}</span>
       <span title="Etapa atual do workflow do pedido (RF49)" style="font-size:12px;font-weight:700;border-radius:7px;padding:4px 10px;background:#faf5e9;border:1px solid #ecdcbc;color:#8f682a">{{pd.etapaTxt}}</span>
     </div>
-    <div style="font-size:13px;color:#8a8378;margin-bottom:16px">Criado em {{pd.data}} · {{pd.revNome}} — {{pd.revCidade}}</div>
+    <div style="font-size:13px;color:#8a8378;margin-bottom:12px">Criado em {{pd.data}} · {{pd.revNome}} — {{pd.revCidade}}</div>
+    <div onClick="{{pd.chatFn}}" title="Abrir a conversa deste pedido com a revenda" style="display:inline-flex;align-items:center;gap:7px;border:1px solid {{pd.chatBd}};background:{{pd.chatBg}};color:{{pd.chatFg}};border-radius:9px;padding:8px 14px;font-size:12.5px;font-weight:700;cursor:pointer;margin-bottom:16px" style-hover="filter:brightness(.97)">💬 {{pd.chatLabel}}</div>
     <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:18px 22px;margin-bottom:14px">
       <div style="display:flex;align-items:flex-start">
         <sc-for list="{{pd.steps}}" as="s" hint-placeholder-count="4">
@@ -1270,6 +1278,46 @@ input::placeholder,textarea::placeholder{color:#b0a795}
       <div style="border:1px dashed #e5ddcd;border-radius:11px;padding:26px;text-align:center;font-size:13px;color:#a89f90;margin-top:14px">Nenhuma categoria encontrada para esta busca.</div>
     </sc-if>
     <div style="font-size:11.5px;color:#b0a795;margin-top:12px">Categorias não são excluídas, apenas inativadas: uma categoria inativa deixa de ser oferecida no cadastro de produtos, mas os produtos já classificados nela continuam como estão e seguem aparecendo nos filtros e relatórios. Renomear uma categoria reclassifica automaticamente todos os produtos que a usam.</div>
+  </div>
+</sc-if>
+
+<sc-if value="{{mChat}}" hint-placeholder-val="{{false}}">
+  <div style="position:fixed;inset:0;background:rgba(39,37,37,.45);display:flex;align-items:center;justify-content:center;z-index:60">
+    <div style="background:#fff;border-radius:14px;width:680px;max-width:94vw;height:min(680px,88vh);display:flex;flex-direction:column;box-shadow:0 18px 50px rgba(39,37,37,.25);overflow:hidden">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:18px 22px;border-bottom:1px solid #f1ece2;flex:none">
+        <div>
+          <div style="font-size:16px;font-weight:700">Conversa do pedido {{chat.pedidoId}}</div>
+          <div style="font-size:12.5px;color:#8a8378;margin-top:2px">{{chat.sub}}</div>
+        </div>
+        <div onClick="{{mClose}}" title="Fechar" style="font-size:20px;line-height:1;color:#a89f90;cursor:pointer;padding:2px 9px;border-radius:8px;flex:none" style-hover="background:#f7f3ea">&times;</div>
+      </div>
+      <div style="flex:1;overflow-y:auto;padding:18px 22px;background:#faf7f0;display:flex;flex-direction:column;gap:12px">
+        <sc-if value="{{chat.vazio}}" hint-placeholder-val="{{true}}">
+          <div style="margin:auto;text-align:center;max-width:400px">
+            <div style="font-size:34px;margin-bottom:8px">&#128172;</div>
+            <div style="font-size:14px;font-weight:700;color:#6b6459;margin-bottom:4px">Nenhuma mensagem ainda</div>
+            <div style="font-size:12.5px;color:#a89f90;line-height:1.55">{{chat.vazioTxt}}</div>
+          </div>
+        </sc-if>
+        <sc-for list="{{chat.msgs}}" as="m" hint-placeholder-count="3">
+          <div style="display:flex;justify-content:{{m.align}}">
+            <div style="max-width:78%">
+              <div style="font-size:10.5px;font-weight:700;letter-spacing:.03em;color:{{m.autorFg}};margin-bottom:3px;text-align:{{m.txtAlign}}">{{m.autor}}</div>
+              <div style="background:{{m.bg}};border:1px solid {{m.bd}};border-radius:{{m.radius}};padding:10px 14px;font-size:13.5px;line-height:1.55;color:#272525;white-space:pre-wrap;word-break:break-word">{{m.texto}}</div>
+              <div style="font-size:10.5px;color:#b0a795;margin-top:3px;text-align:{{m.txtAlign}}">{{m.quando}}</div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="flex:none;padding:14px 22px 18px;border-top:1px solid #f1ece2;background:#fff">
+        <sc-if value="{{form.erro}}" hint-placeholder-val="{{false}}"><div style="color:#a33a2b;font-size:12.5px;margin-bottom:8px">{{form.erro}}</div></sc-if>
+        <div style="display:flex;gap:10px;align-items:flex-end">
+          <textarea value="{{form.texto}}" onChange="{{fxTextoChat}}" placeholder="{{chat.placeholder}}" rows="3" style="flex:1;box-sizing:border-box;padding:10px 13px;border:1px solid #ddd5c7;border-radius:9px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525;resize:none;line-height:1.5"></textarea>
+          <div onClick="{{enviarMensagemChat}}" style="background:#B38335;color:#fff;border-radius:9px;padding:11px 18px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex:none" style-hover="background:#9a6f2b">Enviar</div>
+        </div>
+        <div style="font-size:11px;color:#b0a795;margin-top:7px;line-height:1.5">{{chat.rodape}}</div>
+      </div>
+    </div>
   </div>
 </sc-if>
 
@@ -2594,6 +2642,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
           <th style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Itens</th>
           <th style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Fornecedor (faturamento)</th>
           <th style="text-align:right;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Total</th>
+          <th style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Conversa</th>
           <th style="text-align:left;padding:10px 18px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Status</th>
         </tr></thead>
         <tbody>
@@ -2616,6 +2665,9 @@ input::placeholder,textarea::placeholder{color:#b0a795}
                 </sc-if>
               </td>
               <td style="padding:11px 10px;font-size:13px;font-weight:600;text-align:right;border-bottom:1px solid #f5f1e8">{{p.totalFmt}}</td>
+              <td style="padding:11px 10px;border-bottom:1px solid #f5f1e8">
+                <div onClick="{{p.chatFn}}" title="{{p.chatTitulo}}" style="display:inline-flex;align-items:center;gap:5px;border:1px solid {{p.chatBd}};background:{{p.chatBg}};color:{{p.chatFg}};border-radius:8px;padding:4px 9px;font-size:11.5px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="filter:brightness(.97)">&#128172; {{p.chatBtn}}</div>
+              </td>
               <td style="padding:11px 18px;border-bottom:1px solid #f5f1e8">
                 <span style="font-size:11.5px;font-weight:600;border-radius:7px;padding:3px 9px;background:{{p.stBg}};color:{{p.stFg}};white-space:nowrap">{{p.stLabel}}</span>
                 <sc-if value="{{p.temAceite}}" hint-placeholder-val="{{false}}"><div onClick="{{p.aprovarNeg}}" style="display:inline-block;background:#B38335;color:#fff;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px;white-space:nowrap" style-hover="background:#9a6f2b">Aprovação comercial…</div></sc-if>
@@ -4511,14 +4563,17 @@ class Component extends DCLogic {
         "Na tabela, confira as colunas Pedido, Revenda, Itens, Fornecedor destino, Total e Status; clique em uma miniatura de foto para ampliá-la ('Clique para ampliar').",
         "Para receber um pedido de uma só vez, clique no botão dourado 'Receber', que aparece na coluna Status apenas nas linhas pendentes — ele confirma o recebimento de todos os itens que ainda estão pendentes.",
         "Para recusar, clique em 'Rejeitar' na mesma linha: abre uma janela em que você precisa escrever a justificativa (obrigatória) e confirmar em 'Rejeitar pedido'; essa justificativa fica visível para a revenda.",
-        "Para decidir item por item ou definir como o pedido será atendido (estoque da Loja, envio direto a um fornecedor ou cotação), clique sobre a linha para abrir a tela 'Detalhe do pedido'."
+        "Para decidir item por item ou definir como o pedido será atendido (estoque da Loja, envio direto a um fornecedor ou cotação), clique sobre a linha para abrir a tela 'Detalhe do pedido'.",
+        "Na coluna 'Conversa', clique no balão 💬 para abrir o canal de comunicação daquele pedido com a revenda — dúvidas, ocorrências e observações. O balão fica roxo com o número de mensagens novas quando a revenda escreve; abrir a conversa marca tudo como lido."
       ],
       "dicas": [
         "Workflow de etapas (RF49): cada pedido mostra \"Etapa N/9\" com a nomenclatura do estágio real (Recebimento/aprovação → Cotação → Seleção → Aceite da revenda → Encaminhamento → Confirmação pelo fornecedor → Produção → Faturamento → Conclusão); o novo seletor \"Todas as etapas\" filtra a lista pela etapa atual e o detalhe exibe a linha do tempo completa com a etapa destacada — toda transição fica na trilha e na auditoria com data, usuário e de/para.",
         "Os botões 'Receber' e 'Rejeitar' na lista só aparecem nas linhas com status 'Pendente'; pedidos já decididos não mostram essas ações.",
         "A rejeição sempre exige uma justificativa — sem ela o sistema não conclui a operação, e o texto informado fica visível para a revenda.",
         "O botão 'Receber' da lista libera o pedido inteiro de uma vez; quando quiser tratar os itens de formas diferentes, abra o 'Detalhe do pedido' clicando na linha.",
-        "No detalhe, as opções de atendimento — 'Atender com estoque da Loja…', 'Envio direto a um fornecedor…' e 'Abrir cotação…' — só ficam disponíveis depois que os itens são aprovados e podem ser combinadas no mesmo pedido."
+        "No detalhe, as opções de atendimento — 'Atender com estoque da Loja…', 'Envio direto a um fornecedor…' e 'Abrir cotação…' — só ficam disponíveis depois que os itens são aprovados e podem ser combinadas no mesmo pedido.",
+        "A conversa existe em TODO pedido, do momento em que ele é criado até depois de faturado, e pode ser iniciada tanto pela Loja quanto pela revenda. Cada mensagem enviada avisa o outro lado por e-mail, entra na auditoria e a abertura da conversa fica registrada na trilha do pedido — nada se perde em e-mail ou aplicativo à parte.",
+        "O menu lateral mostra um contador roxo 💬 ao lado de 'Pedidos' com o total de mensagens não lidas de todos os pedidos."
       ]
     },
     "peddet": {
@@ -4534,14 +4589,16 @@ class Component extends DCLogic {
         "Depois de receber, surge o painel \"Decisão de atendimento — por item\". Escolha \"Atender com estoque da Loja…\", \"Envio direto a um fornecedor…\" ou \"Abrir cotação…\"; na janela que abrir, marque os itens e confirme.",
         "No bloco \"Informações\" (à direita), confira a Revenda e o Fornecedor de destino. Se houver \"Cotação vinculada\", clique no código dela (ex.: COT-008 →) para abrir a cotação.",
         "Acompanhe cada ação no bloco \"Trilha do pedido — data, hora e usuário\", que registra o que foi feito, por quem e quando.",
-        "Quando o fornecedor anexa arquivos durante o atendimento, eles aparecem no quadro \"Documentos do atendimento\", com nome, data e autor — clique no nome para baixar."
+        "Quando o fornecedor anexa arquivos durante o atendimento, eles aparecem no quadro \"Documentos do atendimento\", com nome, data e autor — clique no nome para baixar.",
+        "Logo abaixo do cabeçalho fica o botão 💬 da conversa do pedido, com o total de mensagens. Clique para conversar com a revenda a qualquer momento — dúvidas, ocorrências e observações ficam guardadas no próprio pedido."
       ],
       "dicas": [
         "A justificativa é obrigatória ao rejeitar, seja o pedido todo ou um item, e fica visível para a revenda; tenha o motivo pronto antes de clicar em \"Rejeitar\".",
         "Um mesmo pedido pode combinar os três caminhos de atendimento (estoque, envio direto e cotação); cada ação vale só para os itens que você marcar na janela — e você pode informar uma quantidade parcial por item: o saldo continua aprovado para outro caminho.",
         "No 'Envio direto a um fornecedor…' só aparecem como destino os fornecedores vinculados a todos os itens selecionados; na cotação, os convidáveis são os fornecedores vinculados aos produtos cotados.",
         "\"Abrir cotação\" exige convidar ao menos um fornecedor homologado e definir a data limite para o envio das propostas. Com um único convidado a cotação registra preço, frete e condições, mas não há comparação de propostas — a janela avisa disso ao selecionar.",
-        "Os painéis \"Análise da Loja\" e \"Decisão de atendimento\" só aparecem na fase certa: o primeiro enquanto o pedido aguarda decisão; o segundo depois que ele é aprovado."
+        "Os painéis \"Análise da Loja\" e \"Decisão de atendimento\" só aparecem na fase certa: o primeiro enquanto o pedido aguarda decisão; o segundo depois que ele é aprovado.",
+        "A conversa do pedido não tem fase: ela pode ser aberta em qualquer etapa e por qualquer um dos dois lados. Ao enviar uma mensagem, a revenda recebe um aviso por e-mail com o texto e o número do pedido."
       ]
     },
     "cot": {
@@ -4953,7 +5010,8 @@ class Component extends DCLogic {
         "Veja o valor total do pedido na coluna \"Total\".",
         "Acompanhe a etiqueta colorida na coluna \"Status\", que indica a situação do pedido (pendente, recebido, em cotação, rejeitado ou faturado, como explica o texto logo abaixo do título da tela).",
         "Quando o fornecedor fatura, os documentos do faturamento aparecem na coluna \"Fornecedor (faturamento)\" como etiquetas verdes — \"📎 NF …\" para a nota fiscal e \"📎 Boleto …\" para o boleto — clique para baixar cada arquivo.",
-        "Quando um pedido é rejeitado, aparece um texto em vermelho logo abaixo da etiqueta de status, com a justificativa informada pela Loja."
+        "Quando um pedido é rejeitado, aparece um texto em vermelho logo abaixo da etiqueta de status, com a justificativa informada pela Loja.",
+        "Na coluna \"Conversa\", clique no balão 💬 para falar com a Loja Cidade Imperial sobre aquele pedido: dúvidas, ocorrências, observações. Escreva a mensagem e clique em \"Enviar\" — a Loja é avisada por e-mail na hora."
       ],
       "dicas": [
         "Workflow de etapas (RF49): cada pedido mostra \"Etapa N/9\" com o mesmo estágio que a Loja enxerga; use o seletor \"Todas as etapas\" para filtrar e acompanhe as transições na trilha do pedido.",
@@ -4961,7 +5019,9 @@ class Component extends DCLogic {
         "Usuário de grupo econômico (vinculado a 2+ revendas): o seletor dourado no topo troca a revenda ativa SEM novo login e a opção \"Grupo — visão consolidada\" mostra os pedidos de todas as revendas juntos, com indicadores agregados e a revenda identificada em cada linha.",
         "Esta tela serve apenas para acompanhar; para criar um novo pedido, abra a tela \"Catálogo de produtos\" (menu \"Compras\"), adicione os produtos e clique em \"Enviar pedido para análise\".",
         "Todo pedido novo começa como \"pendente\" e só muda depois que a Loja o analisa; a coluna \"Fornecedor (faturamento)\" só é preenchida quando a Loja encaminha o pedido a um fornecedor ou encerra a cotação.",
-        "A coluna \"Fornecedor (faturamento)\" pode mostrar \"Estoque da Loja\" quando o pedido é atendido pelo próprio estoque da Loja."
+        "A coluna \"Fornecedor (faturamento)\" pode mostrar \"Estoque da Loja\" quando o pedido é atendido pelo próprio estoque da Loja.",
+        "A conversa está disponível em todos os pedidos, a qualquer momento, e pode ser iniciada por você ou pela Loja. O balão fica roxo com o número de mensagens novas quando a Loja responde, e o menu \"Meus pedidos\" mostra o total de não lidas.",
+        "Todo o histórico da conversa fica guardado junto do pedido — ao contrário do e-mail ou do aplicativo de mensagens, ninguém precisa procurar depois quem disse o quê."
       ]
     },
     "cfgemail": {
@@ -6000,6 +6060,96 @@ class Component extends DCLogic {
     const tot=resumo.reduce((a,r)=>a+r[2],0);
     this.audit('Exportação de todos os cadastros',resumo.length+' cadastro(s) · '+tot+' registro(s) · .xlsx');
     this.toast('Exportados '+resumo.length+' cadastros ('+tot+' registros) em uma pasta de trabalho.','ok'); };
+
+  // ══ Conversa por pedido (Loja × Revenda) ═════════════════════════════════
+  // Todo pedido tem um canal de comunicação, aberto a qualquer momento do
+  // ciclo e por qualquer um dos dois lados: dúvidas, ocorrências e
+  // observações ficam no próprio pedido, com histórico e não lidas por lado.
+  _chatMsgs(p){ return (p&&p.conversa)||[]; }
+  _chatVisto(p,papel){ return ((p&&p.chatVisto)||{})[papel]||0; }
+  // Não lidas para um lado: mensagens do outro lado posteriores à última visita.
+  _chatNaoLidas(p,papel){ const v=this._chatVisto(p,papel);
+    return this._chatMsgs(p).filter(m=>m.papel!==papel&&(m.ts||0)>v).length; }
+  _chatLado(){ return this.role==='revenda'?'revenda':'loja'; }
+  // Pedidos que o lado atual enxerga — base dos contadores de não lidas.
+  _chatPedidosDoLado(){ const S=this.state;
+    if(this.role!=='revenda') return S.pedidos;
+    const u=this.usuarioAtual();
+    const revs=(u&&u.papel==='revenda')?this._minhasRevs(u):[S.revAtivo];
+    return S.pedidos.filter(p=>revs.includes(p.revendaId)); }
+  _chatTotalNaoLidas(){ const papel=this._chatLado();
+    return this._chatPedidosDoLado().reduce((a,p)=>a+this._chatNaoLidas(p,papel),0); }
+  _chatResumo(p){ const ms=this._chatMsgs(p); if(!ms.length) return '';
+    const u=ms[ms.length-1]; const quem=u.papel==='loja'?'Loja':'Revenda';
+    return quem+': '+(u.texto.length>60?u.texto.slice(0,60)+'…':u.texto); }
+
+  abrirChat(id){ this._ach=this._ach||{}; if(!this._ach[id]) this._ach[id]=(e)=>{
+    if(e&&e.stopPropagation) e.stopPropagation();
+    const papel=this._chatLado();
+    // abrir a conversa marca como lidas as mensagens do outro lado
+    this.setState(s=>({modal:'chat',form:{chatPedidoId:id,texto:''},
+      pedidos:s.pedidos.map(p=>p.id===id?{...p,chatVisto:{...(p.chatVisto||{}),[papel]:Date.now()}}:p)}));
+  }; return this._ach[id]; }
+
+  enviarMensagemChat=()=>{
+    const f=this.state.form; const id=f.chatPedidoId; const texto=(f.texto||'').trim();
+    if(!id) return;
+    if(!texto) return this.err('Escreva a mensagem antes de enviar.');
+    if(texto.length>1000) return this.err('A mensagem deve ter no máximo 1000 caracteres.');
+    const ped=this.state.pedidos.find(p=>p.id===id); if(!ped) return;
+    const papel=this._chatLado(); const agora=Date.now();
+    const msg={id:'msg-'+agora+'-'+(this._msgSeq=(this._msgSeq||0)+1),ts:agora,quando:this.ts(),
+      papel,autor:this.userName(),texto};
+    const primeira=!this._chatMsgs(ped).length;
+    this.setState(s=>({pedidos:s.pedidos.map(p=>p.id!==id?p:{...p,
+      conversa:[...(p.conversa||[]),msg],
+      chatVisto:{...(p.chatVisto||{}),[papel]:agora}}),
+      form:{...s.form,texto:'',erro:null}}));
+    if(primeira) this.updPed(id,p=>{p.trilha.push(this.tr('Conversa aberta no pedido por '+(papel==='loja'?'a Loja':'a revenda')));return p;});
+    this.audit('Mensagem no pedido',id+' · '+(papel==='loja'?'Loja → revenda':'Revenda → Loja')+' · '+(texto.length>80?texto.slice(0,80)+'…':texto));
+    // avisa o outro lado por e-mail
+    const dest=papel==='loja'?this._revEmail(ped.revendaId):this._lojaEmail();
+    this.notificar('pedido_mensagem',dest,{pedidoId:id,
+      revendaNome:this._revNome(ped.revendaId),autor:this.userName(),
+      origem:papel==='loja'?'a Loja Cidade Imperial':('a revenda '+this._revNome(ped.revendaId)),
+      mensagem:texto,quando:msg.quando});
+    setTimeout(()=>this._flushPersist(),0); };
+
+  // Botão/atalho da conversa, usado na lista da Loja, na lista da revenda e no
+  // detalhe do pedido. Destaca em roxo quando há mensagem nova do outro lado.
+  _chatCel(p){ const papel=this._chatLado(); const n=this._chatNaoLidas(p,papel);
+    const tot=this._chatMsgs(p).length;
+    const outro=papel==='loja'?'a revenda':'a Loja Cidade Imperial';
+    return {chatFn:this.abrirChat(p.id),
+      chatBtn:n?(String(n)+(n===1?' nova':' novas')):(tot?String(tot):'Abrir'),
+      chatLabel:n?('Conversa do pedido · '+n+(n===1?' mensagem nova':' mensagens novas'))
+        :(tot?('Conversa do pedido · '+tot+(tot===1?' mensagem':' mensagens')):'Abrir conversa do pedido'),
+      chatTitulo:tot?this._chatResumo(p):('Abrir a conversa deste pedido com '+outro),
+      chatBd:n?'#ddd0ee':'#e5ddcd',chatBg:n?'#f3eefa':'#fff',chatFg:n?'#5d3f96':'#6b6459'}; }
+
+  _chatVals(){ const S=this.state; const f=S.form||{};
+    if(S.modal!=='chat') return {mChat:false,
+      chat:{pedidoId:'',sub:'',vazio:true,vazioTxt:'',msgs:[],placeholder:'',rodape:''}};
+    const p=S.pedidos.find(x=>x.id===f.chatPedidoId)||{itens:[]};
+    const papel=this._chatLado(); const ms=this._chatMsgs(p);
+    const revNome=this._revNome(p.revendaId)||'—';
+    const outro=papel==='loja'?('a revenda '+revNome):'a Loja Cidade Imperial';
+    return {mChat:true,
+      chat:{pedidoId:p.id||'',
+        sub:(papel==='loja'?('Revenda '+revNome):'Loja Cidade Imperial')+' · '
+          +(ms.length?(ms.length+(ms.length===1?' mensagem':' mensagens')):'nenhuma mensagem ainda'),
+        vazio:ms.length===0,
+        vazioTxt:'Use esta conversa para dúvidas, ocorrências e observações deste pedido. Tudo o que for escrito aqui fica registrado junto do pedido, e '+outro+' recebe um aviso por e-mail.',
+        msgs:ms.map(m=>{ const meu=m.papel===papel;
+          return {texto:m.texto,quando:m.quando,
+            autor:(m.papel==='loja'?'Loja Cidade Imperial':('Revenda '+revNome))+' · '+m.autor+(meu?' (você)':''),
+            align:meu?'flex-end':'flex-start',txtAlign:meu?'right':'left',
+            bg:meu?'#f5efe3':'#fff',bd:meu?'#e5d9bd':'#eae3d6',
+            radius:meu?'12px 12px 3px 12px':'12px 12px 12px 3px',
+            autorFg:meu?'#8f682a':'#5d3f96'}; }),
+        placeholder:'Escreva sua mensagem para '+outro+'…',
+        rodape:'A mensagem entra na trilha do pedido, fica registrada na auditoria e '+outro+' é avisada por e-mail.'}}; }
+
   // ── Inventário de estoque ────────────────────────────────────────────────
   _invAtual(){ const inv=this.state.inventarios||[]; return inv.length?inv.reduce((a,b)=>(b.ts||0)>(a.ts||0)?b:a):null; }
   // Saídas atendidas com estoque da Loja depois do lançamento. NÃO abatem o
@@ -7011,14 +7161,15 @@ class Component extends DCLogic {
 
     // nav (itens filtrados pelas permissões do usuário)
     const act=k=>scr===k||(k==='ped'&&scr==='peddet')||(k==='cot'&&scr==='cotdet')||(k==='forn'&&scr==='forndet')||(k==='prod'&&scr==='proddet')||(k==='rev'&&scr==='revdet');
-    const mk=(k,label,badge)=>({label,badge:badge?String(badge):'',temBadge:!!badge,go:this.go(k),
+    const mk=(k,label,badge,chat)=>({label,badge:badge?String(badge):'',temBadge:!!badge,go:this.go(k),
+      chatBadge:chat?String(chat):'',temChat:!!chat,
       bg:act(k)?'#f5efe3':'transparent',fg:act(k)?'#8f682a':'#4a453d',fw:act(k)?'600':'500'});
     const fPedPend=PEDS.filter(p=>p.itens.some(i=>i.st==='direto'&&i.fornecedorId===fid)).length;
     const fCotPend=S.cotacoes.filter(c=>c.convidados.includes(fid)&&c.status==='aguardando propostas'&&!c.propostas.some(p=>p.fornecedorId===fid)).length;
     let navGroups;
     if(isLoja){ navGroups=[
       {label:'Operação',items:[mk('dash','Painel geral'),
-        pode('pedidos.ver')&&mk('ped','Pedidos',pendentes),
+        pode('pedidos.ver')&&mk('ped','Pedidos',pendentes,this._chatTotalNaoLidas()),
         pode('cotacoes.ver')&&mk('cot','Cotações',S.cotacoes.filter(c=>c.status==='aguardando propostas').length),
         pode('faturamento.ver')&&mk('fat','Faturamento'),
         pode('inventario.ver')&&mk('inv','Inventário de estoque')]},
@@ -7034,7 +7185,7 @@ class Component extends DCLogic {
       {label:'Cadastros',items:[mk('fprod','Meus produtos',S.produtos.filter(p=>this._pTemForn(p,fid)&&!this._fichaCompleta(p)).length)]},
       {label:'Financeiro',items:[mk('froy','Royalties devidos')]}];
     else navGroups=[
-      {label:'Compras',items:[mk('cat','Catálogo de produtos'),mk('rped','Meus pedidos')]}];
+      {label:'Compras',items:[mk('cat','Catálogo de produtos'),mk('rped','Meus pedidos',0,this._chatTotalNaoLidas())]}];
     navGroups=navGroups.map(g=>({...g,items:g.items.filter(Boolean)})).filter(g=>g.items.length);
 
     // fechamentos (RF36–RF41): consolidação, cobrança, vencimento e status
@@ -7191,7 +7342,7 @@ class Component extends DCLogic {
         &&(S.filtroRev==='0'||p.revendaId===+S.filtroRev)
         &&(!bp||p.id.toLowerCase().includes(bp)||R(p.revendaId).nome.toLowerCase().includes(bp)))
       .map(p=>{ const sres=p.status==='pendente'?this._saldoItens(p.itens):null; const schip=sres?this._saldoChip(sres):null;
-        return {...pedRow(p),etapaTxt:this._etapaTxt(p),pendente:p.status==='pendente'&&(this.pode('pedidos.aprovar')||this.pode('pedidos.rejeitar')),aguarda:p.status==='pendente'?idade(p.data):'',
+        return {...pedRow(p),...this._chatCel(p),etapaTxt:this._etapaTxt(p),pendente:p.status==='pendente'&&(this.pode('pedidos.aprovar')||this.pode('pedidos.rejeitar')),aguarda:p.status==='pendente'?idade(p.data):'',
         temSaldoAlerta:!!schip,saldoLabel:schip?schip.label:'',saldoBg:schip?schip.bg:'',saldoFg:schip?schip.fg:'',
         aprovarFn:this.aprovar(p.id),rejeitarFn:this.open('rejeitar',{pedidoId:p.id})};});
     const valMes=PEDS.filter(p=>p.data.endsWith('/'+this.compAtual().replace('/','/'))||p.data.slice(3)===this.compAtual()).reduce((a,p)=>a+(p.total),0);
@@ -7234,7 +7385,7 @@ class Component extends DCLogic {
         steps=steps.map((s,i)=>({...s,temLinha:i>0}));
         const cotIds=[...new Set(p.itens.filter(i=>i.cotacaoId&&i.st==='cotacao').map(i=>i.cotacaoId))];
         const dt=destTxt(p);
-        pd={id:p.id,steps,data:p.data,...this.chip(p.status),etapaTxt:this._etapaTxt(p),revNome:R(p.revendaId).nome,revCidade:R(p.revendaId).cidade||'',revContato:((R(p.revendaId).telefone&&R(p.revendaId).telefone!=='—')?('📞 '+R(p.revendaId).telefone+' · '):'')+(R(p.revendaId).email||''),
+        pd={id:p.id,steps,data:p.data,...this._chatCel(p),...this.chip(p.status),etapaTxt:this._etapaTxt(p),revNome:R(p.revendaId).nome,revCidade:R(p.revendaId).cidade||'',revContato:((R(p.revendaId).telefone&&R(p.revendaId).telefone!=='—')?('📞 '+R(p.revendaId).telefone+' · '):'')+(R(p.revendaId).email||''),
           fornDest:dt==='—'?'— ainda não definido —':dt,
           temCot:cotIds.length>0,cotId:cotIds.join(', '),verCot:cotIds.length?this.openCot(cotIds[0]):null,
           itens:p.itens.map((i,ix)=>{const pr=P(i.produtoId); const st=i.st||'pendente';
@@ -7867,7 +8018,7 @@ class Component extends DCLogic {
     const revsCtx=(isRev&&S.revGrupo&&uAtual)?this._minhasRevs(uAtual):[rid];
     const rpedGrupo=isRev&&S.revGrupo&&revsCtx.length>1;
     const rPedRows=PEDS.filter(p=>revsCtx.includes(p.revendaId)&&((S.filtroEtapaRev||'0')==='0'||this._etapaPedIdx(p)===+S.filtroEtapaRev)).map(p=>({id:p.id,data:p.data,revTag:rpedGrupo?(R(p.revendaId).nome||''):'',
-      etapaTxt:this._etapaTxt(p),
+      etapaTxt:this._etapaTxt(p),...this._chatCel(p),
       fotos:p.itens.map(i=>({src:this.fotosDe(P(i.produtoId))[0],ver:this.verFoto(i.produtoId)})),
       itensN:p.itens.length+(p.itens.length===1?' item':' itens'),totalFmt:this._revTotalFmt(p),
       fornNome:destTxt(p),...this.chip(p.status),
@@ -8268,6 +8419,8 @@ class Component extends DCLogic {
       kpis,recRows,barRows,
       // pedidos
       pedRows,stOpts,filtroStatus:S.filtroStatus,setFiltroStatus:this.setFiltroStatus,pd,
+      // conversa por pedido
+      ...this._chatVals(),fxTextoChat:this.fx('texto'),enviarMensagemChat:this.enviarMensagemChat,
       pedKpis,buscaPed:S.buscaPed,setBuscaPed:this.setBuscaPed,filtroRev:S.filtroRev,setFiltroRev:this.setFiltroRev,revFilterOpts,
       etapaOpts,filtroEtapa:S.filtroEtapa||'0',setFiltroEtapa:this.setFiltroEtapa,filtroEtapaRev:S.filtroEtapaRev||'0',setFiltroEtapaRev:this.setFiltroEtapaRev,
       // cotações

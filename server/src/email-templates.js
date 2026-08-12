@@ -259,6 +259,18 @@ export const TEMPLATES = {
       linhas([['Competência', v.competencia], ['Valor', v.valor], ['Data do pagamento', v.data], ['Comprovante', v.comprovante]]), 'Royalties'),
   }),
 
+  // ── Conversa do pedido ────────────────────────────────────────────────
+  // Mensagem trocada entre a Loja e a revenda no canal do pedido.
+  pedido_mensagem: (v) => ({
+    subject: `Nova mensagem no pedido ${v.pedidoId}`,
+    html: layout('Nova mensagem no pedido',
+      p(`${b(v.autor)}, por ${esc(v.origem)}, enviou uma mensagem na conversa do pedido ${b(v.pedidoId)}.`) +
+      linhas([['Pedido', v.pedidoId], ['Revenda', v.revendaNome], ['Enviada por', v.autor], ['Quando', v.quando]]) +
+      '<div style="border-left:3px solid #B38335;background:#faf7f0;padding:12px 16px;margin:4px 0 14px;font-size:14px;line-height:1.6;color:#272525;white-space:pre-wrap">' +
+      esc(v.mensagem) + '</div>' +
+      p('Responda pela plataforma, na conversa do próprio pedido — assim o histórico fica todo registrado junto do pedido.'), 'Pedido'),
+  }),
+
   // ── Acesso de usuários ────────────────────────────────────────────────
   // Credenciais do primeiro login, enviadas na criação do usuário (quando o
   // administrador opta pelo envio) ou em um reenvio com nova senha inicial.
