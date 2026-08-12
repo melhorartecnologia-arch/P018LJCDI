@@ -279,13 +279,13 @@ input::placeholder,textarea::placeholder{color:#b0a795}
     <div style="font-size:13px;color:#8a8378;margin-bottom:12px">Criado em {{pd.data}} · {{pd.revNome}} — {{pd.revCidade}}</div>
     <div onClick="{{pd.chatFn}}" title="Abrir a conversa deste pedido com a revenda" style="display:inline-flex;align-items:center;gap:7px;border:1px solid {{pd.chatBd}};background:{{pd.chatBg}};color:{{pd.chatFg}};border-radius:9px;padding:8px 14px;font-size:12.5px;font-weight:700;cursor:pointer;margin-bottom:16px" style-hover="filter:brightness(.97)">💬 {{pd.chatLabel}}</div>
     <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:18px 22px;margin-bottom:14px">
-      <div style="display:flex;align-items:flex-start">
+      <div style="display:flex;align-items:flex-start;overflow-x:auto;padding-bottom:4px">
         <sc-for list="{{pd.steps}}" as="s" hint-placeholder-count="4">
-          <sc-if value="{{s.temLinha}}" hint-placeholder-val="{{false}}"><div style="flex:1;height:2px;background:#eae3d6;margin:7px 10px 0;min-width:24px"></div></sc-if>
-          <div style="display:flex;flex-direction:column;align-items:center;text-align:center;max-width:150px;flex:none">
+          <sc-if value="{{s.temLinha}}" hint-placeholder-val="{{false}}"><div style="flex:1;height:2px;background:#eae3d6;margin:7px 7px 0;min-width:14px"></div></sc-if>
+          <div style="display:flex;flex-direction:column;align-items:center;text-align:center;width:124px;flex:none">
             <div style="width:16px;height:16px;border-radius:50%;background:{{s.dotBg}};border:3px solid {{s.dotBd}};box-sizing:border-box"></div>
-            <div style="font-size:12.5px;font-weight:700;margin-top:7px;color:{{s.fg}}">{{s.label}}</div>
-            <div style="font-size:11px;color:#a89f90;margin-top:2px">{{s.sub}}</div>
+            <div style="font-size:11.5px;font-weight:700;margin-top:7px;color:{{s.fg}};line-height:1.3">{{s.label}}</div>
+            <div style="font-size:10.5px;color:#a89f90;margin-top:2px;line-height:1.35">{{s.sub}}</div>
             <sc-if value="{{s.atual}}" hint-placeholder-val="{{false}}"><div style="font-size:9.5px;font-weight:700;letter-spacing:.06em;color:#8a5a12;background:#fdf3e0;border-radius:6px;padding:2px 7px;margin-top:4px">ETAPA ATUAL</div></sc-if>
           </div>
         </sc-for>
@@ -4363,7 +4363,7 @@ class Component extends DCLogic {
     return 1; }
   _etapaPedIdx(p){ const es=(p.itens||[]).map(i=>this._etapaItemIdx(p,i)).filter(e=>e>0);
     return es.length?Math.min(...es):0; }
-  _etapaTxt(p){ const n=this._etapaPedIdx(p); return n>0?('Etapa '+n+'/10 · '+this._etapaLabel(n)):'Pedido rejeitado'; }
+  _etapaTxt(p){ const n=this._etapaPedIdx(p); return n>0?('Etapa '+n+'/'+this.ETAPAS_PED.length+' · '+this._etapaLabel(n)):'Pedido rejeitado'; }
 
   get role(){ return this.state.role ?? (this.props.perfilInicial ?? 'loja'); }
   get scr(){ return this.state.scr ?? ({loja:'dash',fornecedor:'fped',revenda:'cat'})[this.role]; }
@@ -5506,9 +5506,9 @@ class Component extends DCLogic {
       if(eA!==eD&&eD>0) trans={de:this._etapaLabel(eA),para:this._etapaLabel(eD),n:eD}; }
     this.setState(s=>({pedidos:s.pedidos.map(p=>{ if(p.id!==id) return p;
       const novo=fn({...p,trilha:[...p.trilha]});
-      if(trans) novo.trilha.push(this.tr('Etapa do pedido: '+trans.de+' → '+trans.para+' (etapa '+trans.n+' de 9)'));
+      if(trans) novo.trilha.push(this.tr('Etapa do pedido: '+trans.de+' → '+trans.para+' (etapa '+trans.n+' de '+this.ETAPAS_PED.length+')'));
       return novo; })}));
-    if(trans) this.audit('Transição de etapa do pedido',id+' · '+trans.de+' → '+trans.para+' (etapa '+trans.n+' de 9)'); }
+    if(trans) this.audit('Transição de etapa do pedido',id+' · '+trans.de+' → '+trans.para+' (etapa '+trans.n+' de '+this.ETAPAS_PED.length+')'); }
   updCot(id,fn){ this.setState(s=>({cotacoes:s.cotacoes.map(c=>c.id===id?fn({...c,propostas:[...c.propostas],historico:[...c.historico]}):c)})); }
 
   salvarForn=()=>{ if(!this.pode('cadastros.fornecedores')) return this.negado('Você não tem permissão para gerenciar fornecedores.','cadastros.fornecedores'); const f=this.state.form; if(!f.nome||!f.cnpj) return this.err('Informe ao menos nome e CNPJ.');
