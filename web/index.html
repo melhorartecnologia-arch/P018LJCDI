@@ -1507,7 +1507,13 @@ input::placeholder,textarea::placeholder{color:#b0a795}
             <div onClick="{{v.toggle}}" style="font-size:12.5px;font-weight:600;border-radius:8px;padding:8px 12px;cursor:pointer;background:{{v.bg}};color:{{v.fg}};border:1px solid {{v.bd}}">{{v.mark}}{{v.nome}}</div>
           </sc-for>
         </div>
-        <div style="font-size:11px;color:#b0a795;margin-top:12px">Os produtos dos fornecedores visíveis aparecem abaixo — bloqueie itens específicos sem ocultar o fornecedor inteiro.</div>
+        <div style="font-size:11px;color:#b0a795;margin-top:12px">Por padrão a revenda enxerga o catálogo inteiro: todo fornecedor novo — e os produtos que vierem com ele — entra liberado automaticamente. Os produtos dos fornecedores visíveis aparecem abaixo; bloqueie itens específicos sem ocultar o fornecedor inteiro.</div>
+        <sc-if value="{{rd.foraDoPadrao}}" hint-placeholder-val="{{false}}">
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:12px;color:#6d4a10;background:#fdf3e0;border:1px solid #ecd9ae;border-radius:10px;padding:11px 14px;margin-top:11px;line-height:1.55">
+            <span style="flex:1;min-width:240px">⚠️ Esta revenda está fora do padrão — {{rd.restricaoTxt}}. Enquanto a restrição valer, os produtos correspondentes não aparecem no catálogo dela.</span>
+            <div onClick="{{rd.liberarTudo}}" title="Liberar todos os fornecedores ativos e desbloquear todos os produtos desta revenda" style="background:#B38335;color:#fff;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;flex:none" style-hover="background:#9a6f2b">Liberar catálogo completo</div>
+          </div>
+        </sc-if>
       </div>
     </div>
     <div style="font-size:15px;font-weight:700;margin:4px 0 10px">Visibilidade por produto</div>
@@ -4657,7 +4663,7 @@ class Component extends DCLogic {
         "Preencha uma linha por registro, salve e clique em \"⬆ Carregar planilha preenchida…\". A plataforma abre a prévia com os contadores (lidas, a incluir, a atualizar, com erro) e mostra linha a linha o que vai acontecer, com o motivo de cada recusa — nada é gravado até você clicar em \"Gravar N registro(s)\". Linhas com erro são ignoradas; corrija-as e carregue de novo.",
         "Confira os 4 indicadores no topo — Fornecedores ativos, Contratos vigentes, Royalty médio e Royalty gerado — para ter a visão geral antes de agir.",
         "Para localizar um fornecedor, digite nome, CNPJ ou cidade no campo \"Buscar fornecedor por nome, CNPJ ou cidade…\"; a lista é filtrada conforme você digita.",
-        "Para incluir um fornecedor, clique em \"+ Novo fornecedor\" (canto superior direito), preencha ao menos Razão social e CNPJ — Cidade/UF, E-mail de contato, Telefone (com máscara automática) e Pessoa de contato são opcionais — e clique em \"Salvar fornecedor\".",
+        "Para incluir um fornecedor, clique em \"+ Novo fornecedor\" (canto superior direito), preencha ao menos Razão social e CNPJ — Cidade/UF, E-mail de contato, Telefone (com máscara automática) e Pessoa de contato são opcionais — e clique em \"Salvar fornecedor\". O fornecedor novo já nasce visível para TODAS as revendas, e com ele os produtos que você cadastrar depois.",
         "Para ver a ficha completa, clique sobre a linha do fornecedor na tabela (a seta › na coluna Faturado indica que a linha é clicável); abre a página \"Detalhe do fornecedor\" com seus contratos e produtos.",
         "Na tabela \"Contratos e vigências\", acompanhe as colunas Royalty, Vigência, Histórico de royalty e Status; contratos próximos do fim mostram na Vigência o aviso \"Vence em X dias\" ou \"Vencido há X dias\".",
         "Para mudar o percentual ou o dia acordado de pagamento de um contrato vigente, clique em \"Ajustar royalty…\", preencha a janela \"Ajustar contrato de royalty\" e clique em \"Salvar alteração\"; as mudanças ficam registradas na coluna Histórico de royalty.",
@@ -4701,7 +4707,7 @@ class Component extends DCLogic {
         "Preencha uma linha por registro, salve e clique em \"⬆ Carregar planilha preenchida…\". A plataforma abre a prévia com os contadores (lidas, a incluir, a atualizar, com erro) e mostra linha a linha o que vai acontecer, com o motivo de cada recusa — nada é gravado até você clicar em \"Gravar N registro(s)\". Linhas com erro são ignoradas; corrija-as e carregue de novo.",
         "No topo da tela, confira os quatro indicadores (Ativos no catálogo, Inativos, Fornecedores representados e Movimentado em pedidos) para ter uma visão geral do catálogo.",
         "Para encontrar um produto, digite no campo \"Buscar por código ou descrição…\" e/ou use os seletores \"Todos os fornecedores\" e \"Todos os status\" (que filtra por Ativos no catálogo ou Inativos).",
-        "Para cadastrar um novo produto, clique no botão \"+ Novo produto\", no canto superior direito.",
+        "Para cadastrar um novo produto, clique no botão \"+ Novo produto\", no canto superior direito. Assim que ele for homologado, entra automaticamente no catálogo de todas as revendas que enxergam os fornecedores vinculados — o padrão é catálogo cheio.",
         "Na janela que abrir, preencha a \"Descrição\", busque e selecione um ou mais fornecedores em \"Fornecedores / contratos\" (o mesmo produto pode ficar vinculado a vários) e informe a \"Unidade\" e o \"Preço estimado (R$)\" — descrição, ao menos um fornecedor e preço estimado são obrigatórios.",
         "Clique em \"Homologar produto\" para salvar o cadastro (ou em \"Cancelar\" para desistir).",
         "Para ver os detalhes de um produto, clique sobre a linha dele na tabela: abre a tela \"Detalhe do produto\", com fornecedor, contrato, royalty do contrato, histórico de preço e pedidos, além do botão \"Editar produto\".",
@@ -4750,14 +4756,16 @@ class Component extends DCLogic {
         "Na tabela, acompanhe as colunas Revenda, Acesso (mostra o e-mail de login), Visibilidade, Pedidos, Valor em pedidos e Status de cada revenda.",
         "Clique em qualquer linha da tabela para abrir o detalhe daquela revenda.",
         "No detalhe, use \"Editar dados\" para corrigir o cadastro, ou o botão ao lado (\"Inativar revenda\" / \"Reativar revenda\") para ligar ou desligar o acesso da revenda.",
-        "No quadro \"Visibilidade de fornecedores\", clique em cada fornecedor para liberar (fica com ✓) ou ocultar — isso define de quais fornecedores a revenda pode ver e pedir.",
+        "No quadro \"Visibilidade de fornecedores\", clique em cada fornecedor para liberar (fica com ✓) ou ocultar — isso define de quais fornecedores a revenda pode ver e pedir. Todos vêm liberados por padrão.",
+        "Se você ocultar um fornecedor ou bloquear um produto, aparece um aviso âmbar dizendo o que está restrito, com o botão \"Liberar catálogo completo\" para devolver a revenda ao padrão de uma só vez.",
         "Na tabela \"Visibilidade por produto\", clique em \"Bloquear\" ou \"Liberar\" para restringir itens específicos sem ocultar o fornecedor inteiro.",
         "Para reenviar o login à revenda, clique em \"Reenviar convite de acesso\"; use \"← Voltar para revendas\" para retornar à lista."
       ],
       "dicas": [
         "Nome e CNPJ são obrigatórios ao cadastrar — sem eles aparece o aviso \"Informe ao menos nome e CNPJ.\".",
         "A coluna Visibilidade resume quantos fornecedores estão liberados e quantos produtos estão bloqueados; todos esses ajustes ficam dentro do detalhe da revenda.",
-        "A visibilidade de fornecedores só pode ser ajustada depois de salvar o cadastro, entrando no detalhe da revenda."
+        "A visibilidade de fornecedores só pode ser ajustada depois de salvar o cadastro, entrando no detalhe da revenda.",
+        "Toda revenda nova nasce com o catálogo COMPLETO: todos os fornecedores liberados e nenhum produto bloqueado. Restringir é uma decisão explícita, tomada depois no detalhe da revenda."
       ]
     },
     "revdet": {
@@ -5410,9 +5418,11 @@ class Component extends DCLogic {
   salvarForn=()=>{ if(!this.pode('cadastros.fornecedores')) return this.negado('Você não tem permissão para gerenciar fornecedores.','cadastros.fornecedores'); const f=this.state.form; if(!f.nome||!f.cnpj) return this.err('Informe ao menos nome e CNPJ.');
     if(f.editId){ this.setState(s=>({fornecedores:s.fornecedores.map(x=>x.id===f.editId?{...x,nome:f.nome,cnpj:f.cnpj,cidade:f.cidade||'—',contato:f.contato||'—',telefone:f.telefone||'—',contatoNome:f.contatoNome||''}:x),modal:null,form:{}}));
       this.audit('Edição de fornecedor',f.nome); return; }
-    const id=this.state.seq.forn;
-    this.setState(s=>({fornecedores:[...s.fornecedores,{id,nome:f.nome,cnpj:f.cnpj,cidade:f.cidade||'—',contato:f.contato||'—',telefone:f.telefone||'—',contatoNome:f.contatoNome||'',ativo:true}],seq:{...s.seq,forn:id+1},modal:null,form:{}}));
-    this.audit('Cadastro de fornecedor',f.nome); };
+    const id=this.state.seq.forn; const nRevs=this.state.revendas.length;
+    this.setState(s=>({fornecedores:[...s.fornecedores,{id,nome:f.nome,cnpj:f.cnpj,cidade:f.cidade||'—',contato:f.contato||'—',telefone:f.telefone||'—',contatoNome:f.contatoNome||'',ativo:true}],
+      revendas:this._revsComForn(s.revendas,id),seq:{...s.seq,forn:id+1},modal:null,form:{}}));
+    this.audit('Cadastro de fornecedor',f.nome+' · visível por padrão para as '+nRevs+' revenda(s) cadastrada(s)');
+    setTimeout(()=>this._flushPersist(),0); };
   toggleForn(id){ this._tf=this._tf||{}; if(!this._tf[id]) this._tf[id]=()=>{ const f=this.state.fornecedores.find(x=>x.id===id);
     this.setState(s=>({fornecedores:s.fornecedores.map(x=>x.id===id?{...x,ativo:!x.ativo}:x)}));
     this.audit(f.ativo?'Inativação de fornecedor':'Reativação de fornecedor',f.nome); }; return this._tf[id]; }
@@ -5465,6 +5475,14 @@ class Component extends DCLogic {
   // legado fornecedorId permanece como o primeiro vínculo, para compatibilidade
   // com dados gravados antes desta versão.
   _pForns(p){ return (p&&p.fornecedorIds&&p.fornecedorIds.length)?p.fornecedorIds:((p&&p.fornecedorId)?[p.fornecedorId]:[]); }
+  // O padrão da plataforma é catálogo cheio: um fornecedor novo nasce visível
+  // para TODAS as revendas — e, com ele, todos os produtos que vierem depois.
+  // Ocultar é sempre uma decisão explícita da Loja, feita no detalhe da revenda.
+  _revsComForn(revendas,fid){ return (revendas||[]).map(r=>((r.visibilidade||[]).includes(fid)?r
+    :{...r,visibilidade:[...(r.visibilidade||[]),fid]})); }
+  // Visibilidade padrão de uma revenda nova: todos os fornecedores cadastrados
+  // (os inativos já são filtrados na hora de montar o catálogo).
+  _visPadrao(forns){ return (forns||this.state.fornecedores).map(x=>x.id); }
   _pTemForn(p,fid){ return this._pForns(p).includes(fid); }
   _pFornNomes(p){ return this._pForns(p).map(id=>this._fornNome(id)).join(', '); }
   toggleFornProd(fid){ this._tfp=this._tfp||{}; if(!this._tfp[fid]) this._tfp[fid]=()=>this.setState(s=>{ const cur=s.form.fornecedorIds||[]; const on=cur.includes(fid);
@@ -5519,11 +5537,24 @@ class Component extends DCLogic {
     if(f.editId){ this.setState(s=>({revendas:s.revendas.map(x=>x.id===f.editId?{...x,nome:f.nome,cnpj:f.cnpj,cidade:f.cidade||'—',email:f.email||x.email,telefone:f.telefone||'—'}:x),modal:null,form:{}}));
       this.audit('Edição de revenda',f.nome); return; }
     const id=this.state.seq.rev;
-    this.setState(s=>({revendas:[...s.revendas,{id,nome:f.nome,cnpj:f.cnpj,cidade:f.cidade||'—',telefone:f.telefone||'—',ativo:true,visibilidade:this.state.fornecedores.filter(x=>x.ativo).map(x=>x.id),prodBloq:[],email:f.email||'acesso@'+f.nome.toLowerCase().replace(/[^a-z]/g,'')+'.com.br',ultimoAcesso:'— nunca acessou —'}],seq:{...s.seq,rev:id+1},modal:null,form:{}}));
-    this.audit('Cadastro de revenda',f.nome); };
+    this.setState(s=>({revendas:[...s.revendas,{id,nome:f.nome,cnpj:f.cnpj,cidade:f.cidade||'—',telefone:f.telefone||'—',ativo:true,visibilidade:this._visPadrao(),prodBloq:[],email:f.email||'acesso@'+f.nome.toLowerCase().replace(/[^a-z]/g,'')+'.com.br',ultimoAcesso:'— nunca acessou —'}],seq:{...s.seq,rev:id+1},modal:null,form:{}}));
+    this.audit('Cadastro de revenda',f.nome+' · catálogo completo por padrão: '+this.state.produtos.filter(p=>p.ativo).length+' produto(s) de '+this.state.fornecedores.length+' fornecedor(es)');
+    setTimeout(()=>this._flushPersist(),0); };
   toggleRev(id){ this._trv=this._trv||{}; if(!this._trv[id]) this._trv[id]=()=>{ const r=this.state.revendas.find(x=>x.id===id);
     this.setState(s=>({revendas:s.revendas.map(x=>x.id===id?{...x,ativo:!x.ativo}:x)}));
     this.audit(r.ativo?'Inativação de revenda':'Reativação de revenda',r.nome); }; return this._trv[id]; }
+  // Devolve a revenda ao padrão da plataforma: todos os fornecedores visíveis
+  // e nenhum produto bloqueado.
+  liberarTudoRev(rid){ this._ltr=this._ltr||{}; if(!this._ltr[rid]) this._ltr[rid]=()=>{
+    if(!this.pode('cadastros.revendas')) return this.negado('Você não tem permissão para gerenciar revendas.','cadastros.revendas');
+    const r=this.state.revendas.find(x=>x.id===rid); if(!r) return;
+    const ocultos=this.state.fornecedores.filter(f=>f.ativo&&!(r.visibilidade||[]).includes(f.id));
+    const bloq=(r.prodBloq||[]).length;
+    this.setState(s=>({revendas:s.revendas.map(x=>x.id!==rid?x:{...x,visibilidade:this._visPadrao(s.fornecedores),prodBloq:[]})}));
+    this.audit('Catálogo da revenda devolvido ao padrão',r.nome+' · '+ocultos.length+' fornecedor(es) liberado(s)'
+      +(bloq?' · '+bloq+' produto(s) desbloqueado(s)':''));
+    this.toast('Catálogo completo liberado para '+r.nome+'.','ok');
+    setTimeout(()=>this._flushPersist(),0); }; return this._ltr[rid]; }
   toggleVisib(rid,fid){ this._tv=this._tv||{}; const k=rid+'-'+fid; if(!this._tv[k]) this._tv[k]=()=>{
     const r=this.state.revendas.find(x=>x.id===rid); const f=this.state.fornecedores.find(x=>x.id===fid);
     this.setState(s=>({revendas:s.revendas.map(x=>{ if(x.id!==rid)return x; const on=x.visibilidade.includes(fid);
@@ -5865,14 +5896,16 @@ class Component extends DCLogic {
     const nNovos=bons.filter(r=>r.acao==='novo').length, nAtu=bons.filter(r=>r.acao==='atualiza').length;
     const nErro=(f.impRows||[]).length-bons.length;
     this.setState(s=>{
-      if(tipo==='fornecedor'){ let seq=s.seq.forn; const lista=[...s.fornecedores];
+      if(tipo==='fornecedor'){ let seq=s.seq.forn; const lista=[...s.fornecedores]; const novosF=[];
         bons.forEach(r=>{ const d=r.dados;
           if(r.alvoId!=null){ const ix=lista.findIndex(x=>x.id===r.alvoId);
             lista[ix]={...lista[ix],nome:d.nome,cnpj:d.cnpj,cidade:d.cidade,contato:d.contato,telefone:d.telefone,contatoNome:d.contatoNome,ativo:d.ativo}; }
-          else { lista.push({id:seq,nome:d.nome,cnpj:d.cnpj,cidade:d.cidade,contato:d.contato,telefone:d.telefone,contatoNome:d.contatoNome,ativo:d.ativo}); seq++; } });
-        return {fornecedores:lista,seq:{...s.seq,forn:seq},modal:null,form:{}}; }
+          else { lista.push({id:seq,nome:d.nome,cnpj:d.cnpj,cidade:d.cidade,contato:d.contato,telefone:d.telefone,contatoNome:d.contatoNome,ativo:d.ativo}); novosF.push(seq); seq++; } });
+        // fornecedor importado também nasce visível para todas as revendas
+        let revsF=s.revendas; novosF.forEach(fid=>{ revsF=this._revsComForn(revsF,fid); });
+        return {fornecedores:lista,revendas:revsF,seq:{...s.seq,forn:seq},modal:null,form:{}}; }
       if(tipo==='revenda'){ let seq=s.seq.rev; const lista=[...s.revendas];
-        const visPad=s.fornecedores.filter(x=>x.ativo).map(x=>x.id);
+        const visPad=this._visPadrao(s.fornecedores);
         bons.forEach(r=>{ const d=r.dados;
           const mail=d.email||('acesso@'+d.nome.toLowerCase().replace(/[^a-z]/g,'')+'.com.br');
           if(r.alvoId!=null){ const ix=lista.findIndex(x=>x.id===r.alvoId);
@@ -7721,6 +7754,14 @@ class Component extends DCLogic {
             {label:'Valor em pedidos',val:this.fmt(peds.reduce((a,p)=>a+(p.total),0))},
             {label:'Faturado recebido',val:this.fmt(fats.reduce((a,f)=>a+f.valor,0))},
             {label:'Produtos visíveis',val:String(prodsVis.filter(p=>p.ativo&&!(r.prodBloq||[]).includes(p.id)).length)}],
+          fornOcultos:S.fornecedores.filter(f=>f.ativo&&!r.visibilidade.includes(f.id)).length,
+          foraDoPadrao:S.fornecedores.some(f=>f.ativo&&!r.visibilidade.includes(f.id))||(r.prodBloq||[]).length>0,
+          restricaoTxt:(()=>{ const oc=S.fornecedores.filter(f=>f.ativo&&!r.visibilidade.includes(f.id)).length;
+            const bq=(r.prodBloq||[]).length; const ps=[];
+            if(oc) ps.push(oc+(oc===1?' fornecedor oculto':' fornecedores ocultos'));
+            if(bq) ps.push(bq+(bq===1?' produto bloqueado':' produtos bloqueados'));
+            return ps.join(' · '); })(),
+          liberarTudo:this.liberarTudoRev(r.id),
           vis:S.fornecedores.filter(f=>f.ativo).map(f=>{const on=r.visibilidade.includes(f.id);
             return {nome:f.nome,toggle:this.toggleVisib(r.id,f.id),bg:on?'#f5efe3':'#fff',fg:on?'#8f682a':'#b0a795',bd:on?'#d9c193':'#e8e1d2',mark:on?'✓ ':''};}),
           prods:prodsVis.map(p=>{ const bloq=(r.prodBloq||[]).includes(p.id);
