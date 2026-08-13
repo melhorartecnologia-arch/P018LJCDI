@@ -238,7 +238,17 @@ input::placeholder,textarea::placeholder{color:#b0a795}
                 <div onClick="{{p.pdfFn}}" title="Gerar o documento completo do pedido em PDF" style="display:inline-flex;align-items:center;gap:4px;margin-top:5px;border:1px solid #ddd5c7;background:#fff;color:#6b6459;border-radius:7px;padding:3px 8px;font-size:10.5px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="background:#f7f3ea">&#128196; PDF</div></td>
               <td style="padding:11px 10px;font-size:13px;border-bottom:1px solid #f5f1e8">{{p.revNome}}</td>
               <td style="padding:11px 10px;border-bottom:1px solid #f5f1e8"><div style="display:flex;align-items:center"><sc-for list="{{p.fotos}}" as="ft" hint-placeholder-count="0"><sc-if value="{{ft.src}}" hint-placeholder-val="{{false}}"><img loading="lazy" src="{{ft.src}}" alt="item" onClick="{{ft.ver}}" title="Clique para ampliar" style="width:32px;height:32px;object-fit:cover;border-radius:8px;border:2px solid #fff;margin-right:-8px;box-shadow:0 1px 3px rgba(39,37,37,.18);cursor:zoom-in"></sc-if></sc-for><span style="font-size:12px;color:#8a8378;margin-left:16px;white-space:nowrap">{{p.itensN}}</span></div></td>
-              <td style="padding:11px 10px;font-size:13px;border-bottom:1px solid #f5f1e8">{{p.fornDest}}</td>
+              <td style="padding:11px 10px;font-size:13px;border-bottom:1px solid #f5f1e8">{{p.fornDest}}
+                <sc-if value="{{p.temRastLink}}" hint-placeholder-val="{{false}}">
+                  <div style="margin-top:5px"><a href="{{p.rastUrl}}" target="_blank" rel="noopener" onClick="{{p.rastStop}}" title="{{p.rastTitulo}}" style="display:inline-block;font-size:10.5px;font-weight:700;color:#2f6b39;text-decoration:none;background:#eef5ef;border:1px solid #cfe0d1;border-radius:6px;padding:2px 8px">&#128666; {{p.rastLabel}}</a></div>
+                </sc-if>
+                <sc-if value="{{p.temRastSemLink}}" hint-placeholder-val="{{false}}">
+                  <div title="{{p.rastTitulo}}" style="display:inline-block;font-size:10.5px;font-weight:700;color:#2f6b39;background:#eef5ef;border:1px solid #cfe0d1;border-radius:6px;padding:2px 8px;margin-top:5px">&#128666; {{p.rastLabel}}</div>
+                </sc-if>
+                <sc-if value="{{p.rastPend}}" hint-placeholder-val="{{false}}">
+                  <div title="O frete é responsabilidade do fornecedor — ele precisa informar a transportadora, o código e o link de rastreio" style="display:inline-block;font-size:10.5px;font-weight:700;color:#8a5a12;background:#fdf6e7;border:1px solid #f0e2c4;border-radius:6px;padding:2px 8px;margin-top:5px">&#128666; Rastreio pendente</div>
+                </sc-if>
+              </td>
               <td style="padding:11px 10px;font-size:13px;font-weight:600;text-align:right;border-bottom:1px solid #f5f1e8">{{p.totalFmt}}</td>
               <td style="padding:11px 10px;border-bottom:1px solid #f5f1e8">
                 <div onClick="{{p.chatFn}}" title="{{p.chatTitulo}}" style="display:inline-flex;align-items:center;gap:5px;border:1px solid {{p.chatBd}};background:{{p.chatBg}};color:{{p.chatFg}};border-radius:8px;padding:4px 9px;font-size:11.5px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="filter:brightness(.97)">&#128172; {{p.chatBtn}}</div>
@@ -352,6 +362,26 @@ input::placeholder,textarea::placeholder{color:#b0a795}
                 <span style="font-size:11.5px;color:#a89f90;white-space:nowrap">{{ax.quando}} · {{ax.autor}}</span>
               </div>
             </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{pd.temBlocoRast}}" hint-placeholder-val="{{false}}">
+          <div style="background:#fff;border:1px solid {{pd.rastBd}};border-left:3px solid {{pd.rastFg}};border-radius:12px;padding:15px 18px;margin-bottom:14px">
+            <div style="font-size:14px;font-weight:700;margin-bottom:3px;color:{{pd.rastFg}}">&#128666; {{pd.rastTitulo2}}</div>
+            <div style="font-size:12.5px;color:#6b6459;line-height:1.55">{{pd.rastTxt}}</div>
+            <sc-if value="{{pd.temRastLink}}" hint-placeholder-val="{{false}}">
+              <div style="margin-top:9px"><a href="{{pd.rastUrl}}" target="_blank" rel="noopener" style="display:inline-block;background:#2f6b39;color:#fff;border-radius:9px;padding:8px 14px;font-size:12.5px;font-weight:700;text-decoration:none">&#128279; Acompanhar a entrega no site da transportadora</a></div>
+            </sc-if>
+            <sc-if value="{{pd.rastFrete}}" hint-placeholder-val="{{false}}">
+              <div style="font-size:11.5px;color:#a89f90;margin-top:8px;line-height:1.5">{{pd.rastFrete}}</div>
+            </sc-if>
+            <sc-if value="{{pd.temRastHist}}" hint-placeholder-val="{{false}}">
+              <div style="margin-top:9px;border-top:1px dashed #eee7d8;padding-top:8px">
+                <div style="font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#a89f90;margin-bottom:4px">Rastreios anteriores</div>
+                <sc-for list="{{pd.rastHist}}" as="rh" hint-placeholder-count="0">
+                  <div style="font-size:11.5px;color:#8a8378;padding:2px 0">{{rh.txt}}</div>
+                </sc-for>
+              </div>
+            </sc-if>
           </div>
         </sc-if>
         <sc-if value="{{pd.temBlocoReceb}}" hint-placeholder-val="{{false}}">
@@ -1327,6 +1357,52 @@ input::placeholder,textarea::placeholder{color:#b0a795}
       <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:18px">
         <div onClick="{{mClose}}" style="border:1px solid #ddd5c7;border-radius:8px;padding:9px 15px;font-size:13px;font-weight:600;cursor:pointer;color:#6b6459" style-hover="background:#f7f3ea">Cancelar</div>
         <div onClick="{{confirmRecebimento}}" style="background:#2f6b39;color:#fff;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#265730">Confirmar recebimento</div>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{mRast}}" hint-placeholder-val="{{false}}">
+  <div style="position:fixed;inset:0;background:rgba(39,37,37,.45);display:flex;align-items:center;justify-content:center;z-index:55">
+    <div style="background:#fff;border-radius:14px;width:500px;max-width:92vw;max-height:88vh;overflow-y:auto;padding:22px 24px;box-shadow:0 18px 50px rgba(39,37,37,.25)">
+      <div style="font-size:16px;font-weight:700">&#128666; {{rastInfo.titulo}} — {{rastInfo.pedidoId}}</div>
+      <div style="font-size:12.5px;color:#8a8378;margin-top:2px">{{rastInfo.sub}}</div>
+      <div style="background:{{rastInfo.avisoBg}};border:1px solid {{rastInfo.avisoBd}};border-radius:9px;padding:10px 13px;margin-top:13px;font-size:11.5px;color:{{rastInfo.avisoFg}};line-height:1.55">
+        <b>{{rastInfo.freteTxt}}</b><div style="margin-top:3px">{{rastInfo.aviso}}</div>
+        <div style="margin-top:3px;opacity:.85">{{rastInfo.freteOrigem}}</div>
+      </div>
+      <sc-if value="{{rastInfo.jaTem}}" hint-placeholder-val="{{false}}">
+        <div style="background:#eef5ef;border:1px solid #cfe0d1;border-radius:9px;padding:9px 13px;margin-top:10px;font-size:11.5px;color:#2f6b39;line-height:1.5">{{rastInfo.jaTemTxt}}</div>
+      </sc-if>
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:13px 0 5px">Transportadora</div>
+      <select value="{{form.transpId}}" onChange="{{fxTransp}}" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525;cursor:pointer">
+        <sc-for list="{{transpOpts}}" as="o" hint-placeholder-count="3"><option value="{{o.v}}">{{o.label}}</option></sc-for>
+      </select>
+      <sc-if value="{{rastInfo.ehOutra}}" hint-placeholder-val="{{false}}">
+        <div style="font-size:12px;font-weight:600;color:#6b6459;margin:13px 0 5px">Nome da transportadora</div>
+        <input value="{{form.transpNome}}" onChange="{{fxTranspNome}}" placeholder="Ex.: Transportadora Serrana Ltda" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
+      </sc-if>
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:13px 0 5px">{{rastInfo.doc}} <span style="font-weight:400;color:#a89f90">— padrão da transportadora: {{rastInfo.dica}}</span></div>
+      <input value="{{form.rastCod}}" onChange="{{fxRastCod}}" maxlength="30" placeholder="{{rastInfo.dica}}" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525;font-weight:600;letter-spacing:.04em">
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:13px 0 5px">Link de rastreio <span style="font-weight:400;color:#a89f90">— montado no padrão da transportadora; edite se ela usar outro endereço</span></div>
+      <input value="{{form.rastUrl}}" onChange="{{fxRastUrl}}" placeholder="https://…" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525;font-size:12.5px">
+      <sc-if value="{{rastInfo.temUrl}}" hint-placeholder-val="{{false}}">
+        <div style="margin-top:6px"><a href="{{rastInfo.url}}" target="_blank" rel="noopener" style="font-size:11.5px;font-weight:700;color:#8f682a;text-decoration:none;background:#faf5e9;border:1px solid #e5d9bd;border-radius:7px;padding:4px 10px;display:inline-block">&#128279; Testar o link agora</a></div>
+      </sc-if>
+      <sc-if value="{{rastInfo.semLink}}" hint-placeholder-val="{{false}}">
+        <div style="font-size:11px;color:#8a8378;margin-top:6px;line-height:1.5">Entrega com frota própria não tem link de consulta: deixe o campo em branco e use a observação abaixo para dizer como a revenda acompanha (telefone do motorista, janela de entrega, contato do expedidor).</div>
+      </sc-if>
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:13px 0 5px">Previsão de entrega <span style="font-weight:400;color:#a89f90">— opcional</span></div>
+      <input value="{{form.rastPrev}}" onChange="{{fxRastPrev}}" inputmode="numeric" maxlength="10" placeholder="dd/mm/aaaa" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:13px 0 5px">Observação da entrega <span style="font-weight:400;color:#a89f90">— opcional · volumes, janela de entrega, contato</span></div>
+      <textarea value="{{form.rastObs}}" onChange="{{fxRastObs}}" rows="2" placeholder="Ex.: 2 volumes; entrega das 8h às 12h; falar com a expedição." style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525;font-size:13px;resize:vertical;line-height:1.5"></textarea>
+      <sc-if value="{{rastInfo.temHist}}" hint-placeholder-val="{{false}}">
+        <div style="font-size:11px;color:#a89f90;margin-top:9px">{{rastInfo.histN}} — o rastreio anterior fica guardado no pedido e a alteração entra na trilha.</div>
+      </sc-if>
+      <sc-if value="{{form.erro}}" hint-placeholder-val="{{false}}"><div style="color:#a33a2b;font-size:12.5px;margin-top:12px">{{form.erro}}</div></sc-if>
+      <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:18px">
+        <div onClick="{{mClose}}" style="border:1px solid #ddd5c7;border-radius:8px;padding:9px 15px;font-size:13px;font-weight:600;cursor:pointer;color:#6b6459" style-hover="background:#f7f3ea">Cancelar</div>
+        <div onClick="{{confirmRastreio}}" style="background:#B38335;color:#fff;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#9a6f2b">Salvar rastreio</div>
       </div>
     </div>
   </div>
@@ -2454,6 +2530,8 @@ input::placeholder,textarea::placeholder{color:#b0a795}
             </div>
             <div style="font-size:12.5px;color:#6b6459;margin-top:4px">{{p.itensTxt}}</div>
             <sc-if value="{{p.parcial}}" hint-placeholder-val="{{false}}"><div style="font-size:11px;font-weight:600;color:#8a5a12;margin-top:2px">{{p.parcial}}</div></sc-if>
+            <sc-if value="{{p.rastAviso}}" hint-placeholder-val="{{false}}"><div style="font-size:11.5px;font-weight:600;color:#8a5a12;background:#fdf6e7;border:1px solid #f0e2c4;border-radius:8px;padding:6px 10px;margin-top:5px;line-height:1.45">&#128666; {{p.rastAviso}}</div></sc-if>
+            <sc-if value="{{p.temRast}}" hint-placeholder-val="{{false}}"><div title="{{p.rastTitulo}}" style="font-size:11.5px;font-weight:600;color:#2f6b39;margin-top:4px">&#128666; {{p.rastLabel}}</div></sc-if>
             <div style="font-size:12px;color:#a89f90;margin-top:2px">Faturar diretamente para: <b style="color:#272525">{{p.revNome}}</b>{{p.revContatoTxt}}</div>
             <sc-if value="{{p.temAnexos}}" hint-placeholder-val="{{false}}">
               <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:5px">
@@ -2464,6 +2542,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
           <div style="display:flex;align-items:center;gap:16px">
             <div style="font-size:16px;font-weight:700">{{p.totalFmt}}</div>
             <div onClick="{{p.anexar}}" style="border:1px solid #d9c193;color:#8f682a;border-radius:9px;padding:9px 13px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:#faf5e9">📎 Anexar documentos…</div>
+            <div onClick="{{p.rastFn}}" title="Informar a transportadora, o código e o link de rastreio da entrega" style="border:1px solid #d9c193;color:#8f682a;border-radius:9px;padding:9px 13px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:#faf5e9">&#128666; {{p.rastBtn}}</div>
             <sc-if value="{{p.podeFaturar}}" hint-placeholder-val="{{false}}">
               <sc-if value="{{p.podeConfirmar}}" hint-placeholder-val="{{false}}"><div onClick="{{p.confirmar}}" title="Confirma o recebimento do pedido — a etapa avança para produção/atendimento (RF49)" style="border:1px solid #d9c193;color:#8f682a;border-radius:9px;padding:9px 13px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;background:#fff" style-hover="background:#faf5e9">Confirmar recebimento</div></sc-if>
               <div onClick="{{p.faturar}}" style="background:#B38335;color:#fff;border-radius:9px;padding:9px 15px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:#9a6f2b">Registrar faturamento…</div>
@@ -2721,6 +2800,15 @@ input::placeholder,textarea::placeholder{color:#b0a795}
                   <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px">
                     <sc-for list="{{p.anexos}}" as="ax" hint-placeholder-count="0"><a href="{{ax.url}}" target="_blank" style="font-size:10.5px;font-weight:600;color:#8f682a;text-decoration:none;background:#faf5e9;border:1px solid #e5d9bd;border-radius:6px;padding:2px 7px">📎 {{ax.nome}}</a></sc-for>
                   </div>
+                </sc-if>
+                <sc-if value="{{p.temRastLink}}" hint-placeholder-val="{{false}}">
+                  <div style="margin-top:5px"><a href="{{p.rastUrl}}" target="_blank" rel="noopener" onClick="{{p.rastStop}}" title="{{p.rastTitulo}}" style="display:inline-block;font-size:10.5px;font-weight:700;color:#2f6b39;text-decoration:none;background:#eef5ef;border:1px solid #cfe0d1;border-radius:6px;padding:2px 8px">&#128666; {{p.rastLabel}}</a></div>
+                </sc-if>
+                <sc-if value="{{p.temRastSemLink}}" hint-placeholder-val="{{false}}">
+                  <div title="{{p.rastTitulo}}" style="display:inline-block;font-size:10.5px;font-weight:700;color:#2f6b39;background:#eef5ef;border:1px solid #cfe0d1;border-radius:6px;padding:2px 8px;margin-top:5px">&#128666; {{p.rastLabel}}</div>
+                </sc-if>
+                <sc-if value="{{p.rastPend}}" hint-placeholder-val="{{false}}">
+                  <div title="O frete é responsabilidade do fornecedor — ele precisa informar a transportadora, o código e o link de rastreio" style="display:inline-block;font-size:10.5px;font-weight:700;color:#8a5a12;background:#fdf6e7;border:1px solid #f0e2c4;border-radius:6px;padding:2px 8px;margin-top:5px">&#128666; Rastreio pendente</div>
                 </sc-if>
               </td>
               <td style="padding:11px 10px;font-size:13px;font-weight:600;text-align:right;border-bottom:1px solid #f5f1e8">{{p.totalFmt}}</td>
@@ -3736,6 +3824,27 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         </div>
       </sc-if>
       <div style="font-size:10.5px;color:#b0a795;margin-top:5px">Escolha o tipo (Boleto/Outro) antes de selecionar os arquivos · PDF ou imagem (PNG/JPG) · até 5 MB cada · máximo de 5 anexos adicionais.</div>
+      <div style="border-top:1px solid #f1ece2;margin-top:16px;padding-top:13px">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <div style="font-size:13px;font-weight:700">&#128666; Rastreio da entrega</div>
+          <span style="font-size:10.5px;font-weight:700;border-radius:6px;padding:2px 8px;background:{{rastInfo.avisoBg}};border:1px solid {{rastInfo.avisoBd}};color:{{rastInfo.avisoFg}}">{{rastInfo.freteTxt}}</span>
+        </div>
+        <div style="font-size:11.5px;color:#8a8378;margin-top:3px;line-height:1.5">{{rastInfo.aviso}}</div>
+        <div style="font-size:12px;font-weight:600;color:#6b6459;margin:13px 0 5px">Transportadora</div>
+        <select value="{{form.transpId}}" onChange="{{fxTransp}}" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525;cursor:pointer">
+          <sc-for list="{{transpOpts}}" as="o" hint-placeholder-count="3"><option value="{{o.v}}">{{o.label}}</option></sc-for>
+        </select>
+        <sc-if value="{{rastInfo.ehOutra}}" hint-placeholder-val="{{false}}">
+          <div style="font-size:12px;font-weight:600;color:#6b6459;margin:13px 0 5px">Nome da transportadora</div>
+          <input value="{{form.transpNome}}" onChange="{{fxTranspNome}}" placeholder="Ex.: Transportadora Serrana Ltda" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
+        </sc-if>
+        <div style="font-size:12px;font-weight:600;color:#6b6459;margin:13px 0 5px">{{rastInfo.doc}} <span style="font-weight:400;color:#a89f90">— padrão: {{rastInfo.dica}}</span></div>
+        <input value="{{form.rastCod}}" onChange="{{fxRastCod}}" maxlength="30" placeholder="{{rastInfo.dica}}" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525;font-weight:600;letter-spacing:.04em">
+        <div style="font-size:12px;font-weight:600;color:#6b6459;margin:13px 0 5px">Link de rastreio <span style="font-weight:400;color:#a89f90">— editável</span></div>
+        <input value="{{form.rastUrl}}" onChange="{{fxRastUrl}}" placeholder="https://…" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525;font-size:12.5px">
+        <div style="font-size:12px;font-weight:600;color:#6b6459;margin:13px 0 5px">Previsão de entrega <span style="font-weight:400;color:#a89f90">— opcional</span></div>
+        <input value="{{form.rastPrev}}" onChange="{{fxRastPrev}}" inputmode="numeric" maxlength="10" placeholder="dd/mm/aaaa" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
+      </div>
       <sc-if value="{{fatAnaliseOn}}" hint-placeholder-val="{{false}}"><div style="background:#f2f0fa;border:1px solid #ddd8ee;border-radius:9px;padding:9px 13px;margin-top:10px;font-size:11.5px;color:#5d3f96">O documento será analisado automaticamente por IA para confirmar que se refere a este pedido antes de o faturamento ser aceito.</div></sc-if>
       <sc-if value="{{fatBusy}}" hint-placeholder-val="{{false}}"><div style="display:flex;align-items:center;gap:8px;margin-top:12px;font-size:12.5px;color:#8a5a12"><span style="display:inline-block;width:12px;height:12px;border:2px solid #e6cf9e;border-top-color:#8a5a12;border-radius:50%;animation:ajSpin .8s linear infinite"></span>Enviando e analisando o documento fiscal…</div></sc-if>
       <sc-if value="{{form.erro}}" hint-placeholder-val="{{false}}"><div style="color:#a33a2b;font-size:12.5px;margin-top:12px">{{form.erro}}</div></sc-if>
@@ -4670,6 +4779,7 @@ class Component extends DCLogic {
         "Para decidir item por item ou definir como o pedido será atendido (estoque da Loja, envio direto a um fornecedor ou cotação), clique sobre a linha para abrir a tela 'Detalhe do pedido'.",
         "Na coluna 'Conversa', clique no balão 💬 para abrir o canal de comunicação daquele pedido com a revenda — dúvidas, ocorrências e observações. O balão fica roxo com o número de mensagens novas quando a revenda escreve; abrir a conversa marca tudo como lido.",
         "Quando o pedido chega à etapa 9 (entregue — faturado ou atendido pelo estoque), aparece o botão verde 'Confirmar recebimento…' na coluna Status: use-o quando a Loja fizer a conferência do material em nome da revenda. Confirmado, a linha passa a exibir o selo '✓ Recebido em…' e o pedido vai para a etapa 10.",
+        "Na coluna 'Fornecedor destino', acompanhe o rastreio da entrega: quando o fornecedor informa, aparece a etiqueta verde '🚚 transportadora · código' — clique nela para abrir o site da transportadora em outra aba. Enquanto ele não informa, a etiqueta é âmbar e diz '🚚 Rastreio pendente'.",
         "Na coluna 'Pedido', abaixo do número, fique com o botão '📄 PDF': ele monta o documento completo do pedido numa nova aba — fotos e descrição dos itens, quantidades, preços de referência e negociados, condições comerciais, prazo e forma de pagamento, data de entrega, faturamento com as notas, conversa e trilha. Na janela do navegador use Ctrl+P (⌘+P no Mac) e escolha 'Salvar como PDF' para guardar ou enviar o arquivo."
       ],
       "dicas": [
@@ -4681,6 +4791,7 @@ class Component extends DCLogic {
         "No detalhe, as opções de atendimento — 'Atender com estoque da Loja…', 'Envio direto a um fornecedor…' e 'Abrir cotação…' — só ficam disponíveis depois que os itens são aprovados e podem ser combinadas no mesmo pedido.",
         "A conversa existe em TODO pedido, do momento em que ele é criado até depois de faturado, e pode ser iniciada tanto pela Loja quanto pela revenda. Cada mensagem enviada avisa o outro lado por e-mail, entra na auditoria e a abertura da conversa fica registrada na trilha do pedido — nada se perde em e-mail ou aplicativo à parte.",
         "O menu lateral mostra um contador roxo 💬 ao lado de 'Pedidos' com o total de mensagens não lidas de todos os pedidos.",
+        "'🚚 Rastreio pendente' é uma cobrança, não um erro: sinaliza que o frete é responsabilidade do fornecedor e que ele ainda não informou como acompanhar a entrega. A plataforma não deixa esse fornecedor faturar sem informar o rastreio, então a etiqueta tende a se resolver sozinha.",
         "O documento em PDF é gerado a partir dos dados do pedido no momento do clique — não é um arquivo guardado. Sempre que abrir de novo, ele sai atualizado com a etapa, os valores e os documentos mais recentes; cada emissão fica registrada na auditoria.",
         "A revenda tem o mesmo botão '📄 PDF' na tela 'Meus pedidos', com o mesmo documento — a diferença é que ela não vê o comparativo de propostas dos fornecedores nem os valores ainda não negociados com ela."
       ]
@@ -4703,6 +4814,7 @@ class Component extends DCLogic {
         "Depois de faturado (ou atendido pelo estoque), surge o painel de recebimento: em âmbar enquanto aguarda a confirmação, com o botão verde \"Confirmar recebimento do material…\"; em verde depois de confirmado, mostrando quando, por quem e a observação registrada.",
         "Quando o fornecedor anexa arquivos durante o atendimento, eles aparecem no quadro \"Documentos do atendimento\", com nome, data e autor — clique no nome para baixar.",
         "Logo abaixo do cabeçalho fica o botão 💬 da conversa do pedido, com o total de mensagens. Clique para conversar com a revenda a qualquer momento — dúvidas, ocorrências e observações ficam guardadas no próprio pedido.",
+        "Depois que o pedido é encaminhado a um fornecedor, surge o painel de rastreio: em âmbar enquanto o fornecedor não informa, explicando de quem é a responsabilidade do frete e de onde veio essa conclusão; em verde depois de informado, com transportadora, código, previsão de entrega, observação, quem informou e o botão '🔗 Acompanhar a entrega no site da transportadora'. Se o rastreio já tiver sido trocado, o painel lista os anteriores.",
         "Ao lado da conversa fica o botão '📄 Documento do pedido (PDF)'. Ele abre numa nova aba a ficha completa do pedido — partes e destino, situação e prazos, condições comerciais negociadas, itens com foto e ficha fiscal, cotação vinculada com as propostas recebidas, faturamento, anexos, conversa e trilha. Para salvar ou enviar, use Ctrl+P (⌘+P no Mac) e escolha 'Salvar como PDF'."
       ],
       "dicas": [
@@ -4715,6 +4827,7 @@ class Component extends DCLogic {
         "O campo \"Observação para os fornecedores\" é opcional e vai junto do convite: use para dizer o que a Loja espera (preço, prazo, frete, embalagem). O texto entra no e-mail e fica visível para o fornecedor na hora de montar a proposta.",
         "Os painéis \"Análise da Loja\" e \"Decisão de atendimento\" só aparecem na fase certa: o primeiro enquanto o pedido aguarda decisão; o segundo depois que ele é aprovado.",
         "A conversa do pedido não tem fase: ela pode ser aberta em qualquer etapa e por qualquer um dos dois lados. Ao enviar uma mensagem, a revenda recebe um aviso por e-mail com o texto e o número do pedido.",
+        "Quem responde pelo frete sai da cotação: se a proposta vencedora é FOB, o frete é da revenda e o rastreio passa a ser opcional; em CIF — e também quando não houve cotação — o frete é do fornecedor e o rastreio é obrigatório. O painel sempre diz qual foi a base usada.",
         "O documento em PDF acompanha a fase do pedido: blocos sem informação simplesmente não são impressos. Um pedido ainda pendente sai com partes, itens e trilha; depois da cotação ganha as condições negociadas e o comparativo de propostas; depois do faturamento, as notas, o boleto e a confirmação de recebimento.",
         "O mesmo documento está na lista de pedidos, pelo botão '📄 PDF' de cada linha — útil quando você quer emitir vários seguidos sem abrir cada pedido."
       ]
@@ -5001,9 +5114,11 @@ class Component extends DCLogic {
         "Se aparecer o aviso \"Atendimento parcial: X de Y itens do pedido são seus\", lembre-se de que você fatura apenas os itens que são seus.",
         "Se quiser, clique nas fotos dos produtos (passe o mouse e aparece \"Clique para ampliar\") para vê-las maiores.",
         "Use \"📎 Anexar documentos…\" para enviar arquivos do atendimento (romaneio, comprovante de coleta, ficha técnica…): até 5 arquivos por envio, 5 MB cada, nos formatos PDF, Excel, Word, imagem ou XML — eles ficam visíveis à Loja e à revenda.",
+        "Use o botão \"🚚 Informar rastreio…\" para dizer como a revenda acompanha a entrega: escolha a transportadora na lista, informe o código no padrão dela (a janela mostra o formato esperado — por exemplo, AA123456789BR nos Correios), confira o link montado automaticamente, e informe a previsão de entrega. Depois de informado, o botão passa a ser \"🚚 Atualizar rastreio…\".",
         "Clique no botão dourado \"Registrar faturamento…\", no lado direito do card (ele só aparece enquanto houver itens seus pendentes de faturamento).",
         "Na janela \"Registrar faturamento\", confira o quadro \"Somente os seus itens\" e revise o campo \"Valor efetivamente faturado (R$)\", ajustando o valor se necessário.",
         "No campo \"Documento fiscal emitido à revenda (PDF ou XML) — obrigatório\", anexe o PDF ou o XML da nota fiscal que você emitiu para a revenda; o nome do arquivo aparece com um 📎 quando anexado.",
+        "Ainda na janela de faturamento, o bloco \"🚚 Rastreio da entrega\" repete os campos da transportadora: quando o frete é responsabilidade sua, esse bloco é obrigatório e o faturamento não é concluído sem transportadora, código e link. Se o rastreio já tiver sido informado antes, os campos já vêm preenchidos.",
         "Em \"Anexos adicionais\" você pode juntar o BOLETO e outros documentos ao faturamento: escolha o tipo (Boleto/Outro), selecione os arquivos (PDF ou imagem, até 5 MB cada, máximo 5) — eles ficam identificados por tipo e visíveis para a Loja e para a revenda.",
         "Clique em \"Confirmar faturamento\" para concluir, ou em \"Cancelar\" para fechar sem registrar. Se a análise automática estiver habilitada, o documento é verificado na hora: se não corresponder ao pedido, o registro é recusado e o motivo aparece em vermelho na janela."
       ],
@@ -5013,6 +5128,10 @@ class Component extends DCLogic {
         "O anexo do documento fiscal é obrigatório: sem PDF ou XML da nota não é possível confirmar o faturamento. Prefira o XML da NF-e — ele é lido com mais precisão pela análise automática.",
         "O royalty é calculado automaticamente sobre o valor faturado, conforme o percentual do seu contrato — você só informa o valor.",
         "Após confirmar, a etiqueta do card muda para \"Faturado\" e o botão \"Registrar faturamento…\" deixa de aparecer para aquele pedido.",
+        "O rastreio é obrigação de quem paga o frete: quando o pedido é CIF (frete por conta do fornecedor) — o padrão da plataforma quando não há cotação com frete FOB —, o card mostra o aviso em âmbar e o faturamento fica travado até você informar transportadora, código e link.",
+        "O link de rastreio é montado no padrão da transportadora a partir do código que você digitar, mas continua editável: se a transportadora usar outro endereço de consulta, cole o link que ela forneceu. Use \"🔗 Testar o link agora\" antes de salvar.",
+        "Escolheu \"Frota própria do fornecedor\"? Não há link de consulta: informe o número do romaneio e use a observação da entrega para dizer como a revenda acompanha (contato da expedição, janela de entrega, telefone do motorista).",
+        "Corrigir o rastreio é sempre possível: o código anterior fica guardado no histórico do pedido, a troca entra na trilha e na auditoria, e a revenda e a Loja recebem um novo e-mail com os dados atualizados.",
         "A \"Lista detalhada\" mostra apenas os SEUS itens em cada pedido (a restrição de visibilidade é a mesma dos cards) e traz no rodapé o total somado dos itens direcionados a você."
       ]
     },
@@ -5135,6 +5254,7 @@ class Component extends DCLogic {
         "Quando um pedido é rejeitado, aparece um texto em vermelho logo abaixo da etiqueta de status, com a justificativa informada pela Loja.",
         "Na coluna \"Conversa\", clique no balão 💬 para falar com a Loja Cidade Imperial sobre aquele pedido: dúvidas, ocorrências, observações. Escreva a mensagem e clique em \"Enviar\" — a Loja é avisada por e-mail na hora.",
         "Quando o material do pedido chegar, clique no botão verde \"✓ Confirmar recebimento…\": confira os itens na janela, registre uma observação se houver avaria ou divergência e confirme. O pedido passa para a etapa 10 (Conclusão) e a Loja é avisada por e-mail.",
+        "Quando o fornecedor despacha a mercadoria, a coluna 'Fornecedor (faturamento)' passa a mostrar a etiqueta verde '🚚 transportadora · código de rastreio': clique nela para abrir o rastreamento no site da transportadora, em outra aba. Você também recebe um e-mail com o código, o link e a previsão de entrega.",
         "Na coluna 'Pedido', abaixo do código, clique em '📄 PDF' para abrir o documento completo do pedido numa nova aba: fotos e descrição de cada item, quantidades, valores, condições comerciais negociadas, prazo e forma de pagamento, data prevista de entrega, notas fiscais e boleto, conversa e trilha. Para guardar ou encaminhar, use Ctrl+P (⌘+P no Mac) e escolha 'Salvar como PDF'."
       ],
       "dicas": [
@@ -5147,6 +5267,8 @@ class Component extends DCLogic {
         "A coluna \"Fornecedor (faturamento)\" pode mostrar \"Estoque da Loja\" quando o pedido é atendido pelo próprio estoque da Loja.",
         "A conversa está disponível em todos os pedidos, a qualquer momento, e pode ser iniciada por você ou pela Loja. O balão fica roxo com o número de mensagens novas quando a Loja responde, e o menu \"Meus pedidos\" mostra o total de não lidas.",
         "Todo o histórico da conversa fica guardado junto do pedido — ao contrário do e-mail ou do aplicativo de mensagens, ninguém precisa procurar depois quem disse o quê.",
+        "O rastreio é obrigação do fornecedor sempre que o frete for por conta dele: a plataforma não deixa o pedido ser faturado sem transportadora, código e link de consulta. Se o código mudar (troca de transportadora, reenvio), você recebe um novo e-mail e a etiqueta na lista é atualizada.",
+        "Entrega com frota própria do fornecedor não tem site de consulta: nesse caso a etiqueta aparece sem link e os dados de contato ficam na observação da entrega, visível no documento do pedido em PDF.",
         "O documento em PDF é montado na hora, com a situação atual do pedido — vale a pena gerar de novo depois do faturamento, quando ele já sai com as notas fiscais e o boleto listados.",
         "Enquanto um item ainda não tem valor negociado com você, o documento mostra 'a definir' no lugar do preço: o PDF nunca antecipa um valor que ainda não foi acordado."
       ]
@@ -6357,6 +6479,25 @@ class Component extends DCLogic {
           +'<td class="r"><b>'+E(this.fmt(this._totCF(x)))+'</b></td><td>'+E(x.prazoEntrega||'—')+'</td><td>'+E(x.condicoes||'—')+'</td></tr>').join('')
         +'</tbody></table>'):''); }
 
+    // Rastreio da entrega — transportadora, código no padrão dela e o link.
+    const _rst=this._rastreio(p); const _fri=this._freteInfo(p);
+    const blocoRast=_rst?(this._pdfLinhas([
+        ['Transportadora',_rst.transportadora],
+        ['Código de rastreio',_rst.codigo],
+        ['Link de rastreio',_rst.url],
+        ['Previsão de entrega',_rst.previsao],
+        ['Observação da entrega',_rst.obs],
+        ['Responsabilidade do frete',_fri.txt],
+        ['Informado por',_rst.por+' em '+_rst.quando],
+        ['Atualizações',(p.rastreioHist||[]).length?String((p.rastreioHist||[]).length+' rastreio(s) anterior(es) registrado(s)'):''],
+      ])+((p.rastreioHist||[]).length?('<table class="dt"><thead><tr><th>Rastreio anterior</th><th>Código</th><th>Previsão</th><th>Informado por</th><th>Quando</th></tr></thead><tbody>'
+        +[...(p.rastreioHist||[])].reverse().map(h=>'<tr><td>'+E(h.transportadora||'')+'</td><td>'+E(h.codigo||'')+'</td><td>'+E(h.previsao||'—')+'</td><td>'+E(h.por||'')+'</td><td>'+E(h.quando||'')+'</td></tr>').join('')
+        +'</tbody></table>'):''))
+      :(this._rastPendente(p)?this._pdfLinhas([
+        ['Situação','aguardando o fornecedor informar o rastreio'],
+        ['Responsabilidade do frete',_fri.txt],
+        ['Origem da informação',_fri.origem]]):'');
+
     const blocoFat=fats.length?('<table class="dt"><thead><tr><th>Documento</th><th>Data</th><th>Competência</th><th>Fornecedor</th><th class="r">Valor</th>'
       +(this.role!=='revenda'?'<th class="r">Royalty</th>':'')+'<th>Anexos</th></tr></thead><tbody>'
       +fats.map(f=>'<tr><td><b>'+E(f.id)+'</b></td><td>'+E(f.data)+'</td><td>'+E(f.competencia)+'</td><td>'+E(F(f.fornecedorId).nome)+'</td>'
@@ -6435,6 +6576,7 @@ class Component extends DCLogic {
         +'<tbody>'+linhasItens+'</tbody></table>'+blocoTotais,
         p.itens.length+(p.itens.length===1?' item':' itens'))
       +this._pdfBloco('Cotação vinculada',blocoCot)
+      +this._pdfBloco('Rastreio da entrega',blocoRast)
       +this._pdfBloco('Faturamento e documentos fiscais',blocoFat)
       +this._pdfBloco('Anexos do atendimento',blocoAnexos)
       +this._pdfBloco('Conversa do pedido',blocoConversa,msgs.length+(msgs.length===1?' mensagem':' mensagens'))
@@ -6454,6 +6596,152 @@ class Component extends DCLogic {
     this.audit('Documento do pedido gerado',id+' · '+this._revNome(p.revendaId)+' · '+p.itens.length+' item(ns)');
     this.toast('Documento do pedido '+id+' aberto — use "Salvar como PDF" na janela de impressão.','ok');
   }; return this._gpdf[id]; }
+
+  // ══ Rastreio da entrega ══════════════════════════════════════════════════
+  // Sempre que o frete é responsabilidade do fornecedor, ele precisa dizer
+  // como a revenda e a Loja acompanham a entrega. Cada transportadora tem o
+  // seu padrão de documento e o seu endereço de consulta: a plataforma guarda
+  // esse padrão, valida o código, monta o link — e deixa o link editável,
+  // porque transportadora troca endereço de rastreio com o tempo.
+  TRANSPS=[
+    {id:'correios',nome:'Correios',doc:'Código de rastreamento',dica:'AA123456789BR — duas letras, nove dígitos e BR',
+      pad:'^[A-Z]{2}[0-9]{9}[A-Z]{2}$',so:'AN',url:'https://rastreamento.correios.com.br/app/index.php?objeto={cod}'},
+    {id:'jadlog',nome:'Jadlog',doc:'Nº do CT-e (DACTE)',dica:'somente números — o número do conhecimento',
+      pad:'^[0-9]{6,20}$',so:'N',url:'https://www.jadlog.com.br/tracking?cte={cod}'},
+    {id:'braspress',nome:'Braspress',doc:'Nº do conhecimento (CT-e)',dica:'somente números',
+      pad:'^[0-9]{4,20}$',so:'N',url:'https://www.braspress.com.br/rastreamento?documento={cod}'},
+    {id:'tnt',nome:'TNT Mercúrio',doc:'Nº do conhecimento',dica:'somente números',
+      pad:'^[0-9]{4,20}$',so:'N',url:'https://rastreamento.tntbrasil.com.br/?nrDocumento={cod}'},
+    {id:'total',nome:'Total Express',doc:'Nº do pedido / AWB',dica:'letras e números',
+      pad:'^[A-Z0-9./-]{4,25}$',so:'AN',url:'https://tracking.totalexpress.com.br/poupup_track.php?pedido={cod}'},
+    {id:'azul',nome:'Azul Cargo Express',doc:'AWB',dica:'577-12345678 — prefixo de três dígitos e o número',
+      pad:'^[0-9]{3}-?[0-9]{6,10}$',so:'AN',url:'https://www.azulcargoexpress.com.br/Rastreio/Consulta?AWB={cod}'},
+    {id:'loggi',nome:'Loggi',doc:'Código do pacote',dica:'letras e números',
+      pad:'^[A-Z0-9./-]{4,25}$',so:'AN',url:'https://www.loggi.com/rastreador/{cod}'},
+    {id:'rodonaves',nome:'Rodonaves (RTE)',doc:'Nº do conhecimento',dica:'somente números',
+      pad:'^[0-9]{4,20}$',so:'N',url:'https://rodonaves.com.br/rastreio-de-mercadoria?documento={cod}'},
+    {id:'jamef',nome:'Jamef',doc:'Nº do conhecimento',dica:'somente números',
+      pad:'^[0-9]{4,20}$',so:'N',url:'https://www.jamef.com.br/rastreamento?documento={cod}'},
+    {id:'patrus',nome:'Patrus Transportes',doc:'Nº do conhecimento',dica:'somente números',
+      pad:'^[0-9]{4,20}$',so:'N',url:'https://patrus.com.br/rastreio?documento={cod}'},
+    {id:'sequoia',nome:'Sequoia Log',doc:'Código de rastreio',dica:'letras e números',
+      pad:'^[A-Z0-9./-]{4,25}$',so:'AN',url:'https://sequoialog.com.br/rastreio?codigo={cod}'},
+    {id:'propria',nome:'Frota própria do fornecedor',doc:'Nº do romaneio / da entrega',dica:'como o fornecedor identifica essa entrega',
+      pad:'',so:'AN',url:''},
+    {id:'outra',nome:'Outra transportadora',doc:'Código de rastreio',dica:'informe o nome da transportadora e o link de consulta',
+      pad:'',so:'AN',url:''}];
+  _transp(id){ return this.TRANSPS.find(t=>t.id===id)||this.TRANSPS[this.TRANSPS.length-1]; }
+  // Código no padrão da transportadora: maiúsculas, e só dígitos quando ela
+  // trabalha com número de conhecimento.
+  _rastCod(id,v){ const t=this._transp(id); const s=String(v==null?'':v).toUpperCase();
+    return (t.so==='N'?s.replace(/[^0-9]/g,''):s.replace(/[^A-Z0-9./-]/g,'')).slice(0,30); }
+  _rastUrlPad(id,cod){ const t=this._transp(id); if(!t.url||!cod) return '';
+    return t.url.replace('{cod}',encodeURIComponent(cod)); }
+  _rastUrlOk(u){ return /^https?:\/\/[^\s]+\.[^\s]+$/i.test(String(u||'').trim()); }
+
+  // Proposta vencedora do pedido — de onde vêm as condições de frete.
+  _propVencPed(p){ const cid=((p&&p.itens||[]).find(i=>i.cotacaoId)||{}).cotacaoId;
+    const c=cid?this.state.cotacoes.find(x=>x.id===cid):null;
+    if(!c||!c.vencedorId) return null;
+    return this._propsEfetivas(c).find(x=>x.fornecedorId===c.vencedorId)||null; }
+  // Quem responde pelo frete deste pedido — e de onde veio essa informação.
+  // CIF (ou sem cotação, que é o padrão da plataforma) = fornecedor.
+  _freteInfo(p){ const at=(p&&p.itens||[]).filter(i=>i.st!=='rejeitado');
+    if(at.length&&at.every(i=>i.st==='estoque'))
+      return {resp:'loja',mod:'—',origem:'atendimento pelo estoque da Loja',
+        txt:'Entrega por conta da Loja Cidade Imperial (estoque próprio)'};
+    const pv=this._propVencPed(p); const mod=pv?(pv.freteMod||'CIF'):'CIF';
+    const cid=((p&&p.itens||[]).find(i=>i.cotacaoId)||{}).cotacaoId;
+    const resp=mod==='FOB'?'revenda':'fornecedor';
+    return {resp,mod,transportadora:pv?(pv.transportadora||''):'',
+      origem:pv?('proposta vencedora da cotação '+(cid||'')):'padrão da plataforma — sem cotação registrada, o frete é do fornecedor',
+      txt:mod+' — frete por conta '+(resp==='fornecedor'?'do fornecedor':'da revenda')}; }
+  _rastObrig(p){ return this._freteInfo(p).resp==='fornecedor'; }
+  _rastreio(p){ return (p&&p.rastreio&&p.rastreio.codigo)?p.rastreio:null; }
+  // O pedido já saiu para entrega quando há item encaminhado ou faturado.
+  _emEntrega(p){ return (p&&p.itens||[]).some(i=>i.st==='direto'||i.st==='faturado'); }
+  _rastPendente(p){ return this._rastObrig(p)&&this._emEntrega(p)&&!this._rastreio(p)&&!this._recebido(p); }
+  _rastInfoTxt(p){ const r=this._rastreio(p); if(!r) return '';
+    return r.transportadora+' · '+r.codigo+(r.previsao?(' · previsão de entrega '+r.previsao):'')
+      +' · informado por '+r.por+' em '+r.quando+(r.obs?(' — '+r.obs):''); }
+  _rastStop=(e)=>{ if(e&&e.stopPropagation) e.stopPropagation(); };
+  // Vals do selo de rastreio, usados nas duas listas e no detalhe.
+  _rastCel(p){ const r=this._rastreio(p);
+    return {temRast:!!r,rastLabel:r?(r.transportadora+' · '+r.codigo):'',
+      rastUrl:r?(r.url||''):'',temRastLink:!!(r&&r.url),temRastSemLink:!!(r&&!r.url),
+      rastTitulo:r?this._rastInfoTxt(p):'',rastPrev:r?(r.previsao||''):'',
+      rastPend:this._rastPendente(p),rastStop:this._rastStop}; }
+
+  abrirRastreio(id){ this._arr=this._arr||{}; if(!this._arr[id]) this._arr[id]=(e)=>{
+    if(e&&e.stopPropagation) e.stopPropagation();
+    const p=this.state.pedidos.find(x=>x.id===id)||{}; const r=p.rastreio||{};
+    const fi=this._freteInfo(p);
+    this.setState({modal:'rastreio',form:{pedidoId:id,
+      transpId:r.transpId||'correios',
+      transpNome:r.transpId==='outra'?(r.transportadora||''):(r.transpId?'':(fi.transportadora||'')),
+      rastCod:r.codigo||'',rastUrl:r.url||'',rastUrlManual:!!r.urlManual,
+      rastPrev:r.previsao||'',rastObs:r.obs||''}}); }; return this._arr[id]; }
+
+  fxTransp=(e)=>{ const id=e.target.value; this.setState(s=>{ const cod=this._rastCod(id,s.form.rastCod);
+    const manual=s.form.rastUrlManual&&s.form.rastUrl;
+    return {form:{...s.form,transpId:id,rastCod:cod,rastUrl:manual?s.form.rastUrl:this._rastUrlPad(id,cod),erro:null}}; }); };
+  fxRastCod=(e)=>{ const raw=e.target.value; this.setState(s=>{ const cod=this._rastCod(s.form.transpId,raw);
+    const manual=s.form.rastUrlManual&&s.form.rastUrl;
+    return {form:{...s.form,rastCod:cod,rastUrl:manual?s.form.rastUrl:this._rastUrlPad(s.form.transpId,cod),erro:null}}; }); };
+  fxRastUrl=(e)=>{ const v=e.target.value; this.setState(s=>({form:{...s.form,rastUrl:v,rastUrlManual:true,erro:null}})); };
+
+  // Validação única, usada tanto na janela de rastreio quanto no faturamento.
+  _erroRastreio(f,obrig){ const t=this._transp(f.transpId);
+    const cod=this._rastCod(f.transpId,f.rastCod);
+    const nome=t.id==='outra'?String(f.transpNome||'').trim():t.nome;
+    const url=String(f.rastUrl||'').trim();
+    if(!cod&&!url&&!obrig) return null;
+    if(!cod) return 'Informe o '+t.doc.toLowerCase()+' de '+nome+' — é com ele que a revenda acompanha a entrega.';
+    if(t.id==='outra'&&!nome) return 'Informe o nome da transportadora responsável pela entrega.';
+    if(t.pad&&!(new RegExp(t.pad).test(cod))) return t.nome+' — o código não está no padrão da transportadora ('+t.dica+').';
+    if(url&&!this._rastUrlOk(url)) return 'O link de rastreio precisa ser um endereço completo, começando por https://.';
+    if(!url&&t.id!=='propria') return 'Informe o link de rastreio de '+nome+' — é por ele que a revenda acompanha a entrega.';
+    if(f.rastPrev&&!this._dataBR(f.rastPrev)) return 'A previsão de entrega precisa estar no formato dd/mm/aaaa.';
+    return null; }
+  _regRastreio(f){ const t=this._transp(f.transpId);
+    return {transpId:t.id,transportadora:t.id==='outra'?String(f.transpNome||'').trim():t.nome,
+      codigo:this._rastCod(f.transpId,f.rastCod),url:String(f.rastUrl||'').trim(),
+      urlManual:!!f.rastUrlManual,previsao:String(f.rastPrev||'').trim(),
+      obs:String(f.rastObs||'').trim().slice(0,300),
+      quando:this.ts(),ts:Date.now(),por:this.userName(),papel:this.role}; }
+
+  // Grava o rastreio no pedido, guarda a versão anterior no histórico e avisa
+  // os dois lados. Chamado pela janela de rastreio e pelo faturamento.
+  _gravarRastreio(id,reg){
+    const ped=this.state.pedidos.find(p=>p.id===id); if(!ped) return false;
+    const ant=ped.rastreio||null;
+    if(ant&&ant.codigo===reg.codigo&&ant.transpId===reg.transpId&&ant.url===reg.url
+      &&(ant.previsao||'')===(reg.previsao||'')&&(ant.obs||'')===(reg.obs||'')) return false;
+    this.updPed(id,p=>{ if(p.rastreio&&p.rastreio.codigo) p.rastreioHist=[...(p.rastreioHist||[]),p.rastreio];
+      p.rastreio=reg;
+      p.trilha.push(this.tr((ant?'Rastreio da entrega atualizado':'Rastreio da entrega informado')+' — '
+        +reg.transportadora+' · '+reg.codigo+(reg.previsao?(' · previsão de entrega '+reg.previsao):'')
+        +(reg.url?'':' · sem link de consulta')));
+      return p; });
+    this.audit(ant?'Rastreio da entrega atualizado':'Rastreio da entrega informado',
+      id+' · '+reg.transportadora+' · '+reg.codigo+(reg.previsao?(' · previsão '+reg.previsao):'')
+      +(reg.url?(' · '+reg.url):' · sem link')+' · '+this._revNome(ped.revendaId));
+    this.notificar('pedido_rastreio',[this._revEmail(ped.revendaId),this._lojaEmail()],{
+      pedidoId:id,revendaNome:this._revNome(ped.revendaId),transportadora:reg.transportadora,
+      codigo:reg.codigo,url:reg.url,previsao:reg.previsao,observacao:reg.obs,
+      por:reg.por,quando:reg.quando,atualizacao:ant?'sim':'',
+      itensLista:this._itensPed(ped,i=>i.st!=='rejeitado'),ocultarValor:true});
+    return true; }
+
+  confirmRastreio=()=>{ const f=this.state.form; const id=f.pedidoId;
+    const ped=this.state.pedidos.find(p=>p.id===id); if(!ped) return;
+    if(!this.pode('pedidos.rastreio')) return this.negado('Você não tem permissão para informar o rastreio da entrega.','pedidos.rastreio');
+    const err=this._erroRastreio(f,true); if(err) return this.err(err);
+    const novo=this._gravarRastreio(id,this._regRastreio(f));
+    this.mClose();
+    this.toast(novo?('Rastreio do pedido '+id+' registrado — a revenda e a Loja já podem acompanhar a entrega.')
+      :('Nada mudou no rastreio do pedido '+id+'.'),'ok');
+    setTimeout(()=>this._flushPersist(),0); };
 
   // ══ Confirmação de recebimento do material ═══════════════════════════════
   // Depois de faturado (ou atendido pelo estoque da Loja), o pedido fica
@@ -7164,6 +7452,11 @@ class Component extends DCLogic {
   confirmFaturar=async()=>{ if(!this.pode('faturamento.faturar')) return this.negado('Você não tem permissão para registrar faturamento.','faturamento.faturar'); const f=this.state.form; if(f.fatBusy) return; const valor=this.num(f.valorFat); if(!valor) return this.err('Informe o valor efetivamente faturado (RF34).');
     if(!f.anexoB64) return this.err('Anexe o documento fiscal (PDF ou XML) emitido para a revenda — o anexo é obrigatório.');
     const pid=f.pedidoId; const fid=this.state.fornAtivo; const ped=this.state.pedidos.find(p=>p.id===pid);
+    // RF: com frete por conta do fornecedor, o rastreio da entrega é obrigatório
+    // no faturamento — é a informação que a revenda e a Loja usam para acompanhar.
+    const errRast=this._erroRastreio(f,this._rastObrig(ped)&&!this._rastreio(ped));
+    if(errRast) return this.err(errRast);
+    const regRast=this._rastCod(f.transpId,f.rastCod)?this._regRastreio(f):null;
     const meus=ped.itens.filter(i=>i.st==='direto'&&i.fornecedorId===fid);
     const cotRef=(meus.find(i=>i.cotacaoId)||{}).cotacaoId||null;
     const ctr=this.state.contratos.find(c=>c.fornecedorId===fid&&c.vigente); const pct=ctr?ctr.royalty:0;
@@ -7197,6 +7490,7 @@ class Component extends DCLogic {
     this.setState(s=>({faturamentos:[{id:nf,pedidoId:pid,fornecedorId:fid,revendaId:ped.revendaId,cotacaoId:cotRef,valor,data:this.hoje(),competencia:comp,royaltyPct:pct,royaltyValor:Math.round(valor*pct)/100,anexoId,anexoNome:f.anexoNome||null,anexosExtras,analise},...s.faturamentos],seq:{...s.seq,nf:n+1},modal:null,form:{}}));
     this.updPed(pid,p=>{p.itens=p.itens.map(i=>i.st==='direto'&&i.fornecedorId===fid?{...i,st:'faturado'}:i);
       p.trilha.push(this.tr('Faturado ('+nf+') diretamente à revenda — '+this.fmt(valor)+' ('+meus.length+' item(ns))'+(analise?' · documento fiscal validado pela análise ('+analise.engine+')':' · documento fiscal anexado')));return p;});
+    if(regRast) this._gravarRastreio(pid,regRast);
     this.audit('Registro de faturamento',nf+' · '+pid+' · '+this.fmt(valor)+(analise?' · anexo validado ('+(analise.engine==='claude'?'IA Claude':'analisador local')+')':' · anexo: '+(f.anexoNome||'—'))+(anexosExtras.length?' · '+anexosExtras.length+' anexo(s) adicional(is): '+anexosExtras.map(a=>(a.tipoDoc==='boleto'?'boleto ':'')+a.nome).join(', '):''));
     const _ilF=meus.map(i=>this._itemView(i));
     this.notificar('faturamento_revenda',this._revEmail(ped.revendaId),{pedidoId:pid,nf,fornecedorNome:this._fornNome(fid),valor:this.fmt(valor),itensLista:_ilF});
@@ -7417,7 +7711,8 @@ class Component extends DCLogic {
       ['pedidos.rejeitar','Rejeitar pedidos e itens',['admin','loja']],
       ['pedidos.atender','Definir atendimento (estoque, envio direto, cotação)',['admin','loja']],
       ['pedidos.criar','Criar pedidos no catálogo (revenda)',['admin','revenda']],
-      ['pedidos.confirmar_receb','Confirmar recebimento do material (entrega)',['admin','loja','revenda']]]},
+      ['pedidos.confirmar_receb','Confirmar recebimento do material (entrega)',['admin','loja','revenda']],
+      ['pedidos.rastreio','Informar rastreio da entrega (fornecedor)',['admin','fornecedor','loja']]]},
     {mod:'Cotações',itens:[
       ['cotacoes.ver','Ver cotações e propostas',['admin','loja']],
       ['cotacoes.abrir','Abrir e cancelar cotações',['admin','loja']],
@@ -7804,7 +8099,7 @@ class Component extends DCLogic {
         &&(S.filtroRev==='0'||p.revendaId===+S.filtroRev)
         &&(!bp||p.id.toLowerCase().includes(bp)||R(p.revendaId).nome.toLowerCase().includes(bp)))
       .map(p=>{ const sres=p.status==='pendente'?this._saldoItens(p.itens):null; const schip=sres?this._saldoChip(sres):null;
-        return {...pedRow(p),...this._chatCel(p),...this._recebCel(p),...this._pdfCel(p),etapaTxt:this._etapaTxt(p),pendente:p.status==='pendente'&&(this.pode('pedidos.aprovar')||this.pode('pedidos.rejeitar')),aguarda:p.status==='pendente'?idade(p.data):'',
+        return {...pedRow(p),...this._chatCel(p),...this._recebCel(p),...this._pdfCel(p),...this._rastCel(p),etapaTxt:this._etapaTxt(p),pendente:p.status==='pendente'&&(this.pode('pedidos.aprovar')||this.pode('pedidos.rejeitar')),aguarda:p.status==='pendente'?idade(p.data):'',
         temSaldoAlerta:!!schip,saldoLabel:schip?schip.label:'',saldoBg:schip?schip.bg:'',saldoFg:schip?schip.fg:'',
         aprovarFn:this.aprovar(p.id),rejeitarFn:this.open('rejeitar',{pedidoId:p.id})};});
     const valMes=PEDS.filter(p=>p.data.endsWith('/'+this.compAtual().replace('/','/'))||p.data.slice(3)===this.compAtual()).reduce((a,p)=>a+(p.total),0);
@@ -7849,7 +8144,16 @@ class Component extends DCLogic {
         const cotIds=[...new Set(p.itens.filter(i=>i.cotacaoId&&i.st==='cotacao').map(i=>i.cotacaoId))];
         const dt=destTxt(p);
         const _rcb=p.recebimento||null; const _entr=this._entregue(p); const _pdRec=this._podeConfirmarReceb(p);
-        pd={id:p.id,steps,data:p.data,...this._chatCel(p),...this._recebCel(p),...this._pdfCel(p),
+        const _rst=this._rastreio(p); const _rstP=this._rastPendente(p); const _fri=this._freteInfo(p);
+        pd={id:p.id,steps,data:p.data,...this._chatCel(p),...this._recebCel(p),...this._pdfCel(p),...this._rastCel(p),
+          temBlocoRast:!!_rst||_rstP,
+          rastBd:_rst?'#cfe0d1':'#e6cf9e',rastFg:_rst?'#2f6b39':'#8f682a',
+          rastTitulo2:_rst?('Entrega em trânsito — '+_rst.transportadora):'Aguardando o rastreio do fornecedor',
+          rastTxt:_rst?this._rastInfoTxt(p)
+            :('O frete é responsabilidade do fornecedor neste pedido, então ele precisa informar a transportadora, o código e o link de rastreio. Enquanto isso não acontece, a revenda não tem como acompanhar a entrega.'),
+          rastFrete:'Frete: '+_fri.txt+' · origem da informação: '+_fri.origem+'.',
+          rastHist:[...(p.rastreioHist||[])].reverse().map(h=>({txt:h.transportadora+' · '+h.codigo+(h.previsao?(' · previsão '+h.previsao):'')+' — informado por '+h.por+' em '+h.quando})),
+          temRastHist:((p.rastreioHist||[]).length>0),
           temBlocoReceb:_entr||!!_rcb,
           recebBd:_rcb?'#cfe0d1':'#e6cf9e',recebFg:_rcb?'#2f6b39':'#8f682a',
           recebTitulo2:_rcb?'✓ Material recebido':'Aguardando confirmação de recebimento',
@@ -8447,7 +8751,15 @@ class Component extends DCLogic {
         anexos:(p.anexosAtend||[]).filter(a=>a.fornecedorId===fid).map(a=>({nome:a.nome,url:'/api/anexos/'+a.id,info:a.quando})),
         temAnexos:!!(p.anexosAtend||[]).filter(a=>a.fornecedorId===fid).length,
         anexar:this.open('anexoped',{pedidoId:p.id,anexos:[]}),
-        faturar:this.open('faturar',{pedidoId:p.id,valorFat:pend.reduce((a,i)=>a+this.itemTotal(i),0).toFixed(2).replace('.',','),nf:'',anexosExtras:[],tipoDocExtra:'boleto'})});});
+        rastFn:this.abrirRastreio(p.id),...this._rastCel(p),
+        rastBtn:this._rastreio(p)?'Atualizar rastreio…':'Informar rastreio…',
+        rastAviso:this._rastPendente(p)?('Frete por conta do fornecedor ('+this._freteInfo(p).mod+') — informe a transportadora, o código e o link de rastreio para a revenda acompanhar a entrega.'):'',
+        faturar:this.open('faturar',{pedidoId:p.id,valorFat:pend.reduce((a,i)=>a+this.itemTotal(i),0).toFixed(2).replace('.',','),nf:'',anexosExtras:[],tipoDocExtra:'boleto',
+          transpId:(p.rastreio&&p.rastreio.transpId)||'correios',
+          transpNome:(p.rastreio&&p.rastreio.transpId==='outra')?(p.rastreio.transportadora||''):'',
+          rastCod:(p.rastreio&&p.rastreio.codigo)||'',rastUrl:(p.rastreio&&p.rastreio.url)||'',
+          rastUrlManual:!!(p.rastreio&&p.rastreio.urlManual),
+          rastPrev:(p.rastreio&&p.rastreio.previsao)||'',rastObs:(p.rastreio&&p.rastreio.obs)||''})});});
     // Visualização detalhada em lista (Ata 5.6): uma linha por item do fornecedor,
     // com dados do pedido e da revenda de destino — apenas itens dele (visibilidade).
     const fVis=(S.fPedVis==='lista')?'lista':'cards';
@@ -8507,7 +8819,7 @@ class Component extends DCLogic {
     const revsCtx=(isRev&&S.revGrupo&&uAtual)?this._minhasRevs(uAtual):[rid];
     const rpedGrupo=isRev&&S.revGrupo&&revsCtx.length>1;
     const rPedRows=PEDS.filter(p=>revsCtx.includes(p.revendaId)&&((S.filtroEtapaRev||'0')==='0'||this._etapaPedIdx(p)===+S.filtroEtapaRev)).map(p=>({id:p.id,data:p.data,revTag:rpedGrupo?(R(p.revendaId).nome||''):'',
-      etapaTxt:this._etapaTxt(p),...this._chatCel(p),...this._recebCel(p),...this._pdfCel(p),
+      etapaTxt:this._etapaTxt(p),...this._chatCel(p),...this._recebCel(p),...this._pdfCel(p),...this._rastCel(p),
       fotos:p.itens.map(i=>({src:this.fotosDe(P(i.produtoId))[0],ver:this.verFoto(i.produtoId)})),
       itensN:p.itens.length+(p.itens.length===1?' item':' itens'),totalFmt:this._revTotalFmt(p),
       fornNome:destTxt(p),...this.chip(p.status),
@@ -8953,6 +9265,30 @@ class Component extends DCLogic {
           aviso:this.role==='revenda'
             ? 'Ao confirmar, o pedido passa para a etapa 10 (Conclusão) e a Loja Cidade Imperial é avisada por e-mail. Se houver avaria ou divergência, descreva na observação — e use a conversa do pedido para tratar o caso.'
             : 'Você está confirmando o recebimento em nome da revenda '+(R(pR.revendaId).nome||'')+'. Ao confirmar, o pedido passa para a etapa 10 (Conclusão), a revenda é avisada por e-mail e o registro fica na trilha e na auditoria com o seu nome.'}; })(),
+      // rastreio da entrega
+      mRast:M==='rastreio',fxTransp:this.fxTransp,fxRastCod:this.fxRastCod,fxRastUrl:this.fxRastUrl,
+      fxRastPrev:this.fxData('rastPrev'),fxRastObs:this.fx('rastObs'),fxTranspNome:this.fx('transpNome'),
+      confirmRastreio:this.confirmRastreio,transpOpts:this.TRANSPS.map(x=>({v:x.id,label:x.nome})),
+      rastInfo:(()=>{ const M2=M==='rastreio'||M==='faturar';
+        const pR=(M2&&S.form.pedidoId)?S.pedidos.find(x=>x.id===S.form.pedidoId):null;
+        const tp=this._transp(S.form.transpId);
+        if(!pR) return {pedidoId:'',sub:'',doc:'',dica:'',ehOutra:false,url:'',temUrl:false,obrig:false,
+          freteTxt:'',freteOrigem:'',avisoBg:'#faf7f0',avisoBd:'#eee7d8',avisoFg:'#6b6459',aviso:'',
+          jaTem:false,jaTemTxt:'',histN:'',temHist:false,titulo:'Informar rastreio da entrega'};
+        const fi=this._freteInfo(pR); const obrig=fi.resp==='fornecedor'; const r=this._rastreio(pR);
+        return {pedidoId:pR.id,
+          sub:'Revenda '+(R(pR.revendaId).nome||'—')+' · '+(R(pR.revendaId).cidade||''),
+          titulo:(r?'Atualizar':'Informar')+' rastreio da entrega',
+          doc:tp.doc,dica:tp.dica,ehOutra:tp.id==='outra',semLink:tp.id==='propria',
+          url:S.form.rastUrl||'',temUrl:!!String(S.form.rastUrl||'').trim(),
+          obrig,freteTxt:fi.txt,freteOrigem:'Origem da informação: '+fi.origem+'.',
+          avisoBg:obrig?'#fdf6e7':'#f4f7f4',avisoBd:obrig?'#f0e2c4':'#dfe8e0',avisoFg:obrig?'#6d4a10':'#3c5a41',
+          aviso:obrig
+            ? 'O frete é responsabilidade do fornecedor neste pedido, então o rastreio é obrigatório: sem transportadora, código e link a plataforma não conclui o faturamento.'
+            : 'Neste pedido o frete não é responsabilidade do fornecedor — informar o rastreio é opcional, mas ajuda a revenda a acompanhar a entrega.',
+          jaTem:!!r,jaTemTxt:r?('Rastreio atual: '+this._rastInfoTxt(pR)):'',
+          temHist:((pR.rastreioHist||[]).length>0),
+          histN:((pR.rastreioHist||[]).length?((pR.rastreioHist||[]).length+' registro(s) anterior(es) no histórico do pedido'):'')}; })(),
       pedKpis,buscaPed:S.buscaPed,setBuscaPed:this.setBuscaPed,filtroRev:S.filtroRev,setFiltroRev:this.setFiltroRev,revFilterOpts,
       etapaOpts,filtroEtapa:S.filtroEtapa||'0',setFiltroEtapa:this.setFiltroEtapa,filtroEtapaRev:S.filtroEtapaRev||'0',setFiltroEtapaRev:this.setFiltroEtapaRev,
       // cotações

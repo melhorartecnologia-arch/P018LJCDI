@@ -178,6 +178,30 @@ export const TEMPLATES = {
       p('Com a confirmação, o pedido chega à etapa 10 (Conclusão) e o ciclo se encerra.'), 'Pedido'),
   }),
 
+  // Rastreio da entrega — enviado à revenda e à Loja quando o fornecedor
+  // informa (ou corrige) a transportadora, o código e o link de consulta.
+  pedido_rastreio: (v) => ({
+    subject: v.atualizacao
+      ? `Rastreio atualizado — pedido ${v.pedidoId}`
+      : `Rastreio da entrega — pedido ${v.pedidoId}`,
+    html: layout(v.atualizacao ? 'Rastreio da entrega atualizado' : 'Sua entrega já pode ser acompanhada',
+      p(`${b(v.por)} ${v.atualizacao ? 'atualizou' : 'informou'} os dados de rastreio da entrega do pedido ${b(v.pedidoId)}. Use o código abaixo no site da transportadora para acompanhar o andamento.`) +
+      linhas([['Pedido', v.pedidoId], ['Revenda', v.revendaNome], ['Transportadora', v.transportadora],
+        ['Código de rastreio', v.codigo], ['Previsão de entrega', v.previsao],
+        ['Informado por', v.por], ['Quando', v.quando]]) +
+      (v.url
+        ? '<div style="margin:4px 0 16px"><a href="' + esc(v.url) + '" style="display:inline-block;background:#2f6b39;color:#fff;border-radius:9px;padding:11px 18px;font-size:14px;font-weight:700;text-decoration:none">Acompanhar a entrega</a>' +
+          '<div style="font-size:11px;color:#a89f90;margin-top:8px;word-break:break-all">' + esc(v.url) + '</div></div>'
+        : p('Esta entrega é feita por frota própria do fornecedor e não tem link de consulta — acompanhe pelos dados acima ou pela conversa do pedido.')) +
+      (v.observacao
+        ? '<div style="border-left:3px solid #B38335;background:#faf7f0;padding:12px 16px;margin:4px 0 14px;border-radius:0 8px 8px 0">' +
+          '<div style="font-size:12px;font-weight:700;color:#8f682a;margin-bottom:4px">Observação da entrega</div>' +
+          '<div style="font-size:14px;line-height:1.6;color:#272525;white-space:pre-wrap">' + esc(v.observacao) + '</div></div>'
+        : '') +
+      itensDe(v, 'Itens do pedido') +
+      p('Quando o material chegar, confirme o recebimento pela plataforma — é a confirmação que encerra o pedido.'), 'Entrega'),
+  }),
+
   // ── Cotações ──────────────────────────────────────────────────────────
   cotacao_rodada: (v) => ({
     subject: `Nova rodada de negociação na cotação ${v.cotacao}`,
