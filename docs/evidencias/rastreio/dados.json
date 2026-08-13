@@ -1,0 +1,43 @@
+{
+  "pedido": "PED-0044",
+  "fornecedor": "Distribuidora Serra Verde",
+  "revenda": "Bar do Imperador",
+  "codigo": "AB123456789BR",
+  "codigoCorrigido": "ZZ987654321BR",
+  "previsao": "30/09/2026",
+  "urlPadraoCorreios": "https://rastreamento.correios.com.br/app/index.php?objeto=AB123456789BR",
+  "codigoNaJadlog": "123456789",
+  "urlJadlog": "https://www.jadlog.com.br/tracking?cte=123456789",
+  "transportadoras": 13,
+  "catalogo": [
+    "Correios",
+    "Jadlog",
+    "Braspress",
+    "TNT Mercúrio",
+    "Total Express",
+    "Azul Cargo Express",
+    "Loggi",
+    "Rodonaves (RTE)",
+    "Jamef",
+    "Patrus Transportes",
+    "Sequoia Log",
+    "Frota própria do fornecedor",
+    "Outra transportadora"
+  ],
+  "rastreioAtual": {
+    "ts": 1786582037864,
+    "obs": "2 volumes; entrega das 8h às 12h, falar com a expedição.",
+    "por": "Distribuidora Serra Verde (Fornecedor)",
+    "url": "https://rastreamento.correios.com.br/app/index.php?objeto=ZZ987654321BR",
+    "papel": "fornecedor",
+    "codigo": "ZZ987654321BR",
+    "quando": "13/08/2026 00:47",
+    "previsao": "30/09/2026",
+    "transpId": "correios",
+    "urlManual": false,
+    "transportadora": "Correios"
+  },
+  "historico": 1,
+  "assuntoEmail": "Rastreio da entrega — pedido PED-0044",
+  "faturado": true
+}
