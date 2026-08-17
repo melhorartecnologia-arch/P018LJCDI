@@ -6740,6 +6740,11 @@ class Component extends DCLogic {
       const nImgs=planos.reduce((a,pl)=>a+pl.itens.length,0);
       await this._xlBaixar(wb,'cidade-imperial-'+cfg.arquivo+'-'+carimbo+'.xlsx',planos);
       this.audit('Exportação de cadastro',cfg.titulo+' · '+n+' registro(s)'+(nImgs?' · '+nImgs+' imagem(ns) embutida(s)':'')+' · .xlsx');
+      // exportação de produto sem nenhuma imagem é falha, não sucesso: avisa
+      if(tipo==='produto'&&n&&!nImgs){
+        this.audit('Exportação de produtos sem imagens','nenhuma das fotos pôde ser lida para dentro da planilha');
+        return this.err('A planilha saiu sem as imagens: nenhuma das fotos dos produtos pôde ser lida. '
+          +'Confira se as imagens abrem na tela do produto e tente de novo.'); }
       this.toast(n+' registro(s) de '+cfg.titulo+' exportado(s) para Excel'
         +(nImgs?' com '+nImgs+' imagem(ns) dentro do arquivo.':'.'),'ok');
     } finally { this._expBusy=false; } }; return this._exc[tipo]; }
