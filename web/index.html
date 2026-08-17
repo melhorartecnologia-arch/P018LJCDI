@@ -4681,6 +4681,11 @@ class Component extends DCLogic {
   _itemView(i){ const p=this._prodInfo(i.produtoId); const sub=(i.precoNeg!=null?i.precoNeg:(i.qtd*i.preco)); return {codigo:p.codigo||'',descricao:p.descricao||('Produto '+i.produtoId),qtd:i.qtd,unidade:p.unidade||'',valor:this.fmt(sub)}; }
   _itensPed(ped,pred){ return (ped&&ped.itens||[]).filter(pred||(()=>true)).map(i=>this._itemView(i)); }
   _itensCot(c){ return ((c&&c.itens)||[]).map(it=>{ const p=this._prodInfo(it.produtoId); return {codigo:p.codigo||'',descricao:p.descricao||('Produto '+it.produtoId),qtd:it.qtd,unidade:p.unidade||'',valor:this.fmt(it.qtd*it.preco)}; }); }
+  // Convite, rodada e lembrete de cotação: o preço é o que se pede ao
+  // fornecedor, então ele não vai no e-mail nem como referência — a lista sai
+  // sem a chave de valor, para o preço não existir na mensagem.
+  _itensCotar(itens){ return (itens||[]).map(it=>{ const p=this._prodInfo(it.produtoId);
+    return {codigo:p.codigo||'',descricao:p.descricao||('Produto '+it.produtoId),qtd:it.qtd,unidade:p.unidade||''}; }); }
   // A revenda só vê valores de itens já negociados (cotação → precoNeg) ou faturados.
   _itemNegociado(i){ return i.precoNeg!=null || i.st==='faturado'; }
   _revOcultar(rawItens){ return (rawItens||[]).some(i=>!this._itemNegociado(i)); }
@@ -5714,7 +5719,7 @@ class Component extends DCLogic {
       c.historico.push({quando:this.ts(),usuario:this.userName(),acao:'Lembrete de proposta enviado a '+f.nome}); return c; });
     this.audit('Lembrete de cotação enviado',cid+' → '+f.nome);
     const cL=this.state.cotacoes.find(x=>x.id===cid);
-    this.notificar('cotacao_lembrete',this._fornEmail(fid),{cotacao:cid,fornecedorNome:f.nome,prazo:(cL?cL.prazo:''),itensLista:this._itensCot(cL)}); }; return this._lc[k]; }
+    this.notificar('cotacao_lembrete',this._fornEmail(fid),{cotacao:cid,fornecedorNome:f.nome,prazo:(cL?cL.prazo:''),itensLista:this._itensCotar((cL||{}).itens),ocultarValor:true}); }; return this._lc[k]; }
   componentDidMount(){ window.CI=this; this._kb=e=>{
     if(this.state.modal==='ajuda'){ const n=(this.ajudaConteudo().passos||[]).length;
       if(e.key==='Escape') this.fecharAjuda();
@@ -7338,8 +7343,8 @@ class Component extends DCLogic {
     this.updPed(f.pedidoId,p=>{p.itens=novo;
       p.trilha.push(this.tr('Cotação '+id+' aberta para '+alocados.length+' item(ns) · '+totQ+' unidade(s) com '+(conv.length===1?'1 fornecedor':conv.length+' fornecedores')+(parcial?' — quantidade parcial; o saldo permanece aprovado':'')+(nAcima?' — '+nAcima+' item(ns) cotado(s) acima do pedido para negociar volume; o pedido da revenda não muda':'')));return p;});
     this.audit('Abertura de cotação',id+' · pedido '+f.pedidoId+' · '+alocados.length+' item(ns) · '+totQ+' un'+(parcial?' (parcial)':'')+(nAcima?' (acima do pedido em '+nAcima+' item(ns))':'')+(conv.length===1?' · fornecedor único (sem comparação de propostas)':' · '+conv.length+' fornecedores'));
-    const _ilC=itensCot.map(it=>{ const pp=this._prodInfo(it.produtoId); return {codigo:pp.codigo||'',descricao:pp.descricao||('Produto '+it.produtoId),qtd:it.qtd,unidade:pp.unidade||'',valor:this.fmt(it.qtd*it.preco)}; });
-    conv.forEach(cf=>this.notificar('cotacao_convite',this._fornEmail(cf),{cotacao:id,fornecedorNome:this._fornNome(cf),prazo:f.prazo,itensLista:_ilC,observacao:obsC})); };
+    const _ilC=this._itensCotar(itensCot);
+    conv.forEach(cf=>this.notificar('cotacao_convite',this._fornEmail(cf),{cotacao:id,fornecedorNome:this._fornNome(cf),prazo:f.prazo,itensLista:_ilC,ocultarValor:true,observacao:obsC})); };
   // ——— Rodadas de negociação (Ata 5.4) ———
   _cotRod(c){ return (c&&c.rodada)?c.rodada:1; }
   _rodInfo(c,n){ return ((c&&c.rodadas)||[]).find(r=>r.n===n)||null; }
@@ -7421,8 +7426,8 @@ class Component extends DCLogic {
       x.historico.push({quando:this.ts(),usuario:this.userName(),acao:'Rodada '+n+' aberta — renegociação de '+itensSel.length+' item(ns) ('+nomesIt+') · fornecedores: '+nomes+' · prazo '+f.prazo+(obsR?' · observação enviada aos fornecedores: "'+obsR+'"':'')});
       return x;});
     this.audit('Nova rodada de cotação',f.cotId+' · rodada '+n+' · '+itensSel.length+' item(ns) · '+convSel.length+' fornecedor(es)'+(obsR?' · com observação para os fornecedores':''));
-    const _ilR=(c.itens||[]).filter(it=>itensSel.includes(it.produtoId)).map(it=>{ const pp=this._prodInfo(it.produtoId); return {codigo:pp.codigo||'',descricao:pp.descricao||('Produto '+it.produtoId),qtd:it.qtd,unidade:pp.unidade||'',valor:this.fmt(it.qtd*it.preco)}; });
-    convSel.forEach(cf=>this.notificar('cotacao_rodada',this._fornEmail(cf),{cotacao:f.cotId,fornecedorNome:this._fornNome(cf),rodada:String(n),prazo:f.prazo,itensLista:_ilR,observacao:obsR}));
+    const _ilR=this._itensCotar((c.itens||[]).filter(it=>itensSel.includes(it.produtoId)));
+    convSel.forEach(cf=>this.notificar('cotacao_rodada',this._fornEmail(cf),{cotacao:f.cotId,fornecedorNome:this._fornNome(cf),rodada:String(n),prazo:f.prazo,itensLista:_ilR,ocultarValor:true,observacao:obsR}));
     this.mClose(); };
   escolher(cotId,fid){ return ()=>{ const c=this.state.cotacoes.find(x=>x.id===cotId);
     const props=this._propsEfetivas(c);
@@ -7506,8 +7511,8 @@ class Component extends DCLogic {
         x.rodadas=[...(x.rodadas||[]),{n,itens:[...porCot[cid]],convidados:convs,prazo:prazoR,abertaEm:this.ts(),usuario:quem}];
         x.historico.push({quando:this.ts(),usuario:quem,acao:'Rodada '+n+' aberta automaticamente — aceite comercial RECUSADO pela revenda para '+porCot[cid].length+' item(ns) ('+porCot[cid].map(nomeP).join(', ')+') · motivo: '+motivo+' · prazo '+prazoR});
         return x;});
-      const _ilR=(c.itens||[]).filter(it=>porCot[cid].includes(it.produtoId)).map(it=>{ const pp2=this._prodInfo(it.produtoId); return {codigo:pp2.codigo||'',descricao:pp2.descricao||('Produto '+it.produtoId),qtd:it.qtd,unidade:pp2.unidade||'',valor:this.fmt(it.qtd*it.preco)};});
-      convs.forEach(cf=>this.notificar('cotacao_rodada',this._fornEmail(cf),{cotacao:cid,fornecedorNome:this._fornNome(cf),rodada:String(n),prazo:prazoR,itensLista:_ilR})); });
+      const _ilR=this._itensCotar((c.itens||[]).filter(it=>porCot[cid].includes(it.produtoId)));
+      convs.forEach(cf=>this.notificar('cotacao_rodada',this._fornEmail(cf),{cotacao:cid,fornecedorNome:this._fornNome(cf),rodada:String(n),prazo:prazoR,itensLista:_ilR,ocultarValor:true})); });
     const porForn={}; acc.forEach(x=>{ if(x.i.porLoja) return; (porForn[x.i.fornecedorId]=porForn[x.i.fornecedorId]||[]).push(x.i); });
     Object.keys(porForn).forEach(fid2=>{ this.notificar('pedido_fornecedor',this._fornEmail(+fid2),{pedidoId:p.id,fornecedorNome:this._fornNome(+fid2),revendaNome:this._revNome(p.revendaId),itensLista:porForn[fid2].map(i2=>this._itemView(i2))}); });
     this.notificar('aceite_revenda_loja',this._lojaEmail(),{pedidoId:p.id,revendaNome:this._revNome(p.revendaId),aceitos:aceitosView,recusados:recusadosView,motivo,usuario:quem});

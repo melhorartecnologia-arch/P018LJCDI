@@ -58,7 +58,7 @@ const b = (v) => '<b>' + esc(v) + '</b>'
 // itens: [{ codigo, descricao, qtd, unidade, valor }]
 // mostrarValor=false oculta a coluna de valor (ex.: e-mails à revenda antes de a
 // Loja negociar/faturar — a revenda nunca vê o preço de catálogo).
-const tabelaItens = (itens, titulo = 'Itens', mostrarValor = true) => {
+const tabelaItens = (itens, titulo = 'Itens', mostrarValor = true, notaSemValor) => {
   if (!Array.isArray(itens) || !itens.length) return ''
   const th = 'text-align:left;padding:6px 8px;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #eae3d6'
   return (
@@ -87,10 +87,21 @@ const tabelaItens = (itens, titulo = 'Itens', mostrarValor = true) => {
       )
       .join('') +
     '</tbody></table>' +
-    (mostrarValor ? '' : '<div style="font-size:12px;color:#8a8378;margin:-6px 0 12px">Os valores serão informados após a negociação/análise da Loja.</div>')
+    (mostrarValor
+      ? ''
+      : '<div style="font-size:12px;color:#8a8378;margin:-6px 0 12px">' +
+        esc(notaSemValor || 'Os valores serão informados após a negociação/análise da Loja.') + '</div>')
   )
 }
-const itensDe = (v, titulo) => tabelaItens(v.itensLista, titulo, !v.ocultarValor)
+const itensDe = (v, titulo) => tabelaItens(v.itensLista, titulo, !v.ocultarValor, v.notaSemValor)
+
+// Convite, rodada e lembrete de cotação: o que se pede ao fornecedor é o
+// preço. Mostrar um valor de referência ancoraria a proposta dele, então a
+// lista sai sempre sem valores — a regra vive aqui, no template, e não
+// depende de quem chama.
+const NOTA_COTAR =
+  'Os preços não aparecem aqui de propósito: o preço de cada item é justamente o que você vai propor. Registre a sua proposta na plataforma, item a item.'
+const itensParaCotar = (v, titulo) => tabelaItens(v.itensLista, titulo || 'Itens a cotar', false, NOTA_COTAR)
 
 export const TEMPLATES = {
   // ── Pedidos ───────────────────────────────────────────────────────────
@@ -204,7 +215,7 @@ export const TEMPLATES = {
     html: layout(`Rodada ${esc(v.rodada || '2')} — contraproposta solicitada`,
       p(`Olá, ${b(v.fornecedorNome)}! A Loja Cidade Imperial abriu uma nova rodada de negociação na cotação ${b(v.cotacao)} e convida você a revisar seus preços e condições para os itens abaixo.`) +
       obsLoja(v.observacao, `O que a Loja espera na rodada ${esc(v.rodada || '2')}`) +
-      (v.itensLista ? tabelaItens(v.itensLista) : '') +
+      (v.itensLista ? itensParaCotar(v, 'Itens em renegociação') : '') +
       linhas([['Cotação', v.cotacao], ['Rodada', v.rodada || '2'], ['Prazo para contrapropostas', v.prazo]]) +
       p('Sua proposta anterior permanece registrada no histórico; a contraproposta substitui os valores apenas para os itens em renegociação.'), 'Cotação'),
   }),
@@ -213,14 +224,14 @@ export const TEMPLATES = {
     html: layout('Convite para cotação',
       p(`Olá${v.fornecedorNome ? ', ' + esc(v.fornecedorNome) : ''}. Você foi convidado a enviar uma proposta para a cotação ${b(v.cotacao)}.`) +
       obsLoja(v.observacao, 'O que a Loja espera nesta cotação') +
-      linhas([['Cotação', v.cotacao], ['Prazo para propostas', v.prazo]]) + itensDe(v, 'Itens a cotar') +
+      linhas([['Cotação', v.cotacao], ['Prazo para propostas', v.prazo]]) + itensParaCotar(v, 'Itens a cotar') +
       p('Acesse a plataforma para registrar a sua proposta (por item) antes do prazo.'), 'Cotação'),
   }),
   cotacao_lembrete: (v) => ({
     subject: `Lembrete: cotação ${v.cotacao} aguarda sua proposta`,
     html: layout('Lembrete de cotação',
       p(`Olá${v.fornecedorNome ? ', ' + esc(v.fornecedorNome) : ''}. A cotação ${b(v.cotacao)} ainda aguarda a sua proposta.`) +
-      linhas([['Cotação', v.cotacao], ['Prazo para propostas', v.prazo]]) + itensDe(v, 'Itens a cotar'), 'Cotação'),
+      linhas([['Cotação', v.cotacao], ['Prazo para propostas', v.prazo]]) + itensParaCotar(v, 'Itens a cotar'), 'Cotação'),
   }),
   cotacao_proposta_loja: (v) => ({
     subject: `Nova proposta na cotação ${v.cotacao}`,
