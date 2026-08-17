@@ -2727,7 +2727,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
   <div data-screen-label="Catálogo (revenda)" style="animation:fadeUp .25s ease">
     <div style="font-size:21px;font-weight:700;margin:2px 0 3px">Catálogo de produtos homologados</div>
     <sc-if value="{{catGrupo}}" hint-placeholder-val="{{false}}">
-      <div style="font-size:12.5px;font-weight:600;color:#5d3f96;background:#f3eefa;border:1px solid #ddd0ee;border-radius:10px;padding:10px 14px;margin:6px 0 14px">📊 Você está na visão consolidada do grupo. O catálogo e a visibilidade de fornecedores são individuais por revenda — selecione uma revenda no seletor de contexto (no topo) para consultar o catálogo e criar pedidos em nome dela.</div>
+      <div style="font-size:12.5px;font-weight:600;color:#5d3f96;background:#f3eefa;border:1px solid #ddd0ee;border-radius:10px;padding:10px 14px;margin:6px 0 14px">📊 Você está na visão consolidada do grupo. O catálogo é individual por revenda — selecione uma revenda no seletor de contexto (no topo) para consultar o catálogo e criar pedidos em nome dela.</div>
     </sc-if>
     <div style="font-size:13px;color:#8a8378;margin-bottom:16px">Produtos disponíveis para {{rMeNome}} · selecione quantidades e envie o pedido para análise da Loja</div>
     <input value="{{buscaCat}}" onChange="{{setBuscaCat}}" placeholder="Buscar produto…" style="width:100%;box-sizing:border-box;padding:11px 14px;border:1px solid #e5ddcd;border-radius:9px;font:inherit;font-size:13px;background:#fff;outline:none;color:#272525;margin-bottom:16px">
@@ -2746,7 +2746,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
           </div>
           <div style="font-size:10.5px;font-weight:700;letter-spacing:.06em;color:#b0a795">{{p.codigo}} · {{p.unidade}}</div>
           <div style="font-size:14px;font-weight:700;line-height:1.35">{{p.descricao}}</div>
-          <div style="font-size:12px;color:#8a8378">{{p.fornNome}}</div>
+          <div style="font-size:12px;color:#8a8378">{{p.catNome}}</div>
           <div style="display:flex;align-items:center;justify-content:space-between;margin-top:9px">
             <div style="font-size:12px;font-weight:600;color:#a89f90" title="O valor é definido pela Loja após a análise/negociação do pedido">Valor sob negociação</div>
             <div style="display:flex;align-items:center;gap:8px">
@@ -5312,7 +5312,7 @@ class Component extends DCLogic {
       "resumo": "Tela da Revenda para navegar pelos produtos homologados, escolher as quantidades e enviar o pedido para análise da Loja. O total é calculado automaticamente.",
       "passos": [
         "No campo \"Buscar produto…\" (topo da tela), digite parte do nome ou do código do produto para filtrar a lista; deixe em branco para ver todos os produtos disponíveis.",
-        "Localize o produto entre os cards, conferindo o código · unidade, a descrição, o fornecedor e o preço mostrados em cada card.",
+        "Localize o produto entre os cards, conferindo o código · unidade, a descrição e a categoria mostrados em cada card.",
         "Para ver a imagem ampliada, clique na foto do produto (aparece a dica \"Clique para ampliar\"); se o card tiver as setas ‹ e ›, use-as para percorrer as demais fotos.",
         "Clique no botão \"+\" (dourado) do card para adicionar uma unidade ao pedido; assim que adiciona, surgem o botão \"−\" e o número da quantidade atual entre eles.",
         "Clique no botão \"−\" para diminuir a quantidade; quando ela chega a zero, o item sai do pedido.",
@@ -5323,7 +5323,8 @@ class Component extends DCLogic {
       "dicas": [
         "A barra escura com o botão \"Enviar pedido para análise\" só aparece depois que você adiciona pelo menos um item; com o pedido vazio ela fica oculta.",
         "Você não digita valores: o preço vem do cadastro e o total é somado automaticamente conforme as quantidades escolhidas.",
-        "A tela lista apenas os produtos homologados e disponíveis para a sua revenda; se algum item não aparecer, confirme a homologação com a Loja."
+        "A tela lista apenas os produtos homologados e disponíveis para a sua revenda; se algum item não aparecer, confirme a homologação com a Loja.",
+        "O catálogo mostra o produto, não a cadeia de suprimento: quem fornece cada item é decisão da Loja e não aparece aqui. Você compra da Loja Cidade Imperial — o fornecedor que vai atender e faturar só é identificado depois, quando as condições comerciais chegarem para a sua aprovação e na tela \"Meus pedidos\"."
       ]
     },
     "rped": {
@@ -9136,7 +9137,10 @@ class Component extends DCLogic {
     const catGrupo=isRev&&S.revGrupo;
     const catRows=catGrupo?[]:S.produtos.filter(p=>p.ativo&&this._pForns(p).some(v=>F(v).ativo&&(rMe.visibilidade||[]).includes(v))&&!(rMe.prodBloq||[]).includes(p.id)&&(!bc||p.descricao.toLowerCase().includes(bc)||p.codigo.toLowerCase().includes(bc)))
       .map(p=>{ const fotos=this.fotosDe(p); const idx=(S.fotoIdx[p.id]||0)%fotos.length;
-        return {id:p.id,codigo:p.codigo,descricao:p.descricao,fornNome:this._pForns(p).filter(v=>F(v).ativo&&(rMe.visibilidade||[]).includes(v)).map(v=>F(v).nome).join(', '),unidade:p.unidade,precoFmt:this.fmt(p.preco),
+        // A revenda compra da Loja: o fornecedor por trás do produto é
+        // informação da cadeia de suprimento e não vai para o card. No lugar
+        // dele, a categoria — que ajuda a revenda a se localizar no catálogo.
+        return {id:p.id,codigo:p.codigo,descricao:p.descricao,catNome:this._pCat(p),unidade:p.unidade,precoFmt:this.fmt(p.preco),
         foto:fotos[idx],temVarias:fotos.length>1,verGrande:this.verFoto(p.id),
         dots:fotos.map((_,i)=>({bg:i===idx?'#B38335':'rgba(255,255,255,.85)'})),
         next:this.fotoNav(p.id,fotos.length,1),prev:this.fotoNav(p.id,fotos.length,-1),
