@@ -5011,6 +5011,7 @@ class Component extends DCLogic {
       "titulo": "Produtos homologados (Loja)",
       "resumo": "Tela da Loja para manter o catálogo de produtos homologados, sempre vinculados a um fornecedor e a um contrato. Aqui você cadastra, consulta e ativa ou inativa os produtos disponíveis para as revendas.",
       "passos": [
+        "A planilha de produtos vai além do cadastro básico: além de código, descrição, unidade, categoria, preço, fornecedores e situação, ela tem as colunas da FICHA TÉCNICA (NCM, código de barras GTIN/EAN, peso bruto, peso líquido, altura, largura, comprimento, unidade de medida e observações), a coluna das IMAGENS (endereços separados por ponto e vírgula, até 5) e a coluna ESTOQUE NA LOJA (qtd).",
         "Para cadastrar em massa, use o bloco \"Importar produtos por planilha\": clique em \"⬇ Baixar modelo\" (Excel com as colunas certas, duas linhas de exemplo e uma aba de instruções) ou em \"⬇ Modelo com os cadastros atuais\" (mesmo formato, já preenchido com o que existe hoje — útil para revisar em lote).",
         "Preencha uma linha por registro, salve e clique em \"⬆ Carregar planilha preenchida…\". A plataforma abre a prévia com os contadores (lidas, a incluir, a atualizar, com erro) e mostra linha a linha o que vai acontecer, com o motivo de cada recusa — nada é gravado até você clicar em \"Gravar N registro(s)\". Linhas com erro são ignoradas; corrija-as e carregue de novo.",
         "No topo da tela, confira os quatro indicadores (Ativos no catálogo, Inativos, Fornecedores representados e Movimentado em pedidos) para ter uma visão geral do catálogo.",
@@ -5028,6 +5029,10 @@ class Component extends DCLogic {
         "Na lista \"Fornecedores / contratos\" só aparecem fornecedores ativos; use o campo \"Buscar fornecedor por nome…\" para filtrar e clique nos nomes para marcar ou desmarcar — todo produto precisa de ao menos um fornecedor vinculado.",
         "Inativar não exclui o produto: ele apenas sai do catálogo das revendas e pode ser reativado a qualquer momento pelo mesmo link.",
         "Na coluna \"Código\", clique na miniatura da foto do produto para ampliar a imagem.",
+        "Campo da ficha em branco na planilha NÃO apaga o que já está cadastrado — deixa como está. Isso vale para NCM, código de barras, pesos, dimensões, unidade de medida, observações e também para as imagens: em branco, o produto mantém as fotos atuais; no produto novo, entram as três imagens padrão.",
+        "As imagens entram por endereço, não por arquivo: vale um endereço https://, um caminho do próprio pacote (img/prd-1-1.png) ou um anexo já enviado (api/anexos/…). Para subir arquivos de imagem, use a janela de cadastro do produto — a planilha só aponta para imagens que já existem em algum lugar.",
+        "A coluna \"Estoque na Loja (qtd)\" lança a posição de estoque: ao confirmar a carga, a plataforma grava UM inventário novo com as quantidades informadas, preservando a contagem dos produtos que não vieram na planilha. Em branco, o estoque não é tocado. O lançamento aparece em \"Inventário de estoque\" e na auditoria, identificado como vindo da importação de produtos.",
+        "A exportação (\"⬇ Exportar XLSX\") traz as mesmas colunas da ficha, mais o que a planilha não pede de volta: cubagem calculada, \"Ficha completa\" (Sim/Não), quantidade de imagens, quanto já foi atendido desde o último inventário, a data do inventário vigente e o quanto o produto vendeu. Serve para conferir o cadastro inteiro numa tela só.",
         "Ao editar um produto, o campo \"Preço estimado (R$)\" já vem preenchido automaticamente com o último valor do histórico (última alteração de preço ou último preço praticado em pedido); o valor continua editável e a alteração manual entra no histórico de preços."
       ]
     },
@@ -5458,6 +5463,7 @@ class Component extends DCLogic {
       ],
       "dicas": [
         "O saldo é sempre calculado sobre o inventário mais recente; lance um novo inventário para atualizar a base.",
+        "Há dois caminhos para lançar a posição: esta tela (contagem produto a produto ou carga por planilha de inventário) e a coluna \"Estoque na Loja (qtd)\" da planilha de PRODUTOS — nesse caso o lançamento nasce junto com a importação do cadastro, preservando a contagem dos produtos que não vieram na planilha.",
         "Atendimentos \"com estoque da Loja\" feitos após o lançamento NÃO abatem o saldo: o saldo continua sendo a contagem do último inventário. Eles aparecem apenas na coluna \"Atendido desde o lançamento\", como sinal de que a posição pode estar envelhecendo — e só entram nessa conta depois que a revenda aprova as condições do atendimento, porque proposta recusada não tira nada do estoque.",
         "Os alertas são informativos — a decisão de como atender (estoque, direto ou cotação) continua com a Loja.",
         "A planilha carregada nunca grava direto: o lançamento só acontece depois da sua revisão e confirmação."
@@ -5972,12 +5978,15 @@ class Component extends DCLogic {
         {k:'categoria',rot:'Categoria',             larg:18, ex:['Chope','Cerveja']},
         {k:'preco',    rot:'Preço estimado (R$)',   larg:20, ex:['780,00','148,00']},
         {k:'fornecedores',rot:'Fornecedores (separe por ;)',larg:44, ex:['Distribuidora Serra Verde; Imperial Bebidas Ltda','Imperial Bebidas Ltda']},
-        {k:'ativo',    rot:'Ativo (Sim/Não)',       larg:16, ex:['Sim','Sim']}],
+        {k:'ativo',    rot:'Ativo (Sim/Não)',       larg:16, ex:['Sim','Sim']},
+        ...this._fichaCols()],
       ajuda:['Descrição é obrigatória. Deixe o "Código" em branco para a plataforma gerar (PRD-0NN); preenchido, ele identifica o produto — se já existir, a linha ATUALIZA o cadastro.',
              'Preço aceita 780,00 ou 780.00; em branco entra como 0,00 e pode ser ajustado depois.',
              '"Fornecedores" aceita nomes ou CNPJs já cadastrados, separados por ponto e vírgula — é o De/Para (RF56). Cadastre os fornecedores antes dos produtos.',
              'Categoria precisa existir em Cadastros › Categorias de produtos; se não existir ou vier em branco, o produto fica em "Outros".',
-             'As imagens não vêm pela planilha: o produto entra com a imagem padrão e você anexa as fotos depois.']},
+             'A ficha técnica vem junto: NCM (8 dígitos), código de barras (GTIN/EAN de 8, 12, 13 ou 14 dígitos), pesos, dimensões, unidade de medida e observações. Campo em branco NÃO apaga o que já está cadastrado — deixa como está.',
+             'Imagens: informe os endereços separados por ponto e vírgula (até 5). Vale um endereço https://, um caminho do próprio pacote (img/prd-1-1.png) ou um anexo já enviado (api/anexos/…). Em branco, as imagens atuais são mantidas; no produto novo, entram as imagens padrão.',
+             '"Estoque na Loja (qtd)" lança a posição de estoque desses produtos: ao confirmar, a plataforma grava UM inventário novo com as quantidades informadas, preservando a contagem dos produtos que não vieram na planilha. Em branco, o estoque não é tocado.']},
     categoria:{
       titulo:'categorias de produtos', aba:'Categorias', arquivo:'modelo-categorias',
       perm:'cadastros.produtos', chaveLabel:'Nome',
@@ -6153,9 +6162,15 @@ class Component extends DCLogic {
         out.acao=erros.length?'erro':(jaTem?'atualiza':'novo'); out.alvoId=jaTem?jaTem.id:null;
         out.detalhe=[catOk?cat:(cat?cat+' → Outros':'Outros'),this.fmt(preco),
           fids.map(id=>this._fornNome(id)).join(', ')].filter(Boolean).join(' · ');
+        const fx=this._impFicha(v); fx.erros.forEach(e=>erros.push(e));
+        if(erros.length) out.acao='erro';
+        const extra=[Object.keys(fx.ficha).length?('ficha: '+Object.keys(fx.ficha).filter(k=>k!=='cubagem').length+' campo(s)'):'',
+          fx.fotos?(fx.fotos.length+' imagem(ns)'):'',fx.estoque!=null?('estoque '+fx.estoque):''].filter(Boolean).join(' · ');
+        if(extra) out.detalhe=out.detalhe+' · '+extra;
         out.dados={codigo:cod,descricao:desc,unidade:this._impTxt(v.unidade)||'Unidade',
           categoria:catOk?(S.categorias.find(c=>c.nome.toLowerCase()===cat.toLowerCase()).nome):'Outros',
-          preco,fornecedorIds:fids,ativo:this._impSim(v.ativo)!==false};
+          preco,fornecedorIds:fids,ativo:this._impSim(v.ativo)!==false,
+          ficha:fx.ficha,fotos:fx.fotos,estoque:fx.estoque};
       }
       out.erros=erros;
       return out; });
@@ -6186,15 +6201,79 @@ class Component extends DCLogic {
       this.audit('Download de modelo de importação',cfg.titulo+(comDados?' · com os cadastros atuais':' · modelo em branco com exemplos')+' · .xlsx'); };
     return this._bmc[k]; }
 
+  // ── Ficha técnica, imagens e estoque na planilha de produtos ──────────
+  // A planilha passa a carregar tudo o que o produto tem: ficha fiscal e
+  // logística, endereços das imagens e a posição de estoque na Loja.
+  _fichaCols(){ return [
+    {k:'ncm',        rot:'NCM',                    larg:16, ex:['2203.00.00','7013.37.00']},
+    {k:'ean',        rot:'Código de barras (GTIN/EAN)', larg:26, ex:['7891234500017','7891234500024']},
+    {k:'pesoBruto',  rot:'Peso bruto (kg)',        larg:18, ex:['45','9,6']},
+    {k:'pesoLiquido',rot:'Peso líquido (kg)',      larg:18, ex:['30','8,4']},
+    {k:'altura',     rot:'Altura (cm)',            larg:14, ex:['60','24']},
+    {k:'largura',    rot:'Largura (cm)',           larg:14, ex:['40','32']},
+    {k:'comprimento',rot:'Comprimento (cm)',       larg:18, ex:['40','32']},
+    {k:'unidadeMedida',rot:'Unidade de medida',    larg:20, ex:['Barril','Caixa']},
+    {k:'obsFicha',   rot:'Observações da ficha',   larg:44, ex:['Produto sob refrigeração','Frágil — empilhar no máximo 3 caixas']},
+    {k:'imagens',    rot:'Imagens (endereços separados por ;)', larg:52,
+      ex:['img/prd-1-1.png; img/prd-1-2.png','https://cdn.exemplo.com.br/copo.jpg']},
+    {k:'estoque',    rot:'Estoque na Loja (qtd)',  larg:20, ex:['12','40']}]; }
+  // Texto de uma foto/URL aceitável na planilha
+  _impImg(s){ const v=String(s==null?'':s).trim();
+    if(!v) return null;
+    if(/^(https?:)?\/\//i.test(v)) return v;
+    if(/^\/?api\/anexos\//i.test(v)) return v.replace(/^\//,'');
+    if(/^[\w./-]+\.(png|jpe?g|webp|gif|svg)$/i.test(v)) return v.replace(/^\//,'');
+    return false; }
+  _impDec(s){ const v=String(s==null?'':s).trim(); if(!v) return null;
+    const n=parseFloat(v.replace(/\./g,'').replace(',','.'));
+    return (isNaN(n)||n<=0)?NaN:Math.round(n*10000)/10000; }
+  _impInt(s){ const v=String(s==null?'':s).trim(); if(!v) return null;
+    if(!/^\d+$/.test(v.replace(/\./g,''))) return NaN;
+    return parseInt(v.replace(/\./g,''),10); }
+  // Lê as colunas da ficha de uma linha: devolve {ficha,fotos,estoque,erros}.
+  _impFicha(v){ const erros=[]; const ficha={}; let fotos=null, estoque=null;
+    const ncmD=this._impDig(v.ncm);
+    if(this._impTxt(v.ncm)&&ncmD.length!==8) erros.push('NCM inválido: informe os 8 dígitos (ex.: 2203.00.00)');
+    else if(ncmD) ficha.ncm=ncmD.slice(0,4)+'.'+ncmD.slice(4,6)+'.'+ncmD.slice(6);
+    const eanD=this._impDig(v.ean);
+    if(this._impTxt(v.ean)&&![8,12,13,14].includes(eanD.length)) erros.push('código de barras inválido: use 8, 12, 13 ou 14 dígitos');
+    else if(eanD) ficha.ean=eanD;
+    for(const [k,label] of [['pesoBruto','peso bruto'],['pesoLiquido','peso líquido'],
+        ['altura','altura'],['largura','largura'],['comprimento','comprimento']]){
+      const n=this._impDec(v[k]);
+      if(Number.isNaN(n)) erros.push(label+' inválido: informe um número maior que zero (ex.: 12,5)');
+      else if(n!=null) ficha[k]=n; }
+    if(ficha.altura&&ficha.largura&&ficha.comprimento)
+      ficha.cubagem=Math.round(ficha.altura*ficha.largura*ficha.comprimento/1e6*10000)/10000;
+    if(this._impTxt(v.unidadeMedida)) ficha.unidadeMedida=this._impTxt(v.unidadeMedida);
+    if(this._impTxt(v.obsFicha)) ficha.obs=this._impTxt(v.obsFicha);
+    const bruta=this._impTxt(v.imagens);
+    if(bruta){ const ims=bruta.split(/[;|]/).map(x=>this._impImg(x)).filter(x=>x!==null);
+      const ruins=bruta.split(/[;|]/).map(x=>x.trim()).filter(Boolean)
+        .filter(x=>this._impImg(x)===false);
+      if(ruins.length) erros.push('endereço de imagem inválido: '+ruins.join(', '));
+      const bons=ims.filter(x=>x!==false);
+      if(bons.length>5) erros.push('máximo de 5 imagens por produto (vieram '+bons.length+')');
+      else if(bons.length) fotos=bons; }
+    const est=this._impInt(v.estoque);
+    if(Number.isNaN(est)) erros.push('estoque na Loja inválido: informe um número inteiro (ex.: 12)');
+    else if(est!=null) estoque=est;
+    return {ficha,fotos,estoque,erros}; }
+
   _impAtuais(tipo){ const S=this.state;
     if(tipo==='categoria') return this._cats().map(c=>({nome:c.nome,descricao:c.descricao||'',ativo:c.ativo?'Sim':'Não'}));
     if(tipo==='usuario') return (S.usuarios||[]).map(u=>({nome:u.nome,email:u.email,
       papel:this.PAPEIS[u.papel]||u.papel,vinculo:this._vinculoUsr(u).replace(/ · /g,'; '),senha:'',ativo:u.ativo?'Sim':'Não'}));
     if(tipo==='fornecedor') return S.fornecedores.map(f=>({nome:f.nome,cnpj:f.cnpj,cidade:f.cidade,contato:f.contato,telefone:f.telefone,contatoNome:f.contatoNome||'',ativo:f.ativo?'Sim':'Não'}));
     if(tipo==='revenda') return S.revendas.map(r=>({nome:r.nome,cnpj:r.cnpj,cidade:r.cidade,email:r.email,telefone:r.telefone,ativo:r.ativo?'Sim':'Não'}));
-    return S.produtos.map(p=>({codigo:p.codigo,descricao:p.descricao,unidade:p.unidade,categoria:this._pCat(p),
-      preco:String((p.preco||0).toFixed(2)).replace('.',','),
-      fornecedores:this._pForns(p).map(id=>this._fornNome(id)).join('; '),ativo:p.ativo?'Sim':'Não'})); }
+    return S.produtos.map(p=>{ const fi=this._ficha(p); const sp=this._saldoProduto(p.id); const dec=v=>v==null?'':String(v).replace('.',',');
+      return {codigo:p.codigo,descricao:p.descricao,unidade:p.unidade,categoria:this._pCat(p),
+        preco:String((p.preco||0).toFixed(2)).replace('.',','),
+        fornecedores:this._pForns(p).map(id=>this._fornNome(id)).join('; '),ativo:p.ativo?'Sim':'Não',
+        ncm:fi.ncm||'',ean:fi.ean||'',pesoBruto:dec(fi.pesoBruto),pesoLiquido:dec(fi.pesoLiquido),
+        altura:dec(fi.altura),largura:dec(fi.largura),comprimento:dec(fi.comprimento),
+        unidadeMedida:fi.unidadeMedida||'',obsFicha:fi.obs||'',
+        imagens:this.fotosDe(p).join('; '),estoque:sp.temInv?String(sp.saldo):''}; }); }
 
   clicarImport(tipo){ this._cim=this._cim||{}; if(!this._cim[tipo]) this._cim[tipo]=()=>{
     const el=document.getElementById('imp-file-'+tipo); if(el) el.click(); }; return this._cim[tipo]; }
@@ -6263,15 +6342,39 @@ class Component extends DCLogic {
         return {usuarios:lista,modal:null,form:{}}; }
       let seq=s.seq.prod; const lista=[...s.produtos];
       const fotoPad=['img/prd-new-1.png','img/prd-new-2.png','img/prd-new-3.png'];
+      const estoques={};   // produtoId → contagem informada na planilha
       bons.forEach(r=>{ const d=r.dados;
+        // campo da ficha em branco não apaga o que já está cadastrado
+        const fichaNova=old=>(Object.keys(d.ficha||{}).length?{...(old||{}),...d.ficha}:(old||{}));
         if(r.alvoId!=null){ const ix=lista.findIndex(x=>x.id===r.alvoId);
           lista[ix]={...lista[ix],descricao:d.descricao,unidade:d.unidade,categoria:d.categoria,preco:d.preco,
-            fornecedorId:d.fornecedorIds[0],fornecedorIds:[...d.fornecedorIds],ativo:d.ativo}; }
+            fornecedorId:d.fornecedorIds[0],fornecedorIds:[...d.fornecedorIds],ativo:d.ativo,
+            ficha:fichaNova(lista[ix].ficha),...(d.fotos?{fotos:[...d.fotos]}:{})};
+          if(d.estoque!=null) estoques[r.alvoId]=d.estoque; }
         else { lista.push({id:seq,codigo:d.codigo||('PRD-0'+seq),descricao:d.descricao,unidade:d.unidade,categoria:d.categoria,
-          preco:d.preco,fornecedorId:d.fornecedorIds[0],fornecedorIds:[...d.fornecedorIds],ativo:d.ativo,fotos:[...fotoPad]}); seq++; } });
-      return {produtos:lista,seq:{...s.seq,prod:seq},modal:null,form:{}}; });
+          preco:d.preco,fornecedorId:d.fornecedorIds[0],fornecedorIds:[...d.fornecedorIds],ativo:d.ativo,
+          fotos:d.fotos?[...d.fotos]:[...fotoPad],ficha:fichaNova(null)});
+          if(d.estoque!=null) estoques[seq]=d.estoque;
+          seq++; } });
+      // Estoque na Loja: um lançamento de inventário novo, partindo da posição
+      // atual — produto que não veio na planilha mantém a contagem que tinha.
+      let invs=s.inventarios||[];
+      const nEst=Object.keys(estoques).length;
+      if(nEst){ const atual=invs.length?invs.reduce((a,b)=>((b.ts||0)>(a.ts||0)?b:a)):null;
+        const itens={...((atual&&atual.itens)||{})};
+        Object.keys(estoques).forEach(pid=>{ itens[pid]=estoques[pid]; });
+        const idI=Math.max(0,...invs.map(x=>x.id))+1;
+        invs=[...invs,{id:idI,data:this.hoje(),ts:Date.now(),usuario:this.userName(),
+          obs:'Posição informada na importação de produtos por planilha'+(f.impArq?(' ('+f.impArq+')'):''),itens}]; }
+      return {produtos:lista,inventarios:invs,seq:{...s.seq,prod:seq},modal:null,form:{}}; });
+    const nFicha=tipo==='produto'?bons.filter(r=>Object.keys((r.dados||{}).ficha||{}).length).length:0;
+    const nImg=tipo==='produto'?bons.filter(r=>(r.dados||{}).fotos).length:0;
+    const nEstL=tipo==='produto'?bons.filter(r=>(r.dados||{}).estoque!=null).length:0;
     this.audit('Importação de '+cfg.titulo+' por planilha',
-      (f.impArq||'planilha')+' · '+nNovos+' incluído(s) · '+nAtu+' atualizado(s)'+(nErro?' · '+nErro+' linha(s) com erro ignorada(s)':''));
+      (f.impArq||'planilha')+' · '+nNovos+' incluído(s) · '+nAtu+' atualizado(s)'+(nErro?' · '+nErro+' linha(s) com erro ignorada(s)':'')
+      +(nFicha?' · ficha técnica em '+nFicha+' produto(s)':'')+(nImg?' · imagens em '+nImg:'')
+      +(nEstL?' · estoque na Loja em '+nEstL+' produto(s) (novo inventário lançado)':''));
+    if(nEstL) this.audit('Lançamento de inventário',this.hoje()+' · '+nEstL+' produto(s) · via importação de produtos');
     this.toast(nNovos+' '+cfg.titulo+' incluído(s)'+(nAtu?' e '+nAtu+' atualizado(s)':'')+' pela planilha.','ok');
     setTimeout(()=>this._flushPersist(),0); };
 
@@ -6331,14 +6434,29 @@ class Component extends DCLogic {
       return {cols,linhas};
     }
     if(tipo==='produto'){
+      const invP=this._invAtual();
       const cols=[C('Código',14),C('Descrição',40),C('Unidade',14),C('Categoria',18),C('Preço estimado (R$)',18),
-        C('Fornecedores',44),C('Nº de fornecedores',18),C('Situação',12),C('Imagens',10),
-        C('Saldo em estoque',16),C('Vendido (qtd)',14),C('Vendido (R$)',15)];
-      const linhas=S.produtos.map(p=>{ const v=this._expVendas(p.id); const sp=this._saldoProduto(p.id);
+        C('Fornecedores',44),C('Nº de fornecedores',18),C('Situação',12),
+        // ficha técnica — os mesmos campos da complementação cadastral
+        C('NCM',16),C('Código de barras (GTIN/EAN)',26),C('Peso bruto (kg)',18),C('Peso líquido (kg)',18),
+        C('Altura (cm)',14),C('Largura (cm)',14),C('Comprimento (cm)',18),C('Cubagem (m³)',15),
+        C('Unidade de medida',20),C('Observações da ficha',44),C('Ficha completa',15),
+        // imagens e posição de estoque
+        C('Imagens (qtd)',14),C('Imagens (endereços separados por ;)',52),
+        C('Estoque na Loja',18),C('Atendido desde o lançamento',26),C('Data do inventário',18),
+        C('Vendido (qtd)',14),C('Vendido (R$)',15)];
+      const linhas=S.produtos.map(p=>{ const v=this._expVendas(p.id); const sp=this._saldoProduto(p.id); const fi=this._ficha(p);
+        const fotos=this.fotosDe(p);
         return [p.codigo,p.descricao,p.unidade||'',this._pCat(p),Math.round((p.preco||0)*100)/100,
           this._pForns(p).map(id=>this._fornNome(id)).join('; '),this._pForns(p).length,
-          p.ativo?'Ativo':'Inativo',this.fotosDe(p).length,
-          sp.temInv?sp.saldo:'— sem inventário —',v.q,Math.round(v.v*100)/100];});
+          p.ativo?'Ativo':'Inativo',
+          fi.ncm||'',fi.ean||'',fi.pesoBruto??'',fi.pesoLiquido??'',
+          fi.altura??'',fi.largura??'',fi.comprimento??'',fi.cubagem??'',
+          fi.unidadeMedida||'',fi.obs||'',this._expSN(this._fichaCompleta(p)),
+          fotos.length,fotos.join('; '),
+          sp.temInv?sp.saldo:'— sem inventário —',sp.temInv?sp.consumido:'',
+          invP?invP.data:'— sem inventário lançado —',
+          v.q,Math.round(v.v*100)/100];});
       return {cols,linhas};
     }
     if(tipo==='categoria'){
