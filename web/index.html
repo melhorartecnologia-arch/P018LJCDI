@@ -364,6 +364,24 @@ input::placeholder,textarea::placeholder{color:#b0a795}
             </sc-for>
           </div>
         </sc-if>
+        <sc-if value="{{pd.temBlocoLoja}}" hint-placeholder-val="{{false}}">
+          <div style="background:#fff;border:1px solid {{pd.lojaBd}};border-left:3px solid {{pd.lojaFg}};border-radius:12px;padding:15px 18px;margin-bottom:14px">
+            <div style="font-size:14px;font-weight:700;margin-bottom:3px;color:{{pd.lojaFg}}">&#127978; {{pd.lojaTitulo}}</div>
+            <div style="font-size:12.5px;color:#6b6459;line-height:1.55">{{pd.lojaTxt}}</div>
+            <sc-if value="{{pd.lojaConfTxt}}" hint-placeholder-val="{{false}}"><div style="font-size:11.5px;color:#1f6b5e;font-weight:600;margin-top:6px">&#10003; {{pd.lojaConfTxt}}</div></sc-if>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:11px">
+              <sc-if value="{{pd.lojaPodeSeparar}}" hint-placeholder-val="{{false}}">
+                <div onClick="{{pd.separarFn}}" title="Confirmar que o material foi separado no estoque da Loja" style="background:#1f6b5e;color:#fff;border-radius:9px;padding:9px 15px;font-size:13px;font-weight:700;cursor:pointer" style-hover="background:#185a4f">&#10003; Confirmar separação no estoque</div>
+              </sc-if>
+              <sc-if value="{{pd.lojaPodeFaturar}}" hint-placeholder-val="{{false}}">
+                <div onClick="{{pd.faturarLojaFn}}" title="Registrar o faturamento do estoque próprio da Loja para a revenda" style="background:#B38335;color:#fff;border-radius:9px;padding:9px 15px;font-size:13px;font-weight:700;cursor:pointer" style-hover="background:#9a6f2b">Registrar faturamento…</div>
+              </sc-if>
+              <sc-if value="{{pd.lojaPodeRastrear}}" hint-placeholder-val="{{false}}">
+                <div onClick="{{pd.rastLojaFn}}" title="Informar transportadora, código e link de rastreio da entrega" style="border:1px solid #d9c193;color:#8f682a;background:#fff;border-radius:9px;padding:9px 15px;font-size:13px;font-weight:700;cursor:pointer" style-hover="background:#faf5e9">&#128666; Informar rastreio…</div>
+              </sc-if>
+            </div>
+          </div>
+        </sc-if>
         <sc-if value="{{pd.temBlocoRast}}" hint-placeholder-val="{{false}}">
           <div style="background:#fff;border:1px solid {{pd.rastBd}};border-left:3px solid {{pd.rastFg}};border-radius:12px;padding:15px 18px;margin-bottom:14px">
             <div style="font-size:14px;font-weight:700;margin-bottom:3px;color:{{pd.rastFg}}">&#128666; {{pd.rastTitulo2}}</div>
@@ -3574,9 +3592,9 @@ input::placeholder,textarea::placeholder{color:#b0a795}
 
 <sc-if value="{{mEst}}" hint-placeholder-val="{{false}}">
   <div style="position:fixed;inset:0;background:rgba(39,37,37,.45);display:flex;align-items:center;justify-content:center;z-index:50">
-    <div style="background:#fff;border-radius:14px;width:460px;max-width:92vw;padding:22px 24px;box-shadow:0 18px 50px rgba(39,37,37,.25)">
+    <div style="background:#fff;border-radius:14px;width:520px;max-width:92vw;max-height:88vh;overflow-y:auto;padding:22px 24px;box-shadow:0 18px 50px rgba(39,37,37,.25)">
       <div style="font-size:16px;font-weight:700">Atender com estoque da Loja — {{form.pedidoId}}</div>
-      <div style="font-size:12.5px;color:#8a8378;margin-top:2px">Os itens selecionados (ou parte da quantidade de cada um) serão atendidos com estoque próprio da Loja Cidade Imperial, sem envio a fornecedor e sem cotação.</div>
+      <div style="font-size:12.5px;color:#8a8378;margin-top:2px">A Loja atende com estoque próprio, mas percorre o mesmo caminho de um fornecedor: as condições abaixo vão para o <b>aceite comercial da revenda</b> e o atendimento só avança depois que ela aprovar.</div>
       <div style="font-size:12px;font-weight:600;color:#6b6459;margin:14px 0 6px">Itens a atender com estoque</div>
       <div style="display:flex;flex-direction:column;gap:6px">
         <sc-for list="{{selItens}}" as="si" hint-placeholder-count="2">
@@ -3599,14 +3617,51 @@ input::placeholder,textarea::placeholder{color:#b0a795}
                   <sc-if value="{{si.temSaldo}}" hint-placeholder-val="{{false}}"><span style="font-size:11px;font-weight:700;color:{{si.saldoFg}}">◈ {{si.saldoTxt}}</span></sc-if>
                 </div>
               </sc-if>
+              <div style="display:flex;align-items:center;gap:7px;margin-top:7px;padding-top:7px;border-top:1px dashed #e8e1d2;flex-wrap:wrap">
+                <span style="font-size:11.5px;color:#6b6459;font-weight:600">Preço unitário à revenda (R$)</span>
+                <input value="{{si.precoVal}}" onChange="{{si.setPreco}}" inputmode="decimal" title="Preço unitário que a Loja propõe para este item" style="width:92px;height:28px;box-sizing:border-box;padding:5px 8px;border:1px solid {{si.precoBd}};border-radius:7px;font:inherit;font-size:12.5px;font-weight:600;text-align:right;outline:none;background:{{si.precoBg}};color:#272525">
+                <span style="font-size:11px;color:#a89f90">catálogo: {{si.precoRefFmt}}</span>
+                <span style="font-size:11.5px;font-weight:700;color:#1f6b5e;margin-left:auto">{{si.subNegFmt}}</span>
+              </div>
             </sc-if>
           </div>
         </sc-for>
       </div>
+      <div style="font-size:12px;font-weight:700;color:#272525;margin:16px 0 2px">Condições comerciais para a revenda aprovar</div>
+      <div style="font-size:11.5px;color:#8a8378;line-height:1.5">São as mesmas informações que um fornecedor envia na proposta — a revenda vê tudo isso na janela de aprovação comercial.</div>
+      <div style="display:flex;gap:10px">
+        <div style="flex:1"><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Prazo de entrega</div>
+          <input value="{{form.prazoEntrega}}" onChange="{{fxPrazoEntrega}}" placeholder="Ex.: 3 dias úteis" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
+        <div style="flex:1"><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Validade da proposta</div>
+          <input value="{{form.validade}}" onChange="{{fxValidade}}" inputmode="numeric" maxlength="10" placeholder="dd/mm/aaaa" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
+      </div>
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Condições de pagamento</div>
+      <input value="{{form.condicoes}}" onChange="{{fxCondicoes}}" placeholder="Ex.: boleto 21 dias" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
+      <div style="display:flex;gap:10px">
+        <div style="flex:1"><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Frete — modalidade</div>
+          <select value="{{form.freteMod}}" onChange="{{fxFreteMod}}" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525;cursor:pointer">
+            <option value="CIF">CIF — frete da Loja</option><option value="FOB">FOB — frete da revenda</option><option value="Outros">Outros</option>
+          </select></div>
+        <div style="flex:1"><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Frete — valor (R$)</div>
+          <input value="{{form.freteValor}}" onChange="{{fxFreteValor}}" inputmode="decimal" placeholder="0,00 = incluso" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <div style="flex:1"><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Transportadora <span style="font-weight:400;color:#a89f90">— opcional</span></div>
+          <input value="{{form.transportadora}}" onChange="{{fxTransportadora}}" placeholder="Ex.: frota própria" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
+        <div style="flex:1"><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Condições de entrega <span style="font-weight:400;color:#a89f90">— opcional</span></div>
+          <input value="{{form.condEntrega}}" onChange="{{fxCondEntrega}}" placeholder="Ex.: entrega no CD da revenda" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
+      </div>
+      <sc-if value="{{estInfo.tem}}" hint-placeholder-val="{{true}}">
+        <div style="background:#eef5f3;border:1px solid #cfe2dd;border-radius:10px;padding:11px 14px;margin-top:14px;font-size:12.5px;color:#1f6b5e">
+          <div style="display:flex;justify-content:space-between;gap:10px"><span>{{estInfo.itensN}} item(ns) · {{estInfo.unids}} unidade(s)</span><b>{{estInfo.tot}}</b></div>
+          <div style="display:flex;justify-content:space-between;gap:10px;margin-top:4px;color:#6b6459"><span>Frete: {{estInfo.freteFmt}}</span><b>Total com frete: {{estInfo.totCF}}</b></div>
+          <sc-if value="{{estInfo.temSemSaldo}}" hint-placeholder-val="{{false}}"><div style="margin-top:6px;color:#a33a2b;font-weight:600">◈ {{estInfo.semSaldo}}</div></sc-if>
+        </div>
+      </sc-if>
       <sc-if value="{{form.erro}}" hint-placeholder-val="{{false}}"><div style="color:#a33a2b;font-size:12.5px;margin-top:12px">{{form.erro}}</div></sc-if>
       <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:18px">
         <div onClick="{{mClose}}" style="border:1px solid #ddd5c7;border-radius:8px;padding:9px 15px;font-size:13px;font-weight:600;cursor:pointer;color:#6b6459" style-hover="background:#f7f3ea">Cancelar</div>
-        <div onClick="{{confirmEstoque}}" style="background:#1f6b5e;color:#fff;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#185a4f">Atender com estoque</div>
+        <div onClick="{{confirmEstoque}}" style="background:#1f6b5e;color:#fff;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#185a4f">Enviar condições para a revenda</div>
       </div>
     </div>
   </div>
@@ -3802,7 +3857,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
   <div style="position:fixed;inset:0;background:rgba(39,37,37,.45);display:flex;align-items:center;justify-content:center;z-index:50">
     <div style="background:#fff;border-radius:14px;width:420px;max-width:92vw;padding:22px 24px;box-shadow:0 18px 50px rgba(39,37,37,.25)">
       <div style="font-size:16px;font-weight:700">Registrar faturamento — {{fatInfo.pedidoId}}</div>
-      <div style="font-size:12.5px;color:#8a8378;margin-top:2px">RF33–RF36 — faturamento direto para {{fatInfo.revNome}}; royalty de {{fatInfo.pctStr}} calculado automaticamente</div>
+      <div style="font-size:12.5px;color:#8a8378;margin-top:2px">{{fatInfo.sub}}</div>
       <sc-if value="{{fatInfo.itensTxt}}" hint-placeholder-val="{{false}}"><div style="background:#faf7f0;border:1px solid #eee7d8;border-radius:9px;padding:9px 13px;margin-top:12px;font-size:12px;color:#6b6459"><b style="color:#272525">Somente os seus itens:</b> {{fatInfo.itensTxt}}</div></sc-if>
       <div style="font-size:12px;font-weight:600;color:#6b6459;margin:14px 0 5px">Valor efetivamente faturado (R$)</div>
       <input value="{{form.valorFat}}" onChange="{{fxValorFat}}" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
@@ -4474,11 +4529,12 @@ class Component extends DCLogic {
     if(st==='cotacao'){ const c=this.state.cotacoes.find(x=>x.id===i.cotacaoId);
       return (c&&this._propsEfetivas(c).length)?3:2; }
     if(st==='aceite') return 4;
-    if(st==='direto') return ((p.confForn||{})[i.fornecedorId])?7:6;
-    // Faturado/atendido pelo estoque = entregue: o pedido só conclui depois da
-    // confirmação de recebimento do material (pela revenda ou pela Loja).
+    if(st==='direto') return ((p.confForn||{})[this._chaveForn(i)])?7:6;
+    // 'estoque' é o registro antigo — atendimento pela Loja sem passagem pelo
+    // aceite comercial. Continua valendo como entregue para os pedidos que já
+    // existiam antes de a Loja passar a percorrer o fluxo inteiro.
     if(st==='estoque') return this._recebido(p)?10:9;
-    if(st==='faturado'){ const f=this.state.faturamentos.find(x=>x.pedidoId===p.id&&x.fornecedorId===i.fornecedorId);
+    if(st==='faturado'){ const f=this.state.faturamentos.find(x=>x.pedidoId===p.id&&(i.porLoja?!!x.porLoja:x.fornecedorId===i.fornecedorId));
       if(f&&f.docStatus==='recusado') return 8;
       return this._recebido(p)?10:9; }
     return 1; }
@@ -4600,6 +4656,27 @@ class Component extends DCLogic {
   _revNome(id){ const r=this.state.revendas.find(x=>x.id===id); return r?r.nome:''; }
   _fornEmail(id){ const f=this.state.fornecedores.find(x=>x.id===id); return f?f.contato:''; }
   _fornNome(id){ const f=this.state.fornecedores.find(x=>x.id===id); return f?f.nome:''; }
+  // ── A Loja atendendo com estoque próprio é uma parte fornecedora ───────
+  // Marcado o atendimento pela Loja, ela propõe condições comerciais e passa
+  // pelo mesmo caminho de qualquer fornecedor: aceite da revenda, confirmação
+  // da separação, faturamento, rastreio e entrega. Itens assim carregam
+  // porLoja:true e não têm fornecedorId — a chave dela nos mapas é 'loja'.
+  LOJA_NOME='Loja Cidade Imperial';
+  LOJA_KEY='loja';
+  _ehLoja(i){ return !!(i&&(i.porLoja||i.st==='estoque')); }
+  _chaveForn(i){ return this._ehLoja(i)?this.LOJA_KEY:i.fornecedorId; }
+  _destNome(i){ return this._ehLoja(i)?(this.LOJA_NOME+' — estoque próprio'):this._fornNome(i.fornecedorId); }
+  _fatFornNome(f){ return (f&&(f.porLoja||f.fornecedorId==null))?(this.LOJA_NOME+' — estoque próprio'):this._fornNome(f&&f.fornecedorId); }
+  _propLoja(p){ return (p&&p.propLoja)||null; }
+  _itensLoja(p,st){ return (p&&p.itens||[]).filter(i=>i.porLoja&&(!st||i.st===st)); }
+  _lojaConfirmou(p){ return !!((p&&p.confForn||{})[this.LOJA_KEY]); }
+  // Texto das condições que a Loja ofereceu — o equivalente ao _freteTxt/_compTxt
+  // de uma proposta de fornecedor.
+  _propLojaTxt(p){ const pl=this._propLoja(p); if(!pl) return '';
+    return [pl.condicoes&&('pagamento: '+pl.condicoes),pl.prazoEntrega&&('entrega em '+pl.prazoEntrega),
+      'frete '+(pl.freteMod||'CIF')+(pl.freteValor?(' · '+this.fmt(pl.freteValor)):' · incluso'),
+      pl.transportadora&&('transportadora: '+pl.transportadora),
+      pl.validade&&('validade '+pl.validade)].filter(Boolean).join(' · '); }
   _prodInfo(pid){ return this.state.produtos.find(x=>x.id===pid)||{}; }
   _itemView(i){ const p=this._prodInfo(i.produtoId); const sub=(i.precoNeg!=null?i.precoNeg:(i.qtd*i.preco)); return {codigo:p.codigo||'',descricao:p.descricao||('Produto '+i.produtoId),qtd:i.qtd,unidade:p.unidade||'',valor:this.fmt(sub)}; }
   _itensPed(ped,pred){ return (ped&&ped.itens||[]).filter(pred||(()=>true)).map(i=>this._itemView(i)); }
@@ -4789,6 +4866,7 @@ class Component extends DCLogic {
         "A rejeição sempre exige uma justificativa — sem ela o sistema não conclui a operação, e o texto informado fica visível para a revenda.",
         "O botão 'Receber' da lista libera o pedido inteiro de uma vez; quando quiser tratar os itens de formas diferentes, abra o 'Detalhe do pedido' clicando na linha.",
         "No detalhe, as opções de atendimento — 'Atender com estoque da Loja…', 'Envio direto a um fornecedor…' e 'Abrir cotação…' — só ficam disponíveis depois que os itens são aprovados e podem ser combinadas no mesmo pedido.",
+        "Atender com o estoque da Loja NÃO é um atalho: a Loja percorre o mesmo caminho de um fornecedor. Ela informa as condições comerciais, a revenda aprova (etapa 4), a Loja confirma a separação (etapas 6 e 7), fatura (etapa 8), informa o rastreio e a entrega é confirmada (etapas 9 e 10). O pedido só é dado como entregue depois disso.",
         "A conversa existe em TODO pedido, do momento em que ele é criado até depois de faturado, e pode ser iniciada tanto pela Loja quanto pela revenda. Cada mensagem enviada avisa o outro lado por e-mail, entra na auditoria e a abertura da conversa fica registrada na trilha do pedido — nada se perde em e-mail ou aplicativo à parte.",
         "O menu lateral mostra um contador roxo 💬 ao lado de 'Pedidos' com o total de mensagens não lidas de todos os pedidos.",
         "'🚚 Rastreio pendente' é uma cobrança, não um erro: sinaliza que o frete é responsabilidade do fornecedor e que ele ainda não informou como acompanhar a entrega. A plataforma não deixa esse fornecedor faturar sem informar o rastreio, então a etiqueta tende a se resolver sozinha.",
@@ -4807,6 +4885,8 @@ class Component extends DCLogic {
         "Para decidir item a item, use os botões \"Receber\" e \"Rejeitar\" que aparecem na coluna \"Situação do item\", em cada linha que ainda estiver pendente.",
         "Ao clicar em qualquer \"Rejeitar\" (do pedido ou de um item), abre-se uma janela para escrever a justificativa. Ela é obrigatória e fica visível para a revenda; sem o motivo, a rejeição não é concluída.",
         "Depois de receber, surge o painel \"Decisão de atendimento — por item\". Escolha \"Atender com estoque da Loja…\", \"Envio direto a um fornecedor…\" ou \"Abrir cotação…\"; na janela que abrir, marque os itens e confirme.",
+        "Escolhendo \"Atender com estoque da Loja…\", a Loja entra no fluxo como qualquer fornecedor: a janela pede o PREÇO UNITÁRIO de cada item (já preenchido com o de catálogo, e editável), o prazo de entrega, a validade da proposta, as condições de pagamento e o frete. Ao clicar em \"Enviar condições para a revenda\", o pedido vai para a etapa 4 — aceite comercial da revenda — e nada sai do estoque antes da aprovação dela.",
+        "Aprovadas as condições, o painel \"🏪 Atendimento pela Loja\" traz os três passos seguintes, na mesma ordem de um fornecedor: \"✓ Confirmar separação no estoque\" (equivale à confirmação do pedido pelo fornecedor, etapa 6→7), \"Registrar faturamento…\" (a Loja emite a nota para a revenda) e \"🚚 Informar rastreio…\" quando o frete é CIF.",
         "Em qualquer uma das três janelas, cada item selecionado traz o campo de quantidade com os botões − e +: a Loja decide quanto vai por aquele caminho. Na cotação o rótulo é \"Quantidade a cotar\" e o total estimado recalcula a cada alteração.",
         "Na COTAÇÃO a quantidade pode ser MAIOR que a do pedido — é como se cota um lote maior para conseguir preço melhor. O campo fica âmbar avisando quantas unidades estão acima, e o pedido da revenda continua com a quantidade original: é por ela que a revenda é faturada. No envio direto e no estoque o limite continua sendo a quantidade pedida.",
         "No bloco \"Informações\" (à direita), confira a Revenda e o Fornecedor de destino. Se houver \"Cotação vinculada\", clique no código dela (ex.: COT-008 →) para abrir a cotação.",
@@ -4822,6 +4902,8 @@ class Component extends DCLogic {
         "Um mesmo pedido pode combinar os três caminhos de atendimento (estoque, envio direto e cotação); cada ação vale só para os itens que você marcar na janela — e você pode informar uma quantidade parcial por item: o saldo continua aprovado para outro caminho.",
         "O campo de quantidade só aceita números e fica em vermelho quando o valor é inválido (menos de 1). Na cotação, valor acima do pedido é permitido e fica em âmbar, com o excedente somado no total estimado; nos demais caminhos, acima do pedido é recusado.",
         "Quando a cotação sai acima do pedido, o detalhe da cotação mostra a quantidade cotada com a do pedido entre parênteses, o fornecedor vê o item marcado como \"volume de negociação\", e a trilha e a auditoria registram o fato.",
+        "Se a revenda RECUSAR as condições do atendimento pela Loja, o item volta para a decisão de atendimento (situação \"aprovado\"), sem preço negociado: a Loja pode propor de novo com outras condições, encaminhar a um fornecedor ou abrir cotação. Como não há cotação por trás, não existe \"nova rodada\" — a decisão volta inteira para a Loja.",
+        "O faturamento do estoque próprio não gera royalty: royalty é o que o fornecedor paga à Loja, e aqui a vendedora é a própria Loja. A janela de faturamento avisa isso e a nota entra no faturamento do mês sem linha de royalty.",
         "No 'Envio direto a um fornecedor…' só aparecem como destino os fornecedores vinculados a todos os itens selecionados; na cotação, os convidáveis são os fornecedores vinculados aos produtos cotados.",
         "\"Abrir cotação\" exige convidar ao menos um fornecedor homologado e definir a data limite para o envio das propostas. Com um único convidado a cotação registra preço, frete e condições, mas não há comparação de propostas — a janela avisa disso ao selecionar.",
         "O campo \"Observação para os fornecedores\" é opcional e vai junto do convite: use para dizer o que a Loja espera (preço, prazo, frete, embalagem). O texto entra no e-mail e fica visível para o fornecedor na hora de montar a proposta.",
@@ -5264,7 +5346,8 @@ class Component extends DCLogic {
         "Usuário de grupo econômico (vinculado a 2+ revendas): o seletor dourado no topo troca a revenda ativa SEM novo login e a opção \"Grupo — visão consolidada\" mostra os pedidos de todas as revendas juntos, com indicadores agregados e a revenda identificada em cada linha.",
         "Esta tela serve apenas para acompanhar; para criar um novo pedido, abra a tela \"Catálogo de produtos\" (menu \"Compras\"), adicione os produtos e clique em \"Enviar pedido para análise\".",
         "Todo pedido novo começa como \"pendente\" e só muda depois que a Loja o analisa; a coluna \"Fornecedor (faturamento)\" só é preenchida quando a Loja encaminha o pedido a um fornecedor ou encerra a cotação.",
-        "A coluna \"Fornecedor (faturamento)\" pode mostrar \"Estoque da Loja\" quando o pedido é atendido pelo próprio estoque da Loja.",
+        "A coluna \"Fornecedor (faturamento)\" pode mostrar \"Estoque da Loja\" quando o pedido é atendido pelo próprio estoque da Loja — e, nesse caso, quem emite a nota fiscal é a Loja Cidade Imperial.",
+        "Quando a Loja resolve atender com o estoque próprio, ela também passa pela sua aprovação: o botão dourado \"Aprovação comercial…\" aparece do mesmo jeito, mostrando \"Loja Cidade Imperial — estoque próprio\" como quem vai atender, com preço, prazo de entrega, condições de pagamento e frete. Recusando (com motivo), o atendimento volta para a Loja decidir de outro jeito.",
         "A conversa está disponível em todos os pedidos, a qualquer momento, e pode ser iniciada por você ou pela Loja. O balão fica roxo com o número de mensagens novas quando a Loja responde, e o menu \"Meus pedidos\" mostra o total de não lidas.",
         "Todo o histórico da conversa fica guardado junto do pedido — ao contrário do e-mail ou do aplicativo de mensagens, ninguém precisa procurar depois quem disse o quê.",
         "O rastreio é obrigação do fornecedor sempre que o frete for por conta dele: a plataforma não deixa o pedido ser faturado sem transportadora, código e link de consulta. Se o código mudar (troca de transportadora, reenvio), você recebe um novo e-mail e a etiqueta na lista é atualizada.",
@@ -5375,7 +5458,7 @@ class Component extends DCLogic {
       ],
       "dicas": [
         "O saldo é sempre calculado sobre o inventário mais recente; lance um novo inventário para atualizar a base.",
-        "Atendimentos \"com estoque da Loja\" feitos após o lançamento consomem o saldo automaticamente.",
+        "Atendimentos \"com estoque da Loja\" feitos após o lançamento NÃO abatem o saldo: o saldo continua sendo a contagem do último inventário. Eles aparecem apenas na coluna \"Atendido desde o lançamento\", como sinal de que a posição pode estar envelhecendo — e só entram nessa conta depois que a revenda aprova as condições do atendimento, porque proposta recusada não tira nada do estoque.",
         "Os alertas são informativos — a decisão de como atender (estoque, direto ou cotação) continua com a Loja.",
         "A planilha carregada nunca grava direto: o lançamento só acontece depois da sua revisão e confirmação."
       ]
@@ -5597,24 +5680,25 @@ class Component extends DCLogic {
     return S.pedidos.map(p=>({...p,status:this.pedStatus(p),total:this.pedTotal(p)}))
       .filter(p=>(S.relComp==='todas'||(p.data||'').slice(3)===S.relComp)
         &&(S.relRevF==='0'||p.revendaId===+S.relRevF)
-        &&(S.relFornF==='0'||p.itens.some(i=>i.fornecedorId===+S.relFornF))
+        &&(S.relFornF==='0'||(S.relFornF==='loja'?p.itens.some(i=>this._ehLoja(i)):p.itens.some(i=>i.fornecedorId===+S.relFornF)))
         &&(S.relStF==='todos'||p.status===S.relStF)); }
   _relFatsFiltrados(){ const S=this.state;
     return S.faturamentos.filter(f=>(S.relComp==='todas'||f.competencia===S.relComp)
       &&(S.relRevF==='0'||f.revendaId===+S.relRevF)
-      &&(S.relFornF==='0'||f.fornecedorId===+S.relFornF)); }
+      &&(S.relFornF==='0'||(S.relFornF==='loja'?!!f.porLoja:f.fornecedorId===+S.relFornF))); }
   baixarCSV(nome,linhas){ const csv=linhas.map(r=>r.map(v=>{ v=String(v==null?'':v); return /[";\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; }).join(';')).join('\r\n');
     const blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});
     const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=nome;
     document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },150); }
   exportRelPedidos=()=>{ if(!this.pode('relatorios.exportar')) return; const linhas=[['Pedido','Data','Revenda','Fornecedor destino','Itens','Total (R$)','Status','Justificativa']];
     this._relPedsFiltrados().forEach(p=>{ const rev=this.state.revendas.find(x=>x.id===p.revendaId)||{};
-      const forns=[...new Set(p.itens.filter(i=>i.fornecedorId).map(i=>this._fornNome(i.fornecedorId)))].join(', ')||'—';
+      const forns=[...new Set([...p.itens.filter(i=>i.fornecedorId).map(i=>this._fornNome(i.fornecedorId)),
+        ...(p.itens.some(i=>this._ehLoja(i))?['Estoque da Loja']:[])])].join(', ')||'—';
       const itens=p.itens.map(i=>{ const pr=this._prodInfo(i.produtoId); return (pr.codigo||'')+' '+(pr.descricao||'')+' x'+i.qtd; }).join(' | ');
       linhas.push([p.id,p.data,rev.nome||'',forns,itens,p.total.toFixed(2).replace('.',','),p.status,p.justificativa||'']); });
     this.baixarCSV('relatorio-pedidos.csv',linhas); this.audit('Exportação de relatório','Pedidos (CSV) · '+(linhas.length-1)+' linha(s)'); };
   exportRelFat=()=>{ if(!this.pode('relatorios.exportar')) return; const linhas=[['Nota fiscal','Data','Competência','Pedido','Fornecedor','Revenda','Cotação','Valor (R$)','Royalty %','Royalty (R$)']];
-    this._relFatsFiltrados().forEach(f=>{ linhas.push([f.id,f.data,f.competencia,f.pedidoId,this._fornNome(f.fornecedorId),this._revNome(f.revendaId),f.cotacaoId||'—',
+    this._relFatsFiltrados().forEach(f=>{ linhas.push([f.id,f.data,f.competencia,f.pedidoId,this._fatFornNome(f),this._revNome(f.revendaId),f.cotacaoId||'—',
       f.valor.toFixed(2).replace('.',','),String(f.royaltyPct).replace('.',','),f.royaltyValor.toFixed(2).replace('.',',')]); });
     this.baixarCSV('relatorio-faturamentos.csv',linhas); this.audit('Exportação de relatório','Faturamentos (CSV) · '+(linhas.length-1)+' linha(s)'); };
   lembrarCot(cid,fid){ this._lc=this._lc||{}; const k=cid+'-'+fid; if(!this._lc[k]) this._lc[k]=(e)=>{ if(e&&e.stopPropagation) e.stopPropagation(); if(!this.pode('cotacoes.lembrar')) return;
@@ -6367,7 +6451,9 @@ class Component extends DCLogic {
     const fats=this.state.faturamentos.filter(f=>f.pedidoId===p.id);
     const etapa=this._etapaPedIdx(p); const ch=this.chip(p.status);
     const forns=[...new Set(p.itens.filter(i=>i.fornecedorId).map(i=>i.fornecedorId))];
-    const temEstoque=p.itens.some(i=>i.st==='estoque');
+    const temEstoque=p.itens.some(i=>this._ehLoja(i));
+    // só vale como condição do pedido enquanto houver item atendido pela Loja
+    const propL=p.itens.some(i=>i.porLoja)?this._propLoja(p):null;
     const propV=cot?this._propsEfetivas(cot).find(x=>x.fornecedorId===cot.vencedorId):null;
 
     // ── Itens ──────────────────────────────────────────────────────────────
@@ -6379,7 +6465,7 @@ class Component extends DCLogic {
         fi.pesoBruto?('peso bruto '+fi.pesoBruto+' kg'):'',fi.pesoLiquido?('peso líquido '+fi.pesoLiquido+' kg'):'',
         (fi.altura&&fi.largura&&fi.comprimento)?('dimensões '+fi.altura+'×'+fi.largura+'×'+fi.comprimento+' '+(fi.unidadeMedida||'cm')):''
       ].filter(Boolean).join(' · ');
-      const dest=i.st==='estoque'?'Estoque da Loja':(i.fornecedorId?F(i.fornecedorId).nome:'—');
+      const dest=this._ehLoja(i)?'Estoque da Loja':(i.fornecedorId?F(i.fornecedorId).nome:'—');
       return '<tr>'
         +'<td class="c">'+(ix+1)+'</td>'
         +'<td class="foto">'+(foto?('<img src="'+foto+'" alt="">'):'')+'</td>'
@@ -6410,7 +6496,8 @@ class Component extends DCLogic {
         ['Telefone',R.telefone],['E-mail',R.email]])
       +parte('Destino do atendimento',[
         ...(forns.length?forns.map((fid,k)=>['Fornecedor'+(forns.length>1?(' '+(k+1)):''),F(fid).nome+(F(fid).cnpj?(' · '+F(fid).cnpj):'')]):[]),
-        ...(temEstoque?[['Estoque','Atendido pelo estoque da Loja']]:[]),
+        ...(temEstoque?[['Estoque próprio','Atendido pela Loja Cidade Imperial'],
+          ...(propL?[['Condições aprovadas pela revenda',this._propLojaTxt(p)]]:[])]:[]),
         ...(forns.length===1?[['Contato',F(forns[0]).contatoNome||''],['E-mail',F(forns[0]).contato||''],['Telefone',F(forns[0]).telefone||'']]:[]),
         ...(!forns.length&&!temEstoque?[['Situação','ainda não definido']]:[])])
       +'</div>';
@@ -6431,7 +6518,18 @@ class Component extends DCLogic {
     // cotação (envio direto ou estoque), o que existe é o contrato do
     // fornecedor — e o documento diz isso, em vez de sair em branco.
     const ctrD=forns.length===1?this.state.contratos.find(x=>x.fornecedorId===forns[0]&&x.vigente):null;
-    const blocoCond=propV?(this._pdfLinhas([
+    const blocoCond=(propL&&!propV)?this._pdfLinhas([
+        ['Origem das condições','Atendimento pelo estoque próprio da Loja, aprovado pela revenda'],
+        ['Fornecedor da proposta',this.LOJA_NOME],
+        ['Condições de pagamento',propL.condicoes],
+        ['Prazo de entrega',propL.prazoEntrega],
+        ['Frete — modalidade',propL.freteMod||'CIF'],
+        ['Frete — valor',propL.freteValor?this.fmt(propL.freteValor):'incluso'],
+        ['Transportadora',propL.transportadora],
+        ['Condições de entrega',propL.condEntrega],
+        ['Validade da proposta',propL.validade],
+        ['Proposta registrada em',(propL.quando||'')+(propL.por?(' por '+propL.por):'')],
+      ]):(propV?(this._pdfLinhas([
         ['Origem das condições','Proposta vencedora da cotação '+(cot?cot.id:'')],
         ['Fornecedor da proposta',F(propV.fornecedorId).nome],
         ['Condições de pagamento',propV.condicoes],
@@ -6449,7 +6547,7 @@ class Component extends DCLogic {
           ['Dia acordado de pagamento',ctrD.diaPagamento?('todo dia '+ctrD.diaPagamento):''],
           ['Royalty do contrato',String(ctrD.royalty).replace('.',',')+'%']]:[]),
       ])+'<div class="mini">Prazo de entrega e condições de pagamento específicos são registrados na proposta da cotação. Este pedido foi atendido sem cotação, por isso não há proposta com essas condições.</div>')
-      :'<div class="mini">Este pedido ainda não tem condições comerciais registradas — elas aparecem aqui quando houver proposta de cotação ou contrato vigente do fornecedor de destino.</div>');
+      :'<div class="mini">Este pedido ainda não tem condições comerciais registradas — elas aparecem aqui quando houver proposta de cotação ou contrato vigente do fornecedor de destino.</div>'));
 
     const blocoTotais='<table class="tot">'
       +'<tr><td>Total de referência (preços do catálogo)</td><td class="r">'+(podeTot?E(this.fmt(totRef)):'—')+'</td></tr>'
@@ -6500,9 +6598,9 @@ class Component extends DCLogic {
 
     const blocoFat=fats.length?('<table class="dt"><thead><tr><th>Documento</th><th>Data</th><th>Competência</th><th>Fornecedor</th><th class="r">Valor</th>'
       +(this.role!=='revenda'?'<th class="r">Royalty</th>':'')+'<th>Anexos</th></tr></thead><tbody>'
-      +fats.map(f=>'<tr><td><b>'+E(f.id)+'</b></td><td>'+E(f.data)+'</td><td>'+E(f.competencia)+'</td><td>'+E(F(f.fornecedorId).nome)+'</td>'
+      +fats.map(f=>'<tr><td><b>'+E(f.id)+'</b></td><td>'+E(f.data)+'</td><td>'+E(f.competencia)+'</td><td>'+E(this._fatFornNome(f))+'</td>'
         +'<td class="r">'+E(this.fmt(f.valor))+'</td>'
-        +(this.role!=='revenda'?('<td class="r">'+E(String(f.royaltyPct).replace('.',',')+'% · '+this.fmt(f.royaltyValor))+'</td>'):'')
+        +(this.role!=='revenda'?('<td class="r">'+E(f.porLoja?'— estoque próprio da Loja':(String(f.royaltyPct).replace('.',',')+'% · '+this.fmt(f.royaltyValor)))+'</td>'):'')
         +'<td class="mini">'+E([f.anexoNome||'',...((f.anexosExtras||[]).map(a=>a.nome))].filter(Boolean).join(' · ')||'—')
         +(f.docStatus==='recusado'?' — DOCUMENTO RECUSADO':'')+'</td></tr>').join('')+'</tbody></table>'):'';
 
@@ -6648,8 +6746,16 @@ class Component extends DCLogic {
   // CIF (ou sem cotação, que é o padrão da plataforma) = fornecedor.
   _freteInfo(p){ const at=(p&&p.itens||[]).filter(i=>i.st!=='rejeitado');
     if(at.length&&at.every(i=>i.st==='estoque'))
-      return {resp:'loja',mod:'—',origem:'atendimento pelo estoque da Loja',
+      return {resp:'loja',mod:'—',origem:'atendimento pelo estoque da Loja (registro anterior ao aceite comercial)',
         txt:'Entrega por conta da Loja Cidade Imperial (estoque próprio)'};
+    // Atendimento pela Loja: quem responde pelo frete é a própria Loja, e a
+    // modalidade sai das condições que a revenda aprovou.
+    const pl=this._propLoja(p);
+    if(pl&&at.some(i=>i.porLoja)&&at.every(i=>i.porLoja||i.st==='rejeitado')){
+      const mod=pl.freteMod||'CIF'; const resp=mod==='FOB'?'revenda':'fornecedor';
+      return {resp,mod,quemLoja:true,transportadora:pl.transportadora||'',
+        origem:'condições do atendimento pela Loja, aprovadas pela revenda',
+        txt:mod+' — frete por conta '+(resp==='fornecedor'?'da Loja (quem atende)':'da revenda')}; }
     const pv=this._propVencPed(p); const mod=pv?(pv.freteMod||'CIF'):'CIF';
     const cid=((p&&p.itens||[]).find(i=>i.cotacaoId)||{}).cotacaoId;
     const resp=mod==='FOB'?'revenda':'fornecedor';
@@ -6889,8 +6995,11 @@ class Component extends DCLogic {
   _invAtual(){ const inv=this.state.inventarios||[]; return inv.length?inv.reduce((a,b)=>(b.ts||0)>(a.ts||0)?b:a):null; }
   // Saídas atendidas com estoque da Loja depois do lançamento. NÃO abatem o
   // saldo — servem só para indicar o quanto a contagem pode ter envelhecido.
+  // Saída do estoque próprio só conta depois que a revenda aprova as condições:
+  // proposta recusada volta para a decisão e não consome nada.
   _consumoDesde(ts){ const cons={}; this.state.pedidos.forEach(p=>p.itens.forEach(i=>{
-      if(i.st==='estoque'&&(i.estoqueTs||0)>ts) cons[i.produtoId]=(cons[i.produtoId]||0)+i.qtd; })); return cons; }
+      const saiu=i.st==='estoque'||(i.porLoja&&(i.st==='direto'||i.st==='faturado'));
+      if(saiu&&(i.estoqueTs||0)>ts) cons[i.produtoId]=(cons[i.produtoId]||0)+i.qtd; })); return cons; }
   // O saldo É a última contagem carregada: o inventário mais recente é a
   // verdade sobre o estoque, como num arquivo de posição vindo do ERP.
   // Para atualizar o saldo, lança-se um novo inventário (na tela ou por planilha).
@@ -7019,17 +7128,67 @@ class Component extends DCLogic {
     this.notificar('pedido_fornecedor',this._fornEmail(fid),{pedidoId:id,fornecedorNome:f.nome,revendaNome:this._revNome(revD),itensLista:_ilD});
     this.notificar('pedido_encaminhado_revenda',this._revEmail(revD),{pedidoId:id,fornecedorNome:f.nome,itensLista:_ilD,ocultarValor:this._revOcultar(alocados)});
     this.mClose(); };
-  confirmEstoque=()=>{ if(!this.pode('pedidos.atender')) return this.negado('Você não tem permissão para definir o atendimento.','pedidos.atender'); const sel=this.state.form.sel||[]; if(!sel.length) return this.err('Selecione ao menos um item.');
-    const id=this.state.form.pedidoId;
+  // A janela abre com o preço de catálogo de cada item já preenchido: é a
+  // condição que a Loja propõe, e ela pode mudar antes de enviar à revenda.
+  abrirEstoque(id){ this._aes=this._aes||{}; if(!this._aes[id]) this._aes[id]=(e)=>{
+    if(e&&e.stopPropagation) e.stopPropagation();
+    const p=this.state.pedidos.find(x=>x.id===id); if(!p) return;
+    const seed={pedidoId:id,sel:[],condicoes:'',prazoEntrega:'',freteMod:'CIF',freteValor:'',
+      transportadora:'',condEntrega:'',validade:''};
+    p.itens.forEach((i,ix)=>{ if(i.st==='aprovado'){ seed.sel.push(ix);
+      seed['ie'+ix]=Number(i.preco||0).toFixed(2).replace('.',','); } });
+    const pl=this._propLoja(p);
+    if(pl){ seed.condicoes=pl.condicoes==='—'?'':(pl.condicoes||''); seed.prazoEntrega=pl.prazoEntrega||'';
+      seed.freteMod=pl.freteMod||'CIF'; seed.freteValor=pl.freteValor?String(pl.freteValor).replace('.',','):'';
+      seed.transportadora=pl.transportadora||''; seed.condEntrega=pl.condEntrega||''; }
+    this.setState({modal:'estoque',form:seed}); }; return this._aes[id]; }
+
+  confirmEstoque=()=>{ if(!this.pode('pedidos.atender')) return this.negado('Você não tem permissão para definir o atendimento.','pedidos.atender');
+    const f=this.state.form; const sel=f.sel||[]; if(!sel.length) return this.err('Selecione ao menos um item.');
+    const id=f.pedidoId;
     const ped0=this.state.pedidos.find(p=>p.id===id); if(!ped0) return;
     const lq=this._lerQtds(ped0,sel); if(lq.erro) return this.err(lq.erro);
-    const {novo,alocados,parcial}=this._splitAlocar(ped0.itens,sel,lq.qtds,{st:'estoque',estoqueTs:Date.now()});
+    // Condições comerciais da Loja — as mesmas exigências de uma proposta de
+    // fornecedor: preço por item, prazo de entrega e validade.
+    const unit={};
+    for(const ix of sel){ const u=this.num(f['ie'+ix]);
+      if(!u||u<=0) return this.err('Informe o preço unitário de todos os itens selecionados — é a condição comercial que a revenda vai aprovar.');
+      unit[ix]=u; }
+    if(!String(f.prazoEntrega||'').trim()) return this.err('Informe o prazo de entrega do atendimento pela Loja.');
+    const erVal=this._erroValidade(f.validade); if(erVal) return this.err(erVal);
+    const freteValor=Math.round((this.num(f.freteValor)||0)*100)/100;
+    const prop={itens:{},condicoes:(f.condicoes||'').trim()||'—',prazoEntrega:(f.prazoEntrega||'').trim(),
+      freteMod:f.freteMod||'CIF',freteValor,transportadora:(f.transportadora||'').trim(),
+      condEntrega:(f.condEntrega||'').trim(),validade:f.validade,quando:this.ts(),por:this.userName()};
+    sel.forEach(ix=>{ prop.itens[ped0.itens[ix].produtoId]=unit[ix]; });
+    const {novo,alocados,parcial}=this._splitAlocar(ped0.itens,sel,lq.qtds,{st:'aceite',porLoja:true,fornecedorId:null,cotacaoId:null,estoqueTs:Date.now()});
+    // os objetos alocados são os mesmos que estão em `novo` — o preço negociado
+    // é gravado item a item, como a adjudicação de uma cotação faz.
+    alocados.forEach(a=>{ a.precoNeg=Math.round((prop.itens[a.produtoId]||0)*a.qtd*100)/100; });
     const totQ=alocados.reduce((a,i)=>a+i.qtd,0);
-    this.updPed(id,p=>{p.itens=novo;
-      p.trilha.push(this.tr(alocados.length+' item(ns) · '+totQ+' unidade(s) atendido(s) com estoque próprio da Loja'+(parcial?' — quantidade parcial; o saldo permanece aprovado':'')));return p;});
-    this.audit('Atendimento com estoque próprio',id+' · '+alocados.length+' item(ns) · '+totQ+' un'+(parcial?' (parcial)':''));
-    this.notificar('pedido_estoque_revenda',this._revEmail(ped0.revendaId),{pedidoId:id,itensLista:alocados.map(i=>this._itemView(i)),ocultarValor:true});
+    const totV=alocados.reduce((a,i)=>a+(i.precoNeg||0),0);
+    this.updPed(id,p=>{p.itens=novo; p.propLoja=prop;
+      p.trilha.push(this.tr('Atendimento pelo estoque da Loja proposto para '+alocados.length+' item(ns) · '+totQ+' unidade(s) — '+this.fmt(totV)
+        +' · '+this._propLojaTxt({propLoja:prop})+(parcial?' — quantidade parcial; o saldo permanece aprovado':'')
+        +' — aguardando aceite comercial da revenda (RF68)'));return p;});
+    this.audit('Atendimento com estoque próprio proposto',id+' · '+alocados.length+' item(ns) · '+totQ+' un · '+this.fmt(totV+freteValor)+(parcial?' (parcial)':'')+' — aguardando aceite da revenda');
+    this.notificar('pedido_aceite_revenda',this._revEmail(ped0.revendaId),{pedidoId:id,revendaNome:this._revNome(ped0.revendaId),
+      fornecedorNome:this.LOJA_NOME+' — estoque próprio',frete:(prop.freteMod||'CIF')+(freteValor?(' · '+this.fmt(freteValor)):' · frete incluso'),
+      prazoEntrega:prop.prazoEntrega,condicoes:prop.condicoes,validade:prop.validade,
+      itensLista:alocados.map(i=>this._itemView(i))});
     this.mClose(); };
+
+  // RF49 — a Loja confirma a separação do material no estoque próprio, o
+  // equivalente à confirmação de recebimento do pedido pelo fornecedor.
+  confirmarSeparacaoLoja(pid){ this._csl=this._csl||{}; if(!this._csl[pid]) this._csl[pid]=(e)=>{
+    if(e&&e.stopPropagation) e.stopPropagation();
+    if(!this.pode('pedidos.atender')) return this.negado('Você não tem permissão para confirmar a separação do material.','pedidos.atender');
+    const quem=this.userName();
+    this.updPed(pid,p=>{ p.confForn={...(p.confForn||{}),[this.LOJA_KEY]:{quando:this.ts(),usuario:quem}};
+      p.trilha.push(this.tr('Separação do material confirmada no estoque da Loja por '+quem+' — itens em atendimento')); return p;});
+    this.audit('Confirmação de separação no estoque da Loja',pid+' · '+quem);
+    this.toast('Separação confirmada — o pedido segue para atendimento e faturamento.','ok');
+    setTimeout(()=>this._flushPersist(),0); }; return this._csl[pid]; }
   toggleConv(fid){ this._tc=this._tc||{}; if(!this._tc[fid]) this._tc[fid]=()=>this.setState(s=>{ const c=s.form.convidados||[]; const on=c.includes(fid);
     return {form:{...s.form,convidados:on?c.filter(x=>x!==fid):[...c,fid],erro:null}}; }); return this._tc[fid]; }
   confirmCotacao=()=>{ if(!this.pode('cotacoes.abrir')) return this.negado('Você não tem permissão para abrir cotações.','cotacoes.abrir'); const f=this.state.form; const conv=f.convidados||[];
@@ -7206,11 +7365,19 @@ class Component extends DCLogic {
     const quem=this.userName(); const nomeP=id2=>(this._prodInfo(id2).descricao||('Produto '+id2));
     const accIdx=new Set(acc.map(x=>x.ix)), rejIdx=new Set(rej.map(x=>x.ix));
     const aceitosView=acc.map(x=>this._itemView(x.i)), recusadosView=rej.map(x=>this._itemView(x.i));
-    const porCot={}; rej.forEach(x=>{ if(x.i.cotacaoId) (porCot[x.i.cotacaoId]=porCot[x.i.cotacaoId]||[]).push(x.i.produtoId); });
+    const porCot={}; rej.forEach(x=>{ if(x.i.cotacaoId&&!x.i.porLoja) (porCot[x.i.cotacaoId]=porCot[x.i.cotacaoId]||[]).push(x.i.produtoId); });
+    const rejLoja=rej.filter(x=>x.i.porLoja);
     const prazoR=(()=>{ const d2=new Date(); d2.setDate(d2.getDate()+7); return String(d2.getDate()).padStart(2,'0')+'/'+String(d2.getMonth()+1).padStart(2,'0')+'/'+d2.getFullYear(); })();
-    this.updPed(p.id,pp=>{ pp.itens=pp.itens.map((i,ix)=>accIdx.has(ix)?{...i,st:'direto'}:(rejIdx.has(ix)?{...i,st:'cotacao',fornecedorId:null,precoNeg:null}:i));
+    this.updPed(p.id,pp=>{ pp.itens=pp.itens.map((i,ix)=>{
+        if(accIdx.has(ix)) return {...i,st:'direto'};
+        if(!rejIdx.has(ix)) return i;
+        // Recusa de item da Loja não tem cotação para reabrir: ele volta para
+        // aprovado e a Loja decide de novo — outras condições ou outro caminho.
+        if(i.porLoja) return {...i,st:'aprovado',porLoja:false,fornecedorId:null,precoNeg:null};
+        return {...i,st:'cotacao',fornecedorId:null,precoNeg:null}; });
       if(acc.length) pp.trilha.push(this.tr('Aceite comercial da revenda por '+quem+': '+acc.length+' item(ns) aceito(s) — '+acc.map(x=>nomeP(x.i.produtoId)).join(', ')+' — encaminhado(s) ao(s) fornecedor(es)'));
       if(rej.length) pp.trilha.push(this.tr('Recusa comercial da revenda por '+quem+': '+rej.length+' item(ns) — '+rej.map(x=>nomeP(x.i.produtoId)).join(', ')+' — motivo: '+motivo+' — devolvido(s) à negociação com recálculo'));
+      if(rejLoja.length) pp.trilha.push(this.tr(rejLoja.length+' item(ns) do estoque da Loja recusado(s) — devolvido(s) à decisão de atendimento da Loja'));
       return pp;});
     Object.keys(porCot).forEach(cid=>{ const c=this.state.cotacoes.find(x=>x.id===cid); if(!c) return;
       const n=this._cotRod(c)+1; const convs=[...(c.convidados||[])];
@@ -7222,7 +7389,7 @@ class Component extends DCLogic {
         return x;});
       const _ilR=(c.itens||[]).filter(it=>porCot[cid].includes(it.produtoId)).map(it=>{ const pp2=this._prodInfo(it.produtoId); return {codigo:pp2.codigo||'',descricao:pp2.descricao||('Produto '+it.produtoId),qtd:it.qtd,unidade:pp2.unidade||'',valor:this.fmt(it.qtd*it.preco)};});
       convs.forEach(cf=>this.notificar('cotacao_rodada',this._fornEmail(cf),{cotacao:cid,fornecedorNome:this._fornNome(cf),rodada:String(n),prazo:prazoR,itensLista:_ilR})); });
-    const porForn={}; acc.forEach(x=>{ (porForn[x.i.fornecedorId]=porForn[x.i.fornecedorId]||[]).push(x.i); });
+    const porForn={}; acc.forEach(x=>{ if(x.i.porLoja) return; (porForn[x.i.fornecedorId]=porForn[x.i.fornecedorId]||[]).push(x.i); });
     Object.keys(porForn).forEach(fid2=>{ this.notificar('pedido_fornecedor',this._fornEmail(+fid2),{pedidoId:p.id,fornecedorNome:this._fornNome(+fid2),revendaNome:this._revNome(p.revendaId),itensLista:porForn[fid2].map(i2=>this._itemView(i2))}); });
     this.notificar('aceite_revenda_loja',this._lojaEmail(),{pedidoId:p.id,revendaNome:this._revNome(p.revendaId),aceitos:aceitosView,recusados:recusadosView,motivo,usuario:quem});
     this.audit('Aceite comercial da revenda',p.id+' · '+acc.length+' aceito(s)'+(rej.length?(' · '+rej.length+' recusado(s) — motivo: '+motivo):'')+' — por '+quem);
@@ -7338,7 +7505,8 @@ class Component extends DCLogic {
       docHist:[...(x.docHist||[]),{quando:this.ts(),usuario:quem,papel,acao:'Documento recusado',motivo}]}),modal:null,form:{}}));
     this.updPed(fat.pedidoId,p=>{p.trilha.push(this.tr('Documento fiscal da '+fat.id+' RECUSADO por '+quem+' ('+papel+') — motivo: '+motivo+' — faturamento pendente de regularização pelo fornecedor'));return p;});
     this.audit('Recusa de documento fiscal',fat.id+' · '+fat.pedidoId+' · motivo: '+motivo+' — por '+quem+' ('+papel+')');
-    this.notificar('nf_recusada',this._fornEmail(fat.fornecedorId),{nf:fat.id,pedidoId:fat.pedidoId,fornecedorNome:this._fornNome(fat.fornecedorId),motivo,quem:quem+' ('+papel+')',arquivo:fat.anexoNome||'documento fiscal'});
+    // documento do estoque próprio: quem responde é a própria Loja
+    this.notificar('nf_recusada',fat.porLoja?this._lojaEmail():this._fornEmail(fat.fornecedorId),{nf:fat.id,pedidoId:fat.pedidoId,fornecedorNome:this._fatFornNome(fat),motivo,quem:quem+' ('+papel+')',arquivo:fat.anexoNome||'documento fiscal'});
     setTimeout(()=>this._flushPersist(),0); };
   confirmReenvioDoc=async()=>{ const f=this.state.form; if(f.reBusy) return; const fat=this.state.faturamentos.find(x=>x.id===f.fatId); if(!fat) return;
     if(!f.anexoB64) return this.err('Anexe o novo documento fiscal (PDF ou XML) — obrigatório para a regularização.');
@@ -7449,18 +7617,24 @@ class Component extends DCLogic {
     rd.onload=()=>{ const b64=String(rd.result).split(',')[1]||'';
       this.setState(s=>({form:{...s.form,anexoNome:file.name,anexoTipo:ext==='pdf'?'application/pdf':'text/xml',anexoB64:b64,erro:null}})); };
     rd.readAsDataURL(file); };
-  confirmFaturar=async()=>{ if(!this.pode('faturamento.faturar')) return this.negado('Você não tem permissão para registrar faturamento.','faturamento.faturar'); const f=this.state.form; if(f.fatBusy) return; const valor=this.num(f.valorFat); if(!valor) return this.err('Informe o valor efetivamente faturado (RF34).');
+  confirmFaturar=async()=>{ const f=this.state.form; const ehLoja=!!f.porLoja;
+    const permF=ehLoja?'faturamento.faturar_loja':'faturamento.faturar';
+    if(!this.pode(permF)) return this.negado('Você não tem permissão para registrar faturamento.',permF);
+    if(f.fatBusy) return; const valor=this.num(f.valorFat); if(!valor) return this.err('Informe o valor efetivamente faturado (RF34).');
     if(!f.anexoB64) return this.err('Anexe o documento fiscal (PDF ou XML) emitido para a revenda — o anexo é obrigatório.');
-    const pid=f.pedidoId; const fid=this.state.fornAtivo; const ped=this.state.pedidos.find(p=>p.id===pid);
+    const pid=f.pedidoId; const fid=ehLoja?null:this.state.fornAtivo; const ped=this.state.pedidos.find(p=>p.id===pid);
     // RF: com frete por conta do fornecedor, o rastreio da entrega é obrigatório
     // no faturamento — é a informação que a revenda e a Loja usam para acompanhar.
     const errRast=this._erroRastreio(f,this._rastObrig(ped)&&!this._rastreio(ped));
     if(errRast) return this.err(errRast);
     const regRast=this._rastCod(f.transpId,f.rastCod)?this._regRastreio(f):null;
-    const meus=ped.itens.filter(i=>i.st==='direto'&&i.fornecedorId===fid);
+    const meus=ped.itens.filter(i=>i.st==='direto'&&(ehLoja?!!i.porLoja:i.fornecedorId===fid));
+    if(!meus.length) return this.err('Não há itens seus aguardando faturamento neste pedido.');
     const cotRef=(meus.find(i=>i.cotacaoId)||{}).cotacaoId||null;
-    const ctr=this.state.contratos.find(c=>c.fornecedorId===fid&&c.vigente); const pct=ctr?ctr.royalty:0;
-    const forn=this.state.fornecedores.find(x=>x.id===fid)||{}; const rev=this.state.revendas.find(x=>x.id===ped.revendaId)||{};
+    // O estoque próprio da Loja não gera royalty: royalty é o que o fornecedor
+    // paga à Loja, e aqui a Loja é a própria vendedora.
+    const ctr=ehLoja?null:this.state.contratos.find(c=>c.fornecedorId===fid&&c.vigente); const pct=ctr?ctr.royalty:0;
+    const forn=ehLoja?{nome:this.LOJA_NOME,cnpj:''}:(this.state.fornecedores.find(x=>x.id===fid)||{}); const rev=this.state.revendas.find(x=>x.id===ped.revendaId)||{};
     const analiseOn=!!(this.state.configPlataforma&&this.state.configPlataforma.analiseFiscalIA);
     this.setState(s=>({form:{...s.form,fatBusy:true,erro:null}}));
     let anexoId=null, analise=null;
@@ -7487,14 +7661,14 @@ class Component extends DCLogic {
         anexosExtras.push({id:up2.id,nome:a.nome,tipoDoc:a.tipoDoc,quando:this.ts(),autor:this.userName()}); } }
       catch(e3){ this.setState(s=>({form:{...s.form,fatBusy:false,erro:e3.message||'Falha ao enviar os anexos adicionais.'}})); return; } }
     const n=this.state.seq.nf; const nf='NF-'+n; const comp=this.compAtual();
-    this.setState(s=>({faturamentos:[{id:nf,pedidoId:pid,fornecedorId:fid,revendaId:ped.revendaId,cotacaoId:cotRef,valor,data:this.hoje(),competencia:comp,royaltyPct:pct,royaltyValor:Math.round(valor*pct)/100,anexoId,anexoNome:f.anexoNome||null,anexosExtras,analise},...s.faturamentos],seq:{...s.seq,nf:n+1},modal:null,form:{}}));
-    this.updPed(pid,p=>{p.itens=p.itens.map(i=>i.st==='direto'&&i.fornecedorId===fid?{...i,st:'faturado'}:i);
-      p.trilha.push(this.tr('Faturado ('+nf+') diretamente à revenda — '+this.fmt(valor)+' ('+meus.length+' item(ns))'+(analise?' · documento fiscal validado pela análise ('+analise.engine+')':' · documento fiscal anexado')));return p;});
+    this.setState(s=>({faturamentos:[{id:nf,pedidoId:pid,fornecedorId:fid,porLoja:ehLoja,revendaId:ped.revendaId,cotacaoId:cotRef,valor,data:this.hoje(),competencia:comp,royaltyPct:pct,royaltyValor:Math.round(valor*pct)/100,anexoId,anexoNome:f.anexoNome||null,anexosExtras,analise},...s.faturamentos],seq:{...s.seq,nf:n+1},modal:null,form:{}}));
+    this.updPed(pid,p=>{p.itens=p.itens.map(i=>i.st==='direto'&&(ehLoja?!!i.porLoja:i.fornecedorId===fid)?{...i,st:'faturado'}:i);
+      p.trilha.push(this.tr('Faturado ('+nf+') diretamente à revenda '+(ehLoja?'pelo estoque próprio da Loja ':'')+'— '+this.fmt(valor)+' ('+meus.length+' item(ns))'+(analise?' · documento fiscal validado pela análise ('+analise.engine+')':' · documento fiscal anexado')));return p;});
     if(regRast) this._gravarRastreio(pid,regRast);
     this.audit('Registro de faturamento',nf+' · '+pid+' · '+this.fmt(valor)+(analise?' · anexo validado ('+(analise.engine==='claude'?'IA Claude':'analisador local')+')':' · anexo: '+(f.anexoNome||'—'))+(anexosExtras.length?' · '+anexosExtras.length+' anexo(s) adicional(is): '+anexosExtras.map(a=>(a.tipoDoc==='boleto'?'boleto ':'')+a.nome).join(', '):''));
     const _ilF=meus.map(i=>this._itemView(i));
-    this.notificar('faturamento_revenda',this._revEmail(ped.revendaId),{pedidoId:pid,nf,fornecedorNome:this._fornNome(fid),valor:this.fmt(valor),itensLista:_ilF});
-    this.notificar('faturamento_loja',this._lojaEmail(),{nf,pedidoId:pid,fornecedorNome:this._fornNome(fid),valor:this.fmt(valor),royalty:this.fmt(Math.round(valor*pct)/100),itensLista:_ilF});
+    this.notificar('faturamento_revenda',this._revEmail(ped.revendaId),{pedidoId:pid,nf,fornecedorNome:ehLoja?(this.LOJA_NOME+' — estoque próprio'):this._fornNome(fid),valor:this.fmt(valor),itensLista:_ilF});
+    if(!ehLoja) this.notificar('faturamento_loja',this._lojaEmail(),{nf,pedidoId:pid,fornecedorNome:this._fornNome(fid),valor:this.fmt(valor),royalty:this.fmt(Math.round(valor*pct)/100),itensLista:_ilF});
     setTimeout(()=>this._flushPersist(),0); }; // grava imediatamente: registro com anexo não pode se perder
   toggleFech(chave){ this._tfc=this._tfc||{}; if(!this._tfc[chave]) this._tfc[chave]=()=>this.setState(s=>({expFech:s.expFech===chave?null:chave})); return this._tfc[chave]; }
   // ── Royalties & Fechamento mensal (RF36–RF41) ────────────────────────────
@@ -7722,6 +7896,7 @@ class Component extends DCLogic {
     {mod:'Financeiro',itens:[
       ['faturamento.ver','Ver faturamento',['admin','loja']],
       ['faturamento.faturar','Registrar faturamento (fornecedor)',['admin','fornecedor']],
+      ['faturamento.faturar_loja','Registrar faturamento do estoque da Loja',['admin','loja']],
       ['royalties.ver','Ver royalties e fechamentos',['admin','loja']],
       ['royalties.cobrar','Emitir cobrança de royalties',['admin','loja']],
       ['royalties.pagar','Registrar pagamento de royalties',['admin','loja']],
@@ -8076,15 +8251,20 @@ class Component extends DCLogic {
       {label:'Faturado no mês',val:this.fmt(fatMes),sub:'competência '+compA},
       {label:'Royalties a receber',val:this.fmt(royAberto),sub:'fechamentos em aberto ou em atraso'}];
     const destTxt=p=>{ const ns=[...new Set(p.itens.filter(i=>i.fornecedorId&&(i.st==='direto'||i.st==='faturado')).map(i=>F(i.fornecedorId).nome))];
-      if(p.itens.some(i=>i.st==='estoque')) ns.push('Estoque da Loja');
+      if(p.itens.some(i=>i.st==='estoque'||(i.porLoja&&(i.st==='direto'||i.st==='faturado')))) ns.push('Estoque da Loja');
       return ns.length?ns.join(' · '):'—'; };
     const pedRow=p=>({id:p.id,data:p.data,revNome:R(p.revendaId).nome,itensN:p.itens.length+(p.itens.length===1?' item':' itens'),
       totalFmt:this.fmt(p.total),fornDest:destTxt(p),
       fotos:p.itens.map(i=>({src:this.fotosDe(P(i.produtoId))[0],ver:this.verFoto(i.produtoId)})),
       ...this.chip(p.status),open:this.openPed(p.id)});
     const recRows=PEDS.slice(0,6).map(pedRow);
-    const fatPorForn=S.fornecedores.map(fo=>{ const fs=S.faturamentos.filter(x=>x.fornecedorId===fo.id);
-      return {nome:fo.nome,tot:fs.reduce((a,x)=>a+x.valor,0),roy:fs.reduce((a,x)=>a+x.royaltyValor,0),pct:String(pctOf(fo.id)||'—').replace('.',',')+'%'}; }).filter(x=>x.tot>0).sort((a,b)=>b.tot-a.tot);
+    const fatLoja=S.faturamentos.filter(x=>x.porLoja);
+    const fatPorForn=[...S.fornecedores.map(fo=>{ const fs=S.faturamentos.filter(x=>x.fornecedorId===fo.id);
+      return {nome:fo.nome,tot:fs.reduce((a,x)=>a+x.valor,0),roy:fs.reduce((a,x)=>a+x.royaltyValor,0),pct:String(pctOf(fo.id)||'—').replace('.',',')+'%'}; }),
+      // o estoque próprio da Loja fatura, mas não gera royalty — entra na barra
+      // para o painel fechar com o total faturado do mês
+      ...(fatLoja.length?[{nome:this.LOJA_NOME+' — estoque próprio',tot:fatLoja.reduce((a,x)=>a+x.valor,0),roy:0,pct:'sem royalty'}]:[])
+      ].filter(x=>x.tot>0).sort((a,b)=>b.tot-a.tot);
     const maxFat=Math.max(...fatPorForn.map(x=>x.tot),1);
     const barRows=fatPorForn.map(x=>({nome:x.nome,valFmt:this.fmt(x.tot),royFmt:this.fmt(x.roy),pct:x.pct,w:Math.round(x.tot/maxFat*100)}));
 
@@ -8144,8 +8324,37 @@ class Component extends DCLogic {
         const cotIds=[...new Set(p.itens.filter(i=>i.cotacaoId&&i.st==='cotacao').map(i=>i.cotacaoId))];
         const dt=destTxt(p);
         const _rcb=p.recebimento||null; const _entr=this._entregue(p); const _pdRec=this._podeConfirmarReceb(p);
+        // Atendimento pela Loja: ela percorre as mesmas etapas de um fornecedor
+        const _ljAce=this._itensLoja(p,'aceite'), _ljDir=this._itensLoja(p,'direto'), _ljFat=this._itensLoja(p,'faturado');
+        const _ljTem=_ljAce.length+_ljDir.length+_ljFat.length>0;
+        const _ljConf=this._lojaConfirmou(p); const _ljProp=this._propLoja(p);
+        const _ljTot=(_ljAce.concat(_ljDir,_ljFat)).reduce((a,i)=>a+this.itemTotal(i),0);
         const _rst=this._rastreio(p); const _rstP=this._rastPendente(p); const _fri=this._freteInfo(p);
         pd={id:p.id,steps,data:p.data,...this._chatCel(p),...this._recebCel(p),...this._pdfCel(p),...this._rastCel(p),
+          temBlocoLoja:_ljTem,
+          lojaBd:_ljAce.length?'#e6cf9e':'#cfe0d1',lojaFg:_ljAce.length?'#8f682a':'#1f6b5e',
+          lojaTitulo:_ljAce.length?'Atendimento pela Loja — aguardando aceite da revenda'
+            :(_ljFat.length&&!_ljDir.length?'Atendimento pela Loja — faturado':'Atendimento pela Loja — aprovado pela revenda'),
+          lojaTxt:(_ljAce.length
+            ? 'A Loja propôs atender '+_ljAce.length+' item(ns) com estoque próprio, no valor de '+this.fmt(_ljTot)+'. Como qualquer fornecedor, as condições vão para o aceite comercial da revenda — o atendimento só avança depois que ela aprovar.'
+            : 'A revenda aprovou as condições do atendimento pela Loja. '+(_ljConf
+                ? 'Separação confirmada — os itens seguem para faturamento pela própria Loja.'
+                : 'Falta confirmar a separação do material no estoque da Loja.'))
+            +(_ljProp?(' Condições: '+this._propLojaTxt(p)+'.'):''),
+          lojaPodeSeparar:_ljDir.length>0&&!_ljConf&&this.pode('pedidos.atender'),
+          separarFn:this.confirmarSeparacaoLoja(p.id),
+          lojaConfTxt:_ljConf?('Separação confirmada em '+(p.confForn||{})[this.LOJA_KEY].quando+' por '+(p.confForn||{})[this.LOJA_KEY].usuario):'',
+          lojaPodeFaturar:_ljDir.length>0&&this.pode('faturamento.faturar_loja'),
+          faturarLojaFn:this.open('faturar',{pedidoId:p.id,porLoja:true,
+            valorFat:_ljDir.reduce((a,i)=>a+this.itemTotal(i),0).toFixed(2).replace('.',','),
+            nf:'',anexosExtras:[],tipoDocExtra:'boleto',
+            transpId:(p.rastreio&&p.rastreio.transpId)||'correios',
+            transpNome:(p.rastreio&&p.rastreio.transpId==='outra')?(p.rastreio.transportadora||''):'',
+            rastCod:(p.rastreio&&p.rastreio.codigo)||'',rastUrl:(p.rastreio&&p.rastreio.url)||'',
+            rastUrlManual:!!(p.rastreio&&p.rastreio.urlManual),
+            rastPrev:(p.rastreio&&p.rastreio.previsao)||'',rastObs:(p.rastreio&&p.rastreio.obs)||''}),
+          lojaPodeRastrear:(_ljDir.length>0||_ljFat.length>0)&&this.pode('pedidos.rastreio'),
+          rastLojaFn:this.abrirRastreio(p.id),
           temBlocoRast:!!_rst||_rstP,
           rastBd:_rst?'#cfe0d1':'#e6cf9e',rastFg:_rst?'#2f6b39':'#8f682a',
           rastTitulo2:_rst?('Entrega em trânsito — '+_rst.transportadora):'Aguardando o rastreio do fornecedor',
@@ -8165,7 +8374,7 @@ class Component extends DCLogic {
           fornDest:dt==='—'?'— ainda não definido —':dt,
           temCot:cotIds.length>0,cotId:cotIds.join(', '),verCot:cotIds.length?this.openCot(cotIds[0]):null,
           itens:p.itens.map((i,ix)=>{const pr=P(i.produtoId); const st=i.st||'pendente';
-            let destino=''; if(st==='direto'||st==='faturado') destino=F(i.fornecedorId).nome; else if(st==='aceite') destino='negociado com '+(F(i.fornecedorId).nome||'')+' — aguarda a revenda'; else if(st==='estoque') destino='atendido pela Loja'; else if(st==='cotacao') destino=i.cotacaoId||''; else if(st==='rejeitado') destino=i.justif||'';
+            let destino=''; if(st==='direto'||st==='faturado') destino=this._destNome(i); else if(st==='aceite') destino='negociado com '+(this._destNome(i)||'')+' — aguarda a revenda'; else if(st==='estoque') destino='atendido pela Loja'; else if(st==='cotacao') destino=i.cotacaoId||''; else if(st==='rejeitado') destino=i.justif||'';
             return {codigo:pr.codigo,descricao:pr.descricao,unidade:pr.unidade,qtd:String(i.qtd),precoFmt:this.fmt(i.preco),subFmt:this.fmt(this.itemTotal(i)),
               temNegI:i.precoNeg!=null,
               ...this.chip(st),destino,temDestino:!!destino,
@@ -8186,7 +8395,7 @@ class Component extends DCLogic {
           aprovarFn:this.aprovar(p.id),rejeitarFn:this.open('rejeitar',{pedidoId:p.id}),
           diretoFn:this.open('direto',{pedidoId:p.id,fornecedorId:'',sel:aprIdx}),
           cotarFn:this.open('cotacao',{pedidoId:p.id,convidados:[],prazo:'',sel:aprIdx}),
-          estoqueFn:this.open('estoque',{pedidoId:p.id,sel:aprIdx}),
+          estoqueFn:this.abrirEstoque(p.id),
           anexosAtend:(p.anexosAtend||[]).map(a=>({nome:a.nome,url:'/api/anexos/'+a.id,quando:a.quando,autor:a.autor})),
           temAnexosAtend:!!(p.anexosAtend&&p.anexosAtend.length),
           voltar:this.go('ped')}; } }
@@ -8526,10 +8735,10 @@ class Component extends DCLogic {
     const revModalBtn=S.form.editId&&S.modal==='revenda'?'Salvar alterações':'Salvar revenda';
 
     // faturamento (loja)
-    const fatRows=S.faturamentos.map(f=>({id:f.id,data:f.data,pedidoId:f.pedidoId,fornNome:F(f.fornecedorId).nome,revNome:R(f.revendaId).nome,
-      origem:f.cotacaoId?'Cotação '+f.cotacaoId:'Envio direto',valorFmt:this.fmt(f.valor),
+    const fatRows=S.faturamentos.map(f=>({id:f.id,data:f.data,pedidoId:f.pedidoId,fornNome:this._fatFornNome(f),revNome:R(f.revendaId).nome,
+      origem:f.cotacaoId?'Cotação '+f.cotacaoId:(f.porLoja?'Estoque da Loja':'Envio direto'),valorFmt:this.fmt(f.valor),
       royStr:String(f.royaltyPct).replace('.',',')+'% · '+this.fmt(f.royaltyValor),
-      podeRecusar:!!f.anexoId&&f.docStatus!=='recusado',recusar:this.abrirRecusaDoc(f.id),
+      podeRecusar:!!f.anexoId&&f.docStatus!=='recusado'&&!f.porLoja,recusar:this.abrirRecusaDoc(f.id),
       ...this._anexoView(f)}));
     const aguardFat=PEDS.filter(p=>p.itens.some(i=>i.st==='direto')).map(p=>({id:p.id,fornNome:destTxt(p),revNome:R(p.revendaId).nome,totalFmt:this.fmt(p.itens.filter(i=>i.st==='direto').reduce((a,i)=>a+this.itemTotal(i),0))}));
 
@@ -8554,7 +8763,7 @@ class Component extends DCLogic {
         const val=this.itemTotal(i);
         rvpLinhas.push({produtoId:i.produtoId,codigo:prod.codigo||'',descricao:prod.descricao||'',categoria:this._pCat(prod),unidade:prod.unidade||'un',
           qtd:i.qtd,valor:val,unit:val/(i.qtd||1),pedidoId:p.id,data:p.data,dataD:d?d.getTime():0,
-          revNome:R(p.revendaId).nome||'',fornNome:i.fornecedorId?F(i.fornecedorId).nome:(i.st==='estoque'?'Estoque da Loja':'— a definir —')}); }); });
+          revNome:R(p.revendaId).nome||'',fornNome:i.fornecedorId?F(i.fornecedorId).nome:(this._ehLoja(i)?'Estoque da Loja':'— a definir —')}); }); });
     const rvpBy={};
     rvpLinhas.forEach(l=>{ const g=rvpBy[l.produtoId]||(rvpBy[l.produtoId]={produtoId:l.produtoId,codigo:l.codigo,descricao:l.descricao,categoria:l.categoria,unidade:l.unidade,qtd:0,valor:0,peds:new Set(),revs:new Set()});
       g.qtd+=l.qtd; g.valor+=l.valor; g.peds.add(l.pedidoId); g.revs.add(l.revNome); });
@@ -8617,7 +8826,8 @@ class Component extends DCLogic {
       rvpTotValFmt:this.fmt(rvpTotVal),rvpTotQtdTxt:String(rvpTotQtd),rvpRowsN:String(rvpRows.length)};
     const relCompOpts=[{v:'todas',label:'Todas as competências'},...relComps.map(c=>({v:c,label:'Competência '+c}))];
     const relRevOpts=[{v:'0',label:'Todas as revendas'},...S.revendas.map(r=>({v:String(r.id),label:r.nome}))];
-    const relFornOpts=[{v:'0',label:'Todos os fornecedores'},...S.fornecedores.map(f=>({v:String(f.id),label:f.nome}))];
+    const relFornOpts=[{v:'0',label:'Todos os fornecedores'},{v:'loja',label:'Estoque próprio da Loja'},
+      ...S.fornecedores.map(f=>({v:String(f.id),label:f.nome}))];
     const relStOpts=[{v:'todos',label:'Todos os status'},...['pendente','recebido','em cotação','encaminhado','atendido','faturado','rejeitado'].map(s=>({v:s,label:this.chip(s).stLabel}))];
     // RF75 — desempenho ampliado com os novos campos (frete, rodadas, parcelas, aceite)
     const ecoTotProc=ecoDecs.reduce((a,x)=>a+x.e.total,0);
@@ -8840,16 +9050,21 @@ class Component extends DCLogic {
     if(S.modal==='aceiterev'&&S.form.pedidoId){ const pA=PEDS.find(x=>x.id===S.form.pedidoId);
       if(pA){ const itsA=pA.itens.map((i,ix)=>({i,ix})).filter(x=>x.i.st==='aceite');
         let totA=0,nA=0,nR=0;
+        const plA=this._propLoja(pA);
         const itensA=itsA.map(x=>{ const pr2=P(x.i.produtoId); const dec=(S.form['d'+x.ix]||'a');
           const c2=S.cotacoes.find(cc=>cc.id===x.i.cotacaoId);
-          const prop=c2?this._propsEfetivas(c2).find(pp=>pp.fornecedorId===x.i.fornecedorId):null;
+          // a Loja atendendo com estoque próprio propõe condições como um fornecedor
+          const prop=x.i.porLoja?(plA?{freteMod:plA.freteMod,freteValor:plA.freteValor,transportadora:plA.transportadora,
+              prazoEntrega:plA.prazoEntrega,condicoes:plA.condicoes,condEntrega:plA.condEntrega}:null)
+            :(c2?this._propsEfetivas(c2).find(pp=>pp.fornecedorId===x.i.fornecedorId):null);
           if(dec==='a'){ totA+=x.i.precoNeg||0; nA++; } else nR++;
           return {label:(pr2.codigo||'')+' · '+(pr2.descricao||''),qtdTxt:'×'+x.i.qtd+' '+(pr2.unidade||''),
             unitFmt:this.fmt((x.i.precoNeg||0)/(x.i.qtd||1)),totFmt:this.fmt(x.i.precoNeg||0),
-            fornNome:F(x.i.fornecedorId).nome||'',freteTxt:prop?this._freteTxt(prop):'—',
+            fornNome:this._destNome(x.i),ehLoja:!!x.i.porLoja,
+            freteTxt:prop?this._freteTxt(prop):'—',
             prazoEntrega:prop?(prop.prazoEntrega||'—'):'—',
             condTxt:prop?((prop.condicoes||'—')+(prop.condEntrega?(' · entrega: '+prop.condEntrega):'')):'—',
-            cotId:x.i.cotacaoId||'',
+            cotId:x.i.porLoja?'':(x.i.cotacaoId||''),
             acBg:dec==='a'?'#2f6b39':'#fff',acFg:dec==='a'?'#fff':'#6b6459',
             rcBg:dec==='r'?'#a33a2b':'#fff',rcFg:dec==='r'?'#fff':'#6b6459',
             ac:this.decAceite(x.ix,'a'),rc:this.decAceite(x.ix,'r')};});
@@ -8911,8 +9126,13 @@ class Component extends DCLogic {
           ocultosTxt:filP.ocultos?(filP.ocultos+' item(ns) desta cotação pertence(m) a produtos de outros fornecedores e não são exibidos — você cota somente os produtos vinculados ao seu cadastro (RF55).'):''}; } }
     let fatInfo={pedidoId:'',revNome:'',pctStr:'',itensTxt:''};
     if(M==='faturar'&&S.form.pedidoId){ const p=PEDS.find(x=>x.id===S.form.pedidoId);
-      if(p){ const meusF=p.itens.filter(i=>i.st==='direto'&&i.fornecedorId===fid);
-        fatInfo={pedidoId:p.id,revNome:R(p.revendaId).nome,pctStr:String(pctOf(fid)).replace('.',',')+'%',
+      const ehLojaF=!!S.form.porLoja;
+      if(p){ const meusF=p.itens.filter(i=>i.st==='direto'&&(ehLojaF?!!i.porLoja:i.fornecedorId===fid));
+        fatInfo={pedidoId:p.id,revNome:R(p.revendaId).nome,
+          pctStr:ehLojaF?'0% (estoque próprio da Loja não gera royalty)':(String(pctOf(fid)).replace('.',',')+'%'),
+          ehLoja:ehLojaF,
+          sub:ehLojaF?('Faturamento do estoque próprio da Loja para '+(R(p.revendaId).nome||'')+' — sem royalty, porque a vendedora é a própria Loja')
+            :('RF33–RF36 — faturamento direto para '+(R(p.revendaId).nome||'')+'; royalty de '+String(pctOf(fid)).replace('.',',')+'% calculado automaticamente'),
           itensTxt:meusF.map(i=>P(i.produtoId).descricao+' ×'+i.qtd).join(', ')}; } }
     let jvInfo={fornNome:'',precoFmt:'',menorFmt:'',itemTxt:''};
     if(S.pendVenc){ const c=S.cotacoes.find(x=>x.id===S.pendVenc.cotId);
@@ -8944,7 +9164,29 @@ class Component extends DCLogic {
           menos:this.passoQtd('q'+x.ix,-1,maxQ),mais:this.passoQtd('q'+x.ix,1,maxQ),
           menosFg:(qOk&&qN>1)?'#8f682a':'#c9c0b0',maisFg:(qOk&&qN<maxQ)?'#8f682a':'#c9c0b0',
           preco:x.i.preco,qN:qOk?qN:0,qOk,subFmt:qOk?this.fmt(qN*x.i.preco):'—',
-          temSaldo:sp.temInv,saldoTxt:sp.temInv?('saldo em estoque: '+sp.saldo):'',saldoFg:sp.saldo>=x.i.qtd?'#2f6b39':(sp.saldo>0?'#8a5a12':'#a33a2b')};}); }
+          temSaldo:sp.temInv,saldoTxt:sp.temInv?('saldo em estoque: '+sp.saldo):'',saldoFg:sp.saldo>=x.i.qtd?'#2f6b39':(sp.saldo>0?'#8a5a12':'#a33a2b'),
+          // preço proposto pela Loja no atendimento com estoque próprio
+          ehEst:M==='estoque',precoVal:S.form['ie'+x.ix]==null?'':String(S.form['ie'+x.ix]),
+          setPreco:this.fx('ie'+x.ix),precoRefFmt:this.fmt(x.i.preco),
+          precoOk:this.num(S.form['ie'+x.ix])>0,
+          precoBd:this.num(S.form['ie'+x.ix])>0?'#ddd5c7':'#d99c8f',
+          precoBg:this.num(S.form['ie'+x.ix])>0?'#fff':'#fdf1ee',
+          subNegFmt:(qOk&&this.num(S.form['ie'+x.ix])>0)?this.fmt(this.num(S.form['ie'+x.ix])*qN):'—'};}); }
+    // Total da proposta da Loja, recalculado a cada preço/quantidade digitados
+    let estInfo={tem:false,itensN:'0',unids:'0',tot:'—',freteFmt:'—',totCF:'—',inval:false,
+      freteFOB:false,semSaldo:'',temSemSaldo:false};
+    if(M==='estoque'&&S.form.pedidoId){ const on=selItens.filter(si=>si.sel);
+      const okAll=on.length>0&&on.every(si=>si.qOk&&si.precoOk);
+      const totE=on.reduce((a,si)=>a+(si.qOk&&si.precoOk?this.num(si.precoVal)*si.qN:0),0);
+      const fvE=Math.round((this.num(S.form.freteValor)||0)*100)/100;
+      const semS=on.filter(si=>si.temSaldo&&si.saldoFg==='#a33a2b');
+      estInfo={tem:on.length>0,itensN:String(on.length),unids:String(on.reduce((a,si)=>a+(si.qOk?si.qN:0),0)),
+        tot:okAll?this.fmt(totE):'— complete os itens —',inval:!okAll,
+        freteFmt:fvE?this.fmt(fvE):((S.form.freteMod==='FOB')?'FOB — por conta da revenda':'R$ 0,00 — incluso'),
+        freteFOB:S.form.freteMod==='FOB',
+        totCF:okAll?this.fmt(totE+fvE):'—',
+        temSemSaldo:semS.length>0,
+        semSaldo:semS.length?(semS.length+' item(ns) sem saldo suficiente no inventário — confira antes de propor'):''}; }
     // RF57 — total estimado da cotação recalculado em tempo real a partir das quantidades editadas
     let cotEstim={tem:false,tot:'',itensN:'0',unids:'0',inval:false,temAcima:false,acimaTxt:''};
     if(M==='cotacao'&&S.form.pedidoId){ const selOn=selItens.filter(si=>si.sel);
@@ -9256,7 +9498,7 @@ class Component extends DCLogic {
         if(!pR) return {pedidoId:'',sub:'',itens:[],origemTxt:'',aviso:''};
         const ent=pR.itens.filter(i=>i.st!=='rejeitado');
         const fornsR=[...new Set(ent.filter(i=>i.fornecedorId).map(i=>F(i.fornecedorId).nome))];
-        const temEst=ent.some(i=>i.st==='estoque');
+        const temEst=ent.some(i=>this._ehLoja(i));
         return {pedidoId:pR.id,
           sub:'Etapa 9/10 — confirme que o material chegou para o pedido concluir. Revenda '+(R(pR.revendaId).nome||'—')+'.',
           itens:ent.map(i=>{ const pr=P(i.produtoId);
@@ -9353,7 +9595,7 @@ class Component extends DCLogic {
       mRej:M==='rejeitar',mDir:M==='direto',mCot:M==='cotacao',mEst:M==='estoque',mJusV:M==='justifvenc',mCanC:M==='cancelarcot',
       mProp:M==='proposta',mRod:M==='rodada',mAnx:M==='anexoped',mFat:M==='faturar',mPag:M==='pagamento',mCompF:M==='compforn',
       dirRows,convRows,dirVazio,prodFornRows,prodFornSel,prodFornVazio,propInfo,fatInfo,jvInfo,royInfo,rodInfo,confirmRodada:this.confirmRodada,formAnexos,temFormAnexos,anxInfo,addAnexosForm:this.addAnexosForm,confirmAnexosPed:this.confirmAnexosPed,fatExtras,temFatExtras,addAnexoFatExtra:this.addAnexoFatExtra,fxTipoDocExtra:this.fx('tipoDocExtra'),selItens,cotEstim,fprodRows,fprodVazio,fichaInfo,confirmFicha:this.confirmFicha,addFotoFicha:this.addFotoFicha,fxNcm:this.fxNcm,fxEan:this.fxEan,fxPesoBruto:this.fx('pesoBruto'),fxPesoLiquido:this.fx('pesoLiquido'),fxFreteMod:this.fx('freteMod'),fxFreteValor:this.fx('freteValor'),fxTransportadora:this.fx('transportadora'),fxCondEntrega:this.fx('condEntrega'),fxDiaPag:this.fxDia('diaPag'),fxGatilho:this.fx('gatilho'),fxGatilhoDesc:this.fx('gatilhoDesc'),fxParcelas:this.fx('parcelas'),gatOutro:(M==='contrato'||M==='royalty')&&S.form.gatilho==='outro',fxAltura:this.fx('altura'),fxLargura:this.fx('largura'),fxComprimento:this.fx('comprimento'),fxUnidadeMedida:this.fx('unidadeMedida'),fxObsFicha:this.fx('obs'),
-      confirmEstoque:this.confirmEstoque,setPedidoCot:this.setPedidoCot,
+      confirmEstoque:this.confirmEstoque,estInfo,setPedidoCot:this.setPedidoCot,
       prodModalFotos:(()=>{ if(M!=='produto') return [];
         const novasL=(S.form.fotosNovas||[]).map((n2,j2)=>({key:'n'+j2,src:'data:'+(n2.tipo||'image/png')+';base64,'+n2.b64,nova:true,rmH:this.rmFotoProdNova(j2)}));
         let existL=[];

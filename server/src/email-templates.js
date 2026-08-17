@@ -144,9 +144,12 @@ export const TEMPLATES = {
   pedido_aceite_revenda: (v) => ({
     subject: `Pedido ${v.pedidoId}: negociação concluída — seu aceite é necessário`,
     html: layout('Aprovação comercial da revenda',
-      p(`Olá${v.revendaNome ? ', ' + esc(v.revendaNome) : ''}. A negociação do seu pedido ${b(v.pedidoId)} foi concluída com ${b(v.fornecedorNome)} e aguarda o seu ACEITE COMERCIAL antes do encaminhamento definitivo ao fornecedor.`) +
+      p(`Olá${v.revendaNome ? ', ' + esc(v.revendaNome) : ''}. As condições comerciais do seu pedido ${b(v.pedidoId)} foram fechadas com ${b(v.fornecedorNome)} e aguardam o seu ACEITE COMERCIAL antes de o atendimento seguir em frente.`) +
       (v.itensLista ? tabelaItens(v.itensLista) : '') +
-      linhas([['Pedido', v.pedidoId], ['Fornecedor vencedor', v.fornecedorNome], ['Frete', v.frete]]) +
+      linhas([['Pedido', v.pedidoId], ['Quem vai atender', v.fornecedorNome], ['Frete', v.frete],
+        v.prazoEntrega ? ['Prazo de entrega', v.prazoEntrega] : null,
+        v.condicoes ? ['Condições de pagamento', v.condicoes] : null,
+        v.validade ? ['Validade da proposta', v.validade] : null]) +
       p('Acesse "Meus pedidos" na plataforma e use "Aprovação comercial…" para aceitar ou recusar POR ITEM — itens recusados retornam à negociação.'), 'Aceite da revenda'),
   }),
   aceite_revenda_loja: (v) => ({
@@ -157,13 +160,6 @@ export const TEMPLATES = {
       (v.recusados && v.recusados.length ? p(b('Itens recusados — devolvidos à negociação (nova rodada):')) + tabelaItens(v.recusados) + linhas([['Motivo da recusa', v.motivo]]) : ''),
       'Aceite da revenda'),
   }),
-  pedido_estoque_revenda: (v) => ({
-    subject: `Seu pedido ${v.pedidoId} será atendido pela Loja`,
-    html: layout('Pedido atendido pelo estoque da Loja',
-      p(`Seu pedido ${b(v.pedidoId)} será atendido diretamente pelo estoque da Loja Cidade Imperial.`) +
-      itensDe(v, 'Itens atendidos'), 'Pedido'),
-  }),
-
   pedido_recebido: (v) => ({
     subject: `Recebimento confirmado — pedido ${v.pedidoId}`,
     html: layout('Material recebido',
