@@ -5030,6 +5030,7 @@ class Component extends DCLogic {
       "dicas": [
         "Na janela de cadastro/edição do produto, envie múltiplas imagens (PNG/JPG, até 5 MB cada) com pré-visualização imediata, clique em uma imagem para marcá-la como PRINCIPAL — é ela que aparece no catálogo das revendas — e use o × para remover: a imagem substituída não se perde, fica no painel \"Histórico de imagens\" do detalhe do produto.",
         "A \"Categoria\" oferecida no cadastro vem de \"Cadastros › Categorias de produtos\" — é lá que se cria, altera ou inativa um grupo do catálogo.",
+        "Na importação por planilha a categoria é conferida contra esse mesmo cadastro: nome que não existir, ou categoria inativa, faz a LINHA SER RECUSADA na prévia, com o motivo e a lista das categorias válidas. Nada entra em \"Outros\" por engano — só a linha que vem com a categoria realmente em branco. A comparação ignora maiúsculas e acentos, e o produto é gravado com o nome exato do cadastro.",
         "Combine a busca por código/descrição com os filtros de fornecedor, status (ativo/inativo) e categoria — o contador dourado mostra quantos produtos correspondem (ex.: \"3 de 10 produto(s)\") e o botão \"✕ Limpar busca e filtros\" restaura a lista completa.",
         "Na lista \"Fornecedores / contratos\" só aparecem fornecedores ativos; use o campo \"Buscar fornecedor por nome…\" para filtrar e clique nos nomes para marcar ou desmarcar — todo produto precisa de ao menos um fornecedor vinculado.",
         "Inativar não exclui o produto: ele apenas sai do catálogo das revendas e pode ser reativado a qualquer momento pelo mesmo link.",
@@ -5449,7 +5450,8 @@ class Component extends DCLogic {
         "O nome da categoria é único (sem diferenciar maiúsculas de minúsculas); a plataforma recusa duplicidade.",
         "Renomear é seguro: a mudança propaga para todos os produtos daquela categoria em uma única operação, registrada na auditoria.",
         "O indicador \"Fora do cadastro\" aponta produtos com categorias antigas que não estão na lista — cadastre a categoria com o mesmo nome para trazê-la de volta ao controle.",
-        "Todas as ações (criação, alteração, inativação e reativação) ficam registradas em Segurança & Auditoria, no módulo Cadastros."
+        "Todas as ações (criação, alteração, inativação e reativação) ficam registradas em Segurança & Auditoria, no módulo Cadastros.",
+        "A planilha de produtos usa este cadastro como referência: se a categoria da linha não estiver aqui, ou estiver inativa, a linha é recusada na carga com o motivo. Cadastre a categoria ANTES de importar os produtos — a aba de instruções do modelo lista as categorias válidas no momento do download."
       ]
     },
     "inv": {
@@ -5989,7 +5991,7 @@ class Component extends DCLogic {
       ajuda:['Descrição é obrigatória. Deixe o "Código" em branco para a plataforma gerar (PRD-0NN); preenchido, ele identifica o produto — se já existir, a linha ATUALIZA o cadastro.',
              'Preço aceita 780,00 ou 780.00; em branco entra como 0,00 e pode ser ajustado depois.',
              '"Fornecedores" aceita nomes ou CNPJs já cadastrados, separados por ponto e vírgula — é o De/Para (RF56). Cadastre os fornecedores antes dos produtos.',
-             'Categoria precisa existir em Cadastros › Categorias de produtos; se não existir ou vier em branco, o produto fica em "Outros".',
+             'Categoria é conferida contra Cadastros › Categorias de produtos: nome que não existir no cadastro (ou categoria inativa) faz a LINHA SER RECUSADA na prévia, com o motivo — nada entra em "Outros" por engano. A comparação ignora maiúsculas e acentos. Em branco, o produto entra em "Outros". A aba de instruções lista as categorias válidas.',
              'A ficha técnica vem junto: NCM (8 dígitos), código de barras (GTIN/EAN de 8, 12, 13 ou 14 dígitos), pesos, dimensões, unidade de medida e observações. Campo em branco NÃO apaga o que já está cadastrado — deixa como está.',
              'Imagens: informe os endereços separados por ponto e vírgula (até 5). Vale um endereço https://, um caminho do próprio pacote (img/prd-1-1.png) ou um anexo já enviado (api/anexos/…). Em branco, as imagens atuais são mantidas; no produto novo, entram as imagens padrão.',
              '"Estoque na Loja (qtd)" lança a posição de estoque desses produtos: ao confirmar, a plataforma grava UM inventário novo com as quantidades informadas, preservando a contagem dos produtos que não vieram na planilha. Em branco, o estoque não é tocado.']},
@@ -6162,19 +6164,19 @@ class Component extends DCLogic {
         if(naoAchou.length) erros.push('fornecedor não cadastrado: '+naoAchou.join(', '));
         if(!fids.length&&!naoAchou.length) erros.push('informe ao menos um fornecedor');
         const jaTem=cod?S.produtos.find(x=>(x.codigo||'').toUpperCase()===cod):null;
-        const cat=this._impTxt(v.categoria);
-        const catOk=cat&&(S.categorias||[]).some(c=>c.nome.toLowerCase()===cat.toLowerCase());
+        const rc=this._impCategoria(v.categoria);
+        if(rc.erro) erros.push(rc.erro);
         out.chave=cod||'(gerar)'; out.rotulo=desc||'—';
         out.acao=erros.length?'erro':(jaTem?'atualiza':'novo'); out.alvoId=jaTem?jaTem.id:null;
-        out.detalhe=[catOk?cat:(cat?cat+' → Outros':'Outros'),this.fmt(preco),
-          fids.map(id=>this._fornNome(id)).join(', ')].filter(Boolean).join(' · ');
+        out.detalhe=[rc.nome?(rc.nome+(rc.padrao?' (categoria em branco)':'')):('categoria: '+(this._impTxt(v.categoria)||'em branco')),
+          this.fmt(preco),fids.map(id=>this._fornNome(id)).join(', ')].filter(Boolean).join(' · ');
         const fx=this._impFicha(v); fx.erros.forEach(e=>erros.push(e));
         if(erros.length) out.acao='erro';
         const extra=[Object.keys(fx.ficha).length?('ficha: '+Object.keys(fx.ficha).filter(k=>k!=='cubagem').length+' campo(s)'):'',
           fx.fotos?(fx.fotos.length+' imagem(ns)'):'',fx.estoque!=null?('estoque '+fx.estoque):''].filter(Boolean).join(' · ');
         if(extra) out.detalhe=out.detalhe+' · '+extra;
         out.dados={codigo:cod,descricao:desc,unidade:this._impTxt(v.unidade)||'Unidade',
-          categoria:catOk?(S.categorias.find(c=>c.nome.toLowerCase()===cat.toLowerCase()).nome):'Outros',
+          categoria:rc.nome||'Outros',
           preco,fornecedorIds:fids,ativo:this._impSim(v.ativo)!==false,
           ficha:fx.ficha,fotos:fx.fotos,estoque:fx.estoque};
       }
@@ -6199,6 +6201,10 @@ class Component extends DCLogic {
         ['3. Salve o arquivo e use "Carregar planilha preenchida" na tela de '+cfg.titulo+'.'],
         ['4. A plataforma mostra uma prévia linha a linha antes de gravar — nada é salvo sem a sua confirmação.'],['']];
       (cfg.ajuda||[]).forEach(a=>inst.push(['• '+a]));
+      if(tipo==='produto'){ const ativas=(this.state.categorias||[]).filter(c=>c.ativo!==false).map(c=>c.nome);
+        inst.push(['']); inst.push(['Categorias cadastradas — use exatamente um destes nomes na coluna "Categoria"']);
+        (ativas.length?ativas:['(nenhuma categoria cadastrada)']).forEach(n=>inst.push(['• '+n]));
+        inst.push(['Categoria fora desta lista faz a linha ser recusada na prévia, com o motivo. Em branco, o produto entra em "Outros".']); }
       inst.push(['']); inst.push(['Colunas']);
       cols.forEach(c=>inst.push([c.rot,c.obrig?'obrigatória':'opcional']));
       const wi=XLSX.utils.aoa_to_sheet(inst); wi['!cols']=[{wch:96},{wch:14}];
@@ -6236,6 +6242,25 @@ class Component extends DCLogic {
   _impInt(s){ const v=String(s==null?'':s).trim(); if(!v) return null;
     if(!/^\d+$/.test(v.replace(/\./g,''))) return NaN;
     return parseInt(v.replace(/\./g,''),10); }
+  // Categoria da planilha × cadastro de categorias. A comparação ignora
+  // maiúsculas e acentos, mas o produto é gravado com o nome exato do
+  // cadastro. Categoria que não existe (ou está inativa) é ERRO na linha:
+  // sem isso o produto entraria num grupo que a Loja não reconhece.
+  _catChave(s){ return String(s==null?'':s).trim().toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,''); }
+  _impCategoria(bruta){ const cats=this.state.categorias||[];
+    const txt=this._impTxt(bruta);
+    const achar=n=>cats.find(c=>this._catChave(c.nome)===this._catChave(n));
+    if(!txt){ // em branco cai em "Outros", desde que "Outros" exista e esteja ativa
+      const outros=achar('Outros');
+      if(outros&&outros.ativo!==false) return {nome:outros.nome,erro:null,padrao:true};
+      return {nome:null,erro:'categoria em branco e a categoria padrão "Outros" não está disponível — informe uma categoria cadastrada'}; }
+    const c=achar(txt);
+    if(!c) return {nome:null,erro:'categoria não cadastrada: "'+txt+'" — cadastre em Cadastros › Categorias de produtos ou use uma das existentes'
+      +(cats.length?(' ('+cats.filter(x=>x.ativo!==false).map(x=>x.nome).slice(0,6).join(', ')+')'):'')};
+    if(c.ativo===false) return {nome:null,erro:'categoria inativa: "'+c.nome+'" — reative o cadastro ou escolha outra categoria'};
+    return {nome:c.nome,erro:null,padrao:false}; }
+
   // Lê as colunas da ficha de uma linha: devolve {ficha,fotos,estoque,erros}.
   _impFicha(v){ const erros=[]; const ficha={}; let fotos=null, estoque=null;
     const ncmD=this._impDig(v.ncm);
