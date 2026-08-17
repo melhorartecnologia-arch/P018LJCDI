@@ -1024,7 +1024,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
           <div onClick="{{impAtuaisProd}}" title="Mesmo modelo, já preenchido com os cadastros existentes" style="border:1px solid #e5ddcd;color:#6b6459;background:#fff;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:#f7f3ea">⬇ Modelo com os cadastros atuais</div>
           <div onClick="{{impClicarProd}}" style="background:#272525;color:#fff;border-radius:8px;padding:8px 15px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="background:#3a3735">⬆ Carregar planilha preenchida…</div>
           <input id="imp-file-produto" type="file" accept=".xlsx,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv" onChange="{{impCarregarProd}}" style="display:none">
-          <div onClick="{{expProd}}" title="Baixar todos os registros deste cadastro em Excel" style="border:1px solid #cfd9ea;color:#33568f;background:#f2f5fb;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="background:#e7edf7">⬇ Exportar XLSX</div>
+          <div onClick="{{expProd}}" title="Baixar todos os registros deste cadastro em Excel — com as imagens dos produtos dentro do arquivo" style="border:1px solid #cfd9ea;color:#33568f;background:#f2f5fb;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="background:#e7edf7">⬇ Exportar XLSX</div>
         </div>
         <div style="font-size:11px;color:#b0a795;margin-top:9px">Nada é gravado sem a sua confirmação: a plataforma mostra linha a linha o que será incluído, o que será atualizado e o que tem erro. Até 500 linhas por carga · aceita .xlsx (recomendado) e CSV.</div>
       </div>
@@ -1938,7 +1938,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
       <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:14px 18px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap">
         <div>
           <div style="font-size:14px;font-weight:700;margin-bottom:2px">Exportar todos os cadastros</div>
-          <div style="font-size:12px;color:#8a8378">Uma pasta de trabalho com uma aba por cadastro — fornecedores, contratos, produtos, categorias, De/Para, revendas, usuários e estoque — mais um resumo com a contagem de cada um. Respeita as suas permissões.</div>
+          <div style="font-size:12px;color:#8a8378">Uma pasta de trabalho com uma aba por cadastro — fornecedores, contratos, produtos, categorias, De/Para, revendas, usuários e estoque — mais um resumo com a contagem de cada um. As imagens dos produtos vão dentro do arquivo, visíveis na própria planilha. Respeita as suas permissões.</div>
         </div>
         <div onClick="{{expTodos}}" title="Baixar a base completa em Excel" style="background:#272525;color:#fff;border-radius:9px;padding:10px 16px;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap;flex:none" style-hover="background:#3a3735">⬇ Exportar todos os cadastros</div>
       </div>
@@ -6440,6 +6440,168 @@ class Component extends DCLogic {
     inventario:{titulo:'inventário de estoque', aba:'Estoque', arquivo:'inventario-estoque',
       perm:'inventario.ver'}};
 
+  // ══ Imagens dentro da planilha ═══════════════════════════════════════════
+  // O Excel guarda imagem como uma parte do pacote .xlsx (xl/media) ancorada
+  // por um desenho (xl/drawings). A biblioteca de planilha que usamos não
+  // escreve essas partes, então geramos o arquivo normalmente e depois
+  // encartamos as imagens no próprio pacote — sem dependência nova.
+  XL_IMG_W=22;      // largura da coluna de imagem, em caracteres
+  XL_IMG_H=104;     // altura da linha com imagem, em pixels
+  XL_IMG_MAX=4;     // no máximo 4 colunas de imagem por produto
+  XL_IMG_PX=260;    // maior lado da imagem gravada no arquivo
+
+  _xlCrc(bytes){ let t=this._xlCrcT;
+    if(!t){ t=this._xlCrcT=new Int32Array(256);
+      for(let n=0;n<256;n++){ let c=n; for(let k=0;k<8;k++) c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1); t[n]=c; } }
+    let c=-1; for(let i=0;i<bytes.length;i++) c=(c>>>8)^t[(c^bytes[i])&0xFF];
+    return (c^-1)>>>0; }
+
+  // Lê o pacote: cada entrada volta com os bytes crus, para ser recopiada
+  // sem recompactar o que não mudou.
+  _xlZipLer(b){
+    const dv=new DataView(b.buffer,b.byteOffset,b.byteLength);
+    let eo=-1; const lim=Math.max(0,b.length-66000);
+    for(let i=b.length-22;i>=lim;i--) if(dv.getUint32(i,true)===0x06054b50){ eo=i; break; }
+    if(eo<0) throw new Error('pacote .xlsx sem diretório central');
+    const n=dv.getUint16(eo+10,true); let p=dv.getUint32(eo+16,true); const itens=[];
+    for(let k=0;k<n;k++){
+      if(dv.getUint32(p,true)!==0x02014b50) throw new Error('diretório central inválido');
+      const nl=dv.getUint16(p+28,true), el=dv.getUint16(p+30,true), cl=dv.getUint16(p+32,true);
+      const nome=new TextDecoder().decode(b.subarray(p+46,p+46+nl));
+      const lo=dv.getUint32(p+42,true);
+      const lnl=dv.getUint16(lo+26,true), lel=dv.getUint16(lo+28,true);
+      const ini=lo+30+lnl+lel, tc=dv.getUint32(p+20,true);
+      itens.push({nome,metodo:dv.getUint16(p+10,true),crc:dv.getUint32(p+16,true),
+        tc,to:dv.getUint32(p+24,true),dados:b.subarray(ini,ini+tc)});
+      p+=46+nl+el+cl; }
+    return itens; }
+
+  _xlZipEscrever(lista){
+    // [Content_Types].xml precisa ser a primeira entrada do pacote: é o que a
+    // norma OPC manda e o que o LibreOffice exige para abrir o arquivo.
+    const itens=[...lista].sort((a,b)=>(a.nome==='[Content_Types].xml'?0:1)-(b.nome==='[Content_Types].xml'?0:1));
+    const enc=new TextEncoder(); const partes=[]; const dir=[]; let off=0;
+    const u16=(a,i,v)=>{ a[i]=v&255; a[i+1]=(v>>>8)&255; };
+    const u32=(a,i,v)=>{ a[i]=v&255; a[i+1]=(v>>>8)&255; a[i+2]=(v>>>16)&255; a[i+3]=(v>>>24)&255; };
+    itens.forEach(it=>{
+      const nb=enc.encode(it.nome);
+      const lh=new Uint8Array(30+nb.length);
+      u32(lh,0,0x04034b50); u16(lh,4,20); u16(lh,6,0); u16(lh,8,it.metodo);
+      u16(lh,10,0); u16(lh,12,0x21); u32(lh,14,it.crc); u32(lh,18,it.tc); u32(lh,22,it.to);
+      u16(lh,26,nb.length); u16(lh,28,0); lh.set(nb,30);
+      const ch=new Uint8Array(46+nb.length);
+      u32(ch,0,0x02014b50); u16(ch,4,20); u16(ch,6,20); u16(ch,8,0); u16(ch,10,it.metodo);
+      u16(ch,12,0); u16(ch,14,0x21); u32(ch,16,it.crc); u32(ch,20,it.tc); u32(ch,24,it.to);
+      u16(ch,28,nb.length); u16(ch,30,0); u16(ch,32,0); u16(ch,34,0); u16(ch,36,0);
+      u32(ch,38,0); u32(ch,42,off); ch.set(nb,46);
+      partes.push(lh,it.dados); dir.push(ch); off+=lh.length+it.dados.length; });
+    const tamDir=dir.reduce((a,d)=>a+d.length,0);
+    const fim=new Uint8Array(22);
+    u32(fim,0,0x06054b50); u16(fim,8,itens.length); u16(fim,10,itens.length);
+    u32(fim,12,tamDir); u32(fim,16,off);
+    const todos=[...partes,...dir,fim];
+    const out=new Uint8Array(todos.reduce((a,x)=>a+x.length,0));
+    let q=0; todos.forEach(x=>{ out.set(x,q); q+=x.length; });
+    return out; }
+
+  // Busca a imagem, reduz para caber na célula e devolve os bytes JPEG.
+  // Reduzir é o que mantém a planilha leve mesmo com centenas de fotos.
+  async _xlImg(url){
+    try{
+      const r=await fetch(this._pdfUrl(url)); if(!r.ok) return null;
+      const bm=await createImageBitmap(await r.blob());
+      const k=Math.min(1,this.XL_IMG_PX/Math.max(bm.width,bm.height));
+      const w=Math.max(1,Math.round(bm.width*k)), h=Math.max(1,Math.round(bm.height*k));
+      const cv=document.createElement('canvas'); cv.width=w; cv.height=h;
+      const cx=cv.getContext('2d'); cx.fillStyle='#ffffff'; cx.fillRect(0,0,w,h); cx.drawImage(bm,0,0,w,h);
+      if(bm.close) bm.close();
+      const bl=await new Promise(ok=>cv.toBlob(ok,'image/jpeg',0.86)); if(!bl) return null;
+      return {bytes:new Uint8Array(await bl.arrayBuffer()),w,h,ext:'jpeg'};
+    }catch(e){ return null; } }
+
+  _xlEsc(s){ return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+  _xlDes(s){ return String(s==null?'':s).replace(/&quot;/g,'"').replace(/&apos;/g,"'")
+    .replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&'); }
+
+  // planos: [{aba, itens:[{col,lin,img,cel:{w,h},nome}]}] — col/lin base 0.
+  _xlEncartar(b,planos){
+    const NS='http://schemas.openxmlformats.org/officeDocument/2006/relationships';
+    const enc=new TextEncoder(), dec=new TextDecoder(), EMU=9525, MARG=5;
+    const itens=this._xlZipLer(b);
+    const acha=n=>itens.find(x=>x.nome===n);
+    const txt=n=>{ const e=acha(n); return e&&e.metodo===0?dec.decode(e.dados):null; };
+    const grava=(n,s)=>{ const d=enc.encode(s); const e=acha(n);
+      const novo={nome:n,metodo:0,crc:this._xlCrc(d),tc:d.length,to:d.length,dados:d};
+      if(e) Object.assign(e,novo); else itens.push(novo); };
+    const wbx=txt('xl/workbook.xml'), wrel=txt('xl/_rels/workbook.xml.rels');
+    if(!wbx||!wrel) return null;
+    const alvos={}; const mapa={};
+    (wrel.match(/<Relationship\b[^>]*>/g)||[]).forEach(r=>{
+      const id=(r.match(/Id="([^"]+)"/)||[])[1], tg=(r.match(/Target="([^"]+)"/)||[])[1];
+      if(id&&tg) mapa[id]=String(tg).replace(/^\/?(xl\/)?/,''); });
+    (wbx.match(/<sheet\b[^>]*>/g)||[]).forEach(s=>{
+      const nome=(s.match(/name="([^"]*)"/)||[])[1], rid=(s.match(/r:id="([^"]+)"/)||[])[1];
+      if(nome!=null&&mapa[rid]) alvos[this._xlDes(nome)]='xl/'+mapa[rid]; });
+    let nDes=0, nMid=0; const overrides=[];
+    planos.forEach(pl=>{
+      const arq=alvos[pl.aba]; if(!arq||!pl.itens||!pl.itens.length) return;
+      const sx=txt(arq); if(sx==null) return;
+      nDes++;
+      const desArq='xl/drawings/drawing'+nDes+'.xml';
+      const anc=[], rels=[];
+      pl.itens.forEach((it,i)=>{
+        nMid++; const mid='imagem'+nMid+'.'+it.img.ext;
+        const bts=it.img.bytes;
+        itens.push({nome:'xl/media/'+mid,metodo:0,crc:this._xlCrc(bts),tc:bts.length,to:bts.length,dados:bts});
+        rels.push('<Relationship Id="rId'+(i+1)+'" Type="'+NS+'/image" Target="../media/'+mid+'"/>');
+        const k=Math.min((it.cel.w-2*MARG)/it.img.w,(it.cel.h-2*MARG)/it.img.h,1);
+        const dw=Math.max(1,Math.round(it.img.w*k)), dh=Math.max(1,Math.round(it.img.h*k));
+        const ox=Math.max(0,Math.round((it.cel.w-dw)/2)), oy=Math.max(0,Math.round((it.cel.h-dh)/2));
+        anc.push('<xdr:oneCellAnchor>'
+          +'<xdr:from><xdr:col>'+it.col+'</xdr:col><xdr:colOff>'+(ox*EMU)+'</xdr:colOff>'
+          +'<xdr:row>'+it.lin+'</xdr:row><xdr:rowOff>'+(oy*EMU)+'</xdr:rowOff></xdr:from>'
+          +'<xdr:ext cx="'+(dw*EMU)+'" cy="'+(dh*EMU)+'"/>'
+          +'<xdr:pic><xdr:nvPicPr>'
+          +'<xdr:cNvPr id="'+nMid+'" name="'+this._xlEsc(it.nome||('Imagem '+nMid))+'" descr="'+this._xlEsc(it.desc||'')+'"/>'
+          +'<xdr:cNvPicPr><a:picLocks noChangeAspect="1"/></xdr:cNvPicPr></xdr:nvPicPr>'
+          +'<xdr:blipFill><a:blip r:embed="rId'+(i+1)+'"/><a:stretch><a:fillRect/></a:stretch></xdr:blipFill>'
+          +'<xdr:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="'+(dw*EMU)+'" cy="'+(dh*EMU)+'"/></a:xfrm>'
+          +'<a:prstGeom prst="rect"><a:avLst/></a:prstGeom></xdr:spPr>'
+          +'</xdr:pic><xdr:clientData/></xdr:oneCellAnchor>'); });
+      grava(desArq,'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        +'<xdr:wsDr xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing"'
+        +' xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"'
+        +' xmlns:r="'+NS+'">'+anc.join('')+'</xdr:wsDr>');
+      grava('xl/drawings/_rels/drawing'+nDes+'.xml.rels','<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        +'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'+rels.join('')+'</Relationships>');
+      const relArq=arq.replace(/([^/]+)$/,'_rels/$1.rels');
+      const rid='rIdDes'+nDes; const alvoRel='<Relationship Id="'+rid+'" Type="'+NS+'/drawing" Target="../drawings/drawing'+nDes+'.xml"/>';
+      const rr=txt(relArq);
+      grava(relArq, rr ? rr.replace('</Relationships>',alvoRel+'</Relationships>')
+        : '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+          +'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'+alvoRel+'</Relationships>');
+      grava(arq, sx.replace(/<\/worksheet>\s*$/,'<drawing r:id="'+rid+'"/></worksheet>'));
+      overrides.push('<Override PartName="/'+desArq+'" ContentType="application/vnd.openxmlformats-officedocument.drawing+xml"/>'); });
+    if(!overrides.length) return null;
+    const ct=txt('[Content_Types].xml'); if(ct==null) return null;
+    grava('[Content_Types].xml',ct.replace('</Types>',overrides.join('')+'</Types>'));
+    return this._xlZipEscrever(itens); }
+
+  // Escreve o arquivo: gera o pacote, encarta as imagens e entrega o download.
+  async _xlBaixar(wb,nome,planos){
+    const buf=XLSX.write(wb,{bookType:'xlsx',type:'array',compression:false});
+    let saida=new Uint8Array(buf);
+    try{
+      // com imagens, reescreve o pacote com elas dentro; sem imagens, ainda
+      // assim reordena as entradas para o arquivo abrir em qualquer leitor
+      const com=(planos&&planos.length)?this._xlEncartar(saida,planos):this._xlZipEscrever(this._xlZipLer(saida));
+      if(com) saida=com;
+    }catch(e){ console.warn('não foi possível reescrever o pacote da planilha',e); saida=new Uint8Array(buf); }
+    const bl=new Blob([saida],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(bl); a.download=nome;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href),8000); }
+
   // Devolve {cols:[{rot,larg}], linhas:[[...]]} para o cadastro pedido.
   _expDados(tipo){
     const S=this.state;
@@ -6466,14 +6628,18 @@ class Component extends DCLogic {
     }
     if(tipo==='produto'){
       const invP=this._invAtual();
+      const nImg=Math.min(this.XL_IMG_MAX,Math.max(1,...S.produtos.map(p=>this.fotosDe(p).length)));
       const cols=[C('Código',14),C('Descrição',40),C('Unidade',14),C('Categoria',18),C('Preço estimado (R$)',18),
         C('Fornecedores',44),C('Nº de fornecedores',18),C('Situação',12),
         // ficha técnica — os mesmos campos da complementação cadastral
         C('NCM',16),C('Código de barras (GTIN/EAN)',26),C('Peso bruto (kg)',18),C('Peso líquido (kg)',18),
         C('Altura (cm)',14),C('Largura (cm)',14),C('Comprimento (cm)',18),C('Cubagem (m³)',15),
         C('Unidade de medida',20),C('Observações da ficha',44),C('Ficha completa',15),
-        // imagens e posição de estoque
-        C('Imagens (qtd)',14),C('Imagens (endereços separados por ;)',52),
+        // imagens e posição de estoque — as fotos vão dentro do arquivo, uma
+        // coluna por imagem; os endereços continuam ao lado para a reimportação
+        C('Imagens (qtd)',14),
+        ...Array.from({length:nImg},(_,i)=>C('Imagem '+(i+1),this.XL_IMG_W)),
+        C('Imagens (endereços separados por ;)',52),
         C('Estoque na Loja',18),C('Atendido desde o lançamento',26),C('Data do inventário',18),
         C('Vendido (qtd)',14),C('Vendido (R$)',15)];
       const linhas=S.produtos.map(p=>{ const v=this._expVendas(p.id); const sp=this._saldoProduto(p.id); const fi=this._ficha(p);
@@ -6484,11 +6650,11 @@ class Component extends DCLogic {
           fi.ncm||'',fi.ean||'',fi.pesoBruto??'',fi.pesoLiquido??'',
           fi.altura??'',fi.largura??'',fi.comprimento??'',fi.cubagem??'',
           fi.unidadeMedida||'',fi.obs||'',this._expSN(this._fichaCompleta(p)),
-          fotos.length,fotos.join('; '),
+          fotos.length,...Array.from({length:nImg},(_,i)=>fotos[i]||''),fotos.join('; '),
           sp.temInv?sp.saldo:'— sem inventário —',sp.temInv?sp.consumido:'',
           invP?invP.data:'— sem inventário lançado —',
           v.q,Math.round(v.v*100)/100];});
-      return {cols,linhas};
+      return {cols,linhas,imgCols:{ini:cols.findIndex(c=>c.rot==='Imagem 1'),n:nImg}};
     }
     if(tipo==='categoria'){
       const cols=[C('Nome',26),C('Descrição',54),C('Situação',12),C('Produtos',12),C('Produtos ativos',15),
@@ -6533,46 +6699,78 @@ class Component extends DCLogic {
     return {cols,linhas};
   }
 
-  _expAba(wb,tipo){ const cfg=this.EXPORTS[tipo]; const {cols,linhas}=this._expDados(tipo);
+  async _expAba(wb,tipo,planos){ const cfg=this.EXPORTS[tipo]; const {cols,linhas,imgCols}=this._expDados(tipo);
     const aoa=[cols.map(c=>c.rot),...linhas];
+    const comImg=!!(imgCols&&imgCols.n&&imgCols.ini>=0);
+    if(comImg){
+      // a célula guarda o endereço só até a imagem chegar; depois fica em branco
+      // e a foto ocupa o lugar. Imagem que não veio deixa o aviso no lugar.
+      const cel={w:Math.round(this.XL_IMG_W*7)+5,h:this.XL_IMG_H};
+      const pend=[];
+      for(let r=1;r<aoa.length;r++) for(let c=imgCols.ini;c<imgCols.ini+imgCols.n;c++)
+        if(aoa[r][c]) pend.push({r,c,url:aoa[r][c]});
+      const itens=[];
+      for(let i=0;i<pend.length;i+=8){
+        const lote=pend.slice(i,i+8);
+        const imgs=await Promise.all(lote.map(x=>this._xlImg(x.url)));
+        lote.forEach((x,j)=>{ const img=imgs[j];
+          aoa[x.r][x.c]=img?'':'— imagem indisponível —';
+          if(img) itens.push({col:x.c,lin:x.r,img,cel,
+            nome:'Imagem '+(x.c-imgCols.ini+1)+' — '+String(aoa[x.r][0]||''),desc:String(x.url)}); }); }
+      if(itens.length&&planos) planos.push({aba:cfg.aba,itens});
+    }
     const ws=XLSX.utils.aoa_to_sheet(aoa);
     ws['!cols']=cols.map(c=>({wch:c.larg}));
+    if(comImg) ws['!rows']=[{hpx:24},...linhas.map(()=>({hpx:this.XL_IMG_H}))];
     ws['!autofilter']={ref:XLSX.utils.encode_range({s:{r:0,c:0},e:{r:Math.max(1,aoa.length-1),c:cols.length-1}})};
     ws['!freeze']={xSplit:0,ySplit:1};
     XLSX.utils.book_append_sheet(wb,ws,cfg.aba);
     return linhas.length; }
 
-  exportarCadastro(tipo){ this._exc=this._exc||{}; if(!this._exc[tipo]) this._exc[tipo]=()=>{
+  exportarCadastro(tipo){ this._exc=this._exc||{}; if(!this._exc[tipo]) this._exc[tipo]=async()=>{
     const cfg=this.EXPORTS[tipo];
     if(!this.pode(cfg.perm)) return this.negado('Você não tem permissão para exportar '+cfg.titulo+'.',cfg.perm);
     if(typeof XLSX==='undefined') return alert('Componente de planilha não carregado — recarregue a página.');
-    const wb=XLSX.utils.book_new();
-    const n=this._expAba(wb,tipo);
-    const d=new Date(); const carimbo=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-    XLSX.writeFile(wb,'cidade-imperial-'+cfg.arquivo+'-'+carimbo+'.xlsx');
-    this.audit('Exportação de cadastro',cfg.titulo+' · '+n+' registro(s) · .xlsx');
-    this.toast(n+' registro(s) de '+cfg.titulo+' exportado(s) para Excel.','ok'); }; return this._exc[tipo]; }
+    if(this._expBusy) return; this._expBusy=true;
+    try{
+      if(tipo==='produto') this.toast('Montando a planilha com as imagens dos produtos…','ok');
+      const wb=XLSX.utils.book_new(); const planos=[];
+      const n=await this._expAba(wb,tipo,planos);
+      const d=new Date(); const carimbo=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+      const nImgs=planos.reduce((a,pl)=>a+pl.itens.length,0);
+      await this._xlBaixar(wb,'cidade-imperial-'+cfg.arquivo+'-'+carimbo+'.xlsx',planos);
+      this.audit('Exportação de cadastro',cfg.titulo+' · '+n+' registro(s)'+(nImgs?' · '+nImgs+' imagem(ns) embutida(s)':'')+' · .xlsx');
+      this.toast(n+' registro(s) de '+cfg.titulo+' exportado(s) para Excel'
+        +(nImgs?' com '+nImgs+' imagem(ns) dentro do arquivo.':'.'),'ok');
+    } finally { this._expBusy=false; } }; return this._exc[tipo]; }
 
   // Pasta única com uma aba por cadastro — a fotografia completa da base.
-  exportarTodosCadastros=()=>{
+  exportarTodosCadastros=async()=>{
     if(!this.pode('relatorios.exportar')) return this.negado('Você não tem permissão para exportar.','relatorios.exportar');
     if(typeof XLSX==='undefined') return alert('Componente de planilha não carregado — recarregue a página.');
-    const wb=XLSX.utils.book_new(); const resumo=[];
-    Object.keys(this.EXPORTS).forEach(tipo=>{ if(!this.pode(this.EXPORTS[tipo].perm)) return;
-      const n=this._expAba(wb,tipo); resumo.push([this.EXPORTS[tipo].titulo,this.EXPORTS[tipo].aba,n]); });
-    if(!resumo.length) return this.negado('Você não tem permissão para exportar nenhum cadastro.','relatorios.exportar');
-    const ws=XLSX.utils.aoa_to_sheet([['Exportação de cadastros — Plataforma Cidade Imperial'],
-      ['Gerado em',this.ts()],['Usuário',this.userName()],[],
-      ['Cadastro','Aba','Registros'],...resumo]);
-    ws['!cols']=[{wch:34},{wch:16},{wch:12}];
-    XLSX.utils.book_append_sheet(wb,ws,'Resumo');
-    // move o resumo para a frente
-    wb.SheetNames=['Resumo',...wb.SheetNames.filter(n2=>n2!=='Resumo')];
-    const d=new Date(); const carimbo=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-    XLSX.writeFile(wb,'cidade-imperial-cadastros-'+carimbo+'.xlsx');
-    const tot=resumo.reduce((a,r)=>a+r[2],0);
-    this.audit('Exportação de todos os cadastros',resumo.length+' cadastro(s) · '+tot+' registro(s) · .xlsx');
-    this.toast('Exportados '+resumo.length+' cadastros ('+tot+' registros) em uma pasta de trabalho.','ok'); };
+    if(this._expBusy) return; this._expBusy=true;
+    try{
+      this.toast('Montando a pasta de trabalho com as imagens dos produtos…','ok');
+      const wb=XLSX.utils.book_new(); const resumo=[]; const planos=[];
+      for(const tipo of Object.keys(this.EXPORTS)){ if(!this.pode(this.EXPORTS[tipo].perm)) continue;
+        const n=await this._expAba(wb,tipo,planos); resumo.push([this.EXPORTS[tipo].titulo,this.EXPORTS[tipo].aba,n]); }
+      if(!resumo.length) return this.negado('Você não tem permissão para exportar nenhum cadastro.','relatorios.exportar');
+      const ws=XLSX.utils.aoa_to_sheet([['Exportação de cadastros — Plataforma Cidade Imperial'],
+        ['Gerado em',this.ts()],['Usuário',this.userName()],[],
+        ['Cadastro','Aba','Registros'],...resumo]);
+      ws['!cols']=[{wch:34},{wch:16},{wch:12}];
+      XLSX.utils.book_append_sheet(wb,ws,'Resumo');
+      // move o resumo para a frente
+      wb.SheetNames=['Resumo',...wb.SheetNames.filter(n2=>n2!=='Resumo')];
+      const d=new Date(); const carimbo=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+      const nImgs=planos.reduce((a,pl)=>a+pl.itens.length,0);
+      await this._xlBaixar(wb,'cidade-imperial-cadastros-'+carimbo+'.xlsx',planos);
+      const tot=resumo.reduce((a,r)=>a+r[2],0);
+      this.audit('Exportação de todos os cadastros',resumo.length+' cadastro(s) · '+tot+' registro(s)'
+        +(nImgs?' · '+nImgs+' imagem(ns) embutida(s)':'')+' · .xlsx');
+      this.toast('Exportados '+resumo.length+' cadastros ('+tot+' registros)'
+        +(nImgs?' com '+nImgs+' imagem(ns) dentro do arquivo.':' em uma pasta de trabalho.'),'ok');
+    } finally { this._expBusy=false; } };
 
 
   // ══ Documento do pedido em PDF ═══════════════════════════════════════════
