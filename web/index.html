@@ -24,6 +24,19 @@ input::placeholder,textarea::placeholder{color:#b0a795}
 @keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @keyframes ajPulse{0%,100%{box-shadow:0 0 0 3px rgba(179,131,53,.5),0 0 0 9999px rgba(16,14,11,.4)}50%{box-shadow:0 0 0 7px rgba(255,210,122,.65),0 0 0 9999px rgba(16,14,11,.4)}}
 @keyframes ajSpin{to{transform:rotate(360deg)}}
+/* Meus pedidos da revenda — a tabela precisa caber sem cortar o Status:
+   em tela estreita ela aperta os respiros e recolhe as miniaturas dos itens,
+   que são decorativas; a contagem "N itens" continua na coluna. */
+@media (max-width:1300px){
+  table[data-tped-rev]{min-width:0 !important}
+  table[data-tped-rev] th,table[data-tped-rev] td{padding-left:9px !important;padding-right:9px !important}
+  table[data-tped-rev] th[data-col],table[data-tped-rev] td[data-col]{width:auto !important}
+  table[data-tped-rev] [data-fotos]{display:none !important}
+  table[data-tped-rev] [data-itensn]{margin-left:0 !important}
+}
+@media (max-width:1010px){
+  table[data-tped-rev] th,table[data-tped-rev] td{padding-left:6px !important;padding-right:6px !important}
+}
 </style>
 </helmet>
 <sc-if value="{{sLogin}}" hint-placeholder-val="{{false}}">
@@ -2790,24 +2803,24 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <sc-for list="{{etapaOpts}}" as="o" hint-placeholder-count="3"><option value="{{o.v}}">{{o.label}}</option></sc-for>
       </select>
     </div>
-    <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;overflow:hidden">
-      <table style="width:100%;border-collapse:collapse">
+    <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;overflow-x:auto">
+      <table data-tped-rev style="width:100%;border-collapse:collapse;min-width:960px">
         <thead><tr>
           <th style="text-align:left;padding:10px 18px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Pedido</th>
-          <th style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Itens</th>
-          <th style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Fornecedor (faturamento)</th>
-          <th style="text-align:right;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Total</th>
-          <th style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Conversa</th>
-          <th style="text-align:left;padding:10px 18px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Status</th>
+          <th data-col="itens" style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2;width:118px">Itens</th>
+          <th data-col="forn" style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2;width:210px">Fornecedor (faturamento)</th>
+          <th style="text-align:right;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2;width:112px;white-space:nowrap">Total</th>
+          <th style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2;width:104px">Conversa</th>
+          <th style="text-align:left;padding:10px 18px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2;width:214px">Status</th>
         </tr></thead>
         <tbody>
           <sc-for list="{{rPedRows}}" as="p" hint-placeholder-count="3">
             <tr>
               <td style="padding:11px 18px;font-size:13px;font-weight:600;border-bottom:1px solid #f5f1e8">{{p.id}}<div style="font-size:11px;font-weight:400;color:#a89f90">{{p.data}}</div>
-                <div style="font-size:10px;font-weight:600;color:#8f682a;margin-top:3px;white-space:nowrap">{{p.etapaTxt}}</div>
+                <div style="font-size:10px;font-weight:600;color:#8f682a;margin-top:3px">{{p.etapaTxt}}</div>
                 <sc-if value="{{p.revTag}}" hint-placeholder-val="{{false}}"><div style="margin-top:3px"><span style="font-size:10px;font-weight:700;color:#5d3f96;background:#f3eefa;border:1px solid #ddd0ee;border-radius:6px;padding:1px 7px;white-space:nowrap">🏪 {{p.revTag}}</span></div></sc-if>
                 <div onClick="{{p.pdfFn}}" title="Gerar o documento completo do pedido em PDF" style="display:inline-flex;align-items:center;gap:4px;margin-top:5px;border:1px solid #ddd5c7;background:#fff;color:#6b6459;border-radius:7px;padding:3px 8px;font-size:10.5px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="background:#f7f3ea">&#128196; PDF</div></td>
-              <td style="padding:11px 10px;border-bottom:1px solid #f5f1e8"><div style="display:flex;align-items:center"><sc-for list="{{p.fotos}}" as="ft" hint-placeholder-count="0"><sc-if value="{{ft.src}}" hint-placeholder-val="{{false}}"><img loading="lazy" src="{{ft.src}}" alt="item" onClick="{{ft.ver}}" title="Clique para ampliar" style="width:32px;height:32px;object-fit:cover;border-radius:8px;border:2px solid #fff;margin-right:-8px;box-shadow:0 1px 3px rgba(39,37,37,.18);cursor:zoom-in"></sc-if></sc-for><span style="font-size:12px;color:#8a8378;margin-left:16px;white-space:nowrap">{{p.itensN}}</span></div></td>
+              <td data-col="itens" style="padding:11px 10px;border-bottom:1px solid #f5f1e8"><div style="display:flex;align-items:center"><sc-for list="{{p.fotos}}" as="ft" hint-placeholder-count="0"><sc-if value="{{ft.src}}" hint-placeholder-val="{{false}}"><img data-fotos loading="lazy" src="{{ft.src}}" alt="item" onClick="{{ft.ver}}" title="Clique para ampliar" style="width:32px;height:32px;object-fit:cover;border-radius:8px;border:2px solid #fff;margin-right:-8px;box-shadow:0 1px 3px rgba(39,37,37,.18);cursor:zoom-in"></sc-if></sc-for><span data-itensn style="font-size:12px;color:#8a8378;margin-left:16px;white-space:nowrap">{{p.itensN}}</span></div></td>
               <td style="padding:11px 10px;font-size:13px;border-bottom:1px solid #f5f1e8">{{p.fornNome}}
                 <sc-if value="{{p.temFatDocs}}" hint-placeholder-val="{{false}}">
                   <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px">
@@ -2829,14 +2842,14 @@ input::placeholder,textarea::placeholder{color:#b0a795}
                   <div title="O frete é responsabilidade do fornecedor — ele precisa informar a transportadora, o código e o link de rastreio" style="display:inline-block;font-size:10.5px;font-weight:700;color:#8a5a12;background:#fdf6e7;border:1px solid #f0e2c4;border-radius:6px;padding:2px 8px;margin-top:5px">&#128666; Rastreio pendente</div>
                 </sc-if>
               </td>
-              <td style="padding:11px 10px;font-size:13px;font-weight:600;text-align:right;border-bottom:1px solid #f5f1e8">{{p.totalFmt}}</td>
+              <td style="padding:11px 10px;font-size:13px;font-weight:600;text-align:right;border-bottom:1px solid #f5f1e8;white-space:nowrap">{{p.totalFmt}}</td>
               <td style="padding:11px 10px;border-bottom:1px solid #f5f1e8">
                 <div onClick="{{p.chatFn}}" title="{{p.chatTitulo}}" style="display:inline-flex;align-items:center;gap:5px;border:1px solid {{p.chatBd}};background:{{p.chatBg}};color:{{p.chatFg}};border-radius:8px;padding:4px 9px;font-size:11.5px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="filter:brightness(.97)">&#128172; {{p.chatBtn}}</div>
               </td>
               <td style="padding:11px 18px;border-bottom:1px solid #f5f1e8">
                 <span style="font-size:11.5px;font-weight:600;border-radius:7px;padding:3px 9px;background:{{p.stBg}};color:{{p.stFg}};white-space:nowrap">{{p.stLabel}}</span>
-                <sc-if value="{{p.temAceite}}" hint-placeholder-val="{{false}}"><div onClick="{{p.aprovarNeg}}" style="display:inline-block;background:#B38335;color:#fff;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px;white-space:nowrap" style-hover="background:#9a6f2b">Aprovação comercial…</div></sc-if>
-<sc-if value="{{p.podeReceb}}" hint-placeholder-val="{{false}}"><div onClick="{{p.recebFn}}" title="Confirmar que o material do pedido foi recebido" style="display:inline-block;background:#2f6b39;color:#fff;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px;white-space:nowrap" style-hover="background:#265730">&#10003; Confirmar recebimento…</div></sc-if>
+                <sc-if value="{{p.temAceite}}" hint-placeholder-val="{{false}}"><div onClick="{{p.aprovarNeg}}" style="display:inline-block;background:#B38335;color:#fff;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px" style-hover="background:#9a6f2b">Aprovação comercial…</div></sc-if>
+<sc-if value="{{p.podeReceb}}" hint-placeholder-val="{{false}}"><div onClick="{{p.recebFn}}" title="Confirmar que o material do pedido foi recebido" style="display:inline-block;background:#2f6b39;color:#fff;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px" style-hover="background:#265730">&#10003; Confirmar recebimento…</div></sc-if>
                 <sc-if value="{{p.temReceb}}" hint-placeholder-val="{{false}}"><div title="{{p.recebTitulo}}" style="display:inline-block;font-size:10.5px;font-weight:700;border-radius:6px;padding:2px 8px;background:#e9f3ea;color:#2f6b39;margin-top:6px;white-space:nowrap">&#10003; {{p.recebSelo}}</div></sc-if>
                 <sc-if value="{{p.temJustif}}" hint-placeholder-val="{{false}}"><div style="font-size:11.5px;color:#a33a2b;margin-top:3px">{{p.justificativa}}</div></sc-if>
               </td>
