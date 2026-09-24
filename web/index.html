@@ -3277,7 +3277,8 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <select value="{{form.categoria}}" onChange="{{fxCategoria}}" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525;cursor:pointer">
           <sc-for list="{{catOpts}}" as="o" hint-placeholder-count="5"><option value="{{o.v}}">{{o.label}}</option></sc-for>
         </select>
-        <sc-if value="{{catSemAtiva}}" hint-placeholder-val="{{false}}"><div style="font-size:10.5px;color:#a33a2b;margin-top:4px;line-height:1.45">Nenhuma categoria ativa — cadastre em Cadastros › Categorias de produtos.</div></sc-if></div>
+        <sc-if value="{{podeCategorias}}" hint-placeholder-val="{{true}}"><div onClick="{{irCategorias}}" title="Abre Cadastros › Categorias de produtos, onde se cria, renomeia e inativa categoria — o formulário do produto será fechado" style="font-size:10.5px;font-weight:700;color:#8f682a;cursor:pointer;margin-top:5px;line-height:1.4" style-hover="color:#B38335">Gerenciar categorias →</div></sc-if>
+        <sc-if value="{{catSemAtiva}}" hint-placeholder-val="{{false}}"><div onClick="{{irCategorias}}" style="font-size:10.5px;color:#a33a2b;margin-top:4px;line-height:1.45;cursor:pointer;text-decoration:underline">Nenhuma categoria ativa — cadastre em Cadastros › Categorias de produtos.</div></sc-if></div>
         <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Preço estimado (R$)</div>
         <input value="{{form.preco}}" onChange="{{fxPreco}}" placeholder="0,00" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
       </div>
@@ -4788,6 +4789,13 @@ class Component extends DCLogic {
   _telTxt(v){ return (v&&v!=='—')?(' · 📞 '+v):''; }
   open(m,seed){ return (e)=>{ if(e&&e.stopPropagation) e.stopPropagation(); this.setState({modal:m,form:seed?{...seed}:{}}); }; }
   mClose=()=>{ this._ajudaStop(); this.setState({modal:null,form:{},pendVenc:null,ajudaPlay:false}); };
+  // Atalho do campo Categoria do produto para o cadastro que alimenta a lista.
+  // Fecha o formulário porque a tela de categorias substitui a de produtos.
+  irCategorias=()=>{ if(!this.pode('cadastros.produtos'))
+      return this.negado('Você não tem permissão para gerenciar categorias.','cadastros.produtos');
+    this._ajudaStop();
+    this.setState({modal:null,form:{},pendVenc:null,ajudaPlay:false,
+      scr:'grupos',selPed:null,selCot:null,selForn:null}); };
   // ── Configurações Técnicas › Configuração de e-mail (SMTP) ──────────────
   _flushPersist(){ clearTimeout(this._persistTimer); this._persist(); }
   setCfg(f){ this._scf=this._scf||{}; if(!this._scf[f]) this._scf[f]=e=>{ const v=e.target.value; this.setState(s=>({configEmail:{...s.configEmail,[f]:v},cfgMsg:null})); }; return this._scf[f]; }
@@ -9950,6 +9958,7 @@ class Component extends DCLogic {
       lbPrev:this.lbNav(-1),lbNext:this.lbNav(1),lbClose:this.lbClose,
       // modals
       form:S.form,mClose:this.mClose,
+      irCategorias:this.irCategorias,podeCategorias:this.role==='loja'&&this.pode('cadastros.produtos'),
       fxNome:this.fx('nome'),fxCnpj:this.fx('cnpj'),fxCidade:this.fx('cidade'),fxContato:this.fx('contato'),
       fxRoyalty:this.fx('royalty'),fxInicio:this.fxData('inicio'),fxFim:this.fxData('fim'),fxFornecedorId:this.fx('fornecedorId'),fxRevendaId:this.fx('revendaId'),
       fxCodigo:this.fx('codigo'),fxDescricao:this.fx('descricao'),fxUnidade:this.fx('unidade'),fxPreco:this.fx('preco'),fxBuscaForn:this.fx('buscaForn'),fxTelefone:this.fxTelefone,fxContatoNome:this.fx('contatoNome'),fxCategoria:this.fx('categoria'),
