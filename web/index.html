@@ -37,6 +37,15 @@ input::placeholder,textarea::placeholder{color:#b0a795}
 @media (max-width:1010px){
   table[data-tped-rev] th,table[data-tped-rev] td{padding-left:6px !important;padding-right:6px !important}
 }
+/* Usuários e permissões — mesma regra: em tela estreita aperta os respiros e
+   deixa as colunas comprimirem, para "Dados de acesso" e "Situação" não
+   sumirem cortadas. Acima disso as larguras valem e o e-mail cabe numa linha. */
+@media (max-width:1400px){
+  table[data-tusr]{min-width:0 !important}
+  table[data-tusr] th,table[data-tusr] td{padding-left:8px !important;padding-right:8px !important}
+  table[data-tusr] th[style*="width"]{width:auto !important}
+  table[data-tusr] [data-envchip]{white-space:normal !important}
+}
 </style>
 </helmet>
 <sc-if value="{{sLogin}}" hint-placeholder-val="{{false}}">
@@ -2999,21 +3008,21 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <sc-for list="{{papelOpts}}" as="o" hint-placeholder-count="4"><option value="{{o.v}}">{{o.label}}</option></sc-for>
       </select>
     </div>
-    <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;overflow:hidden">
-      <table style="width:100%;border-collapse:collapse">
+    <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;overflow-x:auto">
+      <table data-tusr style="width:100%;border-collapse:collapse;min-width:1020px">
         <thead><tr>
-          <th style="text-align:left;padding:10px 18px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Usuário</th>
-          <th style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Perfil</th>
-          <th style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Vínculo</th>
-          <th style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Permissões</th>
-          <th style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Dados de acesso</th>
-          <th style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Último acesso</th>
-          <th style="text-align:left;padding:10px 18px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2">Situação</th>
+          <th style="text-align:left;padding:10px 18px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2;width:250px">Usuário</th>
+          <th style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2;width:110px">Perfil</th>
+          <th style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2;width:140px">Vínculo</th>
+          <th style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2;width:125px">Permissões</th>
+          <th style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2;width:200px">Dados de acesso</th>
+          <th style="text-align:left;padding:10px 10px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2;width:105px">Último acesso</th>
+          <th style="text-align:left;padding:10px 18px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #f1ece2;width:115px">Situação</th>
         </tr></thead>
         <tbody>
           <sc-for list="{{usrRows}}" as="u" hint-placeholder-count="5">
             <tr>
-              <td style="padding:11px 18px;border-bottom:1px solid #f5f1e8"><div style="font-size:13px;font-weight:600">{{u.nome}}<sc-if value="{{u.souEu}}" hint-placeholder-val="{{false}}"><span style="font-size:10px;font-weight:700;color:#8a5a12;background:#fdf3e0;border-radius:6px;padding:1px 6px;margin-left:7px">você</span></sc-if></div><div style="font-size:11.5px;color:#a89f90">{{u.email}}</div></td>
+              <td style="padding:11px 18px;border-bottom:1px solid #f5f1e8;overflow-wrap:anywhere"><div style="font-size:13px;font-weight:600">{{u.nome}}<sc-if value="{{u.souEu}}" hint-placeholder-val="{{false}}"><span style="font-size:10px;font-weight:700;color:#8a5a12;background:#fdf3e0;border-radius:6px;padding:1px 6px;margin-left:7px">você</span></sc-if></div><div style="font-size:11.5px;color:#a89f90">{{u.email}}</div></td>
               <td style="padding:11px 10px;font-size:12.5px;border-bottom:1px solid #f5f1e8">{{u.papelLabel}}</td>
               <td style="padding:11px 10px;font-size:12.5px;color:#8a8378;border-bottom:1px solid #f5f1e8">{{u.vinculo}}</td>
               <td style="padding:11px 10px;border-bottom:1px solid #f5f1e8">
@@ -3021,7 +3030,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
               </td>
               <td style="padding:11px 10px;border-bottom:1px solid #f5f1e8">
                 <div style="display:flex;align-items:center;gap:7px">
-                  <div onClick="{{u.verEnvios}}" title="Ver o histórico de envios de acesso deste usuário" style="display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;color:{{u.envFg}};border:1px solid {{u.envBd}};background:{{u.envBg}};border-radius:8px;padding:4px 9px;cursor:pointer;white-space:nowrap">✉ {{u.envTxt}}</div>
+                  <div onClick="{{u.verEnvios}}" title="{{u.envTitulo}}" style="display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;color:{{u.envFg}};border:1px solid {{u.envBd}};background:{{u.envBg}};border-radius:8px;padding:4px 9px;cursor:pointer;white-space:nowrap" data-envchip>✉ {{u.envTxt}}</div>
                   <span onClick="{{u.enviarAcesso}}" title="Redefinir a senha inicial e enviar os dados de acesso por e-mail" style="font-size:11.5px;font-weight:600;color:#8f682a;cursor:pointer;padding:3px 4px;white-space:nowrap">Enviar</span>
                 </div>
               </td>
@@ -8331,6 +8340,13 @@ class Component extends DCLogic {
   ENV_ST={enviando:['#fdf3e0','#8a5a12','Enviando…'],enviado:['#e9f3ea','#2f6b39','Enviado'],
     nao_enviado:['#efedea','#6b665e','Não enviado'],falha:['#fbeae7','#a33a2b','Falha no envio']};
   _envChip(st){ const c=this.ENV_ST[st]||this.ENV_ST.nao_enviado; return {eBg:c[0],eFg:c[1],eLabel:c[2]}; }
+  // Cor da etiqueta de "Dados de acesso": vale o resultado do ÚLTIMO envio.
+  // Verde só quando a última tentativa saiu de fato.
+  ENV_COR={enviado:['#eef4ee','#2f6b39','#cfe0d1'],enviando:['#fdf3e0','#8a5a12','#e6cf9e'],
+    nao_enviado:['#fdf3e0','#8a5a12','#e6cf9e'],falha:['#fbeae7','#a33a2b','#e7c4bc'],
+    nenhum:['#faf7f0','#a89f90','#e8e1d2']};
+  _envCor(ult){ const c=this.ENV_COR[(ult&&ult.status)||'nenhum']||this.ENV_COR.nenhum;
+    return {envBg:c[0],envFg:c[1],envBd:c[2]}; }
   _gerarSenha(){ const mai='ABCDEFGHJKLMNPQRSTUVWXYZ',min='abcdefghijkmnopqrstuvwxyz',dig='23456789';
     const pick=s=>s[Math.floor(Math.random()*s.length)];
     return pick(mai)+Array.from({length:4},()=>pick(min)).join('')+Array.from({length:3},()=>pick(dig)).join(''); }
@@ -9633,13 +9649,14 @@ class Component extends DCLogic {
       .map(u=>{ const nOver=Object.keys(u.permissoes||{}).length;
         const vinculo=u.papel==='fornecedor'?(F(u.fornecedorId).nome||'—'):(u.papel==='revenda'?(this._minhasRevs(u).map(r2=>R(r2).nome).join(' · ')||'—'):'—');
         const envs=u.enviosAcesso||[]; const ult=envs[0];
-        const envOk=envs.filter(e=>e.status==='enviado').length;
         return {id:u.id,nome:u.nome,email:u.email,papelLabel:this.PAPEIS[u.papel]||u.papel,vinculo,
           ...this.chip(u.ativo?'ativo':'inativo'),ultimo:u.ultimoAcesso||'— nunca acessou —',
-          envTxt:envs.length?(envs.length+' envio(s)'+(ult&&ult.status!=='enviado'?' · '+this._envChip(ult.status).eLabel.toLowerCase():'')):'nunca enviado',
-          envBg:envs.length?(envOk?'#eef4ee':'#fdf3e0'):'#faf7f0',
-          envFg:envs.length?(envOk?'#2f6b39':'#8a5a12'):'#a89f90',
-          envBd:envs.length?(envOk?'#cfe0d1':'#e6cf9e'):'#e8e1d2',
+          envTxt:envs.length?(this._envChip(ult.status).eLabel
+            +(ult.status==='enviado'&&ult.quando?' · '+String(ult.quando).split(' ')[0]:'')):'Nunca enviado',
+          envTitulo:envs.length?(envs.length+' envio(s) registrado(s) · último: '+ult.quando
+            +' para '+ult.destinatario+' — clique para ver o histórico completo')
+            :'Nenhum envio de dados de acesso para este usuário',
+          ...this._envCor(ult),
           verEnvios:this.verEnviosAcesso(u.id),enviarAcesso:this.abrirEnvioAcesso(u.id),
           overTxt:nOver?nOver+' personalizada(s)':'padrão do perfil',temOver:nOver>0,
           souEu:u.id===S.usuario,
