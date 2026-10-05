@@ -1961,6 +1961,20 @@ input::placeholder,textarea::placeholder{color:#b0a795}
       </sc-if>
     </div>
 
+    <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:13px 18px;margin-bottom:14px">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <div style="font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#a89f90;white-space:nowrap">Período</div>
+        <input value="{{relDe}}" onChange="{{setRelDe}}" placeholder="Data inicial" title="Data inicial do período — vale para toda a página de relatórios" style="width:132px;box-sizing:border-box;padding:9px 12px;border:1px solid #e5ddcd;border-radius:9px;font:inherit;font-size:12.5px;font-weight:600;color:#272525;background:#fff;outline:none">
+        <span style="font-size:12px;color:#a89f90">até</span>
+        <input value="{{relAte}}" onChange="{{setRelAte}}" placeholder="Data final" title="Data final do período — vale para toda a página de relatórios" style="width:132px;box-sizing:border-box;padding:9px 12px;border:1px solid #e5ddcd;border-radius:9px;font:inherit;font-size:12.5px;font-weight:600;color:#272525;background:#fff;outline:none">
+        <div style="display:flex;gap:5px;flex-wrap:wrap">
+          <sc-for list="{{relAtalhos}}" as="a" hint-placeholder-count="6">
+            <div onClick="{{a.fn}}" style="font-size:11.5px;font-weight:700;border:1px solid {{a.bd}};color:{{a.fg}};background:{{a.bg}};border-radius:8px;padding:5px 10px;cursor:pointer;white-space:nowrap" style-hover="filter:brightness(.97)">{{a.label}}</div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="font-size:11.5px;color:#8a8378;margin-top:8px;line-height:1.5">{{relPeriodoTxt}}</div>
+    </div>
     <sc-if value="{{podeRelExportar}}" hint-placeholder-val="{{true}}">
       <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:14px 18px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap">
         <div>
@@ -1977,8 +1991,8 @@ input::placeholder,textarea::placeholder{color:#b0a795}
 
     <sc-if value="{{relAbaProd}}" hint-placeholder-val="{{false}}">
       <div style="display:flex;gap:9px;margin-bottom:14px;align-items:center;flex-wrap:wrap">
-        <input value="{{rvpDe}}" onChange="{{setRvpDe}}" placeholder="De: dd/mm/aaaa" title="Início do período (data do pedido)" style="width:128px;box-sizing:border-box;padding:9px 12px;border:1px solid #e5ddcd;border-radius:9px;font:inherit;font-size:12.5px;font-weight:600;color:#272525;background:#fff;outline:none">
-        <input value="{{rvpAte}}" onChange="{{setRvpAte}}" placeholder="Até: dd/mm/aaaa" title="Fim do período (data do pedido)" style="width:128px;box-sizing:border-box;padding:9px 12px;border:1px solid #e5ddcd;border-radius:9px;font:inherit;font-size:12.5px;font-weight:600;color:#272525;background:#fff;outline:none">
+<!-- o período vem da barra do topo da página, única para todas as visões -->
+
         <select value="{{rvpProd}}" onChange="{{setRvpProd}}" style="padding:9px 12px;border:1px solid #e5ddcd;border-radius:9px;font:inherit;font-size:12.5px;font-weight:600;color:#272525;background:#fff;outline:none;cursor:pointer;max-width:230px">
           <sc-for list="{{rvpProdOpts}}" as="o" hint-placeholder-count="3"><option value="{{o.v}}">{{o.label}}</option></sc-for>
         </select>
@@ -4448,6 +4462,7 @@ class Component extends DCLogic {
     selPed:null, selCot:null, selForn:null, selProd:null, selRev:null, modal:null, form:{}, pendVenc:null, filtroStatusProd:'todos', filtroCatProd:'todas', buscaRev:'', buscaPed:'', filtroRev:'0', fPedVis:'cards',
     busca:'', buscaForn:'', filtroForn:'0', filtroStatus:'todos', buscaCat:'', cart:{}, fotoIdx:{}, lightbox:null, expFech:null, filtroCot:'todas',
     relComp:'todas', relRevF:'0', relFornF:'0', relStF:'todos', relAba:'geral',
+    relDe:'', relAte:'', relAtalho:'',
     rvpDe:'', rvpAte:'', rvpProd:'0', rvpRev:'0', rvpForn:'0', rvpCat:'todas', rvpVis:'tabela', rvpDrill:null,
     audBusca:'', audUsr:'todos', audMod:'todos', audSev:'todas', audPer:'todos', audLimit:30,
     royCompF:'todas', royFornF:'0', royStF:'todos',
@@ -5812,7 +5827,8 @@ class Component extends DCLogic {
   setRvpK(k){ this._srv=this._srv||{}; if(!this._srv[k]) this._srv[k]=e=>this.setState({[k]:e.target.value,rvpDrill:null}); return this._srv[k]; }
   setRvpVis(v){ this._srvv=this._srvv||{}; if(!this._srvv[v]) this._srvv[v]=()=>this.setState({rvpVis:v}); return this._srvv[v]; }
   rvpDrillT(pid){ this._rvd=this._rvd||{}; if(!this._rvd[pid]) this._rvd[pid]=()=>this.setState(s=>({rvpDrill:s.rvpDrill===pid?null:pid})); return this._rvd[pid]; }
-  limparRvp=()=>this.setState({rvpDe:'',rvpAte:'',rvpProd:'0',rvpRev:'0',rvpForn:'0',rvpCat:'todas',rvpDrill:null});
+  // o período é da página inteira e não se limpa por aqui
+  limparRvp=()=>this.setState({rvpProd:'0',rvpRev:'0',rvpForn:'0',rvpCat:'todas',rvpDrill:null});
   exportVendasProduto=()=>{ if(!this.pode('relatorios.exportar')) return this.negado('Você não tem permissão para exportar relatórios.','relatorios.exportar');
     const ex=this._rvpExport||{linhas:[],resumo:[]};
     const l1=[['Código','Produto','Categoria','Data','Pedido','Revenda','Fornecedor','Quantidade','Preço unitário (R$)','Valor total (R$)']];
@@ -5826,14 +5842,50 @@ class Component extends DCLogic {
     XLSX.writeFile(wb,nome);
     this.audit('Exportação de vendas por produto',nome+' · '+ex.linhas.length+' venda(s), filtros aplicados'); };
   parseData(d){ if(!d) return null; const m=String(d).match(/(\d{2})\/(\d{2})\/(\d{4})/); return m?new Date(+m[3],+m[2]-1,+m[1]):null; }
+  // ══ Período global dos relatórios ════════════════════════════════════════
+  // Um único intervalo manda na página inteira: indicadores, gráficos, tabelas
+  // e exportações das duas visões. Antes, só "Venda por produtos" tinha data e
+  // a "Visão geral" ia por competência — as visões não se comparavam.
+  _relPer(){ const S=this.state;
+    return {de:S.relDe?this._parseData(S.relDe):null, ate:S.relAte?this._parseData(S.relAte):null}; }
+  _noPeriodo(dataBR){ const {de,ate}=this._relPer();
+    if(!de&&!ate) return true;
+    const d=this._parseData(dataBR); if(!d) return true;
+    if(de&&d<de) return false; if(ate&&d>ate) return false; return true; }
+  _dBR(d){ return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear(); }
+  // Atalhos de período — o que o usuário pede no dia a dia.
+  REL_ATALHOS=[['hoje','Hoje'],['7','Últimos 7 dias'],['30','Últimos 30 dias'],
+    ['mes','Mês atual'],['mesant','Mês anterior'],['','Todo o período']];
+  setRelAtalho(k){ this._rat=this._rat||{}; if(!this._rat[k]) this._rat[k]=()=>{
+    const hoje=new Date(); hoje.setHours(0,0,0,0);
+    const menos=n=>{ const d=new Date(hoje); d.setDate(d.getDate()-n); return d; };
+    let de=null,ate=null;
+    if(k==='hoje'){ de=hoje; ate=hoje; }
+    else if(k==='7'){ de=menos(6); ate=hoje; }
+    else if(k==='30'){ de=menos(29); ate=hoje; }
+    else if(k==='mes'){ de=new Date(hoje.getFullYear(),hoje.getMonth(),1); ate=hoje; }
+    else if(k==='mesant'){ de=new Date(hoje.getFullYear(),hoje.getMonth()-1,1);
+      ate=new Date(hoje.getFullYear(),hoje.getMonth(),0); }
+    this.setState({relDe:de?this._dBR(de):'',relAte:ate?this._dBR(ate):'',relAtalho:k});
+  }; return this._rat[k]; }
+  setRelData(campo){ this._rdt=this._rdt||{}; if(!this._rdt[campo]) this._rdt[campo]=(e)=>{
+    const dg=String(e.target.value||'').replace(/\D/g,'').slice(0,8);
+    let v=dg;
+    if(dg.length>4) v=dg.slice(0,2)+'/'+dg.slice(2,4)+'/'+dg.slice(4);
+    else if(dg.length>2) v=dg.slice(0,2)+'/'+dg.slice(2);
+    this.setState({[campo]:v,relAtalho:''}); }; return this._rdt[campo]; }
+  limparPeriodo=()=>this.setState({relDe:'',relAte:'',relAtalho:''});
+
   _relPedsFiltrados(){ const S=this.state;
     return S.pedidos.map(p=>({...p,status:this.pedStatus(p),total:this.pedTotal(p)}))
-      .filter(p=>(S.relComp==='todas'||(p.data||'').slice(3)===S.relComp)
+      .filter(p=>this._noPeriodo(p.data)
+        &&(S.relComp==='todas'||(p.data||'').slice(3)===S.relComp)
         &&(S.relRevF==='0'||p.revendaId===+S.relRevF)
         &&(S.relFornF==='0'||(S.relFornF==='loja'?p.itens.some(i=>this._ehLoja(i)):p.itens.some(i=>i.fornecedorId===+S.relFornF)))
         &&(S.relStF==='todos'||p.status===S.relStF)); }
   _relFatsFiltrados(){ const S=this.state;
-    return S.faturamentos.filter(f=>(S.relComp==='todas'||f.competencia===S.relComp)
+    return S.faturamentos.filter(f=>this._noPeriodo(f.data)
+      &&(S.relComp==='todas'||f.competencia===S.relComp)
       &&(S.relRevF==='0'||f.revendaId===+S.relRevF)
       &&(S.relFornF==='0'||(S.relFornF==='loja'?!!f.porLoja:f.fornecedorId===+S.relFornF))); }
   baixarCSV(nome,linhas){ const csv=linhas.map(r=>r.map(v=>{ v=String(v==null?'':v); return /[";\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; }).join(';')).join('\r\n');
@@ -9419,7 +9471,8 @@ class Component extends DCLogic {
     const relComps=[...new Set([...S.pedidos.map(p=>(p.data||'').slice(3)),...S.faturamentos.map(f=>f.competencia)])].filter(c=>/^\d{2}\/\d{4}$/.test(c)).sort((a,b)=>compKey(b).localeCompare(compKey(a)));
     // ——— Venda por produtos: uma linha por item vendido (pedido não rejeitado) ———
     const rvpLinhas=[];
-    const rvpDe=S.rvpDe?this._parseData(S.rvpDe):null, rvpAte=S.rvpAte?this._parseData(S.rvpAte):null;
+    // o período é o da página — uma data só manda nas duas visões
+    const rvpDe=this._relPer().de, rvpAte=this._relPer().ate;
     S.pedidos.forEach(p=>{ if(p.status==='rejeitado') return;
       const d=this._parseData(p.data);
       if(rvpDe&&d&&d<rvpDe) return; if(rvpAte&&d&&d>rvpAte) return;
@@ -9454,7 +9507,7 @@ class Component extends DCLogic {
       {label:'Quantidade vendida',val:String(rvpTotQtd),sub:'unidades somadas do recorte'},
       {label:'Valor total',val:this.fmt(rvpTotVal),sub:'itens de pedidos não rejeitados'},
       {label:'Preço médio geral',val:rvpTotQtd?this.fmt(rvpTotVal/rvpTotQtd):'—',sub:'valor total ÷ quantidade'}];
-    const rvpFiltroAtivo=!!(S.rvpDe||S.rvpAte||S.rvpProd!=='0'||S.rvpRev!=='0'||S.rvpForn!=='0'||S.rvpCat!=='todas');
+    const rvpFiltroAtivo=!!(S.rvpProd!=='0'||S.rvpRev!=='0'||S.rvpForn!=='0'||S.rvpCat!=='todas');
     // RF73 — indicadores de vendas do recorte filtrado (respondem a todos os filtros acima)
     const rvpMeses={};
     rvpLinhas.forEach(l=>{ const m=(l.data||'').slice(3); if(!m) return;
@@ -10244,6 +10297,14 @@ class Component extends DCLogic {
       setRelComp:this.setRelComp,setRelRevF:this.setRelRevF,setRelFornF:this.setRelFornF,setRelStF:this.setRelStF,
       relTemFiltro,limparRelFiltros:this.limparRelFiltros,
       relKpis,relMeses,temSerie,relTopProds,relTopRevs,relFunil,relFornRows,relRevRows,relRoyRows,desKpis,desRows,...rvpVals,
+      relDe:S.relDe,relAte:S.relAte,setRelDe:this.setRelData('relDe'),setRelAte:this.setRelData('relAte'),
+      relAtalhos:this.REL_ATALHOS.map(([k,label])=>({label,fn:this.setRelAtalho(k),
+        ...(S.relAtalho===k||(k===''&&!S.relDe&&!S.relAte)
+          ?{bg:'#faf3e4',fg:'#8f682a',bd:'#e6cf9e'}:{bg:'#fff',fg:'#6b6459',bd:'#e5ddcd'})})),
+      relPeriodoTxt:(S.relDe||S.relAte)
+        ?('Todos os indicadores, gráficos, tabelas e exportações desta página — nas duas visões — consideram '
+          +(S.relDe&&S.relAte?('de '+S.relDe+' a '+S.relAte):(S.relDe?('a partir de '+S.relDe):('até '+S.relAte)))+'.')
+        :'Sem período definido: a página mostra todo o histórico. Escolha as datas ou um atalho para recortar — vale para as duas visões e para as exportações.',
       temRoyRows:relRoyRows.length>0,semPedRows:relPedRows.length===0,
       relPedsN:String(relPedRows.length),relFatsN:String(relFats.length),
       exportRelPedidos:this.exportRelPedidos,exportRelFat:this.exportRelFat,
