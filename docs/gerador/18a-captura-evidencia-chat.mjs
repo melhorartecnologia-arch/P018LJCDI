@@ -4,6 +4,7 @@
 // e-mail de aviso, a trilha do pedido e a auditoria.
 // Requer a aplicação no ar em http://localhost:3344 com base limpa.
 import { chromium } from 'playwright'
+import { criarLogin } from './_login.mjs'
 import { renderTemplate } from '../../server/src/email-templates.js'
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
@@ -25,11 +26,7 @@ const pg = await ctx.newPage()
 
 const shot = async (n) => { await pg.screenshot({ path: join(OUT, n + '.png') }); log.push(n) }
 const recorte = async (loc, n) => { await loc.screenshot({ path: join(OUT, n + '.png') }); log.push(n) }
-const entrar = async (rot) => {
-  await pg.goto(B, { waitUntil: 'networkidle' }); await pg.waitForTimeout(1500)
-  await pg.getByText(rot, { exact: true }).click(); await pg.waitForTimeout(300)
-  await pg.getByText('Entrar na plataforma', { exact: true }).click(); await pg.waitForTimeout(2300)
-}
+const { entrar } = criarLogin(pg, B)
 const ir = async (t) => { await pg.getByText(t, { exact: true }).first().click(); await pg.waitForTimeout(1300) }
 const cela = (ped, ix) => pg.locator('tr', { hasText: ped }).first().locator('td').nth(ix).locator('div').first()
 // a janela da conversa (o cartão branco dentro do overlay)

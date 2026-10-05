@@ -1,5 +1,6 @@
 // Captura as telas para o Manual do Usuário (página inteira, com menu).
 import { chromium } from 'playwright'
+import { SENHA, SENHA_INICIAL } from './_login.mjs'
 import { mkdirSync } from 'node:fs'
 
 const DIR = '/home/user/P018LJCDI/docs/gerador/manual-shots'
@@ -7,10 +8,22 @@ mkdirSync(DIR, { recursive: true })
 const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' })
 const page = await browser.newPage({ viewport: { width: 1440, height: 860 }, deviceScaleFactor: 1.5 })
 const shot = async (nome) => { await page.waitForTimeout(450); await page.screenshot({ path: `${DIR}/${nome}.jpg`, type: 'jpeg', quality: 80 }); console.log('  •', nome) }
+// Entra e, se for o primeiro acesso daquele usuário, cumpre a troca de senha
+// obrigatória antes de seguir.
 const login = async (email, senha) => {
   await page.fill('input[placeholder="voce@empresa.com.br"]', email)
   await page.fill('input[type="password"]', senha)
-  await page.click('text=Entrar na plataforma'); await page.waitForTimeout(800)
+  await page.click('text=Entrar na plataforma'); await page.waitForTimeout(2400)
+  if (await page.getByText('Entrar na plataforma', { exact: true }).count()) {
+    await page.fill('input[placeholder="voce@empresa.com.br"]', email)
+    await page.fill('input[type="password"]', SENHA_INICIAL)
+    await page.click('text=Entrar na plataforma'); await page.waitForTimeout(2400)
+  }
+  if (await page.getByText('Salvar e entrar', { exact: true }).count()) {
+    const ps = page.locator('input[type=password]')
+    await ps.nth(0).fill(SENHA); await ps.nth(1).fill(SENHA)
+    await page.click('text=Salvar e entrar'); await page.waitForTimeout(3000)
+  }
 }
 const sair = async () => { await page.click('text=Sair'); await page.waitForTimeout(500) }
 const nav = async (txt) => { await page.click(`text=${txt}`); await page.waitForTimeout(600) }

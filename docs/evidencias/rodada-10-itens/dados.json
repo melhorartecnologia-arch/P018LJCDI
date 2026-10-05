@@ -1,0 +1,21 @@
+{
+  "contrato": "CT-2026-001",
+  "vencimento": "02/10/2026",
+  "usuarioForn": "comercial@serraverde.com.br",
+  "textoEntrega": "Proposta — COT-008 RF24–RF25 — sua proposta é sigilosa; prazo limite: 15/07/2026 🚚 Entrega — para onde vai a mercadoria Choperia Alto da Serra Teresópolis/RJ Av. Lúcio Meira, 1.230 · Várzea · CEP 25953-005 📞 (21) 2642-3305 Demanda: Chopp Pilsen Imperial 50L ×2, Chopp Pilsen Imperial 30L ×1 · referência R$ 2.400,00 Preço unitário por item (R$) — a Loja pode adjudicar item a item PRD-002 · Chopp Pilsen Imperial 50L ×2 Barril · ref. R$ 890,00/un. PRD-001 · Chopp Pilsen Imperial 30L ×1 Barril · ref. R$ 620,00/un. Frete — modalidade, valor e transportadora Modalidade CIF — frete do fornecedor FOB",
+  "cotacao": "COT-008",
+  "revenda": "Choperia Alto da Serra",
+  "endereco": "Av. Lúcio Meira, 1.230",
+  "cidade": "Teresópolis/RJ",
+  "pedidoDoc": "PED-0041",
+  "temDestino": true,
+  "semAntigo": true,
+  "temFicha": true,
+  "fornA": "Distribuidora Serra Verde",
+  "fornB": "Imperial Bebidas Ltda",
+  "codA": "PRD-001",
+  "codB": "PRD-003",
+  "docFornTemOutro": false,
+  "docFornSoMeus": true,
+  "nf": "NF-1207"
+}
