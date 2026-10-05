@@ -844,6 +844,43 @@ input::placeholder,textarea::placeholder{color:#b0a795}
       </div>
       <div onClick="{{novoForn}}" style="background:#B38335;color:#fff;border-radius:9px;padding:10px 16px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:#9a6f2b">+ Novo fornecedor</div>
     </div>
+    <div style="background:#fff;border:1px solid {{bloqBd}};border-radius:12px;margin-bottom:14px;overflow:hidden">
+      <div style="padding:13px 18px;border-bottom:1px solid #f1ece2;background:{{bloqHdBg}}">
+        <div style="font-size:14px;font-weight:700;color:{{bloqHdFg}}">{{bloqTitulo}}</div>
+        <div style="font-size:11.5px;color:#8a8378;margin-top:3px">Vencida a vigência, os usuários do fornecedor deixam de entrar na plataforma na hora — e voltam a entrar sozinhos quando o contrato for renovado. Não há bloqueio nem desbloqueio manual a fazer.</div>
+      </div>
+      <sc-for list="{{bloqRows}}" as="b" hint-placeholder-count="1">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 18px;border-bottom:1px solid #f5f1e8;flex-wrap:wrap">
+          <div style="min-width:240px">
+            <div style="font-size:13px;font-weight:600">{{b.nome}}<span style="font-size:10.5px;font-weight:700;border-radius:6px;padding:2px 7px;background:{{b.tagBg}};color:{{b.tagFg}};margin-left:8px">{{b.tag}}</span></div>
+            <div style="font-size:11.5px;color:#a33a2b;margin-top:3px">{{b.motivo}}</div>
+            <div style="font-size:11.5px;color:#8a8378;margin-top:2px;overflow-wrap:anywhere">{{b.usrTxt}}</div>
+          </div>
+          <div style="display:flex;gap:8px;flex:none">
+            <div onClick="{{b.renovar}}" title="Lançar o novo contrato — o acesso volta assim que ele for gravado" style="border:1px solid #d9c193;background:#faf5e9;border-radius:8px;padding:6px 12px;font-size:11.5px;font-weight:700;color:#8f682a;cursor:pointer;white-space:nowrap" style-hover="background:#f5ebd2">Novo contrato…</div>
+            <div onClick="{{b.abrir}}" style="border:1px solid #e5ddcd;background:#fff;border-radius:8px;padding:6px 12px;font-size:11.5px;font-weight:600;color:#4a453d;cursor:pointer;white-space:nowrap" style-hover="background:#f7f3ea">Abrir fornecedor</div>
+          </div>
+        </div>
+      </sc-for>
+      <sc-if value="{{semBloq}}" hint-placeholder-val="{{true}}">
+        <div style="padding:12px 18px;font-size:12.5px;color:#2f6b39">✓ Nenhum fornecedor com vigência vencida — nenhum usuário bloqueado neste momento.</div>
+      </sc-if>
+      <sc-if value="{{temVenc}}" hint-placeholder-val="{{false}}">
+        <div style="padding:10px 18px;border-top:1px solid #f1ece2;background:#fcfaf5;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#8a5a12">A vencer nos próximos 30 dias — renove antes do corte</div>
+        <sc-for list="{{vencRows}}" as="v" hint-placeholder-count="1">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;padding:11px 18px;border-top:1px solid #f5f1e8;flex-wrap:wrap">
+            <div style="min-width:240px">
+              <div style="font-size:12.5px;font-weight:600">{{v.nome}}<span style="font-size:10.5px;font-weight:700;border-radius:6px;padding:2px 7px;background:#fdf3e0;color:#8a5a12;margin-left:8px">{{v.prazo}}</span></div>
+              <div style="font-size:11.5px;color:#8a8378;margin-top:2px">{{v.numero}} · vigência até {{v.fim}} · {{v.usrTxt}}</div>
+            </div>
+            <div style="display:flex;gap:8px;flex:none">
+              <div onClick="{{v.renovar}}" title="Ajustar o contrato antes do vencimento" style="border:1px solid #e5ddcd;background:#fff;border-radius:8px;padding:6px 12px;font-size:11.5px;font-weight:600;color:#4a453d;cursor:pointer;white-space:nowrap" style-hover="background:#f7f3ea">Ajustar contrato…</div>
+              <div onClick="{{v.abrir}}" style="border:1px solid #e5ddcd;background:#fff;border-radius:8px;padding:6px 12px;font-size:11.5px;font-weight:600;color:#4a453d;cursor:pointer;white-space:nowrap" style-hover="background:#f7f3ea">Abrir fornecedor</div>
+            </div>
+          </div>
+        </sc-for>
+      </sc-if>
+    </div>
     <sc-if value="{{podeCadForn}}" hint-placeholder-val="{{true}}">
       <div style="background:#fff;border:1px solid #eae3d6;border-radius:12px;padding:14px 18px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap">
         <div>
@@ -893,7 +930,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
             <tr onClick="{{f.open}}" style="cursor:pointer" style-hover="background:#faf7f0">
               <td style="padding:11px 18px;font-size:13px;font-weight:600;border-bottom:1px solid #f5f1e8">{{f.nome}}<div style="font-size:11px;font-weight:400;color:#a89f90">{{f.cidade}} · {{f.contato}}{{f.telefoneTxt}}</div></td>
               <td style="padding:11px 10px;font-size:12.5px;color:#8a8378;border-bottom:1px solid #f5f1e8">{{f.cnpj}}</td>
-              <td style="padding:11px 10px;font-size:13px;border-bottom:1px solid #f5f1e8">{{f.ctrNum}}</td>
+              <td style="padding:11px 10px;font-size:13px;border-bottom:1px solid #f5f1e8">{{f.ctrNum}}<sc-if value="{{f.ctrVenc}}" hint-placeholder-val="{{false}}"><div style="font-size:10.5px;font-weight:700;color:#a33a2b;margin-top:3px;white-space:nowrap">⛔ {{f.ctrVencTxt}}</div></sc-if></td>
               <td style="padding:11px 10px;border-bottom:1px solid #f5f1e8"><span style="font-size:12px;font-weight:700;color:#8f682a;background:#faf5e9;border:1px solid #ecdcbc;border-radius:7px;padding:3px 9px">{{f.royaltyStr}}</span></td>
               <td style="padding:11px 10px;font-size:13px;text-align:right;border-bottom:1px solid #f5f1e8">{{f.prodN}}</td>
               <td style="padding:11px 10px;border-bottom:1px solid #f5f1e8"><span style="font-size:11.5px;font-weight:600;border-radius:7px;padding:3px 9px;background:{{f.stBg}};color:{{f.stFg}}">{{f.stLabel}}</span></td>
@@ -3076,11 +3113,14 @@ input::placeholder,textarea::placeholder{color:#b0a795}
               <td style="padding:11px 10px;font-size:11.5px;color:#8a8378;border-bottom:1px solid #f5f1e8">{{u.ultimo}}</td>
               <td style="padding:11px 18px;border-bottom:1px solid #f5f1e8">
                 <div style="display:flex;align-items:center;gap:8px">
-                  <span style="font-size:11px;font-weight:600;border-radius:6px;padding:2px 8px;background:{{u.stBg}};color:{{u.stFg}}">{{u.stLabel}}</span>
+                  <span title="{{u.bloqTxt}}" style="font-size:11px;font-weight:600;border-radius:6px;padding:2px 8px;background:{{u.stBg}};color:{{u.stFg}}">{{u.stLabel}}</span>
                   <span onClick="{{u.editar}}" style="font-size:11.5px;font-weight:600;color:#4a453d;border:1px solid #e5ddcd;border-radius:7px;padding:3px 9px;cursor:pointer;background:#fff" style-hover="background:#f7f3ea">Editar</span>
                   <sc-if value="{{u.souEu}}" hint-placeholder-val="{{false}}"></sc-if>
                   <span onClick="{{u.toggle}}" style="font-size:11.5px;font-weight:600;color:#8a8378;cursor:pointer;padding:3px 4px">{{u.toggleLabel}}</span>
                 </div>
+                <sc-if value="{{u.bloq}}" hint-placeholder-val="{{false}}">
+                  <div style="font-size:10.5px;color:#a33a2b;margin-top:5px;overflow-wrap:anywhere">⛔ {{u.bloqTxt}}</div>
+                </sc-if>
               </td>
             </tr>
           </sc-for>
@@ -3646,9 +3686,10 @@ input::placeholder,textarea::placeholder{color:#b0a795}
       <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 6px">Fornecedores convidados <span style="font-weight:400;color:#a89f90">— um ou mais, entre os vinculados aos produtos cotados</span></div>
       <div style="display:flex;flex-wrap:wrap;gap:8px">
         <sc-for list="{{convRows}}" as="cv" hint-placeholder-count="3">
-          <div onClick="{{cv.toggle}}" style="font-size:12.5px;font-weight:600;border-radius:8px;padding:8px 12px;cursor:pointer;background:{{cv.bg}};color:{{cv.fg}};border:1px solid {{cv.bd}}">{{cv.mark}}{{cv.nome}}</div>
+          <div onClick="{{cv.toggle}}" title="{{cv.titulo}}" style="font-size:12.5px;font-weight:600;border-radius:8px;padding:8px 12px;cursor:pointer;background:{{cv.bg}};color:{{cv.fg}};border:1px solid {{cv.bd}}">{{cv.mark}}{{cv.nome}}<span style="font-weight:400">{{cv.tag}}</span></div>
         </sc-for>
       </div>
+      <sc-if value="{{temConvBloq}}" hint-placeholder-val="{{false}}"><div style="font-size:11px;color:#a33a2b;margin-top:7px;line-height:1.45">⛔ {{convBloqTxt}} O bloqueio é automático e cai sozinho quando o contrato for renovado em Fornecedores &amp; Contratos.</div></sc-if>
       <sc-if value="{{convAviso.tem}}" hint-placeholder-val="{{true}}"><div style="font-size:11px;color:{{convAviso.cor}};margin-top:7px;line-height:1.45">{{convAviso.txt}}</div></sc-if>
       <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Observação para os fornecedores <span style="font-weight:400;color:#a89f90">— opcional · vai no e-mail e fica visível na proposta</span></div>
       <textarea value="{{form.obsRod}}" onChange="{{fxObsRod}}" rows="3" placeholder="{{obsRodPh}}" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13px;background:#fff;outline:none;color:#272525;resize:vertical;line-height:1.5"></textarea>
@@ -4631,6 +4672,21 @@ class Component extends DCLogic {
   _etapaTxt(p){ const n=this._etapaPedIdx(p); return n>0?('Etapa '+n+'/'+this.ETAPAS_PED.length+' · '+this._etapaLabel(n)):'Pedido rejeitado'; }
 
   get role(){ return this.state.role ?? (this.props.perfilInicial ?? 'loja'); }
+  // Se o contrato vencer (ou for encerrado) com a sessão aberta, o fornecedor
+  // é desconectado na próxima renderização — não espera o próximo login.
+  _checaBloqueioSessao(){
+    if(!this.state.logado||this.role!=='fornecedor') return;
+    const u=this.usuarioAtual(); const fid=(u&&u.fornecedorId)||this.state.fornAtivo;
+    if(!fid) return;
+    const ac=this._acessoForn(fid);
+    if(!ac.bloqueado){ if(this._bloqAviso===fid) this._bloqAviso=null; return; }
+    if(this._bloqAviso===fid) return;
+    this._bloqAviso=fid;
+    this.audit('Acesso de fornecedor bloqueado por contrato',this._fornNome(fid)+' · '+ac.motivo
+      +' · sessão encerrada automaticamente',{usuario:u?u.email:'',papel:'fornecedor'});
+    setTimeout(()=>{ this.setState({logado:false,usuario:null,role:null,scr:null,
+      loginErro:'Acesso bloqueado: '+ac.motivo+'. O acesso volta sozinho quando o contrato for renovado.'});
+      this._flushPersist(); },0); }
   get scr(){ return this.state.scr ?? ({loja:'dash',fornecedor:'fped',revenda:'cat'})[this.role]; }
   fmt(v){ return 'R$ '+Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
   num(v){ let s=String(v??'').replace(/[R$\s]/g,''); if(s.includes(',')){s=s.replace(/\./g,'').replace(',','.');} const n=parseFloat(s); return isNaN(n)?0:n; }
@@ -7824,6 +7880,9 @@ class Component extends DCLogic {
       return {form:{...f,pedidoId:v,sel,erro:null}}; }); };
   pickForn(fid){ this._pf=this._pf||{}; if(!this._pf[fid]) this._pf[fid]=()=>this.setState(s=>({form:{...s.form,fornecedorId:String(fid),erro:null}})); return this._pf[fid]; }
   confirmDireto=()=>{ if(!this.pode('pedidos.atender')) return this.negado('Você não tem permissão para definir o atendimento.','pedidos.atender'); const fid=+this.state.form.fornecedorId; if(!fid) return this.err('Selecione o fornecedor de destino.');
+    { const acD=this._acessoForn(fid);
+      if(acD.bloqueado) return this.err('Não é possível encaminhar para '+this._fornNome(fid)+': '+acD.motivo
+        +'. Renove o contrato em Fornecedores & Contratos — o encaminhamento e o acesso voltam na mesma hora.'); }
     const sel=this.state.form.sel||[]; if(!sel.length) return this.err('Selecione ao menos um item para encaminhar.');
     const id=this.state.form.pedidoId; const f=this.state.fornecedores.find(x=>x.id===fid);
     const ped0=this.state.pedidos.find(p=>p.id===id); if(!ped0) return;
@@ -7903,6 +7962,14 @@ class Component extends DCLogic {
     setTimeout(()=>this._flushPersist(),0); }; return this._csl[pid]; }
   toggleConv(fid){ this._tc=this._tc||{}; if(!this._tc[fid]) this._tc[fid]=()=>this.setState(s=>{ const c=s.form.convidados||[]; const on=c.includes(fid);
     return {form:{...s.form,convidados:on?c.filter(x=>x!==fid):[...c,fid],erro:null}}; }); return this._tc[fid]; }
+  // Convite barrado por vigência: explica em vez de simplesmente não reagir.
+  convBloqueado(fid){ this._tcb=this._tcb||{}; if(!this._tcb[fid]) this._tcb[fid]=()=>{
+    const ac=this._acessoForn(fid);
+    this.setState(s=>({form:{...s.form,convidados:(s.form.convidados||[]).filter(x=>x!==fid),
+      fornecedorId:s.form.fornecedorId===String(fid)?'':s.form.fornecedorId,
+      erro:this._fornNome(fid)+' está com o contrato sem vigência: '+ac.motivo
+        +'. Renove o contrato em Fornecedores & Contratos — o convite, o encaminhamento e o acesso voltam na mesma hora.'}})); };
+    return this._tcb[fid]; }
   confirmCotacao=()=>{ if(!this.pode('cotacoes.abrir')) return this.negado('Você não tem permissão para abrir cotações.','cotacoes.abrir'); const f=this.state.form; const conv=f.convidados||[];
     if(!f.pedidoId) return this.err('Selecione o pedido de origem (RF20).');
     if(!conv.length) return this.err('Selecione ao menos um fornecedor homologado para cotar (RF21).');
@@ -7913,6 +7980,9 @@ class Component extends DCLogic {
     const vincSet=new Set(); sel.forEach(ix=>this._pForns(this.state.produtos.find(x=>x.id===ped.itens[ix].produtoId)||{}).forEach(v=>vincSet.add(v)));
     const foraVinc=conv.filter(cf=>!vincSet.has(cf));
     if(foraVinc.length) return this.err('Só é possível convidar fornecedores vinculados aos produtos cotados: remova '+this.state.fornecedores.filter(x=>foraVinc.includes(x.id)).map(x=>x.nome).join(', ')+'.');
+    const semVig=conv.filter(cf=>this._acessoForn(cf).bloqueado);
+    if(semVig.length) return this.err('Fornecedor sem contrato vigente não pode ser convidado: '
+      +semVig.map(cf=>this._fornNome(cf)+' ('+this._acessoForn(cf).motivo+')').join('; ')+'.');
     const lq=this._lerQtds(ped,sel,true); if(lq.erro) return this.err(lq.erro);
     const n=this.state.seq.cot; const id='COT-00'+n;
     const {novo,alocados,parcial}=this._splitAlocar(ped.itens,sel,lq.qtds,{st:'cotacao',cotacaoId:id});
@@ -8385,6 +8455,38 @@ class Component extends DCLogic {
     setTimeout(()=>this._flushPersist(),0); }; // grava imediatamente: registro com anexo não pode se perder
   toggleFech(chave){ this._tfc=this._tfc||{}; if(!this._tfc[chave]) this._tfc[chave]=()=>this.setState(s=>({expFech:s.expFech===chave?null:chave})); return this._tfc[chave]; }
   // ── Royalties & Fechamento mensal (RF36–RF41) ────────────────────────────
+  // ══ Vigência do contrato e bloqueio automático do fornecedor ═════════════
+  // O contrato vence pela DATA, não por alguém lembrar de desmarcar "vigente".
+  // Enquanto não houver contrato válido, os usuários daquele fornecedor não
+  // entram — e voltam a entrar sozinhos quando o contrato for renovado, sem
+  // ninguém ter de desbloquear nada.
+  _hojeZero(){ const d=new Date(); d.setHours(0,0,0,0); return d; }
+  _ctrVencido(c){ if(!c||!c.fim) return false;
+    const f=this._parseData(c.fim); if(!f) return false;
+    return f<this._hojeZero(); }
+  // Contrato que vale hoje: marcado como vigente E dentro do prazo.
+  _ctrValido(fid){ return (this.state.contratos||[]).find(c=>c.fornecedorId===fid
+    &&c.vigente&&!this._ctrVencido(c))||null; }
+  // O último contrato do fornecedor, válido ou não — para explicar o bloqueio.
+  _ctrUltimo(fid){ const cs=(this.state.contratos||[]).filter(c=>c.fornecedorId===fid);
+    if(!cs.length) return null;
+    return cs.slice().sort((a,b)=>{ const da=this._parseData(a.fim)||0, db=this._parseData(b.fim)||0;
+      return db-da; })[0]; }
+  // Situação de acesso do fornecedor. Bloqueia só por VENCIMENTO: fornecedor
+  // que nunca teve contrato é caso de cadastro incompleto, não de expiração —
+  // fica sinalizado para a Loja, sem travar o acesso.
+  _acessoForn(fid){
+    if(this._ctrValido(fid)) return {bloqueado:false,motivo:'',contrato:null};
+    const u=this._ctrUltimo(fid);
+    if(!u) return {bloqueado:false,semContrato:true,motivo:'',contrato:null};
+    const venceu=this._ctrVencido(u);
+    return {bloqueado:true,contrato:u,venceu,
+      motivo:venceu
+        ? ('o contrato '+(u.numero||'')+' venceu em '+u.fim)
+        : ('o contrato '+(u.numero||'')+' não está mais vigente')}; }
+  // Usuários atingidos por um fornecedor sem contrato válido.
+  _usrDoForn(fid){ return (this.state.usuarios||[]).filter(u=>u.papel==='fornecedor'&&u.fornecedorId===fid); }
+
   _parseData(str){ const m=String(str||'').match(/^(\d{2})\/(\d{2})\/(\d{4})$/); return m?new Date(+m[3],+m[2]-1,+m[1]):null; }
   // Vencimento padrão da cobrança: dia 10 do mês seguinte à competência
   // RF65: dia acordado de pagamento por fornecedor/contrato (1–30, sem referência de mês).
@@ -8655,6 +8757,12 @@ class Component extends DCLogic {
     if(!u) return falha('usuário não encontrado','Usuário não encontrado. Verifique o e-mail ou fale com o administrador.');
     if(!u.ativo) return falha('usuário inativo','Usuário inativo. Fale com o administrador da plataforma.');
     if(this.hashSenha(loginSenha)!==u.senhaHash) return falha('senha incorreta','Senha incorreta.');
+    // Contrato vencido bloqueia o acesso do fornecedor automaticamente.
+    if(u.papel==='fornecedor'&&u.fornecedorId){
+      const ac=this._acessoForn(u.fornecedorId);
+      if(ac.bloqueado){ const fn=this._fornNome(u.fornecedorId);
+        return falha('contrato do fornecedor sem vigência — '+ac.motivo,
+          'Acesso bloqueado: '+ac.motivo+'. O acesso é restabelecido automaticamente quando a Loja Cidade Imperial renovar o contrato de '+fn+'.'); } }
     const view=u.papel==='admin'?'loja':u.papel;
     this.setState(s=>({logado:true,usuario:u.id,role:view,scr:null,selPed:null,selCot:null,loginSenha:'',
       fornAtivo:u.fornecedorId||s.fornAtivo,revAtivo:(u.revendaIds&&u.revendaIds[0])||u.revendaId||s.revAtivo,revGrupo:false,
@@ -8781,6 +8889,7 @@ class Component extends DCLogic {
     this.audit('Permissões restauradas ao padrão do perfil',u?u.nome:String(uid)); }; return this._rpm[uid]; }
 
   renderVals(){
+    this._checaBloqueioSessao();
     const S=this.state, role=this.role, scr=this.scr;
     const PEDS=this.state.pedidos.map(p=>({...p,status:this.pedStatus(p),total:this.pedTotal(p)}));
     const F=id=>S.fornecedores.find(x=>x.id===id)||{nome:'—'};
@@ -9260,15 +9369,18 @@ class Component extends DCLogic {
 
     // fornecedores & contratos
     const dParse=s=>{const p=(s||'').split('/');return p.length===3?new Date(+p[2],+p[1]-1,+p[0]):null;};
-    const diasAte=s=>{const d=dParse(s);return d?Math.round((d-new Date())/86400000):null;};
+    const diasAte=s=>{const d=dParse(s);return d?Math.round((d-this._hojeZero())/86400000):null;};
     const ctrView=c=>{ const dias=diasAte(c.fim);
+      const venc=this._ctrVencido(c); // vencido pela DATA, independente da marcação
       const aviso=c.vigente&&dias!==null&&dias<=180?(dias<0?'Vencido há '+(-dias)+' dias':'Vence em '+dias+' dias'):'';
       const hist=c.historico.map(h=>h.data+': '+h.de+' → '+h.para+' ('+h.usuario+')').join('  ·  ');
       return {numero:c.numero,fornNome:F(c.fornecedorId).nome,royaltyStr:String(c.royalty).replace('.',',')+'%',
         diaPagTxt:c.diaPagamento?('pagamento todo dia '+c.diaPagamento):'',
         gatilhoTxt:'gatilho: '+this._gatilhoLabel(c.gatilho||'nf')+(c.gatilhoDesc?' — '+c.gatilhoDesc:''),
         parcTxt:(c.parcelas&&c.parcelas>1)?('royalty em '+c.parcelas+' parcelas mensais'):'',
-        vig:c.inicio+' – '+c.fim,...this.chip(c.vigente?'vigente':'encerrado'),
+        vig:c.inicio+' – '+c.fim,
+        ...(c.vigente&&venc?{stBg:'#fbeae7',stFg:'#a33a2b',stLabel:'vencido'}
+          :this.chip(c.vigente?'vigente':'encerrado')),
         aviso,temAviso:!!aviso,
         hist:c.historico.map(h=>({data:h.data,mud:h.de+' → '+h.para,usuario:h.usuario})),temHist:c.historico.length>0,semHist:c.historico.length===0,
         histTxt:hist||'Sem alterações registradas',
@@ -9276,20 +9388,56 @@ class Component extends DCLogic {
         encerrar:this.encerrarCtr(c.id)};};
     const ctrRows=S.contratos.map(ctrView);
     const bf=S.buscaForn.toLowerCase();
-    const fornRows=S.fornecedores.filter(f=>!bf||f.nome.toLowerCase().includes(bf)||f.cnpj.includes(bf)||(f.cidade||'').toLowerCase().includes(bf)).map(f=>{ const ctr=ctrVig(f.id);
+    const fornRows=S.fornecedores.filter(f=>!bf||f.nome.toLowerCase().includes(bf)||f.cnpj.includes(bf)||(f.cidade||'').toLowerCase().includes(bf)).map(f=>{ const ctr=this._ctrValido(f.id)||ctrVig(f.id);
+      const ctrVenc=!!(ctr&&this._ctrVencido(ctr));
       const fat=S.faturamentos.filter(x=>x.fornecedorId===f.id);
       return {nome:f.nome,cnpj:f.cnpj,cidade:f.cidade,contato:f.contato,telefoneTxt:this._telTxt(f.telefone),
         ctrNum:ctr?ctr.numero:'—',royaltyStr:ctr?String(ctr.royalty).replace('.',',')+'%':'—',temCtr:!!ctr,
+        ctrVenc,ctrVencTxt:ctrVenc?('vigência vencida em '+ctr.fim):'',
         prodN:String(S.produtos.filter(p=>this._pTemForn(p,f.id)).length),
         fatFmt:this.fmt(fat.reduce((a,x)=>a+x.valor,0)),
         ...this.chip(f.ativo?'ativo':'inativo'),
         open:this.openForn(f.id)};});
-    const ctrVigs=S.contratos.filter(c=>c.vigente);
+    // "Vigente" é contrato marcado como vigente E dentro do prazo: contrato com
+    // data vencida não entra na conta, nem no royalty médio.
+    const ctrVigs=S.contratos.filter(c=>c.vigente&&!this._ctrVencido(c));
+    const ctrVencidos=S.contratos.filter(c=>c.vigente&&this._ctrVencido(c));
     const royMedio=ctrVigs.length?ctrVigs.reduce((a,c)=>a+c.royalty,0)/ctrVigs.length:0;
     const vencendo=ctrVigs.filter(c=>{const d=diasAte(c.fim);return d!==null&&d<=180;}).length;
+    // ── Bloqueio automático por vigência: o que a Loja precisa ver ─────────
+    // Em cima, quem já está bloqueado (e quantos usuários isso atinge).
+    // Embaixo, quem vence nos próximos 30 dias — para renovar ANTES do corte.
+    const bloqRows=S.fornecedores.filter(f=>f.ativo).map(f=>{
+      const ac=this._acessoForn(f.id); if(!ac.bloqueado) return null;
+      const us=this._usrDoForn(f.id); const ativos=us.filter(u=>u.ativo);
+      return {nome:f.nome,cidade:f.cidade,
+        motivo:ac.motivo.charAt(0).toUpperCase()+ac.motivo.slice(1),
+        tag:ac.venceu?'vigência vencida':'contrato encerrado',
+        tagBg:'#fbeae7',tagFg:'#a33a2b',
+        usrTxt:us.length?(ativos.length+' usuário(s) sem acesso: '+us.map(u=>u.email).join(', '))
+          :'nenhum usuário cadastrado para este fornecedor',
+        renovar:this.open('contrato',{fornecedorId:String(f.id),royalty:'',inicio:'',fim:''}),
+        abrir:this.openForn(f.id)};}).filter(Boolean);
+    const vencRows=S.fornecedores.filter(f=>f.ativo).map(f=>{
+      const c=this._ctrValido(f.id); if(!c) return null;
+      const d=diasAte(c.fim); if(d===null||d>30) return null;
+      const us=this._usrDoForn(f.id).filter(u=>u.ativo);
+      return {nome:f.nome,numero:c.numero,fim:c.fim,
+        prazo:d<=0?'vence hoje':('vence em '+d+' dia'+(d>1?'s':'')),
+        usrTxt:us.length?(us.length+' usuário(s) perdem o acesso em '+c.fim)
+          :'sem usuários cadastrados',
+        renovar:this.open('royalty',{contratoId:c.id,royalty:String(c.royalty),
+          diaPag:c.diaPagamento?String(c.diaPagamento):'',gatilho:c.gatilho||'nf',
+          gatilhoDesc:c.gatilhoDesc||'',parcelas:String(c.parcelas||1)}),
+        abrir:this.openForn(f.id)};}).filter(Boolean);
+    const bloqN=bloqRows.length, vencN=vencRows.length;
+    const bloqTitulo=bloqN
+      ? (bloqN+' fornecedor(es) com acesso bloqueado por vigência de contrato')
+      : 'Bloqueio automático por vigência de contrato';
     const fornKpis=[
       {label:'Fornecedores ativos',val:String(S.fornecedores.filter(f=>f.ativo).length),sub:'de '+S.fornecedores.length+' cadastrados'},
-      {label:'Contratos vigentes',val:String(ctrVigs.length),sub:vencendo+' vencem em até 180 dias'},
+      {label:'Contratos vigentes',val:String(ctrVigs.length),
+       sub:vencendo+' vencem em até 180 dias'+(ctrVencidos.length?' · '+ctrVencidos.length+' com data vencida':'')},
       {label:'Royalty médio',val:royMedio.toFixed(1).replace('.',',')+'%',sub:'dos contratos vigentes'},
       {label:'Royalty gerado',val:this.fmt(S.faturamentos.reduce((a,x)=>a+x.royaltyValor,0)),sub:'acumulado no sistema'}];
     let fd=null;
@@ -9820,11 +9968,21 @@ class Component extends DCLogic {
         if(prods0.length){ if(M==='direto') dirFids=prods0.map(pp=>this._pForns(pp)).reduce((a,b)=>a.filter(x=>b.includes(x)));
           else { const u=new Set(); prods0.forEach(pp=>this._pForns(pp).forEach(v=>u.add(v))); convFids=[...u]; } } } }
     const dirRows=S.fornecedores.filter(f=>f.ativo&&(dirFids==null||dirFids.includes(f.id))).map(f=>{const sel=S.form.fornecedorId===String(f.id);
+      const acD=this._acessoForn(f.id);
+      if(acD.bloqueado) return {nome:f.nome,royaltyStr:'⛔ '+acD.motivo+' — não pode receber pedido',
+        pick:this.convBloqueado(f.id),bg:'#f7f3ea',bd:'#e8e1d2',dot:'#e8e1d2'};
       return {nome:f.nome,royaltyStr:'royalty '+String(pctOf(f.id)).replace('.',',')+'%',pick:this.pickForn(f.id),
         bg:sel?'#faf5e9':'#fff',bd:sel?'#B38335':'#e8e1d2',dot:sel?'#B38335':'#e8e1d2'};});
     const dirVazio=M==='direto'&&dirRows.length===0;
     const convRows=S.fornecedores.filter(f=>f.ativo&&(convFids==null||convFids.includes(f.id))).map(f=>{const on=(S.form.convidados||[]).includes(f.id);
-      return {nome:f.nome,toggle:this.toggleConv(f.id),bg:on?'#faf5e9':'#fff',bd:on?'#B38335':'#e8e1d2',fg:on?'#8f682a':'#6b6459',mark:on?'✓ ':''};});
+      // Contrato sem vigência: o fornecedor continua na lista, mas não selecionável —
+      // some da lista seria pior, a Loja ficaria procurando o que não está lá.
+      const ac=this._acessoForn(f.id); const bl=ac.bloqueado;
+      if(bl) return {nome:f.nome,toggle:this.convBloqueado(f.id),bg:'#f7f3ea',bd:'#e8e1d2',fg:'#a89f90',
+        mark:'⛔ ',tag:' · contrato sem vigência',titulo:'Não pode ser convidado: '+ac.motivo};
+      return {nome:f.nome,toggle:this.toggleConv(f.id),bg:on?'#faf5e9':'#fff',bd:on?'#B38335':'#e8e1d2',fg:on?'#8f682a':'#6b6459',mark:on?'✓ ':'',
+        tag:'',titulo:''};});
+    const convBloqN=convRows.filter(c=>c.mark==='⛔ ').length;
     const _bf2=String(S.form.buscaForn||'').toLowerCase();
     const prodFornRows=M==='produto'?S.fornecedores.filter(f=>f.ativo&&(!_bf2||f.nome.toLowerCase().includes(_bf2))).map(f=>{ const on=(S.form.fornecedorIds||[]).includes(f.id);
       return {nome:f.nome,toggle:this.toggleFornProd(f.id),bg:on?'#faf5e9':'#fff',bd:on?'#B38335':'#e8e1d2',fg:on?'#8f682a':'#6b6459',mark:on?'✓ ':''};}):[];
@@ -9985,8 +10143,15 @@ class Component extends DCLogic {
       .map(u=>{ const nOver=Object.keys(u.permissoes||{}).length;
         const vinculo=u.papel==='fornecedor'?(F(u.fornecedorId).nome||'—'):(u.papel==='revenda'?(this._minhasRevs(u).map(r2=>R(r2).nome).join(' · ')||'—'):'—');
         const envs=u.enviosAcesso||[]; const ult=envs[0];
+        // Fornecedor sem contrato válido: o usuário está bloqueado pela regra,
+        // sem ninguém ter inativado nada — e volta sozinho com a renovação.
+        const ac=(u.papel==='fornecedor'&&u.fornecedorId)?this._acessoForn(u.fornecedorId):null;
+        const bloq=!!(ac&&ac.bloqueado&&u.ativo);
         return {id:u.id,nome:u.nome,email:u.email,papelLabel:this.PAPEIS[u.papel]||u.papel,vinculo,
-          ...this.chip(u.ativo?'ativo':'inativo'),ultimo:u.ultimoAcesso||'— nunca acessou —',
+          ...(bloq?{stBg:'#fbeae7',stFg:'#a33a2b',stLabel:'bloqueado'}
+            :this.chip(u.ativo?'ativo':'inativo')),
+          bloq,bloqTxt:bloq?('Bloqueado automaticamente: '+ac.motivo+'. Libera na renovação.'):'',
+          ultimo:u.ultimoAcesso||'— nunca acessou —',
           envTxt:envs.length?(this._envChip(ult.status).eLabel
             +(ult.status==='enviado'&&ult.quando?' · '+String(ult.quando).split(' ')[0]:'')):'Nunca enviado',
           envTitulo:envs.length?(envs.length+' envio(s) registrado(s) · último: '+ult.quando
@@ -10280,6 +10445,11 @@ class Component extends DCLogic {
       novaCotacao:this.open('cotacao',{pedidoId:'',convidados:[],prazo:''}),
       // cadastros
       fornRows,ctrRows,prodRows,revRows,fornFilterOpts,fornOptsAtivos,
+      bloqRows,vencRows,bloqTitulo,temBloq:bloqN>0,semBloq:bloqN===0,temVenc:vencN>0,
+      temConvBloq:convBloqN>0,
+      convBloqTxt:convBloqN+' fornecedor(es) desta lista estão com o contrato sem vigência e não podem ser convidados.',
+      bloqBd:bloqN?'#e7c4bc':'#eae3d6',bloqHdBg:bloqN?'#fdf2f0':'#fff',
+      bloqHdFg:bloqN?'#a33a2b':'#272525',
       fornKpis,fd,buscaForn:S.buscaForn,setBuscaForn:this.setBuscaForn,fornModalTitulo,fornModalBtn,
       deParaRows,dpFornCols,deParaKpis,deParaGrid,deParaVazio,buscaDp:S.buscaDp||'',setBuscaDp:this.setBuscaDp,irDePara:this.go('depara'),irProdutos:this.go('prod'),
       prodKpis,pdd,filtroStatusProd:S.filtroStatusProd,setFiltroStatusProd:this.setFiltroStatusProd,filtroCatProd:S.filtroCatProd||'todas',setFiltroCatProd:this.setFiltroCatProd,prodCatFilterOpts,prodCount,prodFiltroAtivo,prodVazio,limparProdFiltros:this.limparProdFiltros,prodModalTitulo,prodModalBtn,
