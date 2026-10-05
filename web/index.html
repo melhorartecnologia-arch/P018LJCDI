@@ -4728,6 +4728,21 @@ class Component extends DCLogic {
       pl.validade&&('validade '+pl.validade)].filter(Boolean).join(' · '); }
   _prodInfo(pid){ return this.state.produtos.find(x=>x.id===pid)||{}; }
   _itemView(i){ const p=this._prodInfo(i.produtoId); const sub=(i.precoNeg!=null?i.precoNeg:(i.qtd*i.preco)); return {codigo:p.codigo||'',descricao:p.descricao||('Produto '+i.produtoId),qtd:i.qtd,unidade:p.unidade||'',valor:this.fmt(sub)}; }
+  // Dados cadastrais e fiscais do produto, para faturamento e expedição.
+  // O que falta é dito como faltando, em vez de sair uma ficha pela metade
+  // que parece completa.
+  _fichaView(prod){
+    const f=this._ficha(prod); const v=x=>(x==null||String(x).trim()==='')?'':String(x).trim();
+    const dim=(v(f.altura)&&v(f.largura)&&v(f.comprimento))
+      ?(v(f.altura)+'×'+v(f.largura)+'×'+v(f.comprimento)+' '+(v(f.unidadeMedida)||'cm')):'';
+    const falta=[!v(f.ncm)&&'NCM',!v(f.ean)&&'GTIN/EAN',
+      (!v(f.pesoBruto)||!v(f.pesoLiquido))&&'pesos',!dim&&'dimensões'].filter(Boolean).join(', ');
+    return {ncm:v(f.ncm),ean:v(f.ean),pesoBruto:v(f.pesoBruto),pesoLiquido:v(f.pesoLiquido),
+      dimensoes:dim,cubagem:v(f.cubagem),unidade:v(prod&&prod.unidade),
+      categoria:this._pCat(prod),obs:v(f.obs),falta}; }
+  // Item com a ficha junto — para os documentos de faturamento e expedição.
+  _itemViewFicha(i){ const prod=this._prodInfo(i.produtoId);
+    return {...this._itemView(i),ficha:this._fichaView(prod)}; }
   _itensPed(ped,pred){ return (ped&&ped.itens||[]).filter(pred||(()=>true)).map(i=>this._itemView(i)); }
   _itensCot(c){ return ((c&&c.itens)||[]).map(it=>{ const p=this._prodInfo(it.produtoId); return {codigo:p.codigo||'',descricao:p.descricao||('Produto '+it.produtoId),qtd:it.qtd,unidade:p.unidade||'',valor:this.fmt(it.qtd*it.preco)}; }); }
   // Convite, rodada e lembrete de cotação: o preço é o que se pede ao
@@ -6931,9 +6946,10 @@ class Component extends DCLogic {
       const cI=this.chip(i.st||'pendente'); const podeV=this._pdfPodeValor(i);
       const sub=i.precoNeg!=null?i.precoNeg:i.qtd*i.preco;
       const foto=this._pdfUrl(this.fotosDe(pr)[0]);
-      const fichaTxt=[fi.ncm?('NCM '+fi.ncm):'',fi.ean?('EAN '+fi.ean):'',
-        fi.pesoBruto?('peso bruto '+fi.pesoBruto+' kg'):'',fi.pesoLiquido?('peso líquido '+fi.pesoLiquido+' kg'):'',
-        (fi.altura&&fi.largura&&fi.comprimento)?('dimensões '+fi.altura+'×'+fi.largura+'×'+fi.comprimento+' '+(fi.unidadeMedida||'cm')):''
+      const fv=this._fichaView(pr);
+      const fichaTxt=[fv.ncm?('NCM '+fv.ncm):'',fv.ean?('GTIN/EAN '+fv.ean):'',
+        fv.pesoBruto?('peso bruto '+fv.pesoBruto+' kg'):'',fv.pesoLiquido?('peso líquido '+fv.pesoLiquido+' kg'):'',
+        fv.dimensoes?('dimensões '+fv.dimensoes):'',fv.cubagem?('cubagem '+fv.cubagem+' m³'):''
       ].filter(Boolean).join(' · ');
       const dest=this._ehLoja(i)?'Estoque da Loja':(i.fornecedorId?F(i.fornecedorId).nome:'—');
       return '<tr>'
@@ -6985,6 +7001,34 @@ class Component extends DCLogic {
     ])+(dEnt.temRev&&!dEnt.completo
       ?'<div class="mini" style="color:#8a5a12;margin-top:5px">Cadastro de entrega incompleto — falta '
         +E(dEnt.falta)+'. Confirme o endereço com a Loja antes do despacho.</div>':'');
+
+    // Ficha cadastral e fiscal de cada item: é o que o fornecedor usa para
+    // emitir a nota (NCM, GTIN) e para despachar (pesos, dimensões, cubagem).
+    const thF='padding:5px 6px;font-size:7.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;'
+      +'color:#a89f90;border-bottom:1px solid #eae3d6;text-align:left';
+    const tdF='padding:5px 6px;font-size:8.5px;border-bottom:1px solid #f5f1e8;vertical-align:top';
+    const itensFicha=p.itens.filter(i=>i.st!=='rejeitado');
+    const blocoFicha=itensFicha.length
+      ?('<table style="width:100%;border-collapse:collapse">'
+        +'<thead><tr>'
+        +['Código','Descrição completa','Categoria','Unidade','NCM','GTIN/EAN','Peso bruto','Peso líquido','Dimensões','Cubagem']
+          .map(h=>'<th style="'+thF+'">'+E(h)+'</th>').join('')
+        +'</tr></thead><tbody>'
+        +itensFicha.map(i=>{ const pr2=this._prodInfo(i.produtoId); const f2=this._fichaView(pr2);
+          const cel=v=>'<td style="'+tdF+'">'+E(v||'—')+'</td>';
+          return '<tr>'
+            +'<td style="'+tdF+';white-space:nowrap"><b>'+E(pr2.codigo||'')+'</b></td>'
+            +'<td style="'+tdF+'">'+E(pr2.descricao||'')
+              +(f2.obs?('<div class="mini">'+E(f2.obs)+'</div>'):'')
+              +(f2.falta?('<div class="mini" style="color:#8a5a12">Ficha técnica incompleta — falta '+E(f2.falta)+'</div>'):'')
+              +'</td>'
+            +cel(f2.categoria)+cel(f2.unidade)+cel(f2.ncm)+cel(f2.ean)
+            +cel(f2.pesoBruto?f2.pesoBruto+' kg':'')+cel(f2.pesoLiquido?f2.pesoLiquido+' kg':'')
+            +cel(f2.dimensoes)+cel(f2.cubagem?f2.cubagem+' m³':'')
+            +'</tr>'; }).join('')
+        +'</tbody></table>'
+        +'<div class="mini" style="margin-top:5px">Dados do cadastro do produto na plataforma. Divergência no NCM, no GTIN ou nos pesos deve ser alinhada com a Loja antes da emissão da nota fiscal.</div>')
+      :'';
 
     const blocoDatas=this._pdfLinhas([
       ['Pedido criado em',p.data],
@@ -7158,6 +7202,7 @@ class Component extends DCLogic {
         +'<th class="r">Preço ref.</th><th class="r">Preço neg. (un.)</th><th class="r">Subtotal</th><th>Situação</th><th>Atendido por</th></tr></thead>'
         +'<tbody>'+linhasItens+'</tbody></table>'+blocoTotais,
         p.itens.length+(p.itens.length===1?' item':' itens'))
+      +this._pdfBloco('Dados cadastrais e fiscais dos itens',blocoFicha,'Faturamento e expedição')
       +this._pdfBloco('Cotação vinculada',blocoCot)
       +this._pdfBloco('Rastreio da entrega',blocoRast)
       +this._pdfBloco('Faturamento e documentos fiscais',blocoFat)
@@ -7610,7 +7655,8 @@ class Component extends DCLogic {
       p.trilha.push(this.tr(alocados.length+' item(ns) · '+totQ+' unidade(s) encaminhado(s) (envio direto) a '+f.nome+(parcial?' — quantidade parcial; o saldo permanece aprovado':'')));return p;});
     this.audit('Envio direto de itens',id+' → '+f.nome+' · '+alocados.length+' item(ns) · '+totQ+' un'+(parcial?' (parcial)':''));
     const revD=ped0.revendaId; const _ilD=alocados.map(i=>this._itemView(i));
-    this.notificar('pedido_fornecedor',this._fornEmail(fid),{pedidoId:id,fornecedorNome:f.nome,revendaNome:this._revNome(revD),itensLista:_ilD});
+    this.notificar('pedido_fornecedor',this._fornEmail(fid),{pedidoId:id,fornecedorNome:f.nome,revendaNome:this._revNome(revD),
+      itensLista:alocados.map(i=>this._itemViewFicha(i)),...this._entregaDe(id)});
     this.notificar('pedido_encaminhado_revenda',this._revEmail(revD),{pedidoId:id,fornecedorNome:f.nome,itensLista:_ilD,ocultarValor:this._revOcultar(alocados)});
     this.mClose(); };
   // A janela abre com o preço de catálogo de cada item já preenchido: é a

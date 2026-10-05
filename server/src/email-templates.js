@@ -58,6 +58,27 @@ const b = (v) => '<b>' + esc(v) + '</b>'
 // itens: [{ codigo, descricao, qtd, unidade, valor }]
 // mostrarValor=false oculta a coluna de valor (ex.: e-mails à revenda antes de a
 // Loja negociar/faturar — a revenda nunca vê o preço de catálogo).
+// Dados cadastrais e fiscais do item — o que o fornecedor precisa para
+// faturar (NCM, GTIN) e para expedir (pesos, dimensões, cubagem).
+const fichaItem = (it) => {
+  const f = it.ficha
+  if (!f) return ''
+  const linha = (rot, v) => (v ? '<span style="white-space:nowrap">' + rot + ' <b>' + esc(v) + '</b></span>' : '')
+  const partes = [
+    linha('NCM', f.ncm), linha('GTIN/EAN', f.ean),
+    linha('Peso bruto', f.pesoBruto ? f.pesoBruto + ' kg' : ''),
+    linha('Peso líquido', f.pesoLiquido ? f.pesoLiquido + ' kg' : ''),
+    linha('Dimensões', f.dimensoes), linha('Cubagem', f.cubagem ? f.cubagem + ' m³' : ''),
+    linha('Categoria', f.categoria), linha('Unidade', f.unidade),
+  ].filter(Boolean)
+  if (!partes.length && !f.obs && !f.falta) return ''
+  return '<div style="font-size:11.5px;color:#6b6459;margin-top:4px;line-height:1.7">' +
+    partes.join(' &nbsp;·&nbsp; ') +
+    (f.obs ? '<div style="margin-top:3px">Obs. do produto: ' + esc(f.obs) + '</div>' : '') +
+    (f.falta ? '<div style="margin-top:3px;color:#8a5a12">Ficha técnica incompleta — falta ' + esc(f.falta) + '</div>' : '') +
+    '</div>'
+}
+
 const tabelaItens = (itens, titulo = 'Itens', mostrarValor = true, notaSemValor) => {
   if (!Array.isArray(itens) || !itens.length) return ''
   const th = 'text-align:left;padding:6px 8px;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#a89f90;border-bottom:1px solid #eae3d6'
@@ -75,6 +96,7 @@ const tabelaItens = (itens, titulo = 'Itens', mostrarValor = true, notaSemValor)
           '<tr>' +
           '<td style="padding:7px 8px;font-size:12.5px;color:#272525;border-bottom:1px solid #f1ece2">' +
           (it.codigo ? '<b>' + esc(it.codigo) + '</b> · ' : '') + esc(it.descricao) +
+          fichaItem(it) +
           '</td>' +
           '<td style="padding:7px 8px;font-size:12.5px;text-align:right;white-space:nowrap;border-bottom:1px solid #f1ece2">' +
           esc(it.qtd) + (it.unidade ? ' ' + esc(it.unidade) : '') +
@@ -169,7 +191,10 @@ export const TEMPLATES = {
     subject: `Novo pedido ${v.pedidoId} para faturamento`,
     html: layout('Novo pedido para faturamento',
       p(`Olá${v.fornecedorNome ? ', ' + esc(v.fornecedorNome) : ''}. A Loja Cidade Imperial encaminhou um pedido para faturamento direto à revenda.`) +
-      linhas([['Pedido', v.pedidoId], ['Revenda', v.revendaNome]]) + itensDe(v, 'Itens a faturar'), 'Novo pedido'),
+      linhas([['Pedido', v.pedidoId], ['Revenda', v.revendaNome]]) +
+      entrega(v) +
+      itensDe(v, 'Itens a faturar — com os dados cadastrais e fiscais') +
+      p('Os dados fiscais e de expedição de cada item vêm do cadastro do produto na plataforma. Divergência no NCM, no GTIN ou nos pesos deve ser alinhada com a Loja antes da emissão da nota.'), 'Novo pedido'),
   }),
   pedido_encaminhado_revenda: (v) => ({
     subject: `Seu pedido ${v.pedidoId} foi encaminhado ao fornecedor`,
