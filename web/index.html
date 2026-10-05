@@ -6964,13 +6964,27 @@ class Component extends DCLogic {
         ['Plataforma',cfgP.url||location.origin],['E-mail',(this.state.configEmail||{}).emailLoja||'']])
       +parte('Revenda (comprador)',[['Razão social',R.nome],['CNPJ',R.cnpj],['Cidade/UF',R.cidade],
         ['Telefone',R.telefone],['E-mail',R.email]])
-      +parte('Destino do atendimento',[
+      +parte('Fornecedor que atende o pedido',[
         ...(forns.length?forns.map((fid,k)=>['Fornecedor'+(forns.length>1?(' '+(k+1)):''),F(fid).nome+(F(fid).cnpj?(' · '+F(fid).cnpj):'')]):[]),
         ...(temEstoque?[['Estoque próprio','Atendido pela Loja Cidade Imperial'],
           ...(propL?[['Condições aprovadas pela revenda',this._propLojaTxt(p)]]:[])]:[]),
         ...(forns.length===1?[['Contato',F(forns[0]).contatoNome||''],['E-mail',F(forns[0]).contato||''],['Telefone',F(forns[0]).telefone||'']]:[]),
         ...(!forns.length&&!temEstoque?[['Situação','ainda não definido']]:[])])
       +'</div>';
+
+    // Para onde a mercadoria vai de fato: o endereço da revenda compradora.
+    // É o que a transportadora e a logística do fornecedor leem.
+    const dEnt=this._destino(p.revendaId);
+    const blocoEntrega=this._pdfLinhas([
+      ['Entregar em',dEnt.nome],
+      ['CNPJ',R.cnpj],
+      ['Cidade/UF',dEnt.cidade],
+      ['Endereço',dEnt.linha],
+      ['Telefone no local',dEnt.telefone],
+      ['Informações de entrega',dEnt.obs],
+    ])+(dEnt.temRev&&!dEnt.completo
+      ?'<div class="mini" style="color:#8a5a12;margin-top:5px">Cadastro de entrega incompleto — falta '
+        +E(dEnt.falta)+'. Confirme o endereço com a Loja antes do despacho.</div>':'');
 
     const blocoDatas=this._pdfLinhas([
       ['Pedido criado em',p.data],
@@ -7135,12 +7149,13 @@ class Component extends DCLogic {
       +'<div class="tit"><b>Pedido '+E(p.id)+'</b>'
       +'<span class="st">'+E(ch.stLabel)+' · etapa '+etapa+'/'+this.ETAPAS_PED.length+'</span>'
       +'<div class="dt">Criado em '+E(p.data)+' · documento emitido em '+E(agora)+'</div></div></div>'
-      +this._pdfBloco('Partes e destino',blocoPartes)
+      +this._pdfBloco('Partes e responsáveis',blocoPartes)
+      +this._pdfBloco('Destino logístico de entrega da mercadoria',blocoEntrega,'Local de entrega')
       +this._pdfBloco('Situação, prazos e datas',blocoDatas)
       +this._pdfBloco('Condições comerciais negociadas',blocoCond)
       +this._pdfBloco('Itens do pedido',
         '<table class="itens"><thead><tr><th class="c">#</th><th>Foto</th><th>Produto</th><th class="c">Qtd</th>'
-        +'<th class="r">Preço ref.</th><th class="r">Preço neg. (un.)</th><th class="r">Subtotal</th><th>Situação</th><th>Destino</th></tr></thead>'
+        +'<th class="r">Preço ref.</th><th class="r">Preço neg. (un.)</th><th class="r">Subtotal</th><th>Situação</th><th>Atendido por</th></tr></thead>'
         +'<tbody>'+linhasItens+'</tbody></table>'+blocoTotais,
         p.itens.length+(p.itens.length===1?' item':' itens'))
       +this._pdfBloco('Cotação vinculada',blocoCot)
