@@ -356,7 +356,12 @@
       ],
       "prodBloq": [],
       "email": "compras@bardoimperador.com.br",
-      "ultimoAcesso": "09/07/2026 08:14"
+      "ultimoAcesso": "09/07/2026 08:14",
+      "endereco": "Rua do Imperador, 740",
+      "complemento": "Loja 2",
+      "bairro": "Centro",
+      "cep": "25610-000",
+      "obsEntrega": "Recebimento de 2ª a 6ª, das 8h às 11h. Rua estreita — caminhão toco no máximo. Doca nos fundos, acesso pela Travessa Dom Pedro."
     },
     {
       "id": 2,
@@ -373,7 +378,12 @@
         6
       ],
       "email": "pedidos@emporiocolonial.com.br",
-      "ultimoAcesso": "08/07/2026 10:41"
+      "ultimoAcesso": "08/07/2026 10:41",
+      "endereco": "Estrada União e Indústria, 10.500",
+      "complemento": "Galpão B",
+      "bairro": "Itaipava",
+      "cep": "25730-745",
+      "obsEntrega": "Entrega apenas pela manhã. Há empilhadeira no local."
     },
     {
       "id": 3,
@@ -388,7 +398,12 @@
       ],
       "prodBloq": [],
       "email": "adm@choperiaaltodaserra.com.br",
-      "ultimoAcesso": "07/07/2026 09:10"
+      "ultimoAcesso": "07/07/2026 09:10",
+      "endereco": "Av. Lúcio Meira, 1.230",
+      "complemento": "",
+      "bairro": "Várzea",
+      "cep": "25953-005",
+      "obsEntrega": ""
     },
     {
       "id": 4,
@@ -402,7 +417,12 @@
       ],
       "prodBloq": [],
       "email": "contato@adegaquitandinha.com.br",
-      "ultimoAcesso": "12/05/2026 15:22"
+      "ultimoAcesso": "12/05/2026 15:22",
+      "endereco": "Av. Ayrton Senna, 20",
+      "complemento": "",
+      "bairro": "Quitandinha",
+      "cep": "25651-000",
+      "obsEntrega": ""
     }
   ],
   "pedidos": [

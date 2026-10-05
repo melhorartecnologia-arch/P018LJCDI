@@ -103,6 +103,30 @@ const NOTA_COTAR =
   'Os preços não aparecem aqui de propósito: o preço de cada item é justamente o que você vai propor. Registre a sua proposta na plataforma, item a item.'
 const itensParaCotar = (v, titulo) => tabelaItens(v.itensLista, titulo || 'Itens a cotar', false, NOTA_COTAR)
 
+// Destino da entrega: o fornecedor precisa disto para calcular o frete antes
+// mesmo de entrar na plataforma. Não há valor nenhum aqui — só logística.
+const entrega = (v) => {
+  if (!v.entregaNome) return ''
+  const linhas2 = [
+    ['Entregar em', v.entregaNome],
+    ['Cidade/UF', v.entregaCidade],
+    v.entregaEndereco ? ['Endereço', v.entregaEndereco] : null,
+    v.entregaTelefone ? ['Telefone no local', v.entregaTelefone] : null,
+  ]
+  return '<div style="background:#f3f7f4;border:1px solid #d7e5da;border-left:3px solid #2f6b39;border-radius:10px;padding:14px 16px;margin:16px 0">' +
+    '<div style="font-size:13px;font-weight:700;color:#2f6b39;margin-bottom:8px">Entrega — para onde vai a mercadoria</div>' +
+    linhas(linhas2) +
+    (v.entregaObs
+      ? '<div style="font-size:13px;line-height:1.6;color:#272525;margin-top:10px;white-space:pre-wrap">' +
+        '<b>Informações de entrega:</b> ' + esc(v.entregaObs) + '</div>'
+      : '') +
+    (v.entregaIncompleta
+      ? '<div style="font-size:12.5px;line-height:1.6;color:#8a5a12;background:#fdf6e7;border:1px solid #f0e2c4;border-radius:8px;padding:9px 11px;margin-top:10px">' +
+        esc(v.entregaIncompleta) + '</div>'
+      : '') +
+    '</div>'
+}
+
 export const TEMPLATES = {
   // ── Pedidos ───────────────────────────────────────────────────────────
   pedido_novo_loja: (v) => ({
@@ -215,6 +239,7 @@ export const TEMPLATES = {
     html: layout(`Rodada ${esc(v.rodada || '2')} — contraproposta solicitada`,
       p(`Olá, ${b(v.fornecedorNome)}! A Loja Cidade Imperial abriu uma nova rodada de negociação na cotação ${b(v.cotacao)} e convida você a revisar seus preços e condições para os itens abaixo.`) +
       obsLoja(v.observacao, `O que a Loja espera na rodada ${esc(v.rodada || '2')}`) +
+      entrega(v) +
       (v.itensLista ? itensParaCotar(v, 'Itens em renegociação') : '') +
       linhas([['Cotação', v.cotacao], ['Rodada', v.rodada || '2'], ['Prazo para contrapropostas', v.prazo]]) +
       p('Sua proposta anterior permanece registrada no histórico; a contraproposta substitui os valores apenas para os itens em renegociação.'), 'Cotação'),
@@ -224,14 +249,16 @@ export const TEMPLATES = {
     html: layout('Convite para cotação',
       p(`Olá${v.fornecedorNome ? ', ' + esc(v.fornecedorNome) : ''}. Você foi convidado a enviar uma proposta para a cotação ${b(v.cotacao)}.`) +
       obsLoja(v.observacao, 'O que a Loja espera nesta cotação') +
-      linhas([['Cotação', v.cotacao], ['Prazo para propostas', v.prazo]]) + itensParaCotar(v, 'Itens a cotar') +
+      linhas([['Cotação', v.cotacao], ['Prazo para propostas', v.prazo]]) +
+      entrega(v) + itensParaCotar(v, 'Itens a cotar') +
       p('Acesse a plataforma para registrar a sua proposta (por item) antes do prazo.'), 'Cotação'),
   }),
   cotacao_lembrete: (v) => ({
     subject: `Lembrete: cotação ${v.cotacao} aguarda sua proposta`,
     html: layout('Lembrete de cotação',
       p(`Olá${v.fornecedorNome ? ', ' + esc(v.fornecedorNome) : ''}. A cotação ${b(v.cotacao)} ainda aguarda a sua proposta.`) +
-      linhas([['Cotação', v.cotacao], ['Prazo para propostas', v.prazo]]) + itensParaCotar(v, 'Itens a cotar'), 'Cotação'),
+      linhas([['Cotação', v.cotacao], ['Prazo para propostas', v.prazo]]) +
+      entrega(v) + itensParaCotar(v, 'Itens a cotar'), 'Cotação'),
   }),
   cotacao_proposta_loja: (v) => ({
     subject: `Nova proposta na cotação ${v.cotacao}`,

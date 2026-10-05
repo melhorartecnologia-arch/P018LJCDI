@@ -2613,6 +2613,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
               <sc-if value="{{c.temRodTag}}" hint-placeholder-val="{{false}}"><span style="font-size:10.5px;font-weight:700;border-radius:6px;padding:2px 8px;background:#efe6f5;color:#5d3f96">{{c.rodTag}}</span></sc-if>
             </div>
             <div style="font-size:12.5px;color:#6b6459;margin-top:4px">{{c.itensTxt}}</div>
+            <div style="background:#f3f7f4;border:1px solid #d7e5da;border-left:3px solid #2f6b39;border-radius:9px;padding:10px 13px;margin-top:8px"><div style="font-size:11.5px;font-weight:700;color:#2f6b39;margin-bottom:4px">&#128666; Entrega — para onde vai a mercadoria</div><div style="font-size:12.5px;font-weight:700;color:#272525">{{c.entNome}}</div><div style="font-size:12.5px;color:#4a453d;margin-top:2px">{{c.entCidade}}</div><sc-if value="{{c.entTemLinha}}" hint-placeholder-val="{{true}}"><div style="font-size:12px;color:#4a453d;margin-top:3px;line-height:1.5">{{c.entLinha}}</div></sc-if><sc-if value="{{c.entTemTel}}" hint-placeholder-val="{{false}}"><div style="font-size:11.5px;color:#6b6459;margin-top:3px">&#128222; {{c.entTel}}</div></sc-if><sc-if value="{{c.entTemObs}}" hint-placeholder-val="{{false}}"><div style="font-size:11.5px;color:#4a453d;margin-top:6px;line-height:1.5;white-space:pre-wrap;border-top:1px dashed #cfe0d1;padding-top:6px"><b>Informações de entrega:</b> {{c.entObs}}</div></sc-if><sc-if value="{{c.entIncompleto}}" hint-placeholder-val="{{false}}"><div style="font-size:11px;font-weight:600;color:#8a5a12;background:#fdf6e7;border:1px solid #f0e2c4;border-radius:7px;padding:6px 9px;margin-top:7px;line-height:1.45">&#9888; {{c.entFaltaTxt}}</div></sc-if></div>
             <div style="font-size:12px;color:#a89f90;margin-top:2px">Minha proposta: <b style="color:#272525">{{c.minhaFmt}}</b><sc-if value="{{c.minhaFrete}}" hint-placeholder-val="{{false}}"><span> · frete: {{c.minhaFrete}}</span></sc-if></div>
             <sc-if value="{{c.temObsLoja}}" hint-placeholder-val="{{false}}"><div style="font-size:12px;color:#4a453d;background:#faf7f0;border-left:3px solid #B38335;border-radius:0 7px 7px 0;padding:7px 11px;margin-top:6px;line-height:1.55;white-space:pre-wrap"><b style="color:#8f682a">A Loja pede:</b> {{c.obsLoja}}</div></sc-if>
             <sc-if value="{{c.foraRodada}}" hint-placeholder-val="{{false}}"><div style="font-size:11.5px;color:#8a5a12;margin-top:3px">Esta rodada de renegociação não inclui você — sua última proposta permanece válida.</div></sc-if>
@@ -3466,6 +3467,24 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">E-mail de acesso (login)</div>
         <input value="{{form.email}}" onChange="{{fxEmail}}" placeholder="compras@revenda.com.br" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
       </div>
+
+      <div style="margin-top:16px;padding-top:14px;border-top:1px solid #f1ece2">
+        <div style="font-size:12.5px;font-weight:700;color:#4a453d">Endereço de entrega</div>
+        <div style="font-size:11.5px;color:#8a8378;margin-top:2px;line-height:1.5">É o que o fornecedor vê para calcular o frete na cotação. Sem endereço, ele cota no escuro.</div>
+        <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Logradouro e número</div>
+        <input value="{{form.endereco}}" onChange="{{fxEndereco}}" placeholder="Rua do Imperador, 740" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Complemento</div>
+          <input value="{{form.complemento}}" onChange="{{fxComplemento}}" placeholder="Loja 2, galpão, bloco…" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
+          <div><div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Bairro</div>
+          <input value="{{form.bairro}}" onChange="{{fxBairro}}" placeholder="Centro" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525"></div>
+        </div>
+        <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">CEP</div>
+        <input value="{{form.cep}}" onChange="{{fxCep}}" placeholder="25610-000" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
+        <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Informações adicionais de entrega <span style="font-weight:400;color:#a89f90">(opcional)</span></div>
+        <textarea value="{{form.obsEntrega}}" onChange="{{fxObsEntrega}}" rows="3" placeholder="Ex.: recebimento de 2ª a 6ª das 8h às 11h; rua estreita, caminhão toco no máximo; doca nos fundos." style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13px;background:#fff;outline:none;color:#272525;resize:vertical;line-height:1.5"></textarea>
+      </div>
+
       <sc-if value="{{form.erro}}" hint-placeholder-val="{{false}}"><div style="color:#a33a2b;font-size:12.5px;margin-top:12px">{{form.erro}}</div></sc-if>
       <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:18px">
         <div onClick="{{mClose}}" style="border:1px solid #ddd5c7;border-radius:8px;padding:9px 15px;font-size:13px;font-weight:600;cursor:pointer;color:#6b6459" style-hover="background:#f7f3ea">Cancelar</div>
@@ -3801,6 +3820,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
       <div style="font-size:16px;font-weight:700">Proposta — {{propInfo.cotId}}</div>
       <div style="font-size:12.5px;color:#8a8378;margin-top:2px">RF24–RF25 — sua proposta é sigilosa; prazo limite: {{propInfo.prazo}}</div>
       <sc-if value="{{propInfo.temRodadaTag}}" hint-placeholder-val="{{false}}"><div style="font-size:12px;font-weight:700;color:#5d3f96;background:#efe6f5;border:1px solid #ddcbee;border-radius:8px;padding:7px 11px;margin-top:10px">{{propInfo.rodadaTag}}</div></sc-if>
+      <div style="background:#f3f7f4;border:1px solid #d7e5da;border-left:3px solid #2f6b39;border-radius:9px;padding:10px 13px;margin-top:12px"><div style="font-size:11.5px;font-weight:700;color:#2f6b39;margin-bottom:4px">&#128666; Entrega — para onde vai a mercadoria</div><div style="font-size:12.5px;font-weight:700;color:#272525">{{propInfo.entNome}}</div><div style="font-size:12.5px;color:#4a453d;margin-top:2px">{{propInfo.entCidade}}</div><sc-if value="{{propInfo.entTemLinha}}" hint-placeholder-val="{{true}}"><div style="font-size:12px;color:#4a453d;margin-top:3px;line-height:1.5">{{propInfo.entLinha}}</div></sc-if><sc-if value="{{propInfo.entTemTel}}" hint-placeholder-val="{{false}}"><div style="font-size:11.5px;color:#6b6459;margin-top:3px">&#128222; {{propInfo.entTel}}</div></sc-if><sc-if value="{{propInfo.entTemObs}}" hint-placeholder-val="{{false}}"><div style="font-size:11.5px;color:#4a453d;margin-top:6px;line-height:1.5;white-space:pre-wrap;border-top:1px dashed #cfe0d1;padding-top:6px"><b>Informações de entrega:</b> {{propInfo.entObs}}</div></sc-if><sc-if value="{{propInfo.entIncompleto}}" hint-placeholder-val="{{false}}"><div style="font-size:11px;font-weight:600;color:#8a5a12;background:#fdf6e7;border:1px solid #f0e2c4;border-radius:7px;padding:6px 9px;margin-top:7px;line-height:1.45">&#9888; {{propInfo.entFaltaTxt}}</div></sc-if></div>
       <sc-if value="{{propInfo.temObsLoja}}" hint-placeholder-val="{{false}}">
         <div style="background:#faf7f0;border:1px solid #eee7d8;border-left:3px solid #B38335;border-radius:9px;padding:10px 13px;margin-top:10px">
           <div style="font-size:11.5px;font-weight:700;color:#8f682a;margin-bottom:3px">✎ {{propInfo.obsLojaRot}}</div>
@@ -4433,10 +4453,16 @@ class Component extends DCLogic {
       {id:10,codigo:'PRD-010',descricao:'Barril Inox 30L (comodato)',unidade:'Unidade',categoria:'Acessórios',preco:450,fornecedorId:4,ativo:false}
     ],
     revendas:[
-      {id:1,nome:'Bar do Imperador',cnpj:'11.111.222/0001-33',cidade:'Petrópolis/RJ',telefone:'(24) 2242-1188',ativo:true,visibilidade:[1,2,3],prodBloq:[],email:'compras@bardoimperador.com.br',ultimoAcesso:'09/07/2026 08:14'},
-      {id:2,nome:'Empório Colonial',cnpj:'22.333.444/0001-55',cidade:'Itaipava/RJ',telefone:'(24) 2222-9067',ativo:true,visibilidade:[1,2],prodBloq:[6],email:'pedidos@emporiocolonial.com.br',ultimoAcesso:'08/07/2026 10:41'},
-      {id:3,nome:'Choperia Alto da Serra',cnpj:'44.555.666/0001-77',cidade:'Teresópolis/RJ',telefone:'(21) 2642-3305',ativo:true,visibilidade:[1,3],prodBloq:[],email:'adm@choperiaaltodaserra.com.br',ultimoAcesso:'07/07/2026 09:10'},
-      {id:4,nome:'Adega Quitandinha',cnpj:'55.666.777/0001-88',cidade:'Petrópolis/RJ',telefone:'(24) 2247-5521',ativo:false,visibilidade:[2],prodBloq:[],email:'contato@adegaquitandinha.com.br',ultimoAcesso:'12/05/2026 15:22'}
+      {id:1,nome:'Bar do Imperador',cnpj:'11.111.222/0001-33',cidade:'Petrópolis/RJ',telefone:'(24) 2242-1188',ativo:true,visibilidade:[1,2,3],prodBloq:[],email:'compras@bardoimperador.com.br',ultimoAcesso:'09/07/2026 08:14',
+        endereco:'Rua do Imperador, 740',complemento:'Loja 2',bairro:'Centro',cep:'25610-000',
+        obsEntrega:'Recebimento de 2ª a 6ª, das 8h às 11h. Rua estreita — caminhão toco no máximo. Doca nos fundos, acesso pela Travessa Dom Pedro.'},
+      {id:2,nome:'Empório Colonial',cnpj:'22.333.444/0001-55',cidade:'Itaipava/RJ',telefone:'(24) 2222-9067',ativo:true,visibilidade:[1,2],prodBloq:[6],email:'pedidos@emporiocolonial.com.br',ultimoAcesso:'08/07/2026 10:41',
+        endereco:'Estrada União e Indústria, 10.500',complemento:'Galpão B',bairro:'Itaipava',cep:'25730-745',
+        obsEntrega:'Entrega apenas pela manhã. Há empilhadeira no local.'},
+      {id:3,nome:'Choperia Alto da Serra',cnpj:'44.555.666/0001-77',cidade:'Teresópolis/RJ',telefone:'(21) 2642-3305',ativo:true,visibilidade:[1,3],prodBloq:[],email:'adm@choperiaaltodaserra.com.br',ultimoAcesso:'07/07/2026 09:10',
+        endereco:'Av. Lúcio Meira, 1.230',complemento:'',bairro:'Várzea',cep:'25953-005',obsEntrega:''},
+      {id:4,nome:'Adega Quitandinha',cnpj:'55.666.777/0001-88',cidade:'Petrópolis/RJ',telefone:'(24) 2247-5521',ativo:false,visibilidade:[2],prodBloq:[],email:'contato@adegaquitandinha.com.br',ultimoAcesso:'12/05/2026 15:22',
+        endereco:'Av. Ayrton Senna, 20',complemento:'',bairro:'Quitandinha',cep:'25651-000',obsEntrega:''}
     ],
     pedidos:[
       {id:'PED-0044',revendaId:1,fornecedorId:null,cotacaoId:null,itens:[{produtoId:1,qtd:2,preco:620,st:'pendente'},{produtoId:8,qtd:3,preco:96,st:'pendente'}],total:1528,status:'pendente',justificativa:null,data:'09/07/2026',trilha:[
@@ -4796,6 +4822,47 @@ class Component extends DCLogic {
     if(d.length>6){ const corte=d.length>10?7:6; v='('+d.slice(0,2)+') '+d.slice(2,corte)+'-'+d.slice(corte); }
     this.setState(s=>({form:{...s.form,telefone:v,erro:null}})); };
   _telTxt(v){ return (v&&v!=='—')?(' · 📞 '+v):''; }
+  // ── Dados de entrega para o cálculo logístico do fornecedor ──────────────
+  // O fornecedor precisa saber PARA ONDE entregar antes de precificar o frete.
+  // Monta o destino a partir da revenda do pedido; o que faltar é dito como
+  // faltando, em vez de sair uma linha truncada que parece completa.
+  _destino(revId){
+    const r=(this.state.revendas||[]).find(x=>x.id===revId);
+    if(!r) return {temRev:false,nome:'—',cidade:'—',linha:'',obs:'',completo:false,falta:'revenda não identificada'};
+    const limpo=v=>String(v==null?'':v).trim();
+    const cidade=limpo(r.cidade)&&limpo(r.cidade)!=='—'?limpo(r.cidade):'';
+    const end=limpo(r.endereco), compl=limpo(r.complemento), bairro=limpo(r.bairro), cep=limpo(r.cep);
+    const linha=[end,compl,bairro].filter(Boolean).join(' · ')+((end||compl||bairro)&&cep?' · CEP '+cep:(cep?'CEP '+cep:''));
+    const falta=[!end&&'logradouro',!cep&&'CEP',!cidade&&'cidade/UF'].filter(Boolean).join(', ');
+    return {temRev:true,nome:r.nome,cidade:cidade||'—',linha,obs:limpo(r.obsEntrega),
+      temLinha:!!linha,temObs:!!limpo(r.obsEntrega),completo:!!(end&&cep&&cidade),falta,
+      telefone:limpo(r.telefone)&&limpo(r.telefone)!=='—'?limpo(r.telefone):''}; }
+  // Os mesmos dados, já no formato que o template consome.
+  _destinoVals(revId){ const d=this._destino(revId);
+    return {entNome:d.nome,entCidade:d.cidade,entLinha:d.linha,entTemLinha:!!d.temLinha,
+      entObs:d.obs,entTemObs:!!d.temObs,entTel:d.telefone,entTemTel:!!d.telefone,
+      entIncompleto:d.temRev&&!d.completo,
+      entFaltaTxt:d.falta?('Cadastro de entrega incompleto — falta '+d.falta+'. Peça o complemento à Loja antes de fechar o frete.'):''}; }
+  // Vars de entrega para os e-mails de cotação (sem valores — só logística).
+  _entregaDe(pedidoId){
+    const ped=(this.state.pedidos||[]).find(x=>x.id===pedidoId); if(!ped) return {};
+    const d=this._destino(ped.revendaId); if(!d.temRev) return {};
+    return {entregaNome:d.nome,entregaCidade:d.cidade,entregaEndereco:d.linha,
+      entregaTelefone:d.telefone,entregaObs:d.obs,
+      entregaIncompleta:d.completo?'':('Cadastro de entrega incompleto — falta '+d.falta
+        +'. Confirme com a Loja antes de fechar o frete.')}; }
+  _entregaVars(cotId){
+    const c=(this.state.cotacoes||[]).find(x=>x.id===cotId); if(!c) return {};
+    const ped=(this.state.pedidos||[]).find(x=>x.id===c.pedidoId); if(!ped) return {};
+    const d=this._destino(ped.revendaId); if(!d.temRev) return {};
+    return {entregaNome:d.nome,entregaCidade:d.cidade,entregaEndereco:d.linha,
+      entregaTelefone:d.telefone,entregaObs:d.obs,
+      entregaIncompleta:d.completo?'':('Cadastro de entrega incompleto — falta '+d.falta
+        +'. Confirme com a Loja antes de fechar o frete.')}; }
+  // Texto de uma linha, para e-mail e para onde não cabe o bloco inteiro.
+  _destinoTxt(revId){ const d=this._destino(revId);
+    if(!d.temRev) return '';
+    return [d.nome,d.linha,d.cidade!=='—'?d.cidade:''].filter(Boolean).join(' — '); }
   open(m,seed){ return (e)=>{ if(e&&e.stopPropagation) e.stopPropagation(); this.setState({modal:m,form:seed?{...seed}:{}}); }; }
   mClose=()=>{ this._ajudaStop(); this.setState({modal:null,form:{},pendVenc:null,ajudaPlay:false}); };
   // Atalho do campo Categoria do produto para o cadastro que alimenta a lista.
@@ -5751,7 +5818,7 @@ class Component extends DCLogic {
       c.historico.push({quando:this.ts(),usuario:this.userName(),acao:'Lembrete de proposta enviado a '+f.nome}); return c; });
     this.audit('Lembrete de cotação enviado',cid+' → '+f.nome);
     const cL=this.state.cotacoes.find(x=>x.id===cid);
-    this.notificar('cotacao_lembrete',this._fornEmail(fid),{cotacao:cid,fornecedorNome:f.nome,prazo:(cL?cL.prazo:''),itensLista:this._itensCotar((cL||{}).itens),ocultarValor:true}); }; return this._lc[k]; }
+    this.notificar('cotacao_lembrete',this._fornEmail(fid),{cotacao:cid,fornecedorNome:f.nome,prazo:(cL?cL.prazo:''),itensLista:this._itensCotar((cL||{}).itens),ocultarValor:true,...this._entregaVars(cid)}); }; return this._lc[k]; }
   componentDidMount(){ window.CI=this; this._kb=e=>{
     if(this.state.modal==='ajuda'){ const n=(this.ajudaConteudo().passos||[]).length;
       if(e.key==='Escape') this.fecharAjuda();
@@ -5903,10 +5970,12 @@ class Component extends DCLogic {
     this.setState(s=>({produtos:s.produtos.map(x=>x.id===id?{...x,ativo:!x.ativo}:x)}));
     this.audit(p.ativo?'Inativação de produto no catálogo':'Ativação de produto no catálogo',p.codigo+' · '+p.descricao); }; return this._tp[id]; }
   salvarRevenda=()=>{ if(!this.pode('cadastros.revendas')) return this.negado('Você não tem permissão para gerenciar revendas.','cadastros.revendas'); const f=this.state.form; if(!f.nome||!f.cnpj) return this.err('Informe ao menos nome e CNPJ.');
-    if(f.editId){ this.setState(s=>({revendas:s.revendas.map(x=>x.id===f.editId?{...x,nome:f.nome,cnpj:f.cnpj,cidade:f.cidade||'—',email:f.email||x.email,telefone:f.telefone||'—'}:x),modal:null,form:{}}));
-      this.audit('Edição de revenda',f.nome); return; }
+    if(f.editId){ this.setState(s=>({revendas:s.revendas.map(x=>x.id===f.editId?{...x,nome:f.nome,cnpj:f.cnpj,cidade:f.cidade||'—',email:f.email||x.email,telefone:f.telefone||'—',
+      endereco:(f.endereco||'').trim(),complemento:(f.complemento||'').trim(),bairro:(f.bairro||'').trim(),cep:(f.cep||'').trim(),obsEntrega:(f.obsEntrega||'').trim()}:x),modal:null,form:{}}));
+      this.audit('Edição de revenda',f.nome+((f.endereco||'').trim()?' · endereço de entrega informado':'')); return; }
     const id=this.state.seq.rev;
-    this.setState(s=>({revendas:[...s.revendas,{id,nome:f.nome,cnpj:f.cnpj,cidade:f.cidade||'—',telefone:f.telefone||'—',ativo:true,visibilidade:this._visPadrao(),prodBloq:[],email:f.email||'acesso@'+f.nome.toLowerCase().replace(/[^a-z]/g,'')+'.com.br',ultimoAcesso:'— nunca acessou —'}],seq:{...s.seq,rev:id+1},modal:null,form:{}}));
+    this.setState(s=>({revendas:[...s.revendas,{id,nome:f.nome,cnpj:f.cnpj,cidade:f.cidade||'—',telefone:f.telefone||'—',ativo:true,visibilidade:this._visPadrao(),prodBloq:[],email:f.email||'acesso@'+f.nome.toLowerCase().replace(/[^a-z]/g,'')+'.com.br',ultimoAcesso:'— nunca acessou —',
+      endereco:(f.endereco||'').trim(),complemento:(f.complemento||'').trim(),bairro:(f.bairro||'').trim(),cep:(f.cep||'').trim(),obsEntrega:(f.obsEntrega||'').trim()}],seq:{...s.seq,rev:id+1},modal:null,form:{}}));
     this.audit('Cadastro de revenda',f.nome+' · catálogo completo por padrão: '+this.state.produtos.filter(p=>p.ativo).length+' produto(s) de '+this.state.fornecedores.length+' fornecedor(es)');
     setTimeout(()=>this._flushPersist(),0); };
   toggleRev(id){ this._trv=this._trv||{}; if(!this._trv[id]) this._trv[id]=()=>{ const r=this.state.revendas.find(x=>x.id===id);
@@ -6059,8 +6128,14 @@ class Component extends DCLogic {
         {k:'cidade',  rot:'Cidade/UF',         larg:20, ex:['Petrópolis/RJ','Nova Friburgo/RJ']},
         {k:'email',   rot:'E-mail de acesso',  larg:30, ex:['compras@barmirante.com.br','compras@valeverde.com.br']},
         {k:'telefone',rot:'Telefone',          larg:18, ex:['(24) 99999-0000','(22) 98888-1111']},
+        {k:'endereco',   rot:'Endereço de entrega (logradouro e nº)', larg:36, ex:['Rua do Imperador, 740','Av. Alberto Torres, 55']},
+        {k:'complemento',rot:'Complemento',    larg:18, ex:['Loja 2','Galpão B']},
+        {k:'bairro',     rot:'Bairro',         larg:20, ex:['Centro','Várzea']},
+        {k:'cep',        rot:'CEP',            larg:12, ex:['25610-000','28625-000']},
+        {k:'obsEntrega', rot:'Informações de entrega', larg:46, ex:['Recebimento 8h–11h; rua estreita, caminhão toco','Há empilhadeira no local']},
         {k:'ativo',   rot:'Ativo (Sim/Não)',   larg:16, ex:['Sim','Sim']}],
       ajuda:['Nome e CNPJ são obrigatórios. O CNPJ identifica a revenda: se já existir uma com o mesmo CNPJ, a linha ATUALIZA o cadastro em vez de duplicar.',
+             'O endereço de entrega é o que o fornecedor enxerga na cotação para calcular o frete. Sem logradouro e CEP, ele cota sem saber a distância.',
              'O e-mail é o login de acesso da revenda. Em branco, a plataforma gera um a partir do nome — ajuste depois em Usuários e permissões.',
              'A revenda entra enxergando todos os fornecedores ativos; refine em "Visibilidade" no detalhe da revenda.']}};
 
@@ -6326,7 +6401,9 @@ class Component extends DCLogic {
     if(tipo==='usuario') return (S.usuarios||[]).map(u=>({nome:u.nome,email:u.email,
       papel:this.PAPEIS[u.papel]||u.papel,vinculo:this._vinculoUsr(u).replace(/ · /g,'; '),senha:'',ativo:u.ativo?'Sim':'Não'}));
     if(tipo==='fornecedor') return S.fornecedores.map(f=>({nome:f.nome,cnpj:f.cnpj,cidade:f.cidade,contato:f.contato,telefone:f.telefone,contatoNome:f.contatoNome||'',ativo:f.ativo?'Sim':'Não'}));
-    if(tipo==='revenda') return S.revendas.map(r=>({nome:r.nome,cnpj:r.cnpj,cidade:r.cidade,email:r.email,telefone:r.telefone,ativo:r.ativo?'Sim':'Não'}));
+    if(tipo==='revenda') return S.revendas.map(r=>({nome:r.nome,cnpj:r.cnpj,cidade:r.cidade,email:r.email,telefone:r.telefone,
+      endereco:r.endereco||'',complemento:r.complemento||'',bairro:r.bairro||'',cep:r.cep||'',obsEntrega:r.obsEntrega||'',
+      ativo:r.ativo?'Sim':'Não'}));
     return S.produtos.map(p=>{ const fi=this._ficha(p); const sp=this._saldoProduto(p.id); const dec=v=>v==null?'':String(v).replace('.',',');
       return {codigo:p.codigo,descricao:p.descricao,unidade:p.unidade,categoria:this._pCat(p),
         preco:String((p.preco||0).toFixed(2)).replace('.',','),
@@ -6379,9 +6456,15 @@ class Component extends DCLogic {
         const visPad=this._visPadrao(s.fornecedores);
         bons.forEach(r=>{ const d=r.dados;
           const mail=d.email||('acesso@'+d.nome.toLowerCase().replace(/[^a-z]/g,'')+'.com.br');
+          const ent=k=>(d[k]==null||String(d[k]).trim()==='')?null:String(d[k]).trim();
           if(r.alvoId!=null){ const ix=lista.findIndex(x=>x.id===r.alvoId);
-            lista[ix]={...lista[ix],nome:d.nome,cnpj:d.cnpj,cidade:d.cidade,telefone:d.telefone,ativo:d.ativo,email:d.email||lista[ix].email}; }
+            lista[ix]={...lista[ix],nome:d.nome,cnpj:d.cnpj,cidade:d.cidade,telefone:d.telefone,ativo:d.ativo,email:d.email||lista[ix].email,
+              endereco:ent('endereco')??lista[ix].endereco,complemento:ent('complemento')??lista[ix].complemento,
+              bairro:ent('bairro')??lista[ix].bairro,cep:ent('cep')??lista[ix].cep,
+              obsEntrega:ent('obsEntrega')??lista[ix].obsEntrega}; }
           else { lista.push({id:seq,nome:d.nome,cnpj:d.cnpj,cidade:d.cidade,telefone:d.telefone,ativo:d.ativo,
+            endereco:ent('endereco')||'',complemento:ent('complemento')||'',bairro:ent('bairro')||'',
+            cep:ent('cep')||'',obsEntrega:ent('obsEntrega')||'',
             visibilidade:[...visPad],prodBloq:[],email:mail,ultimoAcesso:'— nunca acessou —'}); seq++; } });
         return {revendas:lista,seq:{...s.seq,rev:seq},modal:null,form:{}}; }
       if(tipo==='categoria'){ let seq=Math.max(0,...(s.categorias||[]).map(c=>c.id))+1; const lista=[...(s.categorias||[])];
@@ -6702,9 +6785,14 @@ class Component extends DCLogic {
     }
     if(tipo==='revenda'){
       const cols=[C('Nome',34),C('CNPJ',21),C('Cidade/UF',20),C('E-mail de acesso',30),C('Telefone',18),C('Situação',12),
+        C('Endereço de entrega (logradouro e nº)',36),C('Complemento',18),C('Bairro',20),C('CEP',12),
+        C('Informações de entrega',46),C('Entrega cadastrada',18),
         C('Fornecedores visíveis',44),C('Produtos bloqueados',18),C('Pedidos',10),C('Valor em pedidos (R$)',20),C('Último acesso',18)];
       const linhas=S.revendas.map(r=>{ const ps=this._expPedsRev(r.id);
+        const dR=this._destino(r.id);
         return [r.nome,r.cnpj,r.cidade||'',r.email||'',r.telefone||'',r.ativo?'Ativo':'Inativo',
+          r.endereco||'',r.complemento||'',r.bairro||'',r.cep||'',r.obsEntrega||'',
+          this._expSN(dR.completo),
           (r.visibilidade||[]).map(id=>this._fornNome(id)).join('; '),(r.prodBloq||[]).length,ps.length,
           Math.round(ps.reduce((a,p)=>a+this.pedTotal(p),0)*100)/100,r.ultimoAcesso||'— nunca acessou —'];});
       return {cols,linhas};
@@ -7602,7 +7690,8 @@ class Component extends DCLogic {
       p.trilha.push(this.tr('Cotação '+id+' aberta para '+alocados.length+' item(ns) · '+totQ+' unidade(s) com '+(conv.length===1?'1 fornecedor':conv.length+' fornecedores')+(parcial?' — quantidade parcial; o saldo permanece aprovado':'')+(nAcima?' — '+nAcima+' item(ns) cotado(s) acima do pedido para negociar volume; o pedido da revenda não muda':'')));return p;});
     this.audit('Abertura de cotação',id+' · pedido '+f.pedidoId+' · '+alocados.length+' item(ns) · '+totQ+' un'+(parcial?' (parcial)':'')+(nAcima?' (acima do pedido em '+nAcima+' item(ns))':'')+(conv.length===1?' · fornecedor único (sem comparação de propostas)':' · '+conv.length+' fornecedores'));
     const _ilC=this._itensCotar(itensCot);
-    conv.forEach(cf=>this.notificar('cotacao_convite',this._fornEmail(cf),{cotacao:id,fornecedorNome:this._fornNome(cf),prazo:f.prazo,itensLista:_ilC,ocultarValor:true,observacao:obsC})); };
+    const _entC=this._entregaDe(f.pedidoId);
+    conv.forEach(cf=>this.notificar('cotacao_convite',this._fornEmail(cf),{cotacao:id,fornecedorNome:this._fornNome(cf),prazo:f.prazo,itensLista:_ilC,ocultarValor:true,observacao:obsC,..._entC})); };
   // ——— Rodadas de negociação (Ata 5.4) ———
   _cotRod(c){ return (c&&c.rodada)?c.rodada:1; }
   _rodInfo(c,n){ return ((c&&c.rodadas)||[]).find(r=>r.n===n)||null; }
@@ -7685,7 +7774,7 @@ class Component extends DCLogic {
       return x;});
     this.audit('Nova rodada de cotação',f.cotId+' · rodada '+n+' · '+itensSel.length+' item(ns) · '+convSel.length+' fornecedor(es)'+(obsR?' · com observação para os fornecedores':''));
     const _ilR=this._itensCotar((c.itens||[]).filter(it=>itensSel.includes(it.produtoId)));
-    convSel.forEach(cf=>this.notificar('cotacao_rodada',this._fornEmail(cf),{cotacao:f.cotId,fornecedorNome:this._fornNome(cf),rodada:String(n),prazo:f.prazo,itensLista:_ilR,ocultarValor:true,observacao:obsR}));
+    convSel.forEach(cf=>this.notificar('cotacao_rodada',this._fornEmail(cf),{cotacao:f.cotId,fornecedorNome:this._fornNome(cf),rodada:String(n),prazo:f.prazo,itensLista:_ilR,ocultarValor:true,observacao:obsR,...this._entregaVars(f.cotId)}));
     this.mClose(); };
   escolher(cotId,fid){ return ()=>{ const c=this.state.cotacoes.find(x=>x.id===cotId);
     const props=this._propsEfetivas(c);
@@ -7770,7 +7859,7 @@ class Component extends DCLogic {
         x.historico.push({quando:this.ts(),usuario:quem,acao:'Rodada '+n+' aberta automaticamente — aceite comercial RECUSADO pela revenda para '+porCot[cid].length+' item(ns) ('+porCot[cid].map(nomeP).join(', ')+') · motivo: '+motivo+' · prazo '+prazoR});
         return x;});
       const _ilR=this._itensCotar((c.itens||[]).filter(it=>porCot[cid].includes(it.produtoId)));
-      convs.forEach(cf=>this.notificar('cotacao_rodada',this._fornEmail(cf),{cotacao:cid,fornecedorNome:this._fornNome(cf),rodada:String(n),prazo:prazoR,itensLista:_ilR,ocultarValor:true})); });
+      convs.forEach(cf=>this.notificar('cotacao_rodada',this._fornEmail(cf),{cotacao:cid,fornecedorNome:this._fornNome(cf),rodada:String(n),prazo:prazoR,itensLista:_ilR,ocultarValor:true,...this._entregaVars(cid)})); });
     const porForn={}; acc.forEach(x=>{ if(x.i.porLoja) return; (porForn[x.i.fornecedorId]=porForn[x.i.fornecedorId]||[]).push(x.i); });
     Object.keys(porForn).forEach(fid2=>{ this.notificar('pedido_fornecedor',this._fornEmail(+fid2),{pedidoId:p.id,fornecedorNome:this._fornNome(+fid2),revendaNome:this._revNome(p.revendaId),itensLista:porForn[fid2].map(i2=>this._itemView(i2))}); });
     this.notificar('aceite_revenda_loja',this._lojaEmail(),{pedidoId:p.id,revendaNome:this._revNome(p.revendaId),aceitos:aceitosView,recusados:recusadosView,motivo,usuario:quem});
@@ -9116,7 +9205,8 @@ class Component extends DCLogic {
               toggle:this.toggleProdBloq(r.id,p.id),toggleLabel:bloq?'Liberar':'Bloquear'};}),
           semProds:prodsVis.length===0,
           pedidos:peds.map(pedRow),semPedidos:peds.length===0,
-          editar:this.open('revenda',{editId:r.id,nome:r.nome,cnpj:r.cnpj,cidade:r.cidade,email:r.email,telefone:(r.telefone&&r.telefone!=='—')?r.telefone:''}),
+          editar:this.open('revenda',{editId:r.id,nome:r.nome,cnpj:r.cnpj,cidade:r.cidade,email:r.email,telefone:(r.telefone&&r.telefone!=='—')?r.telefone:'',
+            endereco:r.endereco||'',complemento:r.complemento||'',bairro:r.bairro||'',cep:r.cep||'',obsEntrega:r.obsEntrega||''}),
           reenviar:this.reenviarConvite(r.id),
           toggle:this.toggleRev(r.id),toggleLabel:r.ativo?'Inativar revenda':'Reativar revenda',
           voltar:this.go('rev')}; } }
@@ -9387,6 +9477,7 @@ class Component extends DCLogic {
       const seedP={cotId:c.id,prazoEntrega:own?own.prazoEntrega:'',validade:own?own.validade:'',condicoes:own?own.condicoes:'',freteMod:own?(own.freteMod||'CIF'):'CIF',freteValor:own&&own.freteValor?String(own.freteValor).replace('.',','):'',transportadora:own?(own.transportadora||''):'',condEntrega:own?(own.condEntrega||''):''};
       if(own&&own.itens) Object.keys(own.itens).forEach(k2=>{seedP['ip'+k2]=String(own.itens[k2]).replace('.',',');});
       return {id:c.id,prazo:c.prazo,...this.chip(c.status),
+        ...this._destinoVals(ped.revendaId),
         obsLoja:this._obsRodada(c),temObsLoja:!!this._obsRodada(c),
         itensTxt:citens.map(i=>P(i.produtoId).descricao+' ×'+i.qtd).join(', '),
         fotos:citens.map(i=>({src:this.fotosDe(P(i.produtoId))[0],ver:this.verFoto(i.produtoId)})),
@@ -9510,6 +9601,7 @@ class Component extends DCLogic {
             refFmt:this.fmt(it.preco),val:v,fx:this.fx('ip'+it.produtoId)};});
         const fvP=Math.round((this.num(S.form.freteValor)||0)*100)/100;
         propInfo={cotId:c.id,prazo:c.prazo,obsLoja:this._obsRodada(c),temObsLoja:!!this._obsRodada(c),
+          ...this._destinoVals(((PEDS.find(x=>x.id===c.pedidoId)||{}).revendaId)),
           obsLojaRot:'O que a Loja espera nesta '+(rodP>1?('rodada '+rodP):'cotação'),rodadaTag:rodP>1?'Contraproposta — rodada '+rodP+' · revise os preços dos itens em renegociação':'',temRodadaTag:rodP>1,itensTxt:citens.map(i=>P(i.produtoId).descricao+' ×'+i.qtd).join(', '),
           refFmt:this.fmt(citens.reduce((a,i)=>a+i.qtd*i.preco,0)),
           fotos:citens.map(i=>({src:this.fotosDe(P(i.produtoId))[0],ver:this.verFoto(i.produtoId)})),
@@ -9977,6 +10069,8 @@ class Component extends DCLogic {
       form:S.form,mClose:this.mClose,
       irCategorias:this.irCategorias,podeCategorias:this.role==='loja'&&this.pode('cadastros.produtos'),
       fxNome:this.fx('nome'),fxCnpj:this.fx('cnpj'),fxCidade:this.fx('cidade'),fxContato:this.fx('contato'),
+      fxEndereco:this.fx('endereco'),fxComplemento:this.fx('complemento'),fxBairro:this.fx('bairro'),
+      fxCep:this.fx('cep'),fxObsEntrega:this.fx('obsEntrega'),
       fxRoyalty:this.fx('royalty'),fxInicio:this.fxData('inicio'),fxFim:this.fxData('fim'),fxFornecedorId:this.fx('fornecedorId'),fxRevendaId:this.fx('revendaId'),
       fxCodigo:this.fx('codigo'),fxDescricao:this.fx('descricao'),fxUnidade:this.fx('unidade'),fxPreco:this.fx('preco'),fxBuscaForn:this.fx('buscaForn'),fxTelefone:this.fxTelefone,fxContatoNome:this.fx('contatoNome'),fxCategoria:this.fx('categoria'),
       fxJustif:this.fx('justif'),fxPedidoId:this.fx('pedidoId'),fxPrazo:this.fxData('prazo'),
