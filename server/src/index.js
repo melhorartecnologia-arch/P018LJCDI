@@ -6,7 +6,9 @@ import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { query, driver } from './db.js'
 import { migrate } from './migrate.js'
-import { loadState, saveState, loadCollection, COLLECTION_KEYS, loadConfigEmail, saveAnexo, loadAnexo } from './repo.js'
+import { loadState, saveState, loadCollection, COLLECTION_KEYS, loadConfigEmail, saveAnexo, loadAnexo,
+  lerUsuarioPorEmail, lerUsuarioPorId, atualizarUsuario } from './repo.js'
+import * as auth from './auth.js'
 import { verifyConfig, sendTest, sendNotify } from './email.js'
 import { analisarDocumento, engineAtual, claudeDisponivel } from './analise-fiscal.js'
 import { config } from './config.js'
@@ -52,6 +54,159 @@ app.put('/api/state', async (req, res, next) => {
     res.json({ ok: true })
   } catch (err) {
     next(err)
+  }
+})
+
+// ── Autenticação ───────────────────────────────────────────────────────────
+// A senha é conferida aqui, não no navegador. O cliente manda e-mail e senha e
+// recebe "entra" ou "não entra" — o hash nunca atravessa a rede.
+
+const origemDe = (req) => String(req.ip || (req.socket && req.socket.remoteAddress) || 'desconhecida')
+const semSegredoUsr = (u) => {
+  const { senhaHash, bloqLogin, ...resto } = u
+  return { ...resto, temSenha: !!senhaHash, trocarSenha: !!u.trocarSenha }
+}
+
+// A resposta de falha é sempre a mesma para e-mail inexistente e senha errada:
+// quem está tentando adivinhar não descobre quais contas existem.
+const CREDENCIAL_INVALIDA = { ok: false, erro: 'credenciais' }
+
+app.post('/api/auth/login', async (req, res, next) => {
+  try {
+    const { email, senha } = req.body || {}
+    const ip = origemDe(req)
+    if (auth.freioOrigem(ip)) {
+      return res.status(429).json({ ok: false, erro: 'excesso',
+        mensagem: 'Tentativas demais a partir deste acesso. Aguarde alguns minutos.' })
+    }
+    if (!email || !senha) return res.status(400).json(CREDENCIAL_INVALIDA)
+
+    const u = await lerUsuarioPorEmail(email)
+    // Usuário inexistente: consome o mesmo tempo de um scrypt, para que a
+    // demora da resposta também não denuncie quais e-mails estão cadastrados.
+    if (!u) { auth.conferirSenha(String(senha), auth.hashSenha('referencia-de-tempo')); return res.status(401).json(CREDENCIAL_INVALIDA) }
+
+    const preso = auth.travaAtiva(u.bloqLogin)
+    if (preso) {
+      return res.status(429).json({ ok: false, erro: 'bloqueado', minutos: preso,
+        mensagem: `Acesso temporariamente bloqueado por tentativas incorretas. Tente de novo em ${preso} minuto(s).` })
+    }
+
+    if (!u.senhaHash || !auth.conferirSenha(String(senha), u.senhaHash)) {
+      const b = u.bloqLogin || { falhas: 0, bloqueios: 0, ate: null }
+      const falhas = (b.falhas || 0) + 1
+      const patch = falhas >= auth.MAX_TENTATIVAS
+        ? { falhas: 0, bloqueios: (b.bloqueios || 0) + 1,
+            ate: new Date(Date.now() + auth.minutosDeEspera(b.bloqueios || 0) * 60000).toISOString() }
+        : { ...b, falhas }
+      await atualizarUsuario(u.id, { bloqLogin: patch })
+      const travou = auth.travaAtiva(patch)
+      if (travou) {
+        return res.status(429).json({ ok: false, erro: 'bloqueado', minutos: travou,
+          mensagem: `Acesso temporariamente bloqueado por ${travou} minuto(s) após ${auth.MAX_TENTATIVAS} tentativas incorretas.` })
+      }
+      // Nada de "restam N tentativas": isso só existiria para contas reais e
+      // entregaria quais e-mails estão cadastrados.
+      return res.status(401).json(CREDENCIAL_INVALIDA)
+    }
+
+    // Senha correta. O que impede o acesso a partir daqui pode ser dito com
+    // clareza: quem chegou até aqui já provou ser o dono da conta.
+    if (!u.ativo) {
+      return res.status(403).json({ ok: false, erro: 'inativo',
+        mensagem: 'Usuário inativo. Fale com o administrador da plataforma.' })
+    }
+
+    const patch = { bloqLogin: null }
+    // Senha gravada no formato antigo: regrava em scrypt agora, com a senha em mãos.
+    if (auth.ehLegado(u.senhaHash)) patch.senhaHash = auth.hashSenha(String(senha))
+    const atualizado = await atualizarUsuario(u.id, patch)
+    auth.limparFreio(ip)
+
+    const token = auth.criarSessao(atualizado)
+    res.json({ ok: true, token, usuario: semSegredoUsr(atualizado) })
+  } catch (err) { next(err) }
+})
+
+app.post('/api/auth/logout', (req, res) => {
+  auth.encerrarSessao((req.body || {}).token)
+  res.json({ ok: true })
+})
+
+// Troca da própria senha — exige a senha atual, mesmo na troca obrigatória do
+// primeiro acesso. É o caminho que tira o usuário da senha enviada por e-mail.
+app.post('/api/auth/trocar-senha', async (req, res, next) => {
+  try {
+    const { email, senhaAtual, novaSenha } = req.body || {}
+    if (auth.freioOrigem(origemDe(req))) {
+      return res.status(429).json({ ok: false, erro: 'excesso', mensagem: 'Tentativas demais. Aguarde alguns minutos.' })
+    }
+    const u = await lerUsuarioPorEmail(email)
+    if (!u || !u.senhaHash || !auth.conferirSenha(String(senhaAtual || ''), u.senhaHash)) {
+      return res.status(401).json({ ok: false, erro: 'credenciais', mensagem: 'Senha atual incorreta.' })
+    }
+    const erro = auth.erroSenha(novaSenha, u.email)
+    if (erro) return res.status(400).json({ ok: false, erro: 'politica', mensagem: erro })
+    if (auth.conferirSenha(String(novaSenha), u.senhaHash)) {
+      return res.status(400).json({ ok: false, erro: 'politica', mensagem: 'A nova senha deve ser diferente da atual.' })
+    }
+    const atualizado = await atualizarUsuario(u.id, {
+      senhaHash: auth.hashSenha(String(novaSenha)), trocarSenha: false, bloqLogin: null,
+      senhaAlteradaEm: new Date().toISOString() })
+    // Trocar a senha derruba as outras sessões daquele usuário.
+    auth.encerrarSessoesDe(u.id)
+    res.json({ ok: true, token: auth.criarSessao(atualizado), usuario: semSegredoUsr(atualizado) })
+  } catch (err) { next(err) }
+})
+
+// Senha inicial definida pela Loja (criação do usuário e reenvio de acesso).
+// Só quem já está autenticado como administrador ou Loja pode chamar, e a senha
+// definida aqui nasce com troca obrigatória no primeiro acesso.
+app.post('/api/auth/definir-senha', async (req, res, next) => {
+  try {
+    const { token, usuarioId, senha } = req.body || {}
+    const s = auth.lerSessao(token)
+    if (!s || !['admin', 'loja'].includes(s.papel)) {
+      return res.status(403).json({ ok: false, erro: 'sem_permissao',
+        mensagem: 'Sessão sem permissão para definir senhas.' })
+    }
+    const alvo = await lerUsuarioPorId(usuarioId)
+    if (!alvo) return res.status(404).json({ ok: false, erro: 'nao_encontrado' })
+    const nova = String(senha || '') || auth.gerarSenha()
+    const erro = auth.erroSenha(nova, alvo.email)
+    if (erro) return res.status(400).json({ ok: false, erro: 'politica', mensagem: erro })
+    await atualizarUsuario(usuarioId, { senhaHash: auth.hashSenha(nova), trocarSenha: true, bloqLogin: null })
+    auth.encerrarSessoesDe(usuarioId)
+    res.json({ ok: true, senha: nova })
+  } catch (err) { next(err) }
+})
+
+// Senha inicial sugerida pela plataforma (dentro da política).
+app.get('/api/auth/senha-sugerida', (_req, res) => res.json({ ok: true, senha: auth.gerarSenha() }))
+
+// "Esqueci minha senha": registra o pedido e avisa a Loja. NÃO troca a senha de
+// ninguém — se trocasse, bastaria saber o e-mail de alguém para derrubar o
+// acesso dessa pessoa. A resposta é sempre a mesma, exista a conta ou não.
+app.post('/api/auth/recuperar', async (req, res) => {
+  const generica = { ok: true, mensagem: 'Se este e-mail estiver cadastrado, a Loja Cidade Imperial foi avisada e entrará em contato com as instruções de acesso.' }
+  try {
+    if (auth.freioOrigem(origemDe(req))) return res.json(generica)
+    const { email } = req.body || {}
+    const u = await lerUsuarioPorEmail(email)
+    if (!u) return res.json(generica)
+    const cfg = (await loadConfigEmail()) || {}
+    const destino = cfg.emailLoja || cfg.remetenteEmail
+    if (cfg.ativo && destino) {
+      await sendNotify(cfg, 'recuperacao_senha', [destino], {
+        usuarioNome: u.nome, usuarioEmail: u.email,
+        papel: u.papel, quando: new Date().toLocaleString('pt-BR'),
+      }).catch(() => {})
+    }
+    await atualizarUsuario(u.id, { pedidoAcesso: { quando: new Date().toISOString() } })
+    res.json(generica)
+  } catch (err) {
+    console.error('[server] recuperar acesso:', err)
+    res.json(generica)
   }
 })
 

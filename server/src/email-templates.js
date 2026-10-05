@@ -396,6 +396,19 @@ export const TEMPLATES = {
       p('Por segurança, <b>troque a senha assim que entrar pela primeira vez</b> e não compartilhe estes dados com outras pessoas. Este acesso é pessoal e todas as ações realizadas na plataforma ficam registradas na trilha de auditoria.') +
       p('Se você não esperava este e-mail, avise a Loja Cidade Imperial para que o acesso seja bloqueado.'), 'Acesso'),
   }),
+
+  // Pedido de recuperação de acesso. Vai para a Loja, não para quem pediu: a
+  // senha é redefinida por quem administra a plataforma, depois de conferir com
+  // a pessoa. Assim, saber o e-mail de alguém não derruba o acesso dessa pessoa.
+  recuperacao_senha: (v) => ({
+    subject: `Pedido de recuperação de acesso — ${v.usuarioEmail}`,
+    html: layout('Pedido de recuperação de acesso',
+      p('Um pedido de recuperação de senha foi feito na tela de login da plataforma.') +
+      linhas([['Usuário', v.usuarioNome], ['E-mail', v.usuarioEmail],
+        ['Perfil', v.papel], ['Quando', v.quando]]) +
+      p('Para atender, abra <b>Configurações Técnicas › Usuários e permissões</b>, localize o usuário e use <b>Enviar</b> em "Dados de acesso" — a plataforma gera uma nova senha inicial e a envia por e-mail, com troca obrigatória no primeiro acesso.') +
+      p('<b>Confirme com a pessoa antes de redefinir.</b> O pedido parte da tela de login e não comprova quem o fez.'), 'Segurança'),
+  }),
 }
 
 export function renderTemplate(evento, vars = {}) {

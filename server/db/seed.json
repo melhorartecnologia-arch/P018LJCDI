@@ -1052,33 +1052,32 @@
       "id": 1,
       "nome": "Administrador Técnico",
       "email": "admin@cidadeimperial.com.br",
-      "senhaHash": "108bf99ab7e362",
       "papel": "admin",
       "fornecedorId": null,
       "revendaId": null,
       "ativo": true,
       "permissoes": {},
       "ultimoAcesso": null,
-      "criadoEm": "01/01/2026"
+      "criadoEm": "01/01/2026",
+      "trocarSenha": true
     },
     {
       "id": 2,
       "nome": "Ana Ribeiro",
       "email": "ana@cidadeimperial.com.br",
-      "senhaHash": "1b37f53827b438",
       "papel": "loja",
       "fornecedorId": null,
       "revendaId": null,
       "ativo": true,
       "permissoes": {},
       "ultimoAcesso": "09/07/2026 08:00",
-      "criadoEm": "01/01/2026"
+      "criadoEm": "01/01/2026",
+      "trocarSenha": true
     },
     {
       "id": 3,
       "nome": "Carlos Mota (analista)",
       "email": "carlos@cidadeimperial.com.br",
-      "senhaHash": "1b37f53827b438",
       "papel": "loja",
       "fornecedorId": null,
       "revendaId": null,
@@ -1090,39 +1089,39 @@
         "royalties.pagar": false
       },
       "ultimoAcesso": null,
-      "criadoEm": "15/03/2026"
+      "criadoEm": "15/03/2026",
+      "trocarSenha": true
     },
     {
       "id": 4,
       "nome": "Distribuidora Serra Verde",
       "email": "comercial@serraverde.com.br",
-      "senhaHash": "16cda9748c5e68",
       "papel": "fornecedor",
       "fornecedorId": 1,
       "revendaId": null,
       "ativo": true,
       "permissoes": {},
       "ultimoAcesso": "07/07/2026 10:02",
-      "criadoEm": "01/02/2026"
+      "criadoEm": "01/02/2026",
+      "trocarSenha": true
     },
     {
       "id": 5,
       "nome": "Bar do Imperador",
       "email": "compras@bardoimperador.com.br",
-      "senhaHash": "11717ff2d26463",
       "papel": "revenda",
       "fornecedorId": null,
       "revendaId": 1,
       "ativo": true,
       "permissoes": {},
       "ultimoAcesso": "09/07/2026 08:14",
-      "criadoEm": "01/02/2026"
+      "criadoEm": "01/02/2026",
+      "trocarSenha": true
     },
     {
       "id": 6,
       "nome": "Milena Duarte",
       "email": "milena@grupoimperial.com.br",
-      "senhaHash": "11717ff2d26463",
       "papel": "revenda",
       "fornecedorId": null,
       "revendaId": 1,
@@ -1133,7 +1132,8 @@
       "ativo": true,
       "permissoes": {},
       "ultimoAcesso": null,
-      "criadoEm": "15/07/2026"
+      "criadoEm": "15/07/2026",
+      "trocarSenha": true
     }
   ],
   "inventarios": [

@@ -60,6 +60,23 @@ const ARRAY_TABLES = [
 
 const ARRAY_KEYS = ARRAY_TABLES.map((t) => t.name)
 
+// ── Credenciais ficam no servidor ────────────────────────────────────────────
+// O hash da senha e o controle de tentativas nunca são entregues ao navegador,
+// e o cliente também não consegue sobrescrevê-los pelo PUT /api/state: quem
+// manda neles são os endpoints de autenticação.
+const CAMPOS_SECRETOS = ['senhaHash', 'bloqLogin']
+
+function semSegredo(u) {
+  const limpo = { ...u }
+  for (const k of CAMPOS_SECRETOS) delete limpo[k]
+  // o cliente precisa saber se há senha definida e se a troca é obrigatória —
+  // nenhum dos dois revela a senha
+  limpo.temSenha = !!u.senhaHash
+  limpo.trocarSenha = !!u.trocarSenha
+  limpo.bloqueadoAte = (u.bloqLogin && u.bloqLogin.ate) || null
+  return limpo
+}
+
 function insertSql(table, columns) {
   const cols = columns.join(', ')
   const params = columns.map((_, i) => `$${i + 1}`).join(', ')
@@ -75,7 +92,7 @@ export async function loadState() {
 
   for (const key of ARRAY_KEYS) {
     const res = await query(`SELECT data FROM ${key} ORDER BY ord`)
-    state[key] = res.rows.map((r) => r.data)
+    state[key] = key === 'usuarios' ? res.rows.map((r) => semSegredo(r.data)) : res.rows.map((r) => r.data)
   }
 
   const pg = await query('SELECT chave, data FROM pagamentos')
@@ -113,8 +130,26 @@ export async function saveState(state) {
     }
 
     for (const t of ARRAY_TABLES) {
-      const list = state[t.name]
+      let list = state[t.name]
       if (!Array.isArray(list)) continue
+      // Usuários: o que vem do navegador não carrega (nem pode alterar) hash de
+      // senha e bloqueio. O que já está gravado é mantido; usuário novo entra
+      // sem senha e só passa a ter uma pelos endpoints de autenticação.
+      if (t.name === 'usuarios') {
+        const atuais = new Map((await client.query('SELECT id, data FROM usuarios')).rows
+          .map((r) => [String(r.id), r.data || {}]))
+        list = list.map((u) => {
+          const antigo = atuais.get(String(u.id)) || {}
+          const novo = { ...u }
+          for (const k of CAMPOS_SECRETOS) delete novo[k]
+          delete novo.temSenha; delete novo.bloqueadoAte
+          if (antigo.senhaHash) novo.senhaHash = antigo.senhaHash
+          if (antigo.bloqLogin) novo.bloqLogin = antigo.bloqLogin
+          // a obrigatoriedade de trocar a senha é decidida no servidor
+          novo.trocarSenha = antigo.senhaHash ? !!antigo.trocarSenha : true
+          return novo
+        })
+      }
       await client.query(`DELETE FROM ${t.name}`)
       const sql = insertSql(t.name, t.columns)
       for (let i = 0; i < list.length; i++) {
@@ -185,6 +220,29 @@ export async function loadAnexo(id) {
   return res.rows[0] || null
 }
 
+// ---- Credenciais (uso exclusivo dos endpoints de autenticação) ----
+// Estas são as únicas funções que enxergam `senhaHash`/`bloqLogin`.
+export async function lerUsuarioPorEmail(email) {
+  const alvo = String(email || '').trim().toLowerCase()
+  if (!alvo) return null
+  const res = await query('SELECT data FROM usuarios WHERE lower(email) = $1', [alvo])
+  return res.rows[0] ? res.rows[0].data : null
+}
+
+export async function lerUsuarioPorId(id) {
+  const res = await query('SELECT data FROM usuarios WHERE id = $1', [id])
+  return res.rows[0] ? res.rows[0].data : null
+}
+
+// Grava apenas os campos indicados do usuário, sem tocar no resto do estado.
+export async function atualizarUsuario(id, patch) {
+  const atual = await lerUsuarioPorId(id)
+  if (!atual) return null
+  const novo = { ...atual, ...patch }
+  await query('UPDATE usuarios SET data = $2, ativo = $3 WHERE id = $1', [id, novo, !!novo.ativo])
+  return novo
+}
+
 export async function isEmpty() {
   const res = await query('SELECT COUNT(*)::int AS n FROM fornecedores')
   return res.rows[0].n === 0
@@ -204,6 +262,7 @@ export async function loadCollection(key) {
   }
   if (!ARRAY_KEYS.includes(key)) return null
   const res = await query(`SELECT data FROM ${key} ORDER BY ord`)
+  if (key === 'usuarios') return res.rows.map((r) => semSegredo(r.data))
   return res.rows.map((r) => r.data)
 }
 

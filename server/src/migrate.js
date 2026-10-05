@@ -2,11 +2,34 @@ import { readFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { exec, waitReady, driver } from './db.js'
-import { isEmpty, saveState } from './repo.js'
+import { isEmpty, saveState, atualizarUsuario } from './repo.js'
 import { config } from './config.js'
+import { hashSenha, gerarSenha } from './auth.js'
 
 const here = dirname(fileURLToPath(import.meta.url))
 const dbDir = resolve(here, '../db')
+
+// A carga inicial não traz senha nenhuma no arquivo — nada de senha conhecida
+// versionada no repositório. A senha de primeiro acesso vem de
+// SEED_SENHA_INICIAL ou é sorteada agora e impressa uma única vez no log; em
+// qualquer caso a troca é obrigatória no primeiro acesso.
+async function semearCredenciais(usuarios) {
+  if (!Array.isArray(usuarios) || !usuarios.length) return
+  const doAmbiente = !!config.senhaInicial
+  const senha = config.senhaInicial || gerarSenha()
+  for (const u of usuarios) {
+    await atualizarUsuario(u.id, { senhaHash: hashSenha(senha), trocarSenha: true, bloqLogin: null })
+  }
+  if (doAmbiente) {
+    console.log(`[migrate] senha inicial dos ${usuarios.length} usuário(s) definida por SEED_SENHA_INICIAL · troca obrigatória no primeiro acesso`)
+  } else {
+    console.log('[migrate] ──────────────────────────────────────────────')
+    console.log(`[migrate] SENHA INICIAL (${usuarios.length} usuário(s)): ${senha}`)
+    console.log('[migrate] anote agora — não será exibida de novo. A troca é')
+    console.log('[migrate] obrigatória no primeiro acesso de cada usuário.')
+    console.log('[migrate] ──────────────────────────────────────────────')
+  }
+}
 
 export async function migrate() {
   await waitReady()
@@ -21,6 +44,7 @@ export async function migrate() {
   } else if (await isEmpty()) {
     const seed = JSON.parse(await readFile(resolve(dbDir, 'seed.json'), 'utf8'))
     await saveState(seed)
+    await semearCredenciais(seed.usuarios)
     console.log('[migrate] dados iniciais carregados')
   } else {
     console.log('[migrate] dados existentes encontrados — seed ignorado')
@@ -32,6 +56,7 @@ export async function migrate() {
       const seed = JSON.parse(await readFile(resolve(dbDir, 'seed.json'), 'utf8'))
       if (Array.isArray(seed.usuarios) && seed.usuarios.length) {
         await saveState({ usuarios: seed.usuarios })
+        await semearCredenciais(seed.usuarios)
         console.log('[migrate] usuários iniciais semeados em banco existente')
       }
     }

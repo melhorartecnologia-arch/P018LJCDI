@@ -57,25 +57,44 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <div style="font-size:12px;color:#a89f90;letter-spacing:.08em;margin-top:3px">PLATAFORMA DA LOJA · ACESSO POR PERFIL</div>
       </div>
       <div style="background:#fff;border:1px solid #eae3d6;border-radius:16px;padding:24px 26px;box-shadow:0 14px 40px rgba(39,37,37,.08)">
-        <div style="font-size:12px;font-weight:600;color:#6b6459;margin:0 0 5px">E-mail</div>
-        <input value="{{loginEmail}}" onChange="{{setLoginEmail}}" placeholder="voce@empresa.com.br" style="width:100%;box-sizing:border-box;padding:10px 13px;border:1px solid #ddd5c7;border-radius:9px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin:12px 0 5px">
-          <div style="font-size:12px;font-weight:600;color:#6b6459">Senha</div>
-          <div style="font-size:11.5px;font-weight:600;color:#8f682a;cursor:pointer">Esqueci minha senha</div>
-        </div>
-        <input type="password" value="{{loginSenha}}" onChange="{{setLoginSenha}}" placeholder="••••••••" style="width:100%;box-sizing:border-box;padding:10px 13px;border:1px solid #ddd5c7;border-radius:9px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
-        <sc-if value="{{loginErro}}" hint-placeholder-val="{{false}}"><div style="color:#a33a2b;font-size:12.5px;margin-top:11px">{{loginErro}}</div></sc-if>
-        <div onClick="{{fazerLogin}}" style="margin-top:18px;text-align:center;background:#B38335;color:#fff;border-radius:10px;padding:12px 0;font-size:14px;font-weight:700;cursor:pointer" style-hover="background:#9a6f2b">Entrar na plataforma</div>
-        <div style="margin-top:16px;border-top:1px solid #f1ece2;padding-top:13px">
-          <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#b0a795;margin-bottom:7px">Acessos de demonstração — clique para preencher</div>
-          <sc-for list="{{loginDemo}}" as="d" hint-placeholder-count="4">
-            <div onClick="{{d.pick}}" style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 9px;border-radius:8px;cursor:pointer;font-size:11.5px" style-hover="background:#f7f3ea">
-              <span style="font-weight:600;color:#4a453d">{{d.label}}</span>
-              <span style="color:#a89f90;white-space:nowrap">{{d.email}} · {{d.senha}}</span>
+        <sc-if value="{{semTroca}}" hint-placeholder-val="{{true}}">
+          <div style="font-size:12px;font-weight:600;color:#6b6459;margin:0 0 5px">E-mail</div>
+          <input value="{{loginEmail}}" onChange="{{setLoginEmail}}" placeholder="voce@empresa.com.br" autocomplete="username" style="width:100%;box-sizing:border-box;padding:10px 13px;border:1px solid #ddd5c7;border-radius:9px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin:12px 0 5px">
+            <div style="font-size:12px;font-weight:600;color:#6b6459">Senha</div>
+            <div onClick="{{abrirRecuperar}}" style="font-size:11.5px;font-weight:600;color:#8f682a;cursor:pointer">Esqueci minha senha</div>
+          </div>
+          <input type="password" value="{{loginSenha}}" onChange="{{setLoginSenha}}" placeholder="••••••••" autocomplete="current-password" style="width:100%;box-sizing:border-box;padding:10px 13px;border:1px solid #ddd5c7;border-radius:9px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
+          <sc-if value="{{loginErro}}" hint-placeholder-val="{{false}}"><div style="color:#a33a2b;font-size:12.5px;margin-top:11px;line-height:1.5">{{loginErro}}</div></sc-if>
+          <div onClick="{{fazerLogin}}" style="margin-top:18px;text-align:center;background:{{entrarBg}};color:#fff;border-radius:10px;padding:12px 0;font-size:14px;font-weight:700;cursor:pointer" style-hover="background:#9a6f2b">{{entrarLabel}}</div>
+          <sc-if value="{{recAberto}}" hint-placeholder-val="{{false}}">
+            <div style="margin-top:16px;border-top:1px solid #f1ece2;padding-top:14px">
+              <div style="font-size:12.5px;font-weight:700;color:#272525;margin-bottom:3px">Recuperar o acesso</div>
+              <div style="font-size:11.5px;color:#8a8378;line-height:1.5;margin-bottom:9px">Informe o seu e-mail de login. A Loja Cidade Imperial é avisada e envia uma nova senha inicial para o e-mail cadastrado. Ninguém mais consegue alterar a sua senha por aqui.</div>
+              <input value="{{recEmail}}" onChange="{{setRecEmail}}" placeholder="voce@empresa.com.br" style="width:100%;box-sizing:border-box;padding:10px 13px;border:1px solid #ddd5c7;border-radius:9px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
+              <sc-if value="{{recMsg}}" hint-placeholder-val="{{false}}"><div style="font-size:12px;color:#2f6b39;margin-top:9px;line-height:1.5">{{recMsg}}</div></sc-if>
+              <div style="display:flex;gap:9px;margin-top:11px">
+                <div onClick="{{enviarRecuperar}}" style="flex:1;text-align:center;border:1px solid #d9c193;background:#faf5e9;color:#8f682a;border-radius:9px;padding:9px 0;font-size:12.5px;font-weight:700;cursor:pointer" style-hover="background:#f5ebd2">Solicitar nova senha</div>
+                <div onClick="{{abrirRecuperar}}" style="border:1px solid #e5ddcd;color:#6b6459;background:#fff;border-radius:9px;padding:9px 15px;font-size:12.5px;font-weight:600;cursor:pointer" style-hover="background:#f7f3ea">Fechar</div>
+              </div>
             </div>
-          </sc-for>
-        </div>
+          </sc-if>
+        </sc-if>
+        <sc-if value="{{temTroca}}" hint-placeholder-val="{{false}}">
+          <div style="font-size:15px;font-weight:700;color:#272525">Defina a sua senha</div>
+          <div style="font-size:12px;color:#8a8378;line-height:1.55;margin-top:4px">{{trocaNome}} · {{trocaEmail}}</div>
+          <div style="font-size:12px;color:#6b6459;line-height:1.55;margin-top:10px;background:#faf7f0;border:1px solid #e8e1d2;border-radius:10px;padding:11px 13px">A senha que você recebeu por e-mail serve só para este primeiro acesso. Escolha agora uma senha pessoal — ela não é conhecida por ninguém da Loja.</div>
+          <div style="font-size:12px;font-weight:600;color:#6b6459;margin:14px 0 5px">Nova senha</div>
+          <input type="password" value="{{trocaNova}}" onChange="{{setTrocaNova}}" placeholder="••••••••••" autocomplete="new-password" style="width:100%;box-sizing:border-box;padding:10px 13px;border:1px solid #ddd5c7;border-radius:9px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
+          <div style="font-size:11px;color:#a89f90;margin-top:6px;line-height:1.5">{{regraSenha}}</div>
+          <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Repita a nova senha</div>
+          <input type="password" value="{{trocaNova2}}" onChange="{{setTrocaNova2}}" placeholder="••••••••••" autocomplete="new-password" style="width:100%;box-sizing:border-box;padding:10px 13px;border:1px solid #ddd5c7;border-radius:9px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
+          <sc-if value="{{trocaErro}}" hint-placeholder-val="{{false}}"><div style="color:#a33a2b;font-size:12.5px;margin-top:11px;line-height:1.5">{{trocaErro}}</div></sc-if>
+          <div onClick="{{confirmarTroca}}" style="margin-top:18px;text-align:center;background:{{entrarBg}};color:#fff;border-radius:10px;padding:12px 0;font-size:14px;font-weight:700;cursor:pointer" style-hover="background:#9a6f2b">Salvar e entrar</div>
+          <div onClick="{{cancelarTroca}}" style="margin-top:9px;text-align:center;font-size:12px;font-weight:600;color:#8a8378;cursor:pointer;padding:6px 0">Voltar</div>
+        </sc-if>
       </div>
+      <div style="font-size:11px;color:#b0a795;text-align:center;margin-top:14px;line-height:1.6">Acesso pessoal e intransferível. Todas as ações realizadas na plataforma ficam registradas na trilha de auditoria.</div>
     </div>
   </div>
 </sc-if>
@@ -131,7 +150,8 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         <div style="font-size:12.5px;font-weight:600;color:#272525;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{userNome}}</div>
         <div style="font-size:10.5px;color:#a89f90">{{userPapel}}</div>
       </div>
-      <div onClick="{{sair}}" title="Sair da plataforma" style="font-size:12px;font-weight:600;color:#8a8378;border:1px solid #e5ddcd;border-radius:8px;padding:7px 11px;cursor:pointer;margin-left:4px" style-hover="background:#f7f3ea">Sair</div>
+      <div onClick="{{abrirTrocaSenha}}" title="Alterar a minha senha de acesso" style="font-size:12px;font-weight:600;color:#8a8378;border:1px solid #e5ddcd;border-radius:8px;padding:7px 11px;cursor:pointer;margin-left:4px;white-space:nowrap" style-hover="background:#f7f3ea">Alterar senha</div>
+      <div onClick="{{sair}}" title="Sair da plataforma" style="font-size:12px;font-weight:600;color:#8a8378;border:1px solid #e5ddcd;border-radius:8px;padding:7px 11px;cursor:pointer" style-hover="background:#f7f3ea">Sair</div>
     </div>
   </div>
 
@@ -4220,11 +4240,9 @@ input::placeholder,textarea::placeholder{color:#b0a795}
         </div>
         <div style="font-size:11px;color:#b0a795;margin-top:6px">Com 2 ou mais revendas, o usuário ganha o seletor de contexto no topo — opera em nome de cada revenda e vê a visão consolidada do grupo.</div>
       </sc-if>
-      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px"><sc-if value="{{usrEditando}}" hint-placeholder-val="{{false}}">Nova senha (deixe em branco para manter)</sc-if><sc-if value="{{usrNovo}}" hint-placeholder-val="{{true}}">Senha inicial</sc-if></div>
-      <div style="display:flex;gap:9px;align-items:center">
-        <input type="password" value="{{form.senha}}" onChange="{{fxSenhaU}}" placeholder="••••••••" style="flex:1;min-width:0;box-sizing:border-box;padding:10px 13px;border:1px solid #ddd5c7;border-radius:9px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
-        <div onClick="{{gerarSenhaAcesso}}" title="Gerar uma senha inicial" style="border:1px solid #e5ddcd;color:#6b6459;border-radius:9px;padding:10px 12px;font-size:12px;font-weight:600;cursor:pointer;background:#fff;white-space:nowrap;flex:none" style-hover="background:#f7f3ea">⟳ Gerar</div>
-      </div>
+      <sc-if value="{{usrNovo}}" hint-placeholder-val="{{true}}">
+        <div style="background:#faf7f0;border:1px solid #e8e1d2;border-radius:10px;padding:11px 13px;font-size:11.5px;color:#6b6459;line-height:1.55;margin-top:14px">A senha não é definida aqui. Ao salvar, a plataforma gera uma senha inicial aleatória e a envia ao e-mail do usuário — que é obrigado a trocá-la no primeiro acesso. Ninguém da Loja fica sabendo a senha definitiva.</div>
+      </sc-if>
       <sc-if value="{{usrPodeEnviar}}" hint-placeholder-val="{{true}}">
         <div style="display:flex;align-items:flex-start;gap:11px;border:1px solid {{usrEnvBd}};background:{{usrEnvFundo}};border-radius:10px;padding:12px 13px;margin-top:14px">
           <div onClick="{{toggleEnviarAcesso}}" title="Enviar os dados de acesso por e-mail" style="width:36px;height:20px;border-radius:11px;background:{{usrEnvSw}};position:relative;cursor:pointer;flex:none;transition:background .15s;margin-top:1px">
@@ -4246,12 +4264,33 @@ input::placeholder,textarea::placeholder{color:#b0a795}
   </div>
 </sc-if>
 
+<sc-if value="{{mTrocaSenha}}" hint-placeholder-val="{{false}}">
+  <div style="position:fixed;inset:0;background:rgba(39,37,37,.45);display:flex;align-items:center;justify-content:center;z-index:50">
+    <div style="background:#fff;border-radius:14px;width:440px;max-width:92vw;max-height:88vh;overflow-y:auto;padding:22px 24px;box-shadow:0 18px 50px rgba(39,37,37,.25)">
+      <div style="font-size:16px;font-weight:700;margin-bottom:2px">Alterar a minha senha</div>
+      <div style="font-size:12.5px;color:#8a8378;margin-bottom:14px">{{userNome}} · a senha é pessoal e não é conhecida por ninguém da Loja</div>
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:0 0 5px">Senha atual</div>
+      <input type="password" value="{{form.atual}}" onChange="{{fxSenhaAtual}}" placeholder="••••••••" autocomplete="current-password" style="width:100%;box-sizing:border-box;padding:10px 13px;border:1px solid #ddd5c7;border-radius:9px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Nova senha</div>
+      <input type="password" value="{{form.nova}}" onChange="{{fxSenhaNova}}" placeholder="••••••••••" autocomplete="new-password" style="width:100%;box-sizing:border-box;padding:10px 13px;border:1px solid #ddd5c7;border-radius:9px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
+      <div style="font-size:11px;color:#a89f90;margin-top:6px;line-height:1.5">{{regraSenha}}</div>
+      <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Repita a nova senha</div>
+      <input type="password" value="{{form.nova2}}" onChange="{{fxSenhaNova2}}" placeholder="••••••••••" autocomplete="new-password" style="width:100%;box-sizing:border-box;padding:10px 13px;border:1px solid #ddd5c7;border-radius:9px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525">
+      <sc-if value="{{form.erro}}" hint-placeholder-val="{{false}}"><div style="color:#a33a2b;font-size:12.5px;margin-top:11px;line-height:1.5">{{form.erro}}</div></sc-if>
+      <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:18px">
+        <div onClick="{{mClose}}" style="border:1px solid #e5ddcd;color:#6b6459;border-radius:8px;padding:9px 15px;font-size:13px;font-weight:600;cursor:pointer;background:#fff" style-hover="background:#f7f3ea">Cancelar</div>
+        <div onClick="{{confirmTrocaSenha}}" style="background:#B38335;color:#fff;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#9a6f2b">Salvar nova senha</div>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
 <sc-if value="{{mAcessoEnv}}" hint-placeholder-val="{{false}}">
   <div style="position:fixed;inset:0;background:rgba(39,37,37,.45);display:flex;align-items:center;justify-content:center;z-index:50">
     <div style="background:#fff;border-radius:14px;width:460px;max-width:92vw;max-height:88vh;overflow-y:auto;padding:22px 24px;box-shadow:0 18px 50px rgba(39,37,37,.25)">
       <div style="font-size:16px;font-weight:700;margin-bottom:2px">Enviar dados de acesso</div>
       <div style="font-size:12.5px;color:#8a8378;margin-bottom:14px">{{envUsr.nome}} · {{envUsr.email}} · {{envUsr.papelLabel}}</div>
-      <div style="background:#faf7f0;border:1px solid #e8e1d2;border-radius:10px;padding:11px 13px;font-size:12px;color:#6b6459;line-height:1.55">A senha original não fica guardada — apenas o seu resumo criptográfico. Por isso o reenvio define uma <b>nova senha inicial</b>, que passa a valer imediatamente para este usuário.</div>
+      <div style="background:#faf7f0;border:1px solid #e8e1d2;border-radius:10px;padding:11px 13px;font-size:12px;color:#6b6459;line-height:1.55">A senha original não fica guardada em lugar nenhum — nem a Loja a conhece. Por isso o reenvio define uma <b>nova senha inicial</b>, que passa a valer imediatamente e que o usuário é <b>obrigado a trocar no primeiro acesso</b>. A senha anterior deixa de valer agora.</div>
       <div style="font-size:12px;font-weight:600;color:#6b6459;margin:14px 0 5px">Nova senha inicial</div>
       <div style="display:flex;gap:9px;align-items:center">
         <input value="{{form.senha}}" onChange="{{fxSenhaU}}" style="flex:1;min-width:0;box-sizing:border-box;padding:10px 13px;border:1px solid #ddd5c7;border-radius:9px;font:inherit;font-size:13.5px;background:#fff;outline:none;color:#272525;font-family:monospace;letter-spacing:.04em">
@@ -4477,14 +4516,16 @@ class Component extends DCLogic {
 
   state = {
     logado:false, loginRole:'loja', loginEmail:'', loginSenha:'', loginErro:null,
+    loginOcupado:false, loginAviso:null, trocaObrig:null, trocaNova:'', trocaNova2:'', trocaErro:null,
+    recAberto:false, recEmail:'', recMsg:null, authToken:null,
     role:null, scr:null, fornAtivo:1, revAtivo:1, revGrupo:false, ajudaStep:0, ajudaPlay:false, ajudaMax:false, toast:null,
     usuario:null, buscaUsr:'', filtroPapel:'todos', invTplData:new Date().toLocaleDateString('pt-BR'),
     usuarios:[
-      {id:1,nome:'Administrador Técnico',email:'admin@cidadeimperial.com.br',senhaHash:'108bf99ab7e362',papel:'admin',fornecedorId:null,revendaId:null,ativo:true,permissoes:{},ultimoAcesso:null,criadoEm:'01/01/2026'},
-      {id:2,nome:'Ana Ribeiro',email:'ana@cidadeimperial.com.br',senhaHash:'1b37f53827b438',papel:'loja',fornecedorId:null,revendaId:null,ativo:true,permissoes:{},ultimoAcesso:'09/07/2026 08:00',criadoEm:'01/01/2026'},
-      {id:3,nome:'Carlos Mota (analista)',email:'carlos@cidadeimperial.com.br',senhaHash:'1b37f53827b438',papel:'loja',fornecedorId:null,revendaId:null,ativo:true,permissoes:{'pedidos.aprovar':false,'pedidos.rejeitar':false,'pedidos.atender':false,'royalties.pagar':false},ultimoAcesso:null,criadoEm:'15/03/2026'},
-      {id:4,nome:'Distribuidora Serra Verde',email:'comercial@serraverde.com.br',senhaHash:'16cda9748c5e68',papel:'fornecedor',fornecedorId:1,revendaId:null,ativo:true,permissoes:{},ultimoAcesso:'07/07/2026 10:02',criadoEm:'01/02/2026'},
-      {id:5,nome:'Bar do Imperador',email:'compras@bardoimperador.com.br',senhaHash:'11717ff2d26463',papel:'revenda',fornecedorId:null,revendaId:1,ativo:true,permissoes:{},ultimoAcesso:'09/07/2026 08:14',criadoEm:'01/02/2026'}
+      {id:1,nome:'Administrador Técnico',email:'admin@cidadeimperial.com.br',papel:'admin',fornecedorId:null,revendaId:null,ativo:true,permissoes:{},ultimoAcesso:null,criadoEm:'01/01/2026'},
+      {id:2,nome:'Ana Ribeiro',email:'ana@cidadeimperial.com.br',papel:'loja',fornecedorId:null,revendaId:null,ativo:true,permissoes:{},ultimoAcesso:'09/07/2026 08:00',criadoEm:'01/01/2026'},
+      {id:3,nome:'Carlos Mota (analista)',email:'carlos@cidadeimperial.com.br',papel:'loja',fornecedorId:null,revendaId:null,ativo:true,permissoes:{'pedidos.aprovar':false,'pedidos.rejeitar':false,'pedidos.atender':false,'royalties.pagar':false},ultimoAcesso:null,criadoEm:'15/03/2026'},
+      {id:4,nome:'Distribuidora Serra Verde',email:'comercial@serraverde.com.br',papel:'fornecedor',fornecedorId:1,revendaId:null,ativo:true,permissoes:{},ultimoAcesso:'07/07/2026 10:02',criadoEm:'01/02/2026'},
+      {id:5,nome:'Bar do Imperador',email:'compras@bardoimperador.com.br',papel:'revenda',fornecedorId:null,revendaId:1,ativo:true,permissoes:{},ultimoAcesso:'09/07/2026 08:14',criadoEm:'01/02/2026'}
     ],
     buscaGrupo:'', filtroGrupoSt:'todas',
     categorias:[
@@ -5618,15 +5659,15 @@ class Component extends DCLogic {
       "titulo": "Gerenciar contas de acesso e permissões",
       "resumo": "Tela do Administrador Técnico para criar usuários por perfil (Administrador, Loja, Fornecedor, Revenda) e ajustar permissões individuais de granularidade fina.",
       "passos": [
-        "Clique em \"+ Novo usuário\" para criar uma conta: informe nome, e-mail (login), o perfil de acesso e a senha inicial; para Fornecedor e Revenda, selecione também o vínculo. Use \"⟳ Gerar\" para criar uma senha inicial forte automaticamente.",
-        "Antes de salvar, responda à pergunta \"Enviar por e-mail os dados de acesso para o primeiro login?\": com o interruptor ligado (padrão), o usuário recebe o endereço da plataforma, o e-mail de login e a senha inicial assim que a conta é criada; desligado, nenhum e-mail sai e você entrega a senha por outro meio.",
+        "Clique em \"+ Novo usuário\" para criar uma conta: informe nome, e-mail (login) e o perfil de acesso; para Fornecedor e Revenda, selecione também o vínculo. Não existe campo de senha: a plataforma gera uma senha inicial aleatória e a envia ao usuário, que é obrigado a trocá-la no primeiro acesso — nem a Loja conhece a senha definitiva de ninguém.",
+        "Antes de salvar, responda à pergunta \"Gerar a senha inicial e enviar os dados de acesso por e-mail?\": com o interruptor ligado (padrão), a senha é gerada e enviada assim que a conta é criada; desligado, a conta nasce sem senha e o usuário ainda não consegue entrar — libere depois com \"Enviar\" na coluna Dados de acesso.",
         "Na coluna \"Dados de acesso\", o selo mostra quantos envios já foram feitos para aquele usuário — clique nele para abrir o \"Histórico de envios de acesso\", com data e hora, destinatário, motivo, quem enviou e o resultado de cada envio.",
-        "Para reenviar o acesso, clique em \"Enviar\" na linha do usuário: como a senha original não fica guardada, o sistema propõe uma nova senha inicial (que você pode gerar novamente), redefine a senha e envia o e-mail.",
+        "Para reenviar o acesso, clique em \"Enviar\" na linha do usuário: a senha original não fica guardada em lugar nenhum, então o sistema gera uma nova senha inicial, grava-a no servidor e envia o e-mail. A senha anterior deixa de valer na hora e a troca volta a ser obrigatória no próximo acesso.",
         "Use o campo \"Buscar por nome ou e-mail…\" e o seletor \"Todos os perfis\" para localizar contas na lista.",
         "Na coluna \"Permissões\", o selo \"⚙ padrão do perfil\" indica que o usuário segue o padrão; \"personalizada(s)\" mostra quantas permissões foram ajustadas individualmente.",
         "Clique no selo \"⚙\" para abrir o editor de permissões: cada chave do sistema (receber pedidos, decidir cotações, faturar, cobrar royalties, exportar…) tem um interruptor permitir/negar.",
         "No editor, a linha mostra a origem de cada permissão — \"padrão do perfil\" ou \"personalizada\" (com o padrão entre parênteses); use \"↺ Restaurar padrão do perfil\" para limpar os ajustes.",
-        "Use \"Editar\" para alterar nome, e-mail, perfil, vínculo ou redefinir a senha (deixe em branco para manter a atual); ao digitar uma nova senha, a plataforma pergunta se deve enviá-la por e-mail ao usuário.",
+        "Use \"Editar\" para alterar nome, e-mail, perfil e vínculo. Senha não se edita por aqui: quem troca a própria senha é o usuário, em \"Alterar senha\" no topo da tela; e, se ele perder o acesso, use \"Enviar\" para mandar uma nova senha inicial.",
         "Use \"Inativar\"/\"Reativar\" para bloquear ou devolver o acesso — um usuário inativo não consegue entrar na plataforma."
       ],
       "dicas": [
@@ -6259,12 +6300,11 @@ class Component extends DCLogic {
         {k:'email',  rot:'E-mail (login)',     larg:32, obrig:true, ex:['marina@bardoimperador.com.br','rafael@serraverde.com.br']},
         {k:'papel',  rot:'Perfil',             larg:22, obrig:true, ex:['Revenda','Fornecedor']},
         {k:'vinculo',rot:'Vínculo (separe por ;)',larg:44, ex:['Bar do Imperador; Choperia Alto da Serra','Distribuidora Serra Verde']},
-        {k:'senha',  rot:'Senha inicial',      larg:18, ex:['Kmqzr483','Xkpwq739']},
         {k:'ativo',  rot:'Ativo (Sim/Não)',    larg:16, ex:['Sim','Sim']}],
       ajuda:['Nome, e-mail e perfil são obrigatórios. O e-mail é o login e identifica o usuário: se já existir, a linha ATUALIZA o cadastro em vez de duplicar.',
              'Perfil aceita: Administrador Técnico, Loja Cidade Imperial, Fornecedor ou Revenda (também aceita admin, loja, fornecedor, revenda).',
              'Vínculo é obrigatório para Fornecedor (um) e Revenda (uma ou mais, separadas por ponto e vírgula, para grupo econômico). Use o nome exato do cadastro. Perfis Administrador e Loja não têm vínculo.',
-             'Senha inicial só é exigida em usuários novos; em branco na atualização, a senha atual é mantida. A senha NÃO é enviada por e-mail nesta carga — use "Enviar" na lista de usuários para mandar os dados de acesso e deixar o envio registrado.',
+             'A planilha NÃO carrega senha. O usuário entra sem acesso liberado; depois da carga, use "Enviar" na coluna Dados de acesso para que a plataforma gere uma senha inicial e a mande por e-mail, com troca obrigatória no primeiro acesso.',
              'As permissões entram no padrão do perfil; ajuste individualmente pelo editor "⚙" depois da carga.']},
     revenda:{
       titulo:'revendas', aba:'Revendas', arquivo:'modelo-revendas',
@@ -6392,13 +6432,10 @@ class Component extends DCLogic {
             if(r){ if(!revendaIds.includes(r.id)) revendaIds.push(r.id); } else semV.push(b); });
         }
         if(semV.length) erros.push('vínculo não cadastrado: '+semV.join(', '));
-        const senha=this._impTxt(v.senha);
-        if(!ja&&!senha) erros.push('usuário novo exige a senha inicial');
-        if(senha&&senha.length<6) erros.push('senha inicial com menos de 6 caracteres');
         out.chave=email||'—'; out.rotulo=nome||'—';
         out.acao=erros.length?'erro':(ja?'atualiza':'novo'); out.alvoId=ja?ja.id:null;
         out.detalhe=[papel?(this.PAPEIS[papel]||papel):'',brutosV.join(' · ')].filter(Boolean).join(' · ')||'—';
-        out.dados={nome,email,papel,fornecedorId,revendaIds,senha,ativo:this._impSim(v.ativo)!==false};
+        out.dados={nome,email,papel,fornecedorId,revendaIds,ativo:this._impSim(v.ativo)!==false};
       } else {
         const desc=this._impTxt(v.descricao), cod=this._impTxt(v.codigo).toUpperCase();
         if(!desc) erros.push('descrição em branco');
@@ -6546,7 +6583,7 @@ class Component extends DCLogic {
   _impAtuais(tipo){ const S=this.state;
     if(tipo==='categoria') return this._cats().map(c=>({nome:c.nome,descricao:c.descricao||'',ativo:c.ativo?'Sim':'Não'}));
     if(tipo==='usuario') return (S.usuarios||[]).map(u=>({nome:u.nome,email:u.email,
-      papel:this.PAPEIS[u.papel]||u.papel,vinculo:this._vinculoUsr(u).replace(/ · /g,'; '),senha:'',ativo:u.ativo?'Sim':'Não'}));
+      papel:this.PAPEIS[u.papel]||u.papel,vinculo:this._vinculoUsr(u).replace(/ · /g,'; '),ativo:u.ativo?'Sim':'Não'}));
     if(tipo==='fornecedor') return S.fornecedores.map(f=>({nome:f.nome,cnpj:f.cnpj,cidade:f.cidade,contato:f.contato,telefone:f.telefone,contatoNome:f.contatoNome||'',ativo:f.ativo?'Sim':'Não'}));
     if(tipo==='revenda') return S.revendas.map(r=>({nome:r.nome,cnpj:r.cnpj,cidade:r.cidade,email:r.email,telefone:r.telefone,
       endereco:r.endereco||'',complemento:r.complemento||'',bairro:r.bairro||'',cep:r.cep||'',obsEntrega:r.obsEntrega||'',
@@ -6626,10 +6663,10 @@ class Component extends DCLogic {
             revendaId:d.papel==='revenda'?d.revendaIds[0]:null,
             revendaIds:d.papel==='revenda'?[...d.revendaIds]:null};
           if(r.alvoId!=null){ const ix=lista.findIndex(x=>x.id===r.alvoId);
-            lista[ix]={...lista[ix],nome:d.nome,email:d.email,papel:d.papel,...vinc,ativo:d.ativo,
-              senhaHash:d.senha?this.hashSenha(d.senha):lista[ix].senhaHash}; }
-          else { lista.push({id:seq,nome:d.nome,email:d.email,papel:d.papel,senhaHash:this.hashSenha(d.senha),
-            ...vinc,ativo:d.ativo,permissoes:{},ultimoAcesso:null,criadoEm:this.hoje(),enviosAcesso:[]}); seq++; } });
+            lista[ix]={...lista[ix],nome:d.nome,email:d.email,papel:d.papel,...vinc,ativo:d.ativo}; }
+          else { lista.push({id:seq,nome:d.nome,email:d.email,papel:d.papel,
+            ...vinc,ativo:d.ativo,permissoes:{},ultimoAcesso:null,criadoEm:this.hoje(),enviosAcesso:[],
+            trocarSenha:true,temSenha:false}); seq++; } });
         return {usuarios:lista,modal:null,form:{}}; }
       let seq=s.seq.prod; const lista=[...s.produtos];
       const fotoPad=['img/prd-new-1.png','img/prd-new-2.png','img/prd-new-3.png'];
@@ -8734,11 +8771,6 @@ class Component extends DCLogic {
       ['config.usuarios','Gerenciar usuários e permissões',['admin']]]},
   ];
   PAPEIS={admin:'Administrador Técnico',loja:'Loja Cidade Imperial',fornecedor:'Fornecedor',revenda:'Revenda'};
-  hashSenha(str){ let h1=0xdeadbeef,h2=0x41c6ce57; for(let i=0;i<str.length;i++){ const ch=str.charCodeAt(i);
-      h1=Math.imul(h1^ch,2654435761); h2=Math.imul(h2^ch,1597334677); }
-    h1=Math.imul(h1^(h1>>>16),2246822507); h1^=Math.imul(h2^(h2>>>13),3266489909);
-    h2=Math.imul(h2^(h2>>>16),2246822507); h2^=Math.imul(h1^(h1>>>13),3266489909);
-    return (4294967296*(2097151&h2)+(h1>>>0)).toString(16); }
   usuarioAtual(){ return this.state.usuarios.find(u=>u.id===this.state.usuario)||null; }
   permPadrao(papel,chave){ for(const g of this.PERMS) for(const [k,,pap] of g.itens) if(k===chave) return pap.includes(papel); return false; }
   pode(chave){ const u=this.usuarioAtual(); if(!u) return true; // sessão antiga sem usuário: comportamento aberto
@@ -8746,32 +8778,96 @@ class Component extends DCLogic {
     return this.permPadrao(u.papel,chave); }
   setLoginEmail=e=>this.setState({loginEmail:e.target.value,loginErro:null});
   setLoginSenha=e=>this.setState({loginSenha:e.target.value,loginErro:null});
-  preencherLogin(email,senha){ this._pl=this._pl||{}; const k=email; if(!this._pl[k]) this._pl[k]=()=>this.setState({loginEmail:email,loginSenha:senha,loginErro:null}); return this._pl[k]; }
-  fazerLogin=()=>{ const {loginEmail,loginSenha}=this.state;
+  // ── Autenticação ────────────────────────────────────────────────────────
+  // A senha é conferida no servidor. O navegador nunca recebe hash de senha de
+  // ninguém, nem o próprio — manda e-mail e senha e recebe sim ou não.
+  async _api(rota,corpo){
+    try{ const r=await fetch(rota,{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(corpo||{})});
+      const d=await r.json().catch(()=>null);
+      return d||{ok:false,erro:'resposta',mensagem:'Resposta inesperada do servidor.'};
+    }catch(e){ return {ok:false,erro:'rede',
+      mensagem:'Não foi possível falar com o servidor. Verifique a conexão e tente de novo.'}; } }
+  // Mensagem única para e-mail inexistente e senha errada: quem tenta adivinhar
+  // não descobre quais contas existem.
+  CRED_INVALIDA='E-mail ou senha incorretos.';
+  REGRA_SENHA='Ao menos 10 caracteres, com letra, número e uma maiúscula ou caractere especial. Não pode conter o seu e-mail nem termos óbvios.';
+  _entrarComUsuario(u,token){
+    const view=u.papel==='admin'?'loja':u.papel;
+    this.setState(s=>({logado:true,usuario:u.id,role:view,scr:null,selPed:null,selCot:null,
+      loginSenha:'',loginErro:null,loginOcupado:false,loginAviso:null,
+      trocaObrig:null,trocaNova:'',trocaNova2:'',trocaErro:null,recAberto:false,recEmail:'',recMsg:null,
+      authToken:token||null,
+      fornAtivo:u.fornecedorId||s.fornAtivo,revAtivo:(u.revendaIds&&u.revendaIds[0])||u.revendaId||s.revAtivo,revGrupo:false,
+      usuarios:s.usuarios.some(x=>x.id===u.id)
+        ? s.usuarios.map(x=>x.id===u.id?{...x,...u,ultimoAcesso:this.ts()}:x)
+        : [...s.usuarios,{...u,ultimoAcesso:this.ts()}]}),
+      ()=>this.audit('Login realizado',u.email+' · perfil '+(this.PAPEIS[u.papel]||u.papel))); }
+  fazerLogin=async()=>{ if(this.state.loginOcupado) return;
+    const {loginEmail,loginSenha}=this.state;
     if(!loginEmail.trim()||!loginEmail.includes('@')) return this.setState({loginErro:'Informe um e-mail válido.'});
     if(!loginSenha.trim()) return this.setState({loginErro:'Informe a senha.'});
-    const u=this.state.usuarios.find(x=>x.email.toLowerCase()===loginEmail.trim().toLowerCase());
     const tent=loginEmail.trim().toLowerCase();
-    const falha=(motivo,erro)=>{ this.audit('Falha de login',tent+' · '+motivo,{usuario:tent,email:tent,papel:u?u.papel:null});
-      return this.setState({loginErro:erro}); };
-    if(!u) return falha('usuário não encontrado','Usuário não encontrado. Verifique o e-mail ou fale com o administrador.');
-    if(!u.ativo) return falha('usuário inativo','Usuário inativo. Fale com o administrador da plataforma.');
-    if(this.hashSenha(loginSenha)!==u.senhaHash) return falha('senha incorreta','Senha incorreta.');
-    // Contrato vencido bloqueia o acesso do fornecedor automaticamente.
+    this.setState({loginOcupado:true,loginErro:null,loginAviso:null});
+    const r=await this._api('/api/auth/login',{email:tent,senha:loginSenha});
+    if(!r.ok){
+      this.audit('Falha de login',tent+' · '+(r.erro||'credenciais'),{usuario:tent,email:tent,papel:null});
+      return this.setState({loginOcupado:false,loginSenha:'',
+        loginErro:r.mensagem||this.CRED_INVALIDA}); }
+    const u=r.usuario;
+    // Contrato vencido bloqueia o fornecedor — regra de negócio, dita com clareza
+    // porque quem chegou aqui já provou ser o dono da conta.
     if(u.papel==='fornecedor'&&u.fornecedorId){
       const ac=this._acessoForn(u.fornecedorId);
       if(ac.bloqueado){ const fn=this._fornNome(u.fornecedorId);
-        return falha('contrato do fornecedor sem vigência — '+ac.motivo,
-          'Acesso bloqueado: '+ac.motivo+'. O acesso é restabelecido automaticamente quando a Loja Cidade Imperial renovar o contrato de '+fn+'.'); } }
-    const view=u.papel==='admin'?'loja':u.papel;
-    this.setState(s=>({logado:true,usuario:u.id,role:view,scr:null,selPed:null,selCot:null,loginSenha:'',
-      fornAtivo:u.fornecedorId||s.fornAtivo,revAtivo:(u.revendaIds&&u.revendaIds[0])||u.revendaId||s.revAtivo,revGrupo:false,
-      usuarios:s.usuarios.map(x=>x.id===u.id?{...x,ultimoAcesso:this.ts()}:x)}),
-      ()=>this.audit('Login realizado',u.email+' · perfil '+(this.PAPEIS[u.papel]||u.papel)));
-  };
-  sair=()=>{ const u=this.usuarioAtual();
+        this.audit('Falha de login',tent+' · contrato do fornecedor sem vigência — '+ac.motivo,
+          {usuario:tent,email:tent,papel:'fornecedor'});
+        return this.setState({loginOcupado:false,loginSenha:'',
+          loginErro:'Acesso bloqueado: '+ac.motivo+'. O acesso é restabelecido automaticamente quando a Loja Cidade Imperial renovar o contrato de '+fn+'.'}); } }
+    // Senha enviada pela Loja: só vale para entrar uma vez, e a troca é aqui.
+    if(u.trocarSenha){
+      this.audit('Primeiro acesso — troca de senha obrigatória',u.email);
+      return this.setState({loginOcupado:false,trocaNova:'',trocaNova2:'',trocaErro:null,
+        trocaObrig:{email:u.email,nome:u.nome,atual:loginSenha}}); }
+    this._entrarComUsuario(u,r.token); };
+  setTrocaNova=e=>this.setState({trocaNova:e.target.value,trocaErro:null});
+  setTrocaNova2=e=>this.setState({trocaNova2:e.target.value,trocaErro:null});
+  cancelarTroca=()=>this.setState({trocaObrig:null,trocaNova:'',trocaNova2:'',trocaErro:null,loginSenha:''});
+  confirmarTroca=async()=>{ const {trocaObrig,trocaNova,trocaNova2}=this.state; if(!trocaObrig) return;
+    if(trocaNova!==trocaNova2) return this.setState({trocaErro:'As duas senhas não são iguais.'});
+    this.setState({loginOcupado:true,trocaErro:null});
+    const r=await this._api('/api/auth/trocar-senha',
+      {email:trocaObrig.email,senhaAtual:trocaObrig.atual,novaSenha:trocaNova});
+    if(!r.ok) return this.setState({loginOcupado:false,trocaErro:r.mensagem||'Não foi possível trocar a senha.'});
+    this.audit('Senha alterada pelo próprio usuário',trocaObrig.email);
+    this._entrarComUsuario(r.usuario,r.token); };
+  // Troca voluntária, com a sessão aberta.
+  abrirTrocaSenha=()=>this.setState({modal:'trocasenha',form:{atual:'',nova:'',nova2:''}});
+  confirmTrocaSenha=async()=>{ const u=this.usuarioAtual(); const f=this.state.form; if(!u) return;
+    if((f.nova||'')!==(f.nova2||'')) return this.err('As duas senhas não são iguais.');
+    const r=await this._api('/api/auth/trocar-senha',{email:u.email,senhaAtual:f.atual,novaSenha:f.nova});
+    if(!r.ok) return this.err(r.mensagem||'Não foi possível trocar a senha.');
+    this.audit('Senha alterada pelo próprio usuário',u.email);
+    this.setState({modal:null,form:{},authToken:r.token});
+    this.toast('Senha alterada.','ok'); };
+  // Recuperação de acesso: registra o pedido e avisa a Loja. Não redefine senha
+  // de ninguém — se redefinisse, saber o e-mail de alguém derrubaria o acesso
+  // dessa pessoa. A resposta é a mesma exista a conta ou não.
+  abrirRecuperar=()=>this.setState(s=>({recAberto:!s.recAberto,
+    recEmail:s.recEmail||s.loginEmail,recMsg:null}));
+  setRecEmail=e=>this.setState({recEmail:e.target.value,recMsg:null});
+  enviarRecuperar=async()=>{ const email=(this.state.recEmail||'').trim().toLowerCase();
+    if(!email||!email.includes('@')) return this.setState({recMsg:'Informe um e-mail válido.'});
+    this.setState({loginOcupado:true,recMsg:null});
+    const r=await this._api('/api/auth/recuperar',{email});
+    this.audit('Pedido de recuperação de acesso',email,{usuario:email,email,papel:null});
+    this.setState({loginOcupado:false,
+      recMsg:r.mensagem||'Se este e-mail estiver cadastrado, a Loja Cidade Imperial foi avisada.'}); };
+  sair=()=>{ const u=this.usuarioAtual(); const tk=this.state.authToken;
     this.audit('Logout realizado',u?(u.email+' · sessão encerrada pelo usuário'):'sessão encerrada');
-    this.setState({logado:false,usuario:null,role:null,scr:null,selPed:null,selCot:null,modal:null,form:{},loginSenha:''});
+    if(tk) this._api('/api/auth/logout',{token:tk});
+    this.setState({logado:false,usuario:null,role:null,scr:null,selPed:null,selCot:null,modal:null,form:{},
+      loginSenha:'',loginErro:null,authToken:null,trocaObrig:null,recAberto:false,recEmail:'',recMsg:null});
     setTimeout(()=>this._flushPersist(),0); };
   // ── Envio das credenciais de primeiro acesso (rastreável por usuário) ───
   // Toda tentativa de envio — feita ou não — vira uma linha no histórico do
@@ -8786,9 +8882,16 @@ class Component extends DCLogic {
     nenhum:['#faf7f0','#a89f90','#e8e1d2']};
   _envCor(ult){ const c=this.ENV_COR[(ult&&ult.status)||'nenhum']||this.ENV_COR.nenhum;
     return {envBg:c[0],envFg:c[1],envBd:c[2]}; }
-  _gerarSenha(){ const mai='ABCDEFGHJKLMNPQRSTUVWXYZ',min='abcdefghijkmnopqrstuvwxyz',dig='23456789';
-    const pick=s=>s[Math.floor(Math.random()*s.length)];
-    return pick(mai)+Array.from({length:4},()=>pick(min)).join('')+Array.from({length:3},()=>pick(dig)).join(''); }
+  // Senha inicial sugerida: 12 caracteres, dentro da política que o servidor
+  // cobra. Serve só para o primeiro acesso — a troca é obrigatória logo depois.
+  _gerarSenha(){ const mai='ABCDEFGHJKLMNPQRSTUVWXYZ',min='abcdefghijkmnopqrstuvwxyz',dig='23456789',esp='!@#$%&*?';
+    const al=n=>{ const a=new Uint32Array(n); (window.crypto||window.msCrypto).getRandomValues(a); return a; };
+    const r=al(12); const pick=(s,i)=>s[r[i]%s.length];
+    const corpo=[pick(mai,0),pick(esp,1),...Array.from({length:6},(_,i)=>pick(min,i+2)),
+      ...Array.from({length:4},(_,i)=>pick(dig,i+8))];
+    const emb=al(corpo.length);
+    for(let i=corpo.length-1;i>0;i--){ const j=emb[i]%(i+1); const x=corpo[i]; corpo[i]=corpo[j]; corpo[j]=x; }
+    return corpo.join(''); }
   _plataformaUrl(){ try{ return window.location.origin; }catch(e){ return ''; } }
   _vinculoUsr(u){ if(u.papel==='fornecedor'){ const f=this.state.fornecedores.find(x=>x.id===u.fornecedorId); return f?f.nome:''; }
     if(u.papel==='revenda') return this._minhasRevs(u).map(id=>{ const r=this.state.revendas.find(x=>x.id===id); return r?r.nome:''; }).filter(Boolean).join(' · ');
@@ -8829,13 +8932,21 @@ class Component extends DCLogic {
   verEnviosAcesso(id){ this._vea=this._vea||{}; if(!this._vea[id]) this._vea[id]=()=>this.setState({modal:'enviosacesso',form:{usuarioId:id}}); return this._vea[id]; }
   // Reenvio: como só guardamos o hash, o acesso é reenviado com uma nova senha
   // inicial — que passa a valer imediatamente para o usuário.
-  confirmEnvioAcesso=()=>{ if(!this.pode('config.usuarios')) return this.negado('Você não tem permissão para gerenciar usuários.','config.usuarios');
+  confirmEnvioAcesso=async()=>{ if(!this.pode('config.usuarios')) return this.negado('Você não tem permissão para gerenciar usuários.','config.usuarios');
     const f=this.state.form; const u=this.state.usuarios.find(x=>x.id===f.usuarioId); if(!u) return;
     const senha=(f.senha||'').trim();
-    if(senha.length<6) return this.err('A senha inicial deve ter ao menos 6 caracteres.');
-    this.setState(s=>({usuarios:s.usuarios.map(x=>x.id===u.id?{...x,senhaHash:this.hashSenha(senha)}:x),modal:null,form:{}}));
-    this.audit('Senha redefinida para reenvio de acesso ao usuário',u.nome+' · '+u.email);
-    this.enviarAcessoUsuario(u,senha,'Reenvio de acesso'); };
+    const r=await this._definirSenhaServidor(u.id,senha);
+    if(!r.ok) return this.err(r.mensagem||'Não foi possível definir a senha inicial.');
+    this.setState(s=>({usuarios:s.usuarios.map(x=>x.id===u.id?{...x,trocarSenha:true,temSenha:true}:x),modal:null,form:{}}));
+    this.audit('Senha inicial redefinida para reenvio de acesso',u.nome+' · '+u.email+' · troca obrigatória no primeiro acesso');
+    this.enviarAcessoUsuario(u,r.senha,'Reenvio de acesso'); };
+  // A senha nasce e é guardada no servidor; o navegador só a vê para colocar no
+  // e-mail do usuário e a esquece em seguida.
+  async _definirSenhaServidor(usuarioId,senha){
+    this._flushPersist(); // garante que o usuário já exista na base
+    await new Promise(r=>setTimeout(r,350));
+    return await this._api('/api/auth/definir-senha',
+      {token:this.state.authToken,usuarioId,senha:senha||undefined}); }
   // CRUD de usuários (Configurações Técnicas › Usuários e permissões)
   setBuscaUsr=e=>this.setState({buscaUsr:e.target.value});
   setFiltroPapel=e=>this.setState({filtroPapel:e.target.value});
@@ -8853,21 +8964,22 @@ class Component extends DCLogic {
       if(old.papel==='admin'&&papel!=='admin'&&this.state.usuarios.filter(u=>u.papel==='admin'&&u.ativo&&u.id!==old.id).length===0)
         return this.err('É preciso manter ao menos um Administrador Técnico ativo.');
       this.setState(s=>({usuarios:s.usuarios.map(u=>u.id===f.editId?{...u,nome,email,papel,
-        fornecedorId:papel==='fornecedor'?+f.fornecedorId:null,revendaId:papel==='revenda'?revIds[0]:null,revendaIds:papel==='revenda'?revIds:null,
-        senhaHash:(f.senha||'').trim()?this.hashSenha(f.senha.trim()):u.senhaHash}:u),modal:null,form:{}}));
-      this.audit('Edição de usuário',nome+' · '+(this.PAPEIS[papel]||papel)+(papel==='revenda'?' · '+revIds.length+' revenda(s) vinculada(s)':'')+((f.senha||'').trim()?' · senha redefinida':''));
-      if((f.senha||'').trim()&&f.enviarAcesso) this.enviarAcessoUsuario({...old,nome,email,papel,
-        fornecedorId:papel==='fornecedor'?+f.fornecedorId:null,revendaId:papel==='revenda'?revIds[0]:null,revendaIds:papel==='revenda'?revIds:null},
-        f.senha.trim(),'Redefinição de senha'); return; }
-    if(!(f.senha||'').trim()) return this.err('Defina a senha inicial do usuário.');
+        fornecedorId:papel==='fornecedor'?+f.fornecedorId:null,revendaId:papel==='revenda'?revIds[0]:null,revendaIds:papel==='revenda'?revIds:null}:u),modal:null,form:{}}));
+      this.audit('Edição de usuário',nome+' · '+(this.PAPEIS[papel]||papel)+(papel==='revenda'?' · '+revIds.length+' revenda(s) vinculada(s)':''));
+      return; }
     const id=Math.max(0,...this.state.usuarios.map(u=>u.id))+1;
     const enviar=!!f.enviarAcesso;
-    const novo={id,nome,email,papel,senhaHash:this.hashSenha(f.senha.trim()),
+    const novo={id,nome,email,papel,
       fornecedorId:papel==='fornecedor'?+f.fornecedorId:null,revendaId:papel==='revenda'?revIds[0]:null,revendaIds:papel==='revenda'?revIds:null,
-      ativo:true,permissoes:{},ultimoAcesso:null,criadoEm:this.hoje(),enviosAcesso:[]};
+      ativo:true,permissoes:{},ultimoAcesso:null,criadoEm:this.hoje(),enviosAcesso:[],trocarSenha:true,temSenha:false};
     this.setState(s=>({usuarios:[...s.usuarios,novo],modal:null,form:{}}));
-    this.audit('Cadastro de usuário',nome+' · '+email+' · '+(this.PAPEIS[papel]||papel)+(enviar?' · com envio dos dados de acesso por e-mail':' · sem envio dos dados de acesso'));
-    if(enviar) this.enviarAcessoUsuario(novo,f.senha.trim(),'Criação do usuário'); };
+    this.audit('Cadastro de usuário',nome+' · '+email+' · '+(this.PAPEIS[papel]||papel)+(enviar?' · com envio dos dados de acesso por e-mail':' · sem envio dos dados de acesso — o usuário ainda não consegue entrar'));
+    // A senha inicial é gerada no servidor e só existe no e-mail que sai agora.
+    if(enviar){ this._definirSenhaServidor(id,'').then(r=>{
+      if(!r.ok) return this.toast('Usuário criado, mas a senha inicial não pôde ser gerada: '+(r.mensagem||'erro'),'erro');
+      this.setState(s=>({usuarios:s.usuarios.map(x=>x.id===id?{...x,temSenha:true}:x)}));
+      this.enviarAcessoUsuario(novo,r.senha,'Criação do usuário'); }); }
+    else this.toast('Usuário criado sem senha. Use "Enviar" em Dados de acesso para liberar o primeiro acesso.'); };
   toggleUsuario(id){ this._tu=this._tu||{}; if(!this._tu[id]) this._tu[id]=()=>{ if(!this.pode('config.usuarios')) return;
     const u=this.state.usuarios.find(x=>x.id===id); if(!u) return;
     if(u.ativo&&u.papel==='admin'&&this.state.usuarios.filter(x=>x.papel==='admin'&&x.ativo&&x.id!==id).length===0) return;
@@ -10128,13 +10240,6 @@ class Component extends DCLogic {
     if(M==='royalty'&&S.form.contratoId){ const c=S.contratos.find(x=>x.id===S.form.contratoId);
       if(c) royInfo={ctrNum:c.numero,fornNome:F(c.fornecedorId).nome,atual:String(c.royalty).replace('.',',')+'%',diaTxt:(c.diaPagamento?(' · dia acordado: '+c.diaPagamento):'')+' · gatilho atual: '+this._gatilhoLabel(c.gatilho||'nf')}; }
 
-    const loginDemo=[
-      {label:'Administrador Técnico',email:'admin@cidadeimperial.com.br',senha:'admin123'},
-      {label:'Loja (Ana Ribeiro)',email:'ana@cidadeimperial.com.br',senha:'loja123'},
-      {label:'Loja · analista sem permissão de receber',email:'carlos@cidadeimperial.com.br',senha:'loja123'},
-      {label:'Fornecedor (Serra Verde)',email:'comercial@serraverde.com.br',senha:'forn123'},
-      {label:'Revenda (Bar do Imperador)',email:'compras@bardoimperador.com.br',senha:'rev123'}
-    ].map(x=>({...x,pick:this.preencherLogin(x.email,x.senha)}));
 
     // usuários e permissões (Configurações Técnicas)
     const busU=(S.buscaUsr||'').toLowerCase();
@@ -10281,9 +10386,24 @@ class Component extends DCLogic {
 
     return {
       // login
-      sLogin:!S.logado,sApp:S.logado,loginDemo,
+      sLogin:!S.logado,sApp:S.logado,
       loginEmail:S.loginEmail,loginSenha:S.loginSenha,loginErro:S.loginErro||'',
       setLoginEmail:this.setLoginEmail,setLoginSenha:this.setLoginSenha,fazerLogin:this.fazerLogin,sair:this.sair,
+      entrarBg:S.loginOcupado?'#c9ac73':'#B38335',
+      entrarLabel:S.loginOcupado?'Verificando…':'Entrar na plataforma',
+      // troca de senha obrigatória no primeiro acesso
+      temTroca:!!S.trocaObrig,semTroca:!S.trocaObrig,
+      trocaNome:(S.trocaObrig&&S.trocaObrig.nome)||'',trocaEmail:(S.trocaObrig&&S.trocaObrig.email)||'',
+      trocaNova:S.trocaNova,trocaNova2:S.trocaNova2,trocaErro:S.trocaErro||'',
+      setTrocaNova:this.setTrocaNova,setTrocaNova2:this.setTrocaNova2,
+      confirmarTroca:this.confirmarTroca,cancelarTroca:this.cancelarTroca,
+      regraSenha:this.REGRA_SENHA,
+      // recuperação de acesso
+      recAberto:!!S.recAberto,recEmail:S.recEmail,recMsg:S.recMsg||'',
+      abrirRecuperar:this.abrirRecuperar,setRecEmail:this.setRecEmail,enviarRecuperar:this.enviarRecuperar,
+      // troca de senha com a sessão aberta
+      mTrocaSenha:M==='trocasenha',abrirTrocaSenha:this.abrirTrocaSenha,confirmTrocaSenha:this.confirmTrocaSenha,
+      fxSenhaAtual:this.fx('atual'),fxSenhaNova:this.fx('nova'),fxSenhaNova2:this.fx('nova2'),
       // shell
       roleBtns,temRoleBtns:roleBtns.length>0,isLoja,isForn,isRev,navGroups,userIni,userNome,userPapel,
       mostraSelForn,mostraSelRev,mostraSelGrupo,ctxGrupoVal,ctxGrupoOpts,setRevContexto:this.setRevContexto,rpedGrupo,grpKpis,catGrupo,aceiteInfo,mAceite:S.modal==='aceiterev',confirmAceiteRev:this.confirmAceiteRev,fxMotivoRec:this.fx('motivoRec'),recDocInfo,mRecDoc:S.modal==='recusadoc',mReenvDoc:S.modal==='reenviodoc',confirmRecusaDoc:this.confirmRecusaDoc,confirmReenvioDoc:this.confirmReenvioDoc,fxMotivoDoc:this.fx('motivoDoc'),
@@ -10326,13 +10446,13 @@ class Component extends DCLogic {
       novoUsuario:this.open('usuario',{papel:'loja',enviarAcesso:true}),salvarUsuario:this.salvarUsuario,
       mUsr:M==='usuario',usrEditando:!!S.form.editId,usrNovo:usrNovoM,mPerms:M==='permissoes',permGrupos,permUsr,
       // pergunta e histórico de envio dos dados de primeiro acesso
-      usrPodeEnviar:usrNovoM||!!(S.form.senha||'').trim(),
+      usrPodeEnviar:usrNovoM,
       usrEnvSw:usrEnvOn?'#2f6b39':'#d9d2c4',usrEnvX:usrEnvOn?'17px':'3px',
       usrEnvBd:usrEnvOn?'#cfe0d1':'#e8e1d2',usrEnvFundo:usrEnvOn?'#f4f9f4':'#faf7f0',
-      usrEnvTitulo:usrNovoM?'Enviar por e-mail os dados de acesso para o primeiro login?':'Enviar por e-mail a nova senha de acesso?',
+      usrEnvTitulo:'Gerar a senha inicial e enviar os dados de acesso por e-mail?',
       usrEnvSub:usrEnvOn
-        ?('Ao salvar, '+(S.form.email||'o usuário')+' recebe o endereço da plataforma, o e-mail de login e a senha inicial. O envio fica registrado no histórico do usuário e na auditoria.')
-        :'Nenhum e-mail será enviado — entregue a senha inicial ao usuário por outro meio. A decisão fica registrada na auditoria.',
+        ?('Ao salvar, a plataforma gera uma senha aleatória e '+(S.form.email||'o usuário')+' recebe o endereço de acesso, o e-mail de login e essa senha — que ele é obrigado a trocar no primeiro acesso. O envio fica registrado no histórico do usuário e na auditoria.')
+        :'Nenhuma senha será gerada e o usuário ainda não conseguirá entrar. Para liberar depois, use "Enviar" na coluna Dados de acesso. A decisão fica registrada na auditoria.',
       usrEnvAviso:usrEnvOn&&smtpOff,
       usrSalvarLabel:(usrEnvOn&&!smtpOff)?'Salvar e enviar acesso':'Salvar usuário',
       gerarSenhaAcesso:this.gerarSenhaAcesso,toggleEnviarAcesso:this.toggleEnviarAcesso,

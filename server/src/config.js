@@ -74,5 +74,10 @@ export const config = {
   dbAutoCreate: bool(process.env.DB_AUTO_CREATE, true),
   dbSeed: bool(process.env.DB_SEED, true),
 
+  // Senha inicial dos usuários criados pela carga inicial. Se não for definida,
+  // a aplicação sorteia uma e a imprime UMA VEZ no log da primeira execução.
+  // Em qualquer caso a troca é obrigatória no primeiro acesso.
+  senhaInicial: str(process.env.SEED_SENHA_INICIAL, null),
+
   paths: { serverRoot, projectRoot },
 }
