@@ -1379,7 +1379,8 @@ input::placeholder,textarea::placeholder{color:#b0a795}
 <sc-if value="{{mReceb}}" hint-placeholder-val="{{false}}">
   <div style="position:fixed;inset:0;background:rgba(39,37,37,.45);display:flex;align-items:center;justify-content:center;z-index:55">
     <div style="background:#fff;border-radius:14px;width:480px;max-width:92vw;max-height:86vh;overflow-y:auto;padding:22px 24px;box-shadow:0 18px 50px rgba(39,37,37,.25)">
-      <div style="font-size:16px;font-weight:700">Confirmar recebimento do material — {{recebInfo.pedidoId}}</div>
+      <div style="font-size:16px;font-weight:700">{{recebInfo.titulo}} — {{recebInfo.pedidoId}}</div>
+      <sc-if value="{{recebInfo.temForn}}" hint-placeholder-val="{{false}}"><div style="font-size:12.5px;font-weight:700;color:#2f6b39;background:#f3f7f4;border:1px solid #d7e5da;border-radius:8px;padding:7px 11px;margin-top:8px">Fornecedor: {{recebInfo.fornNome}} — os demais fornecedores deste pedido não são afetados</div></sc-if>
       <div style="font-size:12.5px;color:#8a8378;margin-top:2px">{{recebInfo.sub}}</div>
       <div style="background:#faf7f0;border:1px solid #eee7d8;border-radius:9px;padding:11px 13px;margin-top:13px">
         <div style="font-size:12px;color:#6b6459;margin-bottom:7px"><b style="color:#272525">Itens entregues</b> · confira antes de confirmar</div>
@@ -1392,11 +1393,15 @@ input::placeholder,textarea::placeholder{color:#b0a795}
       </div>
       <div style="font-size:12px;font-weight:600;color:#6b6459;margin:13px 0 5px">Observação do recebimento <span style="font-weight:400;color:#a89f90">— opcional · avarias, divergências, quem recebeu</span></div>
       <textarea value="{{form.obs}}" onChange="{{fxObsReceb}}" rows="3" placeholder="Ex.: material conferido e sem avarias; recebido por João no depósito." style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13px;background:#fff;outline:none;color:#272525;resize:vertical;line-height:1.5"></textarea>
+      <sc-if value="{{recebInfo.ehRecusa}}" hint-placeholder-val="{{false}}">
+        <div style="font-size:12px;font-weight:600;color:#6b6459;margin:12px 0 5px">Motivo da recusa <span style="font-weight:400;color:#a33a2b">(obrigatório)</span></div>
+        <input value="{{form.motivoRec}}" onChange="{{fxMotivoRecReceb}}" placeholder="Ex.: nota fiscal com NCM incorreto; mercadoria avariada; quantidade a menor" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #ddd5c7;border-radius:8px;font:inherit;font-size:13px;background:#fff;outline:none;color:#272525">
+      </sc-if>
       <div style="font-size:11px;color:#6d4a10;background:#fdf6e7;border:1px solid #f0e2c4;border-radius:8px;padding:8px 11px;margin-top:11px;line-height:1.5">{{recebInfo.aviso}}</div>
       <sc-if value="{{form.erro}}" hint-placeholder-val="{{false}}"><div style="color:#a33a2b;font-size:12.5px;margin-top:12px">{{form.erro}}</div></sc-if>
       <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:18px">
         <div onClick="{{mClose}}" style="border:1px solid #ddd5c7;border-radius:8px;padding:9px 15px;font-size:13px;font-weight:600;cursor:pointer;color:#6b6459" style-hover="background:#f7f3ea">Cancelar</div>
-        <div onClick="{{confirmRecebimento}}" style="background:#2f6b39;color:#fff;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#265730">Confirmar recebimento</div>
+        <div onClick="{{confirmRecebimento}}" style="background:{{recebInfo.btnBg}};color:#fff;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer">{{recebInfo.btnLabel}}</div>
       </div>
     </div>
   </div>
@@ -2546,7 +2551,8 @@ input::placeholder,textarea::placeholder{color:#b0a795}
                 <td style="padding:11px 10px;font-size:13px;font-weight:600;text-align:right;white-space:nowrap;border-bottom:1px solid #f5f1e8">{{it.qtdTxt}}</td>
                 <td style="padding:11px 10px;text-align:right;border-bottom:1px solid #f5f1e8"><div style="font-size:13px;font-weight:700">{{it.valFmt}}</div><sc-if value="{{it.temNeg}}" hint-placeholder-val="{{false}}"><div style="font-size:10px;color:#8a5a12">{{it.negTag}}</div></sc-if></td>
                 <td style="padding:11px 10px;border-bottom:1px solid #f5f1e8"><span style="font-size:11.5px;font-weight:600;border-radius:7px;padding:3px 9px;background:{{it.stBg}};color:{{it.stFg}};white-space:nowrap">{{it.stLabel}}</span></td>
-                <td style="padding:11px 10px;font-size:12.5px;border-bottom:1px solid #f5f1e8"><b>{{it.pedidoId}}</b><div style="font-size:11px;color:#a89f90">{{it.pedData}} · {{it.origem}}</div></td>
+                <td style="padding:11px 10px;font-size:12.5px;border-bottom:1px solid #f5f1e8"><b>{{it.pedidoId}}</b><div style="font-size:11px;color:#a89f90">{{it.pedData}} · {{it.origem}}</div>
+                  <div onClick="{{it.pdfFn}}" title="Documento do pedido com os seus itens — somente os que foram adjudicados a você" style="display:inline-flex;align-items:center;gap:4px;margin-top:5px;border:1px solid #ddd5c7;background:#fff;color:#6b6459;border-radius:7px;padding:3px 8px;font-size:10.5px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="background:#f7f3ea">&#128196; PDF dos meus itens</div></td>
                 <td style="padding:11px 18px;font-size:12.5px;border-bottom:1px solid #f5f1e8"><b>{{it.revNome}}</b><div style="font-size:11px;color:#a89f90">{{it.revCidade}} · CNPJ {{it.revCnpj}}</div><div style="font-size:11px;color:#8f682a">{{it.revEmail}}{{it.revTelTxt}}</div></td>
               </tr>
             </sc-for>
@@ -2570,6 +2576,7 @@ input::placeholder,textarea::placeholder{color:#b0a795}
             </div>
             <div style="font-size:12.5px;color:#6b6459;margin-top:4px">{{p.itensTxt}}</div>
             <sc-if value="{{p.parcial}}" hint-placeholder-val="{{false}}"><div style="font-size:11px;font-weight:600;color:#8a5a12;margin-top:2px">{{p.parcial}}</div></sc-if>
+            <div onClick="{{p.pdfFn}}" title="Documento do pedido com os seus itens — somente os que foram adjudicados a você" style="display:inline-flex;align-items:center;gap:4px;margin-top:6px;border:1px solid #ddd5c7;background:#fff;color:#6b6459;border-radius:7px;padding:3px 9px;font-size:10.5px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="background:#f7f3ea">&#128196; PDF dos meus itens</div>
             <sc-if value="{{p.rastAviso}}" hint-placeholder-val="{{false}}"><div style="font-size:11.5px;font-weight:600;color:#8a5a12;background:#fdf6e7;border:1px solid #f0e2c4;border-radius:8px;padding:6px 10px;margin-top:5px;line-height:1.45">&#128666; {{p.rastAviso}}</div></sc-if>
             <sc-if value="{{p.temRast}}" hint-placeholder-val="{{false}}"><div title="{{p.rastTitulo}}" style="font-size:11.5px;font-weight:600;color:#2f6b39;margin-top:4px">&#128666; {{p.rastLabel}}</div></sc-if>
             <div style="font-size:12px;color:#a89f90;margin-top:2px">Faturar diretamente para: <b style="color:#272525">{{p.revNome}}</b>{{p.revContatoTxt}}</div>
@@ -2859,7 +2866,24 @@ input::placeholder,textarea::placeholder{color:#b0a795}
               <td style="padding:11px 18px;border-bottom:1px solid #f5f1e8">
                 <span style="font-size:11.5px;font-weight:600;border-radius:7px;padding:3px 9px;background:{{p.stBg}};color:{{p.stFg}};white-space:nowrap">{{p.stLabel}}</span>
                 <sc-if value="{{p.temAceite}}" hint-placeholder-val="{{false}}"><div onClick="{{p.aprovarNeg}}" style="display:inline-block;background:#B38335;color:#fff;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px" style-hover="background:#9a6f2b">Aprovação comercial…</div></sc-if>
-<sc-if value="{{p.podeReceb}}" hint-placeholder-val="{{false}}"><div onClick="{{p.recebFn}}" title="Confirmar que o material do pedido foi recebido" style="display:inline-block;background:#2f6b39;color:#fff;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px" style-hover="background:#265730">&#10003; Confirmar recebimento…</div></sc-if>
+<sc-if value="{{p.temFornReceb}}" hint-placeholder-val="{{false}}">
+                  <div style="margin-top:7px;border-top:1px dashed #eae3d6;padding-top:6px">
+                    <div style="font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#a89f90;margin-bottom:4px">Recebimento por fornecedor</div>
+                    <sc-for list="{{p.fornReceb}}" as="g" hint-placeholder-count="2">
+                      <div style="margin-bottom:6px">
+                        <div style="font-size:11.5px;font-weight:600;color:#4a453d">{{g.nome}}</div>
+                        <div style="display:inline-block;font-size:10.5px;font-weight:700;border-radius:6px;padding:2px 7px;margin-top:2px;background:{{g.seloBg}};color:{{g.seloFg}}">{{g.selo}}</div>
+                        <sc-if value="{{g.podeAgir}}" hint-placeholder-val="{{false}}">
+                          <div style="display:flex;gap:5px;margin-top:4px">
+                            <div onClick="{{g.confFn}}" title="Confirmar o recebimento deste fornecedor — não encerra os demais" style="background:#2f6b39;color:#fff;border-radius:7px;padding:4px 9px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="background:#265730">&#10003; Confirmar</div>
+                            <div onClick="{{g.recFn}}" title="Recusar o recebimento deste fornecedor — motivo obrigatório" style="border:1px solid #e7c4bc;color:#a33a2b;background:#fff;border-radius:7px;padding:4px 9px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap" style-hover="background:#fbf1ef">&#10005; Recusar</div>
+                          </div>
+                        </sc-if>
+                      </div>
+                    </sc-for>
+                  </div>
+                </sc-if>
+                <sc-if value="{{p.podeReceb}}" hint-placeholder-val="{{false}}"><div onClick="{{p.recebFn}}" title="Confirmar que o material do pedido foi recebido" style="display:inline-block;background:#2f6b39;color:#fff;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px" style-hover="background:#265730">&#10003; Confirmar recebimento…</div></sc-if>
                 <sc-if value="{{p.temReceb}}" hint-placeholder-val="{{false}}"><div title="{{p.recebTitulo}}" style="display:inline-block;font-size:10.5px;font-weight:700;border-radius:6px;padding:2px 8px;background:#e9f3ea;color:#2f6b39;margin-top:6px;white-space:nowrap">&#10003; {{p.recebSelo}}</div></sc-if>
                 <sc-if value="{{p.temJustif}}" hint-placeholder-val="{{false}}"><div style="font-size:11.5px;color:#a33a2b;margin-top:3px">{{p.justificativa}}</div></sc-if>
               </td>
@@ -4582,10 +4606,10 @@ class Component extends DCLogic {
     // 'estoque' é o registro antigo — atendimento pela Loja sem passagem pelo
     // aceite comercial. Continua valendo como entregue para os pedidos que já
     // existiam antes de a Loja passar a percorrer o fluxo inteiro.
-    if(st==='estoque') return this._recebido(p)?10:9;
+    if(st==='estoque') return this._recebidoForn(p,this._chaveForn(i))?10:9;
     if(st==='faturado'){ const f=this.state.faturamentos.find(x=>x.pedidoId===p.id&&(i.porLoja?!!x.porLoja:x.fornecedorId===i.fornecedorId));
       if(f&&f.docStatus==='recusado') return 8;
-      return this._recebido(p)?10:9; }
+      return this._recebidoForn(p,this._chaveForn(i))?10:9; }
     return 1; }
   _etapaPedIdx(p){ const es=(p.itens||[]).map(i=>this._etapaItemIdx(p,i)).filter(e=>e>0);
     return es.length?Math.min(...es):0; }
@@ -6925,24 +6949,42 @@ class Component extends DCLogic {
     return '<section class="bl"><h2>'+this._pdfEsc(tit)+(sub?'<span class="sub">'+this._pdfEsc(sub)+'</span>':'')+'</h2>'+corpo+'</section>'; }
 
   // Valor visível: a revenda só enxerga item já negociado ou faturado.
-  _pdfPodeValor(i){ return this.role!=='revenda'||this._itemNegociado(i); }
+  _pdfPodeValor(i){ if(this.role==='revenda') return this._itemNegociado(i);
+    // fornecedor só enxerga valor do que foi adjudicado a ele
+    if(this.role==='fornecedor') return String(this._chaveForn(i))===String(this.state.fornAtivo);
+    return true; }
 
-  _pdfDoc(p){
+  // Chave do fornecedor para o recorte do documento: cada fornecedor recebe
+  // um anexo só com os itens adjudicados a ele, sem ver o que foi negociado
+  // com os demais participantes da cotação.
+  _pdfFornAtual(){ return this.role==='fornecedor'?this.state.fornAtivo:null; }
+  _pdfItensDe(p,chave){ const its=(p&&p.itens)||[];
+    return chave==null?its:its.filter(i=>String(this._chaveForn(i))===String(chave)); }
+  _pdfNomeChave(p,chave){ if(chave==null) return '';
+    const i=((p&&p.itens)||[]).find(x=>String(this._chaveForn(x))===String(chave));
+    return i?this._destNome(i):''; }
+  _pdfDoc(p,chaveForn){
     const E=s=>this._pdfEsc(s);
     const F=id=>this.state.fornecedores.find(x=>x.id===id)||{};
     const R=this.state.revendas.find(x=>x.id===p.revendaId)||{};
     const cfgP=this.state.configPlataforma||{};
     const cot=this.state.cotacoes.find(c=>c.id===(p.itens.find(i=>i.cotacaoId)||{}).cotacaoId);
-    const fats=this.state.faturamentos.filter(f=>f.pedidoId===p.id);
+    // Recorte por fornecedor: o anexo de cada fornecedor traz só os itens
+    // adjudicados a ele. Sem recorte (Loja e revenda), o documento é inteiro.
+    const chF=(chaveForn==null||chaveForn==='')?null:chaveForn;
+    const ITENS=this._pdfItensDe(p,chF);
+    const nomeChF=this._pdfNomeChave(p,chF);
+    const fats=this.state.faturamentos.filter(f=>f.pedidoId===p.id
+      &&(chF==null||String(f.porLoja?this.LOJA_KEY:f.fornecedorId)===String(chF)));
     const etapa=this._etapaPedIdx(p); const ch=this.chip(p.status);
-    const forns=[...new Set(p.itens.filter(i=>i.fornecedorId).map(i=>i.fornecedorId))];
-    const temEstoque=p.itens.some(i=>this._ehLoja(i));
+    const forns=[...new Set(ITENS.filter(i=>i.fornecedorId).map(i=>i.fornecedorId))];
+    const temEstoque=ITENS.some(i=>this._ehLoja(i));
     // só vale como condição do pedido enquanto houver item atendido pela Loja
-    const propL=p.itens.some(i=>i.porLoja)?this._propLoja(p):null;
+    const propL=ITENS.some(i=>i.porLoja)?this._propLoja(p):null;
     const propV=cot?this._propsEfetivas(cot).find(x=>x.fornecedorId===cot.vencedorId):null;
 
     // ── Itens ──────────────────────────────────────────────────────────────
-    const linhasItens=p.itens.map((i,ix)=>{ const pr=this._prodInfo(i.produtoId); const fi=this._ficha(pr);
+    const linhasItens=ITENS.map((i,ix)=>{ const pr=this._prodInfo(i.produtoId); const fi=this._ficha(pr);
       const cI=this.chip(i.st||'pendente'); const podeV=this._pdfPodeValor(i);
       const sub=i.precoNeg!=null?i.precoNeg:i.qtd*i.preco;
       const foto=this._pdfUrl(this.fotosDe(pr)[0]);
@@ -6966,7 +7008,7 @@ class Component extends DCLogic {
         +'<td>'+E(cI.stLabel)+'</td>'
         +'<td>'+E(dest)+'</td></tr>'; }).join('');
 
-    const ativos=p.itens.filter(i=>i.st!=='rejeitado');
+    const ativos=ITENS.filter(i=>i.st!=='rejeitado');
     const totRef=p.itens.reduce((a,i)=>a+i.qtd*i.preco,0);
     const totNeg=ativos.every(i=>i.precoNeg!=null)?ativos.reduce((a,i)=>a+i.precoNeg,0):null;
     const totFat=fats.reduce((a,f)=>a+f.valor,0);
@@ -7007,7 +7049,7 @@ class Component extends DCLogic {
     const thF='padding:5px 6px;font-size:7.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;'
       +'color:#a89f90;border-bottom:1px solid #eae3d6;text-align:left';
     const tdF='padding:5px 6px;font-size:8.5px;border-bottom:1px solid #f5f1e8;vertical-align:top';
-    const itensFicha=p.itens.filter(i=>i.st!=='rejeitado');
+    const itensFicha=ITENS.filter(i=>i.st!=='rejeitado');
     const blocoFicha=itensFicha.length
       ?('<table style="width:100%;border-collapse:collapse">'
         +'<thead><tr>'
@@ -7192,6 +7234,7 @@ class Component extends DCLogic {
       +'<div><div class="marca">CIDADE IMPERIAL<small>PLATAFORMA DA LOJA</small></div></div>'
       +'<div class="tit"><b>Pedido '+E(p.id)+'</b>'
       +'<span class="st">'+E(ch.stLabel)+' · etapa '+etapa+'/'+this.ETAPAS_PED.length+'</span>'
+      +(chF!=null?('<div class="dt"><b>Itens de '+E(nomeChF)+'</b> — este documento traz somente os itens adjudicados a este fornecedor</div>'):'')
       +'<div class="dt">Criado em '+E(p.data)+' · documento emitido em '+E(agora)+'</div></div></div>'
       +this._pdfBloco('Partes e responsáveis',blocoPartes)
       +this._pdfBloco('Destino logístico de entrega da mercadoria',blocoEntrega,'Local de entrega')
@@ -7201,7 +7244,7 @@ class Component extends DCLogic {
         '<table class="itens"><thead><tr><th class="c">#</th><th>Foto</th><th>Produto</th><th class="c">Qtd</th>'
         +'<th class="r">Preço ref.</th><th class="r">Preço neg. (un.)</th><th class="r">Subtotal</th><th>Situação</th><th>Atendido por</th></tr></thead>'
         +'<tbody>'+linhasItens+'</tbody></table>'+blocoTotais,
-        p.itens.length+(p.itens.length===1?' item':' itens'))
+        ITENS.length+(ITENS.length===1?' item':' itens')+(chF!=null?' · somente os seus':''))
       +this._pdfBloco('Dados cadastrais e fiscais dos itens',blocoFicha,'Faturamento e expedição')
       +this._pdfBloco('Cotação vinculada',blocoCot)
       +this._pdfBloco('Rastreio da entrega',blocoRast)
@@ -7214,16 +7257,22 @@ class Component extends DCLogic {
       +'<script>window.addEventListener("load",function(){setTimeout(function(){window.focus();window.print();},350);});'+fim
       +'</body></html>'; }
 
-  gerarPdfPedido(id){ this._gpdf=this._gpdf||{}; if(!this._gpdf[id]) this._gpdf[id]=(e)=>{
+  gerarPdfPedido(id,chave){ this._gpdf=this._gpdf||{}; const k=id+'|'+(chave==null?'':chave);
+    if(!this._gpdf[k]) this._gpdf[k]=(e)=>{
     if(e&&e.stopPropagation) e.stopPropagation();
     const p=this.state.pedidos.find(x=>x.id===id); if(!p) return;
+    // o fornecedor sempre recebe o recorte dele, mesmo sem pedir
+    const chF=chave!=null?chave:this._pdfFornAtual();
+    const its=this._pdfItensDe(p,chF);
+    if(chF!=null&&!its.length) return this.toast('Não há itens deste pedido adjudicados a você.');
     let w=null;
     try{ w=window.open('','_blank'); }catch(err){ w=null; }
     if(!w) return this.toast('Não foi possível abrir a janela do documento — libere os pop-ups deste site e tente de novo.');
-    w.document.open(); w.document.write(this._pdfDoc(p)); w.document.close();
-    this.audit('Documento do pedido gerado',id+' · '+this._revNome(p.revendaId)+' · '+p.itens.length+' item(ns)');
+    w.document.open(); w.document.write(this._pdfDoc(p,chF)); w.document.close();
+    this.audit('Documento do pedido gerado',id+' · '+this._revNome(p.revendaId)+' · '+its.length+' item(ns)'
+      +(chF!=null?(' · recorte de '+this._pdfNomeChave(p,chF)):' · pedido completo'));
     this.toast('Documento do pedido '+id+' aberto — use "Salvar como PDF" na janela de impressão.','ok');
-  }; return this._gpdf[id]; }
+  }; return this._gpdf[k]; }
 
   // ══ Rastreio da entrega ══════════════════════════════════════════════════
   // Sempre que o frete é responsabilidade do fornecedor, ele precisa dizer
@@ -7383,12 +7432,48 @@ class Component extends DCLogic {
   // Depois de faturado (ou atendido pelo estoque da Loja), o pedido fica
   // aguardando a confirmação de que o material chegou. Confirma quem recebeu —
   // a revenda — ou a Loja Cidade Imperial, quando faz a conferência por ela.
-  _recebido(p){ return !!(p&&p.recebimento&&p.recebimento.quando); }
+  // O recebimento é por fornecedor: num mesmo pedido um pode ter entregue
+  // certo, outro ainda não ter entregue e um terceiro ter chegado com
+  // divergência. p.recebPorForn guarda um registro por fornecedor; o campo
+  // antigo p.recebimento continua valendo para os pedidos já confirmados
+  // antes desta mudança.
+  _recebMapa(p){ return (p&&p.recebPorForn)||{}; }
+  _recebDe(p,chave){ const m=this._recebMapa(p); const r=m[String(chave)];
+    if(r) return r;
+    // compatibilidade: confirmação global antiga vale para todos
+    const g=(p&&p.recebimento)||null;
+    return (g&&g.quando)?{...g,status:'confirmado',global:true}:null; }
+  _recebidoForn(p,chave){ const r=this._recebDe(p,chave); return !!(r&&r.status!=='recusado'&&r.quando); }
+  _recusadoForn(p,chave){ const r=this._recebDe(p,chave); return !!(r&&r.status==='recusado'); }
+  // Grupos de fornecedor do pedido, com a situação de entrega de cada um.
+  _gruposForn(p){ const at=((p&&p.itens)||[]).filter(i=>i.st!=='rejeitado');
+    const vistos=new Map();
+    at.forEach(i=>{ const k=String(this._chaveForn(i));
+      if(!vistos.has(k)) vistos.set(k,{chave:this._chaveForn(i),nome:this._destNome(i),itens:[]});
+      vistos.get(k).itens.push(i); });
+    return [...vistos.values()].map(g=>{
+      const entregue=g.itens.every(i=>this._etapaItemIdx(p,i)>=9);
+      const r=this._recebDe(p,g.chave);
+      return {...g,entregue,receb:r,confirmado:!!(r&&r.status!=='recusado'&&r.quando),
+        recusado:!!(r&&r.status==='recusado')}; }); }
+  // Recebido = há grupos e todos os entregues estão confirmados, sem recusa
+  // pendente. É o que conclui o pedido.
+  _recebido(p){ if(p&&p.recebimento&&p.recebimento.quando&&!(p.recebPorForn&&Object.keys(p.recebPorForn).length)) return true;
+    const gs=this._gruposForn(p); if(!gs.length) return false;
+    return gs.every(g=>g.confirmado); }
   // Entregue = todos os itens ativos já faturados ou atendidos pelo estoque,
   // sem documento fiscal recusado pendente.
   _entregue(p){ const at=(p&&p.itens||[]).filter(i=>i.st!=='rejeitado');
     if(!at.length) return false;
     return at.every(i=>this._etapaItemIdx(p,i)>=9); }
+  // Permissão de agir no recebimento — independe de o pedido inteiro ter
+  // chegado: cada fornecedor é tratado por si.
+  _podeAgirReceb(p){ if(!p) return false;
+    if(this.role==='revenda'){ const u=this.usuarioAtual();
+      const revs=(u&&u.papel==='revenda')?this._minhasRevs(u):[this.state.revAtivo];
+      return revs.includes(p.revendaId)&&!this.state.revGrupo&&this.pode('pedidos.confirmar_receb'); }
+    if(this.role==='loja'||this.role==='admin') return this.pode('pedidos.confirmar_receb');
+    return false; }
   _podeConfirmarReceb(p){ if(!p||this._recebido(p)||!this._entregue(p)) return false;
     if(this.role==='revenda'){ const u=this.usuarioAtual();
       const revs=(u&&u.papel==='revenda')?this._minhasRevs(u):[this.state.revAtivo];
@@ -7400,33 +7485,77 @@ class Component extends DCLogic {
   // Vals do botão/selo de recebimento, usados nas duas listas e no detalhe.
   _pdfCel(p){ return {pdfFn:this.gerarPdfPedido(p.id)}; }
   _recebCel(p){ const r=(p&&p.recebimento)||null;
+    const pode=this._podeAgirReceb(p);
+    // uma linha por fornecedor: confirmar ou recusar um não afeta os demais
+    const gs=this._gruposForn(p).map(g=>({
+      nome:g.nome,
+      podeAgir:pode&&g.entregue&&!g.confirmado,
+      confFn:this.abrirRecebimento(p.id,g.chave,'ok'),
+      recFn:this.abrirRecebimento(p.id,g.chave,'recusa'),
+      confirmado:g.confirmado,recusado:g.recusado,
+      aguarda:!g.entregue,
+      selo:g.confirmado?('✓ recebido em '+String(g.receb.quando).split(' ')[0])
+        :(g.recusado?('✕ recusado — '+(g.receb.motivo||'sem motivo'))
+        :(g.entregue?'aguarda a sua conferência':'ainda não entregue')),
+      seloBg:g.confirmado?'#e9f3ea':(g.recusado?'#fbeae7':(g.entregue?'#fdf6e7':'#f3f1ec')),
+      seloFg:g.confirmado?'#2f6b39':(g.recusado?'#a33a2b':(g.entregue?'#8a5a12':'#8a8378')) }));
     return {podeReceb:this._podeConfirmarReceb(p),recebFn:this.abrirRecebimento(p.id),
       temReceb:!!r,recebSelo:r?('Recebido em '+String(r.quando).split(' ')[0]):'',
-      recebTitulo:r?this._recebInfo(p):''}; }
+      recebTitulo:r?this._recebInfo(p):'',
+      fornReceb:gs,temFornReceb:gs.length>1||gs.some(g=>g.recusado)}; }
 
-  abrirRecebimento(id){ this._arc=this._arc||{}; if(!this._arc[id]) this._arc[id]=(e)=>{
+  abrirRecebimento(id,chave,modo){ this._arc=this._arc||{};
+    const k=id+'|'+(chave==null?'':chave)+'|'+(modo||'ok');
+    if(!this._arc[k]) this._arc[k]=(e)=>{
     if(e&&e.stopPropagation) e.stopPropagation();
-    this.setState({modal:'recebimento',form:{pedidoId:id,obs:''}}); }; return this._arc[id]; }
+    this.setState({modal:'recebimento',form:{pedidoId:id,chaveForn:chave==null?'':String(chave),
+      recebModo:modo||'ok',obs:'',motivoRec:''}}); }; return this._arc[k]; }
 
   confirmRecebimento=()=>{
     const f=this.state.form; const id=f.pedidoId;
     const ped=this.state.pedidos.find(p=>p.id===id); if(!ped) return;
-    if(!this._podeConfirmarReceb(ped)) return this.negado('Você não tem permissão para confirmar o recebimento do material.','pedidos.confirmar_receb');
+    if(!this._podeAgirReceb(ped)) return this.negado('Você não tem permissão para confirmar o recebimento do material.','pedidos.confirmar_receb');
+    const recusa=f.recebModo==='recusa';
+    const chave=String(f.chaveForn||'');
+    const grupos=this._gruposForn(ped);
+    const g=chave?grupos.find(x=>String(x.chave)===chave):null;
+    if(chave&&!g) return this.err('Fornecedor não encontrado neste pedido.');
+    if(g&&!g.entregue) return this.err('Os itens de '+g.nome+' ainda não foram entregues — não há o que confirmar.');
     const obs=String(f.obs||'').trim().slice(0,400);
+    const motivo=String(f.motivoRec||'').trim().slice(0,400);
+    if(recusa&&!motivo) return this.err('Informe o motivo da recusa do recebimento — obrigatório.');
     const papel=this.role==='revenda'?'revenda':'loja';
     const quem=this.userName();
-    const reg={quando:this.ts(),ts:Date.now(),por:quem,papel,obs};
-    this.updPed(id,p=>{ p.recebimento=reg;
-      p.trilha.push(this.tr('Recebimento do material confirmado por '+quem+(papel==='loja'?' (pela Loja)':'')+(obs?' — '+obs:'')));
+    const reg={quando:this.ts(),ts:Date.now(),por:quem,papel,obs,
+      status:recusa?'recusado':'confirmado',motivo:recusa?motivo:''};
+    // sem fornecedor informado, vale para todos os grupos já entregues
+    const alvos=g?[g]:grupos.filter(x=>x.entregue);
+    if(!alvos.length) return this.err('Nenhum fornecedor deste pedido está com a entrega pronta para conferência.');
+    const verbo=recusa?'RECUSADO':'confirmado';
+    this.updPed(id,p=>{ const m={...(p.recebPorForn||{})};
+      alvos.forEach(x=>{ m[String(x.chave)]=reg; });
+      p.recebPorForn=m;
+      alvos.forEach(x=>p.trilha.push(this.tr('Recebimento '+verbo+' para '+x.nome+' por '+quem
+        +(papel==='loja'?' (pela Loja)':'')+(recusa?(' — motivo: '+motivo):(obs?(' — '+obs):'')))));
+      // conclui o pedido só quando todos os fornecedores estiverem confirmados
+      if(this._recebido(p)&&!recusa) p.recebimento=reg;
       return p; });
-    this.audit('Recebimento de material confirmado',id+' · '+(papel==='loja'?'confirmado pela Loja':'confirmado pela revenda')+' · '+this._revNome(ped.revendaId)+(obs?' · '+obs:''));
-    // avisa o outro lado
-    const dest=papel==='loja'?this._revEmail(ped.revendaId):this._lojaEmail();
-    this.notificar('pedido_recebido',dest,{pedidoId:id,revendaNome:this._revNome(ped.revendaId),
+    const nomes=alvos.map(x=>x.nome).join(', ');
+    this.audit(recusa?'Recebimento de material recusado':'Recebimento de material confirmado',
+      id+' · '+nomes+' · '+(papel==='loja'?'pela Loja':'pela revenda')+' · '+this._revNome(ped.revendaId)
+      +(recusa?(' · motivo: '+motivo):(obs?(' · '+obs):'')));
+    // avisa o outro lado e, na recusa, também o fornecedor impactado
+    const dest=[papel==='loja'?this._revEmail(ped.revendaId):this._lojaEmail()];
+    if(recusa) alvos.forEach(x=>{ const em=(x.chave===this.LOJA_KEY)?this._lojaEmail():this._fornEmail(x.chave);
+      if(em) dest.push(em); });
+    this.notificar('pedido_recebido',dest.filter(Boolean),{pedidoId:id,revendaNome:this._revNome(ped.revendaId),
       por:quem,quando:reg.quando,origem:papel==='loja'?'a Loja Cidade Imperial':('a revenda '+this._revNome(ped.revendaId)),
-      observacao:obs,itensLista:this._itensPed(ped,i=>i.st!=='rejeitado')});
+      observacao:recusa?('RECEBIMENTO RECUSADO para '+nomes+' — motivo: '+motivo):obs,
+      fornecedorNome:nomes,recusado:recusa?'sim':'',
+      itensLista:alvos.flatMap(x=>x.itens).map(i=>this._itemView(i))});
     this.mClose();
-    this.toast('Recebimento do pedido '+id+' confirmado.','ok');
+    this.toast(recusa?('Recebimento recusado para '+nomes+' — o fornecedor e a Loja foram avisados.')
+      :('Recebimento confirmado para '+nomes+'.'),recusa?'erro':'ok');
     setTimeout(()=>this._flushPersist(),0); };
 
   // ══ Conversa por pedido (Loja × Revenda) ═════════════════════════════════
@@ -9490,7 +9619,7 @@ class Component extends DCLogic {
       if(!meus.length) return;
       const pend=meus.filter(i=>i.st==='direto');
       const tot=meus.reduce((a,i)=>a+this.itemTotal(i),0);
-      fPedRows.push({id:p.id,data:p.data,revNome:R(p.revendaId).nome,revContatoTxt:this._telTxt(R(p.revendaId).telefone),
+      fPedRows.push({id:p.id,data:p.data,pdfFn:this.gerarPdfPedido(p.id,fid),revNome:R(p.revendaId).nome,revContatoTxt:this._telTxt(R(p.revendaId).telefone),
         podeConfirmar:pend.length>0&&!((p.confForn||{})[fid]),confirmar:this.confirmarRecebForn(p.id),
         confInfo:((p.confForn||{})[fid])?('✓ Recebimento confirmado em '+(p.confForn[fid].quando||'')+' — em produção/atendimento'):'',
         origem:(meus.some(i=>i.cotacaoId)?'Cotação '+meus.find(i=>i.cotacaoId).cotacaoId:'Envio direto')+(((p.confForn||{})[fid])?' · recebimento confirmado':''),
@@ -9522,7 +9651,8 @@ class Component extends DCLogic {
           qtdTxt:i.qtd+' '+(prod.unidade||'un'),valFmt:this.fmt(val),negTag:i.precoNeg!=null?'negociado em cotação':'',temNeg:i.precoNeg!=null,
           ...this.chip(i.st==='direto'?'encaminhado':'faturado'),
           pedidoId:p.id,pedData:p.data,origem:i.cotacaoId?('Cotação '+i.cotacaoId):'Envio direto',
-          revNome:rev.nome||'',revCidade:rev.cidade||'—',revCnpj:rev.cnpj||'—',revEmail:rev.email||'—',revTelTxt:this._telTxt(rev.telefone)}); }); });
+          revNome:rev.nome||'',revCidade:rev.cidade||'—',revCnpj:rev.cnpj||'—',revEmail:rev.email||'—',revTelTxt:this._telTxt(rev.telefone),
+          pdfFn:this.gerarPdfPedido(p.id,fid)}); }); });
     const fCotRows=S.cotacoes.filter(c=>c.convidados.includes(fid)).map(c=>{
       const own=this._propsEfetivas(c).find(p=>p.fornecedorId===fid);
       const rodF=this._cotRod(c); const rconvF=this._rodConv(c);
@@ -10039,10 +10169,14 @@ class Component extends DCLogic {
       // conversa por pedido
       ...this._chatVals(),fxTextoChat:this.fx('texto'),enviarMensagemChat:this.enviarMensagemChat,
       // confirmação de recebimento do material
-      mReceb:M==='recebimento',fxObsReceb:this.fx('obs'),confirmRecebimento:this.confirmRecebimento,
+      mReceb:M==='recebimento',fxObsReceb:this.fx('obs'),fxMotivoRecReceb:this.fx('motivoRec'),confirmRecebimento:this.confirmRecebimento,
       recebInfo:(()=>{ const pR=(M==='recebimento'&&S.form.pedidoId)?S.pedidos.find(x=>x.id===S.form.pedidoId):null;
-        if(!pR) return {pedidoId:'',sub:'',itens:[],origemTxt:'',aviso:''};
-        const ent=pR.itens.filter(i=>i.st!=='rejeitado');
+        if(!pR) return {pedidoId:'',sub:'',itens:[],origemTxt:'',aviso:'',titulo:'Confirmar recebimento do material',
+          btnLabel:'Confirmar recebimento',btnBg:'#2f6b39',ehRecusa:false,temForn:false,fornNome:''};
+        const chR=String(S.form.chaveForn||'');
+        const recusaR=S.form.recebModo==='recusa';
+        const gR=chR?this._gruposForn(pR).find(x=>String(x.chave)===chR):null;
+        const ent=(gR?gR.itens:pR.itens.filter(i=>i.st!=='rejeitado'));
         const fornsR=[...new Set(ent.filter(i=>i.fornecedorId).map(i=>F(i.fornecedorId).nome))];
         const temEst=ent.some(i=>this._ehLoja(i));
         return {pedidoId:pR.id,
@@ -10050,9 +10184,17 @@ class Component extends DCLogic {
           itens:ent.map(i=>{ const pr=P(i.produtoId);
             return {label:(pr.codigo||'')+' · '+(pr.descricao||''),qtdTxt:'×'+i.qtd+' '+(pr.unidade||'')}; }),
           origemTxt:'Entregue por: '+([...fornsR,...(temEst?['Estoque da Loja']:[])].join(' · ')||'—'),
-          aviso:this.role==='revenda'
-            ? 'Ao confirmar, o pedido passa para a etapa 10 (Conclusão) e a Loja Cidade Imperial é avisada por e-mail. Se houver avaria ou divergência, descreva na observação — e use a conversa do pedido para tratar o caso.'
-            : 'Você está confirmando o recebimento em nome da revenda '+(R(pR.revendaId).nome||'')+'. Ao confirmar, o pedido passa para a etapa 10 (Conclusão), a revenda é avisada por e-mail e o registro fica na trilha e na auditoria com o seu nome.'}; })(),
+          titulo:recusaR?'Recusar o recebimento':'Confirmar recebimento do material',
+          btnLabel:recusaR?'Recusar recebimento':'Confirmar recebimento',
+          btnBg:recusaR?'#a33a2b':'#2f6b39',
+          ehRecusa:recusaR,temForn:!!gR,fornNome:gR?gR.nome:'',
+          aviso:recusaR
+            ? 'A recusa vale só para '+(gR?gR.nome:'este fornecedor')+': os demais fornecedores do pedido seguem o seu curso. O fornecedor e a Loja são avisados por e-mail, com o motivo, e o registro fica na trilha do pedido e na auditoria.'
+            : (gR
+              ? 'Você está confirmando apenas os itens de '+gR.nome+'. Os demais fornecedores deste pedido continuam aguardando a sua conferência — o pedido só conclui quando todos estiverem confirmados.'
+              : (this.role==='revenda'
+                ? 'Ao confirmar, o pedido passa para a etapa 10 (Conclusão) e a Loja Cidade Imperial é avisada por e-mail. Se houver avaria ou divergência, descreva na observação — e use a conversa do pedido para tratar o caso.'
+                : 'Você está confirmando o recebimento em nome da revenda '+(R(pR.revendaId).nome||'')+'. Ao confirmar, o pedido passa para a etapa 10 (Conclusão), a revenda é avisada por e-mail e o registro fica na trilha e na auditoria com o seu nome.'))}; })(),
       // rastreio da entrega
       mRast:M==='rastreio',fxTransp:this.fxTransp,fxRastCod:this.fxRastCod,fxRastUrl:this.fxRastUrl,
       fxRastPrev:this.fxData('rastPrev'),fxRastObs:this.fx('rastObs'),fxTranspNome:this.fx('transpNome'),
